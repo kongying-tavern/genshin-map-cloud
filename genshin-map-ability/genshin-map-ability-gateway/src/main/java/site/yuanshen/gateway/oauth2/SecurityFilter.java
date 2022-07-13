@@ -7,6 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
@@ -45,23 +47,36 @@ public class SecurityFilter implements GlobalFilter, Ordered {
         List<RoleEnum> userRoleList = authorities.toJavaList(String.class).stream().map(RoleEnum::valueOf).collect(Collectors.toList());
         //请求url
         String path = exchange.getRequest().getHeaders().getFirst("originalPath");
+        if (path == null) throw new RuntimeException("请求url拦截失败，请联系管理员");
         //配置文件中的url身份配置
         Map<String, List<String>> authoritiesFilter = genshinGatewayProperties.getAuthoritiesFilter();
         log.info("Try to match security url map: {}", authoritiesFilter.toString());
         log.info("The user authorities list is: {}", authorities);
         for (String roleName : authoritiesFilter.keySet()) {
-            AntPathMatcher matcher = new AntPathMatcher();
             RoleEnum matchRole = RoleEnum.valueOf(roleName);
-            List<String> urlMatches = authoritiesFilter.get(roleName);
-            for (String urlMatch : urlMatches) {
-                log.info("Url matched: {}; need: {}", urlMatch, roleName);
-                for (RoleEnum userRole : userRoleList) {
-                    if (userRole.getSort() <= matchRole.getSort()) return chain.filter(exchange);
+            boolean isMatch = false;
+            for (RoleEnum userRole : userRoleList) {
+                if (userRole.getSort() <= matchRole.getSort()) {
+                    isMatch = true;
+                    break;
                 }
             }
+            if (!isMatch) continue;
+            AntPathMatcher matcher = new AntPathMatcher();
+            List<String> urlMatches = authoritiesFilter.get(roleName);
+            log.info("{}'s Url matching: {}", roleName, urlMatches);
+            for (String urlMatch : urlMatches) {
+                if (matcher.match(urlMatch, path)) {
+                    log.info("Url matched: {} , has role, pass", urlMatch);
+                    return chain.filter(exchange);
+                }
+            }
+            log.info("{}'s Url no matched, find next", roleName);
         }
         log.info("Has no permissions, reject");
-        return exchange.getResponse().setComplete();
+        ServerHttpResponse response = exchange.getResponse();
+        response.setStatusCode(HttpStatus.FORBIDDEN);
+        return response.setComplete();
     }
 
     @Override

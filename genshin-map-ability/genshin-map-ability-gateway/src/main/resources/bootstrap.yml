@@ -13,26 +13,26 @@ genshin:
   authorities-filter:
     VISITOR:
       - /system/user/register
-      - /tag/get/**
-      - /icon/get/**
-      - /area/get/**
-      - /item/get/**
-      - /marker/get/**
+      - /api/tag/get/**
+      - /api/icon/get/**
+      - /api/area/get/**
+      - /api/item/get/**
+      - /api/marker/get/**
     MAP_USER:
       - /system/user/info/**
       - /system/user/update
       - /system/user/update_password
     MAP_PUNCTUATE:
-      - /marker/punctuate/author/**
+      - /api/marker/punctuate/author/**
     MAP_MANAGER:
-      - /marker/punctuate/check/**
+      - /api/marker/punctuate/check/**
     ADMIN:
       - /system/**
-      - /tag/**
-      - /icon/**
-      - /area/**
-      - /item/**
-      - /marker/**
+      - /api/tag/**
+      - /api/icon/**
+      - /api/area/**
+      - /api/item/**
+      - /api/marker/**
 
 ribbon:
   ServerListRefreshInterval: 1000
