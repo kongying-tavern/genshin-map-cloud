@@ -3,6 +3,7 @@ package site.yuanshen.genshin.core.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import site.yuanshen.common.web.response.R;
 import site.yuanshen.common.web.response.RUtils;
@@ -51,6 +52,7 @@ public class IconTagController {
 
     @Operation(summary = "修改标签关联", description = "将标签关联到另一个图标上")
     @PostMapping("/{tagName}/{iconId}")
+    @Transactional
     public R<Boolean> updateTag(@PathVariable("tagName") String tagName, @PathVariable("iconId") Long iconId) {
         return RUtils.create(
                 iconTagService.updateTag(tagName, iconId)
@@ -59,6 +61,7 @@ public class IconTagController {
 
     @Operation(summary = "修改标签的分类信息", description = "本接口仅在后台使用，故分离出来")
     @PostMapping("/updateType")
+    @Transactional
     public R<Boolean> updateTypeInTag(@RequestBody TagVo tagVo) {
         return RUtils.create(
                 iconTagService.updateTypeInTag(new TagDto(tagVo))
@@ -67,6 +70,7 @@ public class IconTagController {
 
     @Operation(summary = "创建标签", description = "只创建一个空标签")
     @PutMapping("/{tagName}")
+    @Transactional
     public R<Boolean> createTag(@PathVariable("tagName") String tagName) {
         return RUtils.create(
                 iconTagService.createTag(tagName)
@@ -75,6 +79,7 @@ public class IconTagController {
 
     @Operation(summary = "删除标签", description = "需要确保已经没有条目在使用这个标签，否则会删除失败")
     @DeleteMapping("/{tagName}")
+    @Transactional
     public R<Boolean> deleteTag(@PathVariable("tagName") String tagName) {
         return RUtils.create(
                 iconTagService.deleteTag(tagName)
@@ -95,6 +100,7 @@ public class IconTagController {
 
     @Operation(summary = "新增分类", description = "类型id在创建后返回")
     @PutMapping("/type")
+    @Transactional
     public R<Long> addTagType(@RequestBody TagTypeVo tagTypeVo) {
         return RUtils.create(
                 iconTagService.addTagType(new TagTypeDto(tagTypeVo))
@@ -103,6 +109,7 @@ public class IconTagController {
 
     @Operation(summary = "修改分类", description = "由类型ID来定位修改一个分类")
     @PostMapping("/type")
+    @Transactional
     public R<Boolean> updateTagType(@RequestBody TagTypeVo tagTypeVo) {
         return RUtils.create(
                 iconTagService.updateTagType(new TagTypeDto(tagTypeVo))
@@ -111,6 +118,7 @@ public class IconTagController {
 
     @Operation(summary = "删除分类", description = "这个操作会递归删除，请在前端做二次确认")
     @DeleteMapping("/type/{typeId}")
+    @Transactional
     public R<Boolean> deleteTagType(@PathVariable("typeId") Long typeId) {
         return RUtils.create(
                 iconTagService.deleteTagType(typeId)

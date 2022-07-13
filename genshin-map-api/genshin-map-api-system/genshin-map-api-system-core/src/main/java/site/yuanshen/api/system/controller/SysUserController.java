@@ -35,6 +35,7 @@ public class SysUserController {
 
     //todo 放行
     @PostMapping("/register")
+    @Transactional
     public R<Long> registerUser(@RequestBody SysUserRegisterVo registerDto) {
         return RUtils.create(userService.register(registerDto));
     }
@@ -49,6 +50,7 @@ public class SysUserController {
     }
 
     @PostMapping("/update")
+    @Transactional
     public R<Boolean> updateUser(@RequestBody SysUserUpdateDto updateDto,
                                  @RequestHeader("userId") Long headerUserId, @RequestHeader("Authorities") String authoritiesString) {
         List<RoleEnum> userRoleList = JSON.parseArray(authoritiesString).toJavaList(String.class).stream().map(RoleEnum::valueOf).collect(Collectors.toList());
@@ -58,6 +60,7 @@ public class SysUserController {
     }
 
     @PostMapping("/update_password")
+    @Transactional
     public R<Boolean> updateUserPassword(@RequestBody SysUserPasswordUpdateDto passwordUpdateDto,
                                          @RequestHeader("userId") Long headerUserId, @RequestHeader("Authorities") String authoritiesString) {
         List<RoleEnum> userRoleList = JSON.parseArray(authoritiesString).toJavaList(String.class).stream().map(RoleEnum::valueOf).collect(Collectors.toList());
@@ -67,6 +70,7 @@ public class SysUserController {
     }
 
     @DeleteMapping("/{workId}")
+    @Transactional
     public R<Boolean> deleteUser(@PathVariable("workId") Long workId) {
         return RUtils.create(userService.deleteUser(workId));
     }
