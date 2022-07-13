@@ -2,6 +2,9 @@ package site.yuanshen.genshin.core.service.impl;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import site.yuanshen.data.dto.AreaDto;
 import site.yuanshen.data.entity.Area;
@@ -43,6 +46,7 @@ public class AreaServiceImpl implements AreaService {
      * @return 地区数据封装列表
      */
     @Override
+    @Cacheable(value = "listArea")
     public List<AreaDto> listArea(AreaSearchVo areaSearchVo) {
         //非递归查询
         if (!areaSearchVo.getIsTraverse()) {
@@ -70,6 +74,7 @@ public class AreaServiceImpl implements AreaService {
      * @return 地区数据封装
      */
     @Override
+    @Cacheable(value = "getArea",key = "#areaId")
     public AreaDto getArea(Long areaId) {
         return new AreaDto(areaMapper.selectOne(Wrappers.<Area>lambdaQuery()
                 .eq(Area::getId, areaId)));
@@ -82,14 +87,16 @@ public class AreaServiceImpl implements AreaService {
      * @return 新增地区ID
      */
     @Override
+    @Caching(
+            evict = {
+                    @CacheEvict(value = "getArea", key = "#result"),
+                    @CacheEvict(value = "listArea", allEntries = true)
+            }
+    )
     public Long createArea(AreaDto areaDto) {
         Area area = areaDto.getEntity()
-                //临时id
-//				.setAreaId(-1L)
                 .setIsFinal(true);
         areaMapper.insert(area);
-//		//正式更新id
-//		areaMapper.updateById(area.setAreaId(area.getId()));
         //插入公共物品
         List<Long> commonItemIdList = itemAreaPublicMapper.selectList(Wrappers.<ItemAreaPublic>lambdaQuery())
                 .parallelStream().map(ItemAreaPublic::getItemId).collect(Collectors.toList());
@@ -120,6 +127,12 @@ public class AreaServiceImpl implements AreaService {
      * @return 是否成功
      */
     @Override
+    @Caching(
+            evict = {
+                    @CacheEvict(value = "getArea", key = "#areaDto.areaId"),
+                    @CacheEvict(value = "listArea", allEntries = true)
+            }
+    )
     public Boolean updateArea(AreaDto areaDto) {
         //获取地区实体
         Area area = areaMapper.selectOne(Wrappers.<Area>lambdaQuery()
@@ -153,6 +166,12 @@ public class AreaServiceImpl implements AreaService {
      * @return 是否成功
      */
     @Override
+    @Caching(
+            evict = {
+                    @CacheEvict(value = "getArea", key = "#areaId"),
+                    @CacheEvict(value = "listArea", allEntries = true)
+            }
+    )
     public Boolean deleteArea(Long areaId) {
         //用于递归遍历删除的地区ID列表
         List<Long> nowAreaIdList = Collections.singletonList(areaId);

@@ -1,6 +1,10 @@
 package site.yuanshen.common.web.config;
 
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.cache.caffeine.CaffeineCacheManager;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,6 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Web模块自动装配核心配置
@@ -48,6 +53,30 @@ public class BaseConfiguration {
             return new RestException();
         }
     }
+
+    /**
+     * 缓存配置
+     */
+    @Configuration
+    @EnableCaching
+    public static class CacheConfiguration {
+
+        /**
+         * 咖啡因缓存配置
+         */
+        @Bean
+        @Primary
+        public CacheManager cacheManager() {
+            CaffeineCacheManager caffeineCacheManager = new CaffeineCacheManager();
+            Caffeine<Object, Object> caffeine = Caffeine.newBuilder()
+                    // 设置最后一次写入或访问后经过固定时间过期
+                    .expireAfterAccess(60, TimeUnit.MINUTES);
+            caffeineCacheManager.setCaffeine(caffeine);
+            return caffeineCacheManager;
+        }
+
+    }
+
 
     /**
      * nacos 注册中心相关的配置

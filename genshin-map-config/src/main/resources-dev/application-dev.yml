@@ -10,5 +10,6 @@ spring:
 logging:
   level:
     org.springframework:
-        security: DEBUG
+        security: debug
+        cache: debug
     site.yuanshen.data.mapper: debug
