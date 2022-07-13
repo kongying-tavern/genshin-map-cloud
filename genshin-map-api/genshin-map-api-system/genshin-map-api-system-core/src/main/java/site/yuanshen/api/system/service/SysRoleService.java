@@ -1,6 +1,7 @@
 package site.yuanshen.api.system.service;
 
 import site.yuanshen.data.dto.SysRoleDto;
+import site.yuanshen.data.dto.SysRoleLinkDto;
 import site.yuanshen.data.entity.SysRole;
 
 import java.util.List;
@@ -11,23 +12,18 @@ import java.util.Optional;
  */
 public interface SysRoleService {
 
-
-    Optional<SysRole> getRole(String roleCode);
-
-    SysRole getRoleNotNull(String roleCode);
-
     /**
-     * @return 团队可用角色列表
+     * @return 可用角色列表
      */
     List<SysRoleDto> listRole();
 
     /**
-     * 给团队创建新角色
+     * 创建新角色
      *
-     * @param roleCode 角色代码
+     * @param roleDto 角色封装
      * @return 新角色ID
      */
-    Long createRole(String roleCode);
+    Boolean createRole(SysRoleDto roleDto);
 
     /**
      * 删除角色
@@ -40,20 +36,18 @@ public interface SysRoleService {
     /**
      * 将角色赋予给用户
      *
-     * @param roleCode 角色代码
-     * @param id       用户ID
+     * @param roleLinkDto 角色关联数据封装
      * @return 是否成功
      */
-    Boolean addRoleToUser(String roleCode, Long id);
+    Boolean addRoleToUser(SysRoleLinkDto roleLinkDto);
 
     /**
      * 将角色从用户剥夺
      *
-     * @param roleCode 角色代码
-     * @param id       用户ID
+     * @param roleLinkDto 角色关联数据封装
      * @return 是否成功
      */
-    Boolean removeRoleFromUser(String roleCode, Long id);
+    Boolean removeRoleFromUser(SysRoleLinkDto roleLinkDto);
 
     /**
      * 批量删除角色（未找到的角色通过错误抛出）

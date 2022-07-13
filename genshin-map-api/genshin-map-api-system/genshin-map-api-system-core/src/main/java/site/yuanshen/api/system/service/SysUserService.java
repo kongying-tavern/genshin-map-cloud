@@ -3,10 +3,8 @@ package site.yuanshen.api.system.service;
 import site.yuanshen.data.dto.SysUserDto;
 import site.yuanshen.data.dto.SysUserPasswordUpdateDto;
 import site.yuanshen.data.dto.SysUserUpdateDto;
-import site.yuanshen.data.entity.SysUser;
 import site.yuanshen.data.vo.SysUserRegisterVo;
-
-import java.util.Optional;
+import site.yuanshen.data.vo.SysUserVo;
 
 /**
  * 用户相关服务类接口
@@ -16,26 +14,10 @@ import java.util.Optional;
 public interface SysUserService {
 
     /**
-     * 此方法建议只用于同级service
-     *
-     * @param Id 用户ID
-     * @return 用户实体类Optional
-     */
-    Optional<SysUser> getUser(Long Id);
-
-    /**
-     * 此方法建议只用于同级service
-     *
-     * @param id 用户ID
-     * @return 用户实体类
-     */
-    SysUser getUserNotNull(Long id);
-
-    /**
      * @param registerDto 注册封装类
-     * @return 是否注册成功
+     * @return 用户ID
      */
-    Boolean register(SysUserRegisterVo registerDto);
+    Long register(SysUserRegisterVo registerDto);
 
     /**
      * 获取用户信息
@@ -43,7 +25,7 @@ public interface SysUserService {
      * @param Id 用户ID
      * @return 用户信息
      */
-    SysUserDto getUserInfo(Long Id);
+    SysUserVo getUserInfo(Long Id);
 
     /**
      * @param id 被删除的用户的id

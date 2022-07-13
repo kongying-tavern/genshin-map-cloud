@@ -11,8 +11,10 @@ import site.yuanshen.common.web.response.RUtils;
 import site.yuanshen.data.dto.SysUserDto;
 import site.yuanshen.data.dto.SysUserPasswordUpdateDto;
 import site.yuanshen.data.dto.SysUserUpdateDto;
+import site.yuanshen.data.entity.SysUser;
 import site.yuanshen.data.enums.RoleEnum;
 import site.yuanshen.data.vo.SysUserRegisterVo;
+import site.yuanshen.data.vo.SysUserVo;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,13 +35,13 @@ public class SysUserController {
 
     //todo 放行
     @PostMapping("/register")
-    public R<Boolean> registerUser(@RequestBody SysUserRegisterVo registerDto) {
+    public R<Long> registerUser(@RequestBody SysUserRegisterVo registerDto) {
         return RUtils.create(userService.register(registerDto));
     }
 
     @GetMapping("/info/{userId}")
-    public R<SysUserDto> getUserInfo(@PathVariable("userId") Long userId,
-                                     @RequestHeader("userId") Long headerUserId, @RequestHeader("Authorities") String authoritiesString) {
+    public R<SysUserVo> getUserInfo(@PathVariable("userId") Long userId,
+                                    @RequestHeader("userId") Long headerUserId, @RequestHeader("Authorities") String authoritiesString) {
         List<RoleEnum> userRoleList = JSON.parseArray(authoritiesString).toJavaList(String.class).stream().map(RoleEnum::valueOf).collect(Collectors.toList());
         if (!(userId.equals(headerUserId) || userRoleList.contains(RoleEnum.ADMIN)))
             throw new RuntimeException("权限不足，无法查看其他用户信息");

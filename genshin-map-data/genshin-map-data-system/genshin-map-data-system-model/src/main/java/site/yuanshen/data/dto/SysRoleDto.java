@@ -1,6 +1,9 @@
 package site.yuanshen.data.dto;
 
 import lombok.Data;
+import site.yuanshen.data.base.CachedBeanCopier;
+import site.yuanshen.data.entity.SysRole;
+import site.yuanshen.data.vo.SysRoleVo;
 
 /**
  * 角色Dto
@@ -11,9 +14,9 @@ import lombok.Data;
 public class SysRoleDto {
 
     /**
-     * 用户ID
+     * 角色ID
      */
-    private Long userId;
+    private Long id;
 
     /**
      * 角色名
@@ -30,5 +33,20 @@ public class SysRoleDto {
      */
     private Integer sort;
 
+    public SysRoleDto(SysRole sysRole) {
+        CachedBeanCopier.copyProperties(sysRole, this);
+    }
+
+    public SysRoleDto(SysRoleVo sysRoleVo) {
+        CachedBeanCopier.copyProperties(sysRoleVo, this);
+    }
+
+    public SysRole getEntity() {
+        return CachedBeanCopier.copyProperties(this, SysRole.class);
+    }
+
+    public SysRoleVo getVo() {
+        return CachedBeanCopier.copyProperties(this, SysRoleVo.class);
+    }
 
 }

@@ -1,5 +1,6 @@
-package site.yuanshen.data.dto;
+package site.yuanshen.data.vo;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -7,8 +8,6 @@ import lombok.ToString;
 import lombok.experimental.Accessors;
 import site.yuanshen.data.base.CachedBeanCopier;
 import site.yuanshen.data.entity.SysUser;
-import site.yuanshen.data.vo.SysRoleVo;
-import site.yuanshen.data.vo.SysUserVo;
 
 import java.util.List;
 
@@ -22,45 +21,42 @@ import java.util.List;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@Accessors(chain = true)
-public class SysUserDto {
+public class SysUserVo {
 
     /**
      * ID
      */
+    @Schema(title = "用户ID")
     private Long id;
 
     /**
      * 用户名
      */
+    @Schema(title = "用户名")
     private String username;
 
     /**
      * 昵称
      */
+    @Schema(title = "昵称")
     private String nickname;
 
     /**
      * QQ
      */
+    @Schema(title = "QQ")
     private String qq;
 
     /**
      * 手机号
      */
+    @Schema(title = "手机号")
     private String phone;
 
     /**
      * 角色列表
      */
+    @Schema(title = "角色列表")
     private List<SysRoleVo> roleList;
-
-    public SysUserDto(SysUser user) {
-        CachedBeanCopier.copyProperties(user, this);
-    }
-
-    public SysUserVo getVo() {
-        return CachedBeanCopier.copyProperties(this, SysUserVo.class);
-    }
 
 }

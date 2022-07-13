@@ -50,13 +50,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                                 .eq(SysUserRoleLink::getUserId, sysUser.getId()))
                         .stream()
                         .map(SysUserRoleLink::getRoleId)
-                        .collect(Collectors.toList())
-                ).stream()
-                .map(role -> {
-                    SysRoleDto sysRoleDto = new SysRoleDto();
-                    CachedBeanCopier.copyProperties(role, sysRoleDto);
-                    return sysRoleDto;
-                }).collect(Collectors.toList());
+                        .collect(Collectors.toList()))
+                .stream()
+                .map(SysRoleDto::new).collect(Collectors.toList());
         sysUserSecurityDto.setRoleDtoList(sysRoleDtoList);
         return sysUserSecurityDto;
     }
