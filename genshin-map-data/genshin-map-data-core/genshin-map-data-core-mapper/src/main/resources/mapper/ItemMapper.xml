@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="site.yuanshen.data.mapper.ItemMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="site.yuanshen.data.entity.Item">
+        <id column="id" property="id"/>
+        <result column="version" property="version"/>
+        <result column="creator_id" property="creatorId"/>
+        <result column="updater_id" property="updaterId"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="del_flag" property="delFlag"/>
+        <result column="item_id" property="itemId"/>
+        <result column="name" property="name"/>
+        <result column="area_id" property="areaId"/>
+        <result column="default_content" property="defaultContent"/>
+        <result column="icon_tag" property="iconTag"/>
+        <result column="icon_style_type" property="iconStyleType"/>
+        <result column="hidden_flag" property="hiddenFlag"/>
+        <result column="default_refresh_time" property="defaultRefreshTime"/>
+        <result column="sort_index" property="sortIndex"/>
+        <result column="default_count" property="defaultCount"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        version,
+        creator_id,
+        updater_id,
+        create_time,
+        update_time,
+        del_flag,
+     id, item_id, name, area_id, default_content, icon_tag,icon_style_type,hidden_flag,default_refresh_time,sort_index,default_count
+    </sql>
+
+    <select id="selectPageItem"
+            resultType="site.yuanshen.data.entity.Item"
+            parameterType="site.yuanshen.data.dto.ItemSearchDto">
+        select i.*
+        from item i
+        <if test="itemSearchDto.typeIdList != null">
+            left join item_type_link itl on i.id = itl.item_id
+        </if>
+        <where>
+            <if test="itemSearchDto.typeIdList != null and itemSearchDto.typeIdList.size > 0">
+                itl.type_id in
+                <foreach collection="itemSearchDto.typeIdList" open="(" separator="," close=")" item="typeId">
+                    #{typeId}
+                </foreach>
+            </if>
+            <if test="itemSearchDto.areaIdList != null and itemSearchDto.areaIdList.size > 0">
+                and i.area_id in
+                <foreach collection="itemSearchDto.areaIdList" open="(" separator="," close=")" item="areaId">
+                    #{areaId}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+</mapper>

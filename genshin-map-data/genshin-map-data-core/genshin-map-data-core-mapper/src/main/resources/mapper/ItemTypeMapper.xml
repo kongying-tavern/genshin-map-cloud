@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="site.yuanshen.data.mapper.ItemTypeMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="site.yuanshen.data.entity.ItemType">
+        <id column="id" property="id"/>
+        <result column="version" property="version"/>
+        <result column="creator_id" property="creatorId"/>
+        <result column="updater_id" property="updaterId"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="del_flag" property="delFlag"/>
+        <result column="type_id" property="typeId"/>
+        <result column="icon_tag" property="iconTag"/>
+        <result column="name" property="name"/>
+        <result column="content" property="content"/>
+        <result column="parent_id" property="parentId"/>
+        <result column="is_final" property="isFinal"/>
+        <result column="hidden_flag" property="hiddenFlag"/>
+        <result column="sort_index" property="sortIndex"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        version,
+        creator_id,
+        updater_id,
+        create_time,
+        update_time,
+        del_flag,
+     id, type_id, icon_tag, name, content, parent_id, is_final,hidden_flag,sort_index
+    </sql>
+
+</mapper>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Properties>
+        <Property name="LOG_EXCEPTION_CONVERSION_WORD">%xwEx</Property>
+        <Property name="LOG_LEVEL_PATTERN">%5p</Property>
+        <Property name="LOG_DATEFORMAT_PATTERN">yyyy-MM-dd HH:mm:ss.SSS</Property>
+        <Property name="CONSOLE_LOG_PATTERN">%clr{%d{${sys:LOG_DATEFORMAT_PATTERN}}}{faint} %clr{${sys:LOG_LEVEL_PATTERN}} %clr{%pid}{magenta} %clr{---}{faint} %clr{[%15.15t]}{faint} %clr{%-40.40c{1.}}{cyan} %clr{:}{faint} %m%n${sys:LOG_EXCEPTION_CONVERSION_WORD}</Property>
+        <Property name="FILE_LOG_PATTERN">%d{${LOG_DATEFORMAT_PATTERN}} ${ctx:appName} ${LOG_LEVEL_PATTERN} %pid --- [%t] %-40.40c{1.} : %m%n${sys:LOG_EXCEPTION_CONVERSION_WORD}</Property>
+        <Property name="LOG_PATH">./logs</Property>
+        <Property name="APP_NAME">${ctx:appName}</Property>
+    </Properties>
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT" follow="true">
+            <PatternLayout pattern="${sys:CONSOLE_LOG_PATTERN}" />
+        </Console>
+        <!--文件会打印出所有信息，这个log每次运行程序会自动清空，由append属性决定，适合临时测试用-->
+        <File name="Filelog" fileName="${LOG_PATH}/${APP_NAME}.log" append="false">
+            <PatternLayout pattern="${FILE_LOG_PATTERN}"/>
+        </File>
+        <File name="colorFilelog" fileName="${LOG_PATH}/${APP_NAME}-color.log" append="false">
+            <PatternLayout pattern="${sys:CONSOLE_LOG_PATTERN}"/>
+        </File>
+    </Appenders>
+    <Loggers>
+        <Logger name="org.apache.catalina.startup.DigesterFactory" level="error"/>
+        <Logger name="org.apache.catalina.util.LifecycleBase" level="error"/>
+        <Logger name="org.apache.coyote.http11.Http11NioProtocol" level="warn"/>
+        <Logger name="org.apache.sshd.common.util.SecurityUtils" level="warn"/>
+        <Logger name="org.apache.tomcat.util.net.NioSelectorPool" level="warn"/>
+        <Logger name="org.eclipse.jetty.util.component.AbstractLifeCycle" level="error"/>
+        <Logger name="org.hibernate.validator.internal.util.Version" level="warn"/>
+        <Logger name="org.springframework.boot.actuate.endpoint.jmx" level="warn"/>
+        <Root level="info">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="Filelog"/>
+            <AppenderRef ref="colorFilelog"/>
+        </Root>
+    </Loggers>
+</Configuration>

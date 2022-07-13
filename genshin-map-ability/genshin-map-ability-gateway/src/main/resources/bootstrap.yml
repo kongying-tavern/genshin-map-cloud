@@ -1,0 +1,97 @@
+server:
+  port: 8101
+logging:
+  level:
+    org:
+      springframework:
+        cloud:
+          gateway.route.RouteDefinitionRouteLocator: INFO
+          gateway: DEBUG
+    site.yuanshen.gateway.oauth2.TokenConvertFilter: DEBUG
+
+genshin:
+  authorities-filter:
+    VISITOR:
+      - /system/user/register
+      - /tag/get/**
+      - /icon/get/**
+      - /area/get/**
+      - /item/get/**
+      - /marker/get/**
+    MAP_USER:
+      - /system/user/info/**
+      - /system/user/update
+      - /system/user/update_password
+    MAP_PUNCTUATE:
+      - /marker/punctuate/author/**
+    MAP_MANAGER:
+      - /marker/punctuate/check/**
+    ADMIN:
+      - /system/**
+      - /tag/**
+      - /icon/**
+      - /area/**
+      - /item/**
+      - /marker/**
+
+ribbon:
+  ServerListRefreshInterval: 1000
+
+spring:
+  application:
+    name: oauth2-gateway
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          # jwk URL 获取公钥，填写auth模块的端口
+          jwk-set-uri: http://localhost:8100/.well-known/jwks.json
+
+  cloud:
+    nacos:
+      server-addr: http://localhost:8848
+      username: nacos
+      password: nacos
+    gateway:
+      discovery:
+        locator:
+          enabled: true # 开启从注册中心动态创建路由的功能
+          lower-case-service-id: true # 将服务名称转换为小写
+      routes:
+        - id: oauth2-auth-login
+          uri: lb://oauth2-auth
+          predicates:
+            - Path=/login
+          filters:
+            - PreserveHostHeader
+        - id: oauth2-auth-token
+          uri: lb://oauth2-auth
+          predicates:
+            - Path=/oauth/token
+          filters:
+            - PreserveHostHeader
+        - id: oauth2-auth-authorize
+          uri: lb://oauth2-auth
+          predicates:
+            - Path=/oauth/authorize
+          filters:
+            - PreserveHostHeader
+        - id: oauth2-auth-check-token
+          uri: lb://oauth2-auth
+          predicates:
+            - Path=/oauth/check_token
+          filters:
+            - PreserveHostHeader
+        - id: system
+          uri: lb://api-system
+          predicates:
+            - Path=/system/**
+          filters:
+            - StripPrefix=1
+        - id: core
+          uri: lb://api-core
+          predicates:
+            - Path=/api/**
+          filters:
+            - StripPrefix=1

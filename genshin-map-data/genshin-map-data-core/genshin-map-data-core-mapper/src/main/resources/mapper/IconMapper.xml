@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="site.yuanshen.data.mapper.IconMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="site.yuanshen.data.entity.Icon">
+        <id column="id" property="id"/>
+        <result column="version" property="version"/>
+        <result column="creator_id" property="creatorId"/>
+        <result column="updater_id" property="updaterId"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="del_flag" property="delFlag"/>
+        <result column="icon_id" property="iconId"/>
+        <result column="name" property="name"/>
+        <result column="url" property="url"/>
+        <result column="creator" property="creator"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        version,
+        creator_id,
+        updater_id,
+        create_time,
+        update_time,
+        del_flag,
+     id, icon_id, name, url, creator
+    </sql>
+
+    <select id="selectPageIcon"
+            resultType="site.yuanshen.data.entity.Icon"
+            parameterType="site.yuanshen.data.dto.TagSearchDto">
+        select i.*
+        from icon i
+        <if test="searchDto.typeIdList != null and searchDto.typeIdList.size > 0">
+            left join icon_type_link itl on i.icon_id = itl.icon_id
+        </if>
+        <where>
+            <if test="searchDto.typeIdList != null and searchDto.typeIdList.size > 0">
+                itl.type_id in
+                <foreach collection="searchDto.typeIdList" open="(" separator="," close=")" item="typeId">
+                    #{typeId}
+                </foreach>
+            </if>
+            <if test="searchDto.iconIdList != null and searchDto.iconIdList.size > 0">
+                and i.icon_id in
+                <foreach collection="searchDto.iconIdList" open="(" separator="," close=")" item="iconId">
+                    #{iconId}
+                </foreach>
+            </if>
+            <if test="searchDto.creator != null">
+                and i.creator = #{creator}
+            </if>
+        </where>
+    </select>
+
+</mapper>

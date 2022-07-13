@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: oauth2-auth
+  profiles:
+    active: "@runtime-profile@"
+
+server:
+  port: 8100
+
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
+
+
+

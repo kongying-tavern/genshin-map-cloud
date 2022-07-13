@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="site.yuanshen.data.mapper.MarkerPunctuateMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="site.yuanshen.data.entity.MarkerPunctuate">
+        <id column="id" property="id"/>
+        <result column="version" property="version"/>
+        <result column="creator_id" property="creatorId"/>
+        <result column="updater_id" property="updaterId"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="del_flag" property="delFlag"/>
+        <result column="punctuate_id" property="punctuateId"/>
+        <result column="original_marker_id" property="originalMarkerId"/>
+        <result column="marker_title" property="markerTitle"/>
+        <result column="item_list" property="itemList"/>
+        <result column="position" property="position"/>
+        <result column="content" property="content"/>
+        <result column="picture" property="picture"/>
+        <result column="marker_creator_id" property="markerCreatorId"/>
+        <result column="picture_creator_id" property="pictureCreatorId"/>
+        <result column="video_path" property="videoPath"/>
+        <result column="author" property="author"/>
+        <result column="status" property="status"/>
+        <result column="audit_remark" property="auditRemark"/>
+        <result column="method_type" property="methodType"/>
+        <result column="refresh_time" property="refreshTime"/>
+        <result column="hidden_flag" property="hiddenFlag"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        version,
+        creator_id,
+        updater_id,
+        create_time,
+        update_time,
+        del_flag,
+     id, punctuate_id, original_marker_id, marker_title, item_list, position, content,
+		    picture, marker_creator_id, picture_creator_id, video_path, author, status,
+		    audit_remark, method_type,refresh_time,hidden_flag
+    </sql>
+
+</mapper>

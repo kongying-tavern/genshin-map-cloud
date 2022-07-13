@@ -1,0 +1,4 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+site.yuanshen.common.core.config.BaseConfiguration
+org.springframework.context.ApplicationListener=\
+site.yuanshen.common.core.listener.LogMDCListener
