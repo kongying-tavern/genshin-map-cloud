@@ -1,15 +1,11 @@
 package site.yuanshen.common.web.config;
 
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
-import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import site.yuanshen.common.web.exception.RestException;
-import site.yuanshen.common.web.feign.FeignParamInterceptor;
-import site.yuanshen.common.web.feign.FeignParamterProperties;
 import site.yuanshen.common.web.utils.ApplicationUtils;
 
 import java.text.SimpleDateFormat;
@@ -72,16 +68,6 @@ public class BaseConfiguration {
             nacosDiscoveryProperties.setMetadata(map);
             return nacosDiscoveryProperties;
         }
-    }
-
-    /**
-     * Feign的相关配置
-     */
-    @Configuration
-    @EnableConfigurationProperties(FeignParamterProperties.class)
-    @EnableFeignClients(basePackages = "site.yuanshen.feign", defaultConfiguration = FeignParamInterceptor.class)
-    public static class FeignConfiguration {
-
     }
 
 }
