@@ -184,12 +184,8 @@ public class MarkerServiceImpl implements MarkerService {
     @Override
     public Long createMarker(MarkerSingleDto markerSingleDto) {
         Marker marker = markerSingleDto.getEntity();
-//				//临时id
-//				.setMarkerId(-1L);
-        //TODO 异常处理，第一次出错隔3+random(5)值重试
         markerMapper.insert(marker);
         //正式更新id
-//		markerMapper.updateById(marker.setMarkerId(marker.getId()));
         List<MarkerItemLink> itemLinkList = markerSingleDto.getItemList().parallelStream().map(markerItemLinkDto -> markerItemLinkDto.getEntity().setMarkerId(marker.getId())).collect(Collectors.toList());
         markerItemLinkMBPService.saveBatch(itemLinkList);
         return marker.getId();
