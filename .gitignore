@@ -35,6 +35,7 @@ out/
 
 target/
 /generator/
+.back_原神空荧地图后端数据库
 sql
 
 .flattened-pom.xml
