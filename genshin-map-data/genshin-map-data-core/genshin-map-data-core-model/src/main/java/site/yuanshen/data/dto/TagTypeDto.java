@@ -1,5 +1,6 @@
 package site.yuanshen.data.dto;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,7 +29,7 @@ public class TagTypeDto {
      * 分类ID
      */
     @Schema(title = "分类ID")
-    private Long typeId;
+    private Long id;
 
     /**
      * 分类名
@@ -42,9 +43,15 @@ public class TagTypeDto {
     @Schema(title = "父级分类ID（-1为根分类）")
     private Long parent;
 
+    /**
+     * 是否为末端类型
+     */
+    @Schema(title = "是否为末端类型")
+    private Boolean isFinal;
+
     public TagTypeDto(TagType tagType) {
         CachedBeanCopier.copyProperties(tagType, this);
-        this.typeId = tagType.getId();
+        this.id = tagType.getId();
     }
 
     public TagTypeDto(TagTypeVo tagTypeVo) {
@@ -52,7 +59,7 @@ public class TagTypeDto {
     }
 
     public TagType getEntity() {
-        return CachedBeanCopier.copyProperties(this, TagType.class).setId(this.typeId);
+        return CachedBeanCopier.copyProperties(this, TagType.class).setId(this.id);
     }
 
     public TagTypeVo getVo() {

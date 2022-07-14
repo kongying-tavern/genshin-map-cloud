@@ -34,13 +34,6 @@ public class TagType extends BaseEntity {
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
-//	/**
-//	 * 分类id
-//	 */
-//	@Schema(title = "分类id")
-//	@TableField("type_id")
-//	private Long typeId;
-
     /**
      * 分类名称
      */

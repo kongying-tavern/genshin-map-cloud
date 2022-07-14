@@ -23,7 +23,7 @@ public class TagTypeVo {
      * 分类ID
      */
     @Schema(title = "分类ID")
-    private Long typeId;
+    private Long id;
 
     /**
      * 分类名

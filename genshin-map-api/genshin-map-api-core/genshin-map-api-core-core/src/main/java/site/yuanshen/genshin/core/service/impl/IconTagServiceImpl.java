@@ -57,11 +57,8 @@ public class IconTagServiceImpl implements IconTagService {
         List<TagDto> tagDtoList = tagPage
                 .getRecords()
                 .stream().map(TagDto::new).collect(Collectors.toList());
-        //收集分类信息
-        Map<String, List<Long>> typeMap = new HashMap<>();
         List<String> tagNameList = tagDtoList.stream()
                 .map(TagDto::getTag).collect(Collectors.toList());
-
         //不存在tagList 则直接返回
         if (tagNameList.isEmpty()) {
             return new PageListVo<TagVo>()
@@ -70,6 +67,8 @@ public class IconTagServiceImpl implements IconTagService {
                     .setSize(tagPage.getSize());
         }
 
+        //收集分类信息
+        Map<String, List<Long>> typeMap = new HashMap<>();
         tagTypeLinkMapper.selectList(Wrappers.<TagTypeLink>lambdaQuery()
                         .in(TagTypeLink::getTagName, tagNameList))
                 .forEach(typeLink -> {
@@ -230,13 +229,13 @@ public class IconTagServiceImpl implements IconTagService {
     public Boolean updateTagType(TagTypeDto tagTypeDto) {
         //获取标签分类实体
         TagType tagType = tagTypeMapper.selectOne(Wrappers.<TagType>lambdaQuery()
-                .eq(TagType::getId, tagTypeDto.getTypeId()));
+                .eq(TagType::getId, tagTypeDto.getId()));
         //更改名称
         tagType.setName(tagTypeDto.getName());
         //判断是否是末端分类
         tagType.setIsFinal(
                 tagTypeMapper.selectOne(Wrappers.<TagType>lambdaQuery()
-                        .eq(TagType::getParent, tagTypeDto.getTypeId()))
+                        .eq(TagType::getParent, tagTypeDto.getId()))
                         == null);
         //更改分类父级
         if (!tagTypeDto.getParent().equals(tagType.getParent())) {
