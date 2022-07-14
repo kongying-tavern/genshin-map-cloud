@@ -75,11 +75,11 @@ public class ItemController {
     }
 
     @Operation(summary = "删除物品类型", description = "批量递归删除物品类型，需在前端做二次确认")
-    @DeleteMapping("/type")
+    @DeleteMapping("/type/{itemTypeId}")
     @Transactional
-    public R<Boolean> deleteItemType(@RequestBody List<Long> itemTypeIdList) {
+    public R<Boolean> deleteItemType(@PathVariable("itemTypeId") Long itemTypeId) {
         return RUtils.create(
-                itemService.deleteItemType(itemTypeIdList)
+                itemService.deleteItemType(itemTypeId)
         );
     }
 
@@ -141,11 +141,11 @@ public class ItemController {
     }
 
     @Operation(summary = "删除物品", description = "根据物品ID列表批量删除物品")
-    @DeleteMapping("")
+    @DeleteMapping("/{itemId}")
     @Transactional
-    public R<Boolean> deleteItem(@RequestBody List<Long> itemIdList) {
+    public R<Boolean> deleteItem(@PathVariable("itemId")Long itemId) {
         return RUtils.create(
-                itemService.deleteItem(itemIdList)
+                itemService.deleteItem(itemId)
         );
     }
 
@@ -173,9 +173,9 @@ public class ItemController {
     @Operation(summary = "删除地区公用物品", description = "通过ID列表批量删除地区公用物品")
     @DeleteMapping("/common")
     @Transactional
-    public R<Boolean> deleteCommonItem(@RequestBody List<Long> itemIdList) {
+    public R<Boolean> deleteCommonItem(@PathVariable("itemId")Long itemId) {
         return RUtils.create(
-                itemService.deleteCommonItem(itemIdList)
+                itemService.deleteCommonItem(itemId)
         );
     }
 

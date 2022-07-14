@@ -107,11 +107,11 @@ public class MarkerController {
 
 
     @Operation(summary = "删除点位", description = "根据点位ID列表批量删除点位")
-    @DeleteMapping("/")
+    @DeleteMapping("/{markerId}")
     @Transactional
-    public R<Boolean> deleteMarker(@RequestBody List<Long> markerIdList) {
+    public R<Boolean> deleteMarker(@PathVariable("markerId")Long markerId) {
         return RUtils.create(
-                markerService.deleteMarker(markerIdList)
+                markerService.deleteMarker(markerId)
         );
     }
 
@@ -175,11 +175,11 @@ public class MarkerController {
     }
 
     @Operation(summary = "删除提交点位", description = "根据提交ID列表来删除提交点位")
-    @DeleteMapping("/punctuate/check")
+    @DeleteMapping("/punctuate/check/{punctuateId}")
     @Transactional
-    public R<Boolean> deletePunctuate(@RequestBody List<Long> punctuateIdList) {
+    public R<Boolean> deletePunctuate(@PathVariable("punctuateId") Long punctuateId) {
         return RUtils.create(
-                markerService.deletePunctuate(punctuateIdList)
+                markerService.deletePunctuate(punctuateId)
         );
     }
 
@@ -259,11 +259,11 @@ public class MarkerController {
     }
 
     @Operation(summary = "删除自己未通过的提交点位", description = "根据提交ID列表来删除提交点位，会对打点员ID进行校验")
-    @DeleteMapping("/punctuate/author/{authorId}")
+    @DeleteMapping("/punctuate/author/{authorId}/{punctuateId}")
     @Transactional
-    public R<Boolean> deleteSelfPunctuate(List<Long> punctuateIdList, @PathVariable("authorId") Long authorId) {
+    public R<Boolean> deleteSelfPunctuate(@PathVariable("punctuateId") Long punctuateId, @PathVariable("authorId") Long authorId) {
         return RUtils.create(
-                markerService.deleteSelfPunctuate(punctuateIdList, authorId)
+                markerService.deleteSelfPunctuate(punctuateId, authorId)
         );
     }
 

@@ -196,7 +196,7 @@ public class ItemServiceImpl implements ItemService {
     /**
      * 批量递归删除物品类型
      *
-     * @param itemTypeIdList 类型ID列表
+     * @param itemTypeId 类型ID列表
      * @return 是否成功
      */
     @Override
@@ -207,8 +207,8 @@ public class ItemServiceImpl implements ItemService {
                     @CacheEvict(value = "listItem",allEntries = true),
             }
     )
-    public Boolean deleteItemType(List<Long> itemTypeIdList) {
-        List<Long> nowTypeIdList = itemTypeIdList.parallelStream().distinct().collect(Collectors.toList());
+    public Boolean deleteItemType(Long itemTypeId) {
+        List<Long> nowTypeIdList = Collections.singletonList(itemTypeId);
         while (!nowTypeIdList.isEmpty()) {
             //删除类型信息
             itemTypeMapper.delete(Wrappers.<ItemType>lambdaQuery().in(ItemType::getId, nowTypeIdList));
@@ -464,7 +464,7 @@ public class ItemServiceImpl implements ItemService {
     /**
      * 删除物品
      *
-     * @param itemIdList 物品ID列表
+     * @param itemId 物品ID
      * @return 是否成功
      */
     @Override
@@ -475,11 +475,11 @@ public class ItemServiceImpl implements ItemService {
                     @CacheEvict(value = "listCommonItem",allEntries = true),
             }
     )
-    public Boolean deleteItem(List<Long> itemIdList) {
+    public Boolean deleteItem(Long itemId) {
         itemTypeLinkMapper.delete(Wrappers.<ItemTypeLink>lambdaQuery()
-                .in(ItemTypeLink::getItemId, itemIdList));
+                .eq(ItemTypeLink::getItemId, itemId));
         return itemMapper.delete(Wrappers.<Item>lambdaQuery()
-                .in(Item::getId, itemIdList)) == itemIdList.size();
+                .eq(Item::getId, itemId)) == 1;
     }
 
     /**
@@ -523,14 +523,14 @@ public class ItemServiceImpl implements ItemService {
     /**
      * 删除地区公用物品
      *
-     * @param itemIdList 物品ID列表
+     * @param itemId 物品ID
      * @return 是否成功
      */
     @Override
     @CacheEvict(value = "listCommonItem",allEntries = true)
-    public Boolean deleteCommonItem(List<Long> itemIdList) {
+    public Boolean deleteCommonItem(Long itemId) {
         return itemAreaPublicMapper.delete(Wrappers.<ItemAreaPublic>lambdaQuery()
-                .in(ItemAreaPublic::getItemId, itemIdList))
-                == itemIdList.size();
+                .eq(ItemAreaPublic::getItemId, itemId))
+                == 1;
     }
 }

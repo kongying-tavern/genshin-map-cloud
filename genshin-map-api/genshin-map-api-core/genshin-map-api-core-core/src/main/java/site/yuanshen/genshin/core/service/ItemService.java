@@ -57,10 +57,10 @@ public interface ItemService {
     /**
      * 批量递归删除物品类型
      *
-     * @param itemTypeIdList 类型ID列表
+     * @param itemTypeId 类型ID列表
      * @return 是否成功
      */
-    Boolean deleteItemType(List<Long> itemTypeIdList);
+    Boolean deleteItemType(Long itemTypeId);
 
     //////////////END:物品类型的接口//////////////
 
@@ -120,10 +120,10 @@ public interface ItemService {
     /**
      * 删除物品
      *
-     * @param itemIdList 物品ID列表
+     * @param itemIdList 物品ID
      * @return 是否成功
      */
-    Boolean deleteItem(List<Long> itemIdList);
+    Boolean deleteItem(Long itemIdList);
 
     //////////////END:物品本身的接口//////////////
 
@@ -148,10 +148,10 @@ public interface ItemService {
     /**
      * 删除地区公用物品
      *
-     * @param itemIdList 物品ID列表
+     * @param itemId 物品ID
      * @return 是否成功
      */
-    Boolean deleteCommonItem(List<Long> itemIdList);
+    Boolean deleteCommonItem(Long itemId);
 
     //////////////END:地区公用物品的接口//////////////
 

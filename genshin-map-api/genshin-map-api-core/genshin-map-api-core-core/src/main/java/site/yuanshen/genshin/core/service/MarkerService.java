@@ -81,12 +81,12 @@ public interface MarkerService {
     Boolean updateMarkerExtra(MarkerExtraDto markerExtraDto);
 
     /**
-     * 根据点位ID列表批量删除点位
+     * 根据点位ID删除点位
      *
-     * @param markerIdList 点位ID列表
+     * @param markerId 点位ID
      * @return 是否成功
      */
-    Boolean deleteMarker(List<Long> markerIdList);
+    Boolean deleteMarker(Long markerId);
 
     //////////////END:点位自身的接口//////////////
 
@@ -143,10 +143,10 @@ public interface MarkerService {
     /**
      * 删除提交点位
      *
-     * @param punctuateIdList 打点ID列表
+     * @param punctuateId 打点ID
      * @return 是否成功
      */
-    Boolean deletePunctuate(List<Long> punctuateIdList);
+    Boolean deletePunctuate(Long punctuateId);
 
     //////////////END:审核员的接口//////////////
 
@@ -221,11 +221,11 @@ public interface MarkerService {
     /**
      * 删除自己未通过的提交点位
      *
-     * @param punctuateIdList 打点ID列表
-     * @param authorId        打点员ID
+     * @param punctuateId 打点ID
+     * @param authorId    打点员ID
      * @return 是否成功
      */
-    Boolean deleteSelfPunctuate(List<Long> punctuateIdList, Long authorId);
+    Boolean deleteSelfPunctuate(Long punctuateId, Long authorId);
 
     //////////////END:打点员的接口//////////////
 

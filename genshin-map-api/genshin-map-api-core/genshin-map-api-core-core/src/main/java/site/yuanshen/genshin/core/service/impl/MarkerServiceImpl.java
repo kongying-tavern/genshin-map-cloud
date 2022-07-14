@@ -269,9 +269,9 @@ public class MarkerServiceImpl implements MarkerService {
     }
 
     /**
-     * 根据点位ID列表批量删除点位
+     * 根据点位ID删除点位
      *
-     * @param markerIdList 点位ID列表
+     * @param markerId 点位ID列表
      * @return 是否成功
      */
     @Override
@@ -282,10 +282,10 @@ public class MarkerServiceImpl implements MarkerService {
                     @CacheEvict(value = "listMarkerPage",allEntries = true)
             }
     )
-    public Boolean deleteMarker(List<Long> markerIdList) {
-        markerMapper.delete(Wrappers.<Marker>lambdaQuery().in(Marker::getId, markerIdList));
-        markerItemLinkMapper.delete(Wrappers.<MarkerItemLink>lambdaQuery().in(MarkerItemLink::getMarkerId, markerIdList));
-        markerExtraMapper.delete(Wrappers.<MarkerExtra>lambdaQuery().in(MarkerExtra::getMarkerId, markerIdList));
+    public Boolean deleteMarker(Long markerId) {
+        markerMapper.delete(Wrappers.<Marker>lambdaQuery().eq(Marker::getId, markerId));
+        markerItemLinkMapper.delete(Wrappers.<MarkerItemLink>lambdaQuery().eq(MarkerItemLink::getMarkerId, markerId));
+        markerExtraMapper.delete(Wrappers.<MarkerExtra>lambdaQuery().eq(MarkerExtra::getMarkerId, markerId));
         return true;
     }
 
@@ -687,7 +687,7 @@ public class MarkerServiceImpl implements MarkerService {
     /**
      * 删除提交点位
      *
-     * @param punctuateIdList 打点ID列表
+     * @param punctuateId 打点ID
      * @return 是否成功
      */
     @Override
@@ -699,11 +699,9 @@ public class MarkerServiceImpl implements MarkerService {
                     @CacheEvict(value = "listPunctuatePage",allEntries = true),
             }
     )
-    public Boolean deletePunctuate(List<Long> punctuateIdList) {
-        Set<Long> allPunctuateIdList = new HashSet<>();
-        punctuateIdList.parallelStream().forEach(punctuateId -> allPunctuateIdList.addAll(getAllRelateIds(punctuateId)));
-        markerPunctuateMapper.delete(Wrappers.<MarkerPunctuate>lambdaQuery().in(MarkerPunctuate::getPunctuateId, allPunctuateIdList));
-        markerExtraPunctuateMapper.delete(Wrappers.<MarkerExtraPunctuate>lambdaQuery().in(MarkerExtraPunctuate::getPunctuateId, allPunctuateIdList));
+    public Boolean deletePunctuate(Long punctuateId) {
+        markerPunctuateMapper.delete(Wrappers.<MarkerPunctuate>lambdaQuery().eq(MarkerPunctuate::getPunctuateId, punctuateId));
+        markerExtraPunctuateMapper.delete(Wrappers.<MarkerExtraPunctuate>lambdaQuery().eq(MarkerExtraPunctuate::getPunctuateId, punctuateId));
         return true;
     }
 
@@ -912,8 +910,8 @@ public class MarkerServiceImpl implements MarkerService {
     /**
      * 删除自己未通过的提交点位
      *
-     * @param punctuateIdList 打点ID列表
-     * @param authorId        打点员ID
+     * @param punctuateId 打点ID
+     * @param authorId    打点员ID
      * @return 是否成功
      */
     @Override
@@ -925,13 +923,13 @@ public class MarkerServiceImpl implements MarkerService {
                     @CacheEvict(value = "listPunctuatePage",allEntries = true),
             }
     )
-    public Boolean deleteSelfPunctuate(List<Long> punctuateIdList, Long authorId) {
+    public Boolean deleteSelfPunctuate(Long punctuateId, Long authorId) {
         markerPunctuateMapper.delete(Wrappers.<MarkerPunctuate>lambdaQuery()
                 .eq(MarkerPunctuate::getAuthor, authorId)
-                .in(MarkerPunctuate::getPunctuateId, punctuateIdList));
+                .eq(MarkerPunctuate::getPunctuateId, punctuateId));
         markerExtraPunctuateMapper.delete(Wrappers.<MarkerExtraPunctuate>lambdaQuery()
                 .eq(MarkerExtraPunctuate::getAuthor, authorId)
-                .in(MarkerExtraPunctuate::getPunctuateId, punctuateIdList));
+                .eq(MarkerExtraPunctuate::getPunctuateId, punctuateId));
         return true;
     }
 
