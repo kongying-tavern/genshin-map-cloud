@@ -58,6 +58,7 @@ public class SysRoleController {
     @Operation(summary = "将角色从用户剥夺", description = "将角色从用户剥夺")
     @DeleteMapping("/user")
     @Transactional
+    //TODO DeleteMapping
     public R<Boolean> removeRoleFromUser(@RequestBody SysRoleLinkVo roleLinkVo) {
         return RUtils.create(
                 roleService.removeRoleFromUser(new SysRoleLinkDto(roleLinkVo))
@@ -67,6 +68,7 @@ public class SysRoleController {
     @Operation(summary = "删除角色", description = "删除角色")
     @DeleteMapping
     @Transactional
+    //TODO DeleteMapping
     public R<Boolean> deleteRole(@RequestBody String code) {
         //接口已空置，弃用中
         roleService.deleteRole(code);
@@ -75,6 +77,7 @@ public class SysRoleController {
 
     @Operation(summary = "批量删除角色", description = "批量删除角色（未找到的角色通过错误抛出）")
     @DeleteMapping("/batch")
+    //TODO DeleteMapping
     @Transactional
     public R<Boolean> deleteRoleBatch(@RequestBody List<String> roleCodeList) {
         //接口已空置，弃用中
