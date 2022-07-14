@@ -31,7 +31,7 @@ public class MybatisPlusMetaObjectHandler implements MetaObjectHandler {
         String userId = requestAttributes.getRequest().getHeader("userId");
         if (userId == null || userId.equals("")) return;
         this.setFieldValByName("creatorId", Long.parseLong(userId), metaObject);
-        this.setFieldValByName("creatorId", Long.parseLong(userId), metaObject);
+        this.setFieldValByName("updaterId", Long.parseLong(userId), metaObject);
     }
 
     @Override
@@ -43,6 +43,6 @@ public class MybatisPlusMetaObjectHandler implements MetaObjectHandler {
         if (requestAttributes == null) return;
         String userId = requestAttributes.getRequest().getHeader("userId");
         if (userId == null || userId.equals("")) return;
-        this.setFieldValByName("creatorId", Long.parseLong(userId), metaObject);
+        this.setFieldValByName("updaterId", Long.parseLong(userId), metaObject);
     }
 }
