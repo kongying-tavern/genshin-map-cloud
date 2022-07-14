@@ -23,7 +23,7 @@ public class MysqlAutoConfiguration {
     public MybatisPlusInterceptor mybatisPlusInterceptor() {
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
         //乐观锁
-        interceptor.addInnerInterceptor(new OptimisticLockerInnerInterceptor());
+        interceptor.addInnerInterceptor(new OptimisticLockerInnerInterceptor(true));
         // 分页支持
         interceptor.addInnerInterceptor(new PaginationInnerInterceptor(DbType.MYSQL));
         return interceptor;
