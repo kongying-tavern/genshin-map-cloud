@@ -122,7 +122,7 @@ public class MarkerDto {
     public MarkerDto(Marker marker, MarkerExtra markerExtra, List<MarkerItemLink> markerItemLinks) {
         CachedBeanCopier.copyProperties(marker, this);
         this.id = marker.getId();
-        CachedBeanCopier.copyProperties(Optional.ofNullable(markerExtra).orElse(new MarkerExtra().setMarkerId(marker.getId())), this);
+        CachedBeanCopier.copyProperties(Optional.ofNullable(markerExtra).orElse(new MarkerExtra().setId(marker.getId())), this);
         markerItemLinks = Optional.ofNullable(markerItemLinks).orElse(new ArrayList<>());
         this.itemList = markerItemLinks.stream().map(MarkerItemLinkDto::new).collect(Collectors.toList());
     }
