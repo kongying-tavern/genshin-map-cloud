@@ -13,7 +13,6 @@
     <packaging>pom</packaging>
     <modules>
         <module>genshin-map-api-system-core</module>
-        <module>genshin-map-api-system-feign</module>
     </modules>
 
     <dependencies>

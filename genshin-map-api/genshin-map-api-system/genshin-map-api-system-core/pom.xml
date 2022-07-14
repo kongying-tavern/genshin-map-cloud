@@ -19,11 +19,6 @@
         </dependency>
         <dependency>
             <groupId>site.yuanshen</groupId>
-            <artifactId>genshin-map-api-system-feign</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>site.yuanshen</groupId>
             <artifactId>genshin-map-data-system-mapper</artifactId>
             <version>${project.version}</version>
         </dependency>
