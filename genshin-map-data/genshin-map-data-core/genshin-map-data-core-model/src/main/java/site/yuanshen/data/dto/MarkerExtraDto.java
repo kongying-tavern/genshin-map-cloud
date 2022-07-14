@@ -28,7 +28,7 @@ public class MarkerExtraDto {
      * 点位ID
      */
     @Schema(title = "点位ID")
-    private Integer markerId;
+    private Long markerId;
 
     /**
      * 额外特殊字段具体内容
