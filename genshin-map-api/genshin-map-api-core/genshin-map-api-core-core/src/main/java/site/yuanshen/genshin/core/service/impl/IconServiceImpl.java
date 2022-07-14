@@ -235,13 +235,13 @@ public class IconServiceImpl implements IconService {
     public Boolean updateIconType(IconTypeDto iconTypeDto) {
         //获取图标分类实体
         IconType iconType = iconTypeMapper.selectOne(Wrappers.<IconType>lambdaQuery()
-                .eq(IconType::getId, iconTypeDto.getTypeId()));
+                .eq(IconType::getId, iconTypeDto.getId()));
         //更改名称
         iconType.setName(iconTypeDto.getName());
         //判断是否是末端分类
         iconType.setIsFinal(
                 iconTypeMapper.selectCount(Wrappers.<IconType>lambdaQuery()
-                        .eq(IconType::getParent, iconTypeDto.getTypeId()))
+                        .eq(IconType::getParent, iconTypeDto.getId()))
                         > 0);
         //更改分类父级末端标志
         if (!iconTypeDto.getParent().equals(iconType.getParent())) {

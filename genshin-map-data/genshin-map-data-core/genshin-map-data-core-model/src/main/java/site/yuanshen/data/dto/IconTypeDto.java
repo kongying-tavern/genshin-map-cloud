@@ -28,7 +28,7 @@ public class IconTypeDto {
      * 分类ID
      */
     @Schema(title = "分类ID")
-    private Long typeId;
+    private Long id;
 
     /**
      * 分类名
@@ -42,9 +42,15 @@ public class IconTypeDto {
     @Schema(title = "父级分类ID（-1为根分类）")
     private Long parent;
 
+    /**
+     * 是否为末端类型
+     */
+    @Schema(title = "是否为末端类型")
+    private Boolean isFinal;
+
     public IconTypeDto(IconType iconType) {
         CachedBeanCopier.copyProperties(iconType, this);
-        this.typeId = iconType.getId();
+        this.id = iconType.getId();
     }
 
     public IconTypeDto(IconTypeVo iconTypeVo) {
@@ -52,7 +58,7 @@ public class IconTypeDto {
     }
 
     public IconType getEntity() {
-        return CachedBeanCopier.copyProperties(this, IconType.class).setId(this.typeId);
+        return CachedBeanCopier.copyProperties(this, IconType.class).setId(this.id);
     }
 
     public IconTypeVo getVo() {
