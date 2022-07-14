@@ -239,14 +239,14 @@ public class MarkerServiceImpl implements MarkerService {
     )
     public Boolean updateMarker(MarkerSingleDto markerSingleDto) {
         if (markerSingleDto.getItemList() != null || !markerSingleDto.getItemList().isEmpty()) {
-            markerItemLinkMapper.delete(Wrappers.<MarkerItemLink>lambdaQuery().eq(MarkerItemLink::getMarkerId, markerSingleDto.getMarkerId()));
-            List<MarkerItemLink> itemLinkList = markerSingleDto.getItemList().parallelStream().map(markerItemLinkDto -> markerItemLinkDto.getEntity().setMarkerId(markerSingleDto.getMarkerId())).collect(Collectors.toList());
+            markerItemLinkMapper.delete(Wrappers.<MarkerItemLink>lambdaQuery().eq(MarkerItemLink::getMarkerId, markerSingleDto.getId()));
+            List<MarkerItemLink> itemLinkList = markerSingleDto.getItemList().parallelStream().map(markerItemLinkDto -> markerItemLinkDto.getEntity().setMarkerId(markerSingleDto.getId())).collect(Collectors.toList());
             markerItemLinkMBPService.saveBatch(itemLinkList);
         } else {
-            markerItemLinkMapper.delete(Wrappers.<MarkerItemLink>lambdaQuery().eq(MarkerItemLink::getMarkerId, markerSingleDto.getMarkerId()));
+            markerItemLinkMapper.delete(Wrappers.<MarkerItemLink>lambdaQuery().eq(MarkerItemLink::getMarkerId, markerSingleDto.getId()));
         }
         return markerMapper.update(markerSingleDto.getEntity(), Wrappers.<Marker>lambdaUpdate()
-                .eq(Marker::getId, markerSingleDto.getMarkerId())) == 1;
+                .eq(Marker::getId, markerSingleDto.getId())) == 1;
     }
 
     /**

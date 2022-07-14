@@ -35,7 +35,7 @@ public class MarkerDto {
      * 点位ID
      */
     @Schema(title = "点位ID")
-    private Long markerId;
+    private Long id;
 
     /**
      * 点位名称
@@ -121,14 +121,14 @@ public class MarkerDto {
 
     public MarkerDto(Marker marker, MarkerExtra markerExtra, List<MarkerItemLink> markerItemLinks) {
         CachedBeanCopier.copyProperties(marker, this);
-        this.markerId = marker.getId();
+        this.id = marker.getId();
         CachedBeanCopier.copyProperties(Optional.ofNullable(markerExtra).orElse(new MarkerExtra().setMarkerId(marker.getId())), this);
         markerItemLinks = Optional.ofNullable(markerItemLinks).orElse(new ArrayList<>());
         this.itemList = markerItemLinks.stream().map(MarkerItemLinkDto::new).collect(Collectors.toList());
     }
 
     public Marker getEntity() {
-        return CachedBeanCopier.copyProperties(this, Marker.class).setId(this.markerId);
+        return CachedBeanCopier.copyProperties(this, Marker.class).setId(this.id);
     }
 
     public MarkerExtra getMarkerExtraEntity() {

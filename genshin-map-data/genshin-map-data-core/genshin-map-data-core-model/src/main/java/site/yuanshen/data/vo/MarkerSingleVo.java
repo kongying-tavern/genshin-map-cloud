@@ -27,7 +27,7 @@ public class MarkerSingleVo {
      * 点位ID
      */
     @Schema(title = "点位ID")
-    private Long markerId;
+    private Long id;
 
     /**
      * 点位名称
