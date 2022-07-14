@@ -3,6 +3,9 @@ package site.yuanshen.genshin.core.service.impl;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import site.yuanshen.data.dto.TagDto;
 import site.yuanshen.data.dto.TagSearchDto;
@@ -51,6 +54,7 @@ public class IconTagServiceImpl implements IconTagService {
      * @return 图标标签前端对象列表
      */
     @Override
+    @Cacheable(value = "listIconTag")
     public PageListVo<TagVo> listTag(TagSearchDto tagSearchDto) {
         //按照条件进行筛选
         Page<Tag> tagPage = tagMapper.selectPageIconTag(tagSearchDto.getPageEntity(), tagSearchDto);
@@ -97,6 +101,7 @@ public class IconTagServiceImpl implements IconTagService {
      * @return 图标前端对象
      */
     @Override
+    @Cacheable(value = "iconTag", key = "#name")
     public TagDto getTag(String name) {
         //获取类型信息
         List<Long> typeIdList = tagTypeLinkMapper.selectList(Wrappers.<TagTypeLink>lambdaQuery()
@@ -118,6 +123,12 @@ public class IconTagServiceImpl implements IconTagService {
      * @return 是否成功
      */
     @Override
+    @Caching(
+            evict = {
+                    @CacheEvict(value = "iconTag", key = "#tagName"),
+                    @CacheEvict(value = "listIconTag", allEntries = true)
+            }
+    )
     public Boolean updateTag(String tagName, Long iconId) {
         return tagMapper.update(null, Wrappers.<Tag>lambdaUpdate()
                 .eq(Tag::getTag, tagName)
@@ -131,6 +142,12 @@ public class IconTagServiceImpl implements IconTagService {
      * @return 是否成功
      */
     @Override
+    @Caching(
+            evict = {
+                    @CacheEvict(value = "iconTag", key = "#tagDto.tag"),
+                    @CacheEvict(value = "listIconTag", allEntries = true)
+            }
+    )
     public Boolean updateTypeInTag(TagDto tagDto) {
         //删除旧类型链接
         tagTypeLinkMapper.delete(Wrappers.<TagTypeLink>lambdaQuery()
@@ -155,6 +172,7 @@ public class IconTagServiceImpl implements IconTagService {
      * @return 是否成功
      */
     @Override
+    @CacheEvict(value = "listIconTag", allEntries = true)
     public Boolean createTag(String tagName) {
         return tagMapper.insert(new Tag().setTag(tagName)) == 1;
     }
@@ -166,6 +184,12 @@ public class IconTagServiceImpl implements IconTagService {
      * @return 是否成功
      */
     @Override
+    @Caching(
+            evict = {
+                    @CacheEvict(value = "iconTag", key = "#tagName"),
+                    @CacheEvict(value = "listIconTag", allEntries = true)
+            }
+    )
     public Boolean deleteTag(String tagName) {
         tagTypeLinkMapper.delete(Wrappers.<TagTypeLink>lambdaQuery()
                 .eq(TagTypeLink::getTagName, tagName));
@@ -180,6 +204,7 @@ public class IconTagServiceImpl implements IconTagService {
      * @return 图标标签分类列表
      */
     @Override
+    @Cacheable(value = "listIconTagType")
     public PageListVo<TagTypeVo> listTagType(PageAndTypeListDto searchDto) {
         Page<TagType> tagTypePage = tagTypeMapper.selectPage(searchDto.getPageEntity(),
                 Wrappers.<TagType>lambdaQuery()
@@ -203,13 +228,11 @@ public class IconTagServiceImpl implements IconTagService {
      * @return 新图标标签分类ID
      */
     @Override
+    @CacheEvict(value = "listIconTagType", allEntries = true)
     public Long addTagType(TagTypeDto tagTypeDto) {
         TagType tagType = tagTypeDto.getEntity()
                 .setIsFinal(true);
-//				//临时id
-//				.setTypeId(-1L);
         tagTypeMapper.insert(tagType);
-//		tagTypeMapper.updateById(tagType.setTypeId(tagType.getId()));
         //设置父级
         if (!tagTypeDto.getParent().equals(-1L)) {
             tagTypeMapper.update(null, Wrappers.<TagType>lambdaUpdate()
@@ -226,6 +249,12 @@ public class IconTagServiceImpl implements IconTagService {
      * @return 是否成功
      */
     @Override
+    @Caching(
+            evict = {
+                    @CacheEvict(value = "listIconTag", allEntries = true),
+                    @CacheEvict(value = "listIconTagType", allEntries = true)
+            }
+    )
     public Boolean updateTagType(TagTypeDto tagTypeDto) {
         //获取标签分类实体
         TagType tagType = tagTypeMapper.selectOne(Wrappers.<TagType>lambdaQuery()
@@ -264,6 +293,13 @@ public class IconTagServiceImpl implements IconTagService {
      * @return 是否成功
      */
     @Override
+    @Caching(
+            evict = {
+                    @CacheEvict(value = "iconTag", allEntries = true),
+                    @CacheEvict(value = "listIconTag", allEntries = true),
+                    @CacheEvict(value = "listIconTagType", allEntries = true)
+            }
+    )
     public Boolean deleteTagType(Long typeId) {
         //用于递归遍历删除的类型ID列表
         List<Long> nowTypeIdList = Collections.singletonList(typeId);

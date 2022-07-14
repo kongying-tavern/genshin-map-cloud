@@ -74,7 +74,7 @@ public class AreaServiceImpl implements AreaService {
      * @return 地区数据封装
      */
     @Override
-    @Cacheable(value = "getArea",key = "#areaId")
+    @Cacheable(value = "area",key = "#areaId")
     public AreaDto getArea(Long areaId) {
         return new AreaDto(areaMapper.selectOne(Wrappers.<Area>lambdaQuery()
                 .eq(Area::getId, areaId)));
@@ -89,7 +89,7 @@ public class AreaServiceImpl implements AreaService {
     @Override
     @Caching(
             evict = {
-                    @CacheEvict(value = "getArea", key = "#result"),
+                    @CacheEvict(value = "area", key = "#result"),
                     @CacheEvict(value = "listArea", allEntries = true)
             }
     )
@@ -129,7 +129,7 @@ public class AreaServiceImpl implements AreaService {
     @Override
     @Caching(
             evict = {
-                    @CacheEvict(value = "getArea", key = "#areaDto.areaId"),
+                    @CacheEvict(value = "area", key = "#areaDto.areaId"),
                     @CacheEvict(value = "listArea", allEntries = true)
             }
     )
@@ -168,7 +168,7 @@ public class AreaServiceImpl implements AreaService {
     @Override
     @Caching(
             evict = {
-                    @CacheEvict(value = "getArea", key = "#areaId"),
+                    @CacheEvict(value = "area", key = "#areaId"),
                     @CacheEvict(value = "listArea", allEntries = true)
             }
     )

@@ -3,6 +3,9 @@ package site.yuanshen.genshin.core.service.impl;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import site.yuanshen.data.dto.IconDto;
 import site.yuanshen.data.dto.IconSearchDto;
@@ -49,6 +52,7 @@ public class IconServiceImpl implements IconService {
      * @return 图标前端对象列表
      */
     @Override
+    @Cacheable(value = "listIcon")
     public PageListVo<IconVo> listIcon(IconSearchDto searchDto) {
         Page<Icon> iconPage = iconMapper.selectPageIcon(searchDto.getPageEntity(), searchDto);
         //按照条件进行筛选
@@ -87,6 +91,7 @@ public class IconServiceImpl implements IconService {
      * @return 图标前端对象
      */
     @Override
+    @Cacheable(value = "icon", key = "#iconId")
     public IconDto getIcon(Long iconId) {
         //获取类型信息
         List<Long> typeIdList = iconTypeLinkMapper.selectList(Wrappers.<IconTypeLink>lambdaQuery()
@@ -105,6 +110,12 @@ public class IconServiceImpl implements IconService {
      * @return 是否成功
      */
     @Override
+    @Caching(
+            evict = {
+                    @CacheEvict(value = "icon", key = "#iconDto.iconId"),
+                    @CacheEvict(value = "listIcon", allEntries = true)
+            }
+    )
     public Boolean updateIcon(IconDto iconDto) {
         //对比类型信息是否更改
         Set<Long> oldTypeIds = iconTypeLinkMapper.selectList(Wrappers.<IconTypeLink>lambdaQuery()
@@ -138,6 +149,7 @@ public class IconServiceImpl implements IconService {
      * @return 新图标的ID
      */
     @Override
+    @CacheEvict(value = "listIcon", allEntries = true)
     public Long createIcon(IconDto iconDto) {
         Icon icon = iconDto.getEntity()
                 //临时id
@@ -167,6 +179,12 @@ public class IconServiceImpl implements IconService {
      * @return 是否成功
      */
     @Override
+    @Caching(
+            evict = {
+                    @CacheEvict(value = "icon", key = "#iconId"),
+                    @CacheEvict(value = "listIcon", allEntries = true)
+            }
+    )
     public Boolean deleteIcon(Long iconId) {
         iconTypeLinkMapper.delete(Wrappers.<IconTypeLink>lambdaQuery()
                 .eq(IconTypeLink::getIconId, iconId));
@@ -182,6 +200,7 @@ public class IconServiceImpl implements IconService {
      * @return 图标类型列表
      */
     @Override
+    @Cacheable(value = "listIconType")
     public PageListVo<IconTypeVo> listIconType(PageAndTypeListDto searchDto) {
         Page<IconType> iconTypePage = iconTypeMapper.selectPage(searchDto.getPageEntity(),
                 Wrappers.<IconType>lambdaQuery()
@@ -205,14 +224,16 @@ public class IconServiceImpl implements IconService {
      * @return 新图标分类ID
      */
     @Override
+    @Caching(
+            evict = {
+                    @CacheEvict(value = "listIcon", allEntries = true),
+                    @CacheEvict(value = "listIconType", allEntries = true)
+            }
+    )
     public Long addIconType(IconTypeDto iconTypeDto) {
         IconType iconType = iconTypeDto.getEntity()
                 .setIsFinal(true);
-        //临时id
-//				.setTypeId(-1L);
-        //TODO 异常处理，第一次出错隔3+random(5)值重试
         iconTypeMapper.insert(iconType);
-//		iconTypeMapper.updateById(iconType.setTypeId(iconType.getId()));
         //设置父级
         if (!iconTypeDto.getParent().equals(-1L)) {
             iconTypeMapper.update(null, Wrappers.<IconType>lambdaUpdate()
@@ -232,6 +253,13 @@ public class IconServiceImpl implements IconService {
      * @return 是否成功
      */
     @Override
+    @Caching(
+            evict = {
+                    @CacheEvict(value = "icon", allEntries = true),
+                    @CacheEvict(value = "listIcon", allEntries = true),
+                    @CacheEvict(value = "listIconType", allEntries = true)
+            }
+    )
     public Boolean updateIconType(IconTypeDto iconTypeDto) {
         //获取图标分类实体
         IconType iconType = iconTypeMapper.selectOne(Wrappers.<IconType>lambdaQuery()
@@ -271,6 +299,13 @@ public class IconServiceImpl implements IconService {
      * @return 是否成功
      */
     @Override
+    @Caching(
+            evict = {
+                    @CacheEvict(value = "icon", allEntries = true),
+                    @CacheEvict(value = "listIcon", allEntries = true),
+                    @CacheEvict(value = "listIconType", allEntries = true)
+            }
+    )
     public Boolean deleteIconType(Long typeId) {
         //用于递归遍历删除的类型ID列表
         List<Long> nowTypeIdList = Collections.singletonList(typeId);

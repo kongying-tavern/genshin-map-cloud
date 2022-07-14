@@ -3,6 +3,9 @@ package site.yuanshen.genshin.core.service.impl;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import site.yuanshen.data.dto.ItemDto;
 import site.yuanshen.data.dto.ItemSearchDto;
@@ -52,6 +55,7 @@ public class ItemServiceImpl implements ItemService {
      * @return 物品类型的前端封装的分页封装
      */
     @Override
+    @Cacheable("listItemType")
     public PageListVo<ItemTypeVo> listItemType(PageAndTypeListDto searchDto, Integer self) {
         Page<ItemType> itemTypePage = new Page<>();
         //查询自身
@@ -85,6 +89,11 @@ public class ItemServiceImpl implements ItemService {
      * @return 新物品类型ID
      */
     @Override
+    @Caching(
+            evict = {
+                    @CacheEvict(value = "listItemType",allEntries = true),
+            }
+    )
     public Long addItemType(ItemTypeDto itemTypeDto) {
         ItemType itemType = itemTypeDto.getEntity();
         //临时id
@@ -108,6 +117,11 @@ public class ItemServiceImpl implements ItemService {
      * @return 是否成功
      */
     @Override
+    @Caching(
+            evict = {
+                    @CacheEvict(value = "listItemType",allEntries = true),
+            }
+    )
     public Boolean updateItemType(ItemTypeDto itemTypeDto) {
         //获取类型实体
         ItemType itemType = itemTypeMapper.selectOne(Wrappers.<ItemType>lambdaQuery()
@@ -149,6 +163,11 @@ public class ItemServiceImpl implements ItemService {
      * @return 是否成功
      */
     @Override
+    @Caching(
+            evict = {
+                    @CacheEvict(value = "listItemType",allEntries = true),
+            }
+    )
     public Boolean moveItemType(List<Long> itemTypeIdList, Long targetTypeId) {
         //选取实体
         List<ItemType> itemTypeList = itemTypeMapper.selectList(Wrappers.<ItemType>lambdaQuery()
@@ -181,6 +200,13 @@ public class ItemServiceImpl implements ItemService {
      * @return 是否成功
      */
     @Override
+    @Caching(
+            evict = {
+                    @CacheEvict(value = "listItemType",allEntries = true),
+                    @CacheEvict(value = "listItemById",allEntries = true),
+                    @CacheEvict(value = "listItem",allEntries = true),
+            }
+    )
     public Boolean deleteItemType(List<Long> itemTypeIdList) {
         List<Long> nowTypeIdList = itemTypeIdList.parallelStream().distinct().collect(Collectors.toList());
         while (!nowTypeIdList.isEmpty()) {
@@ -203,6 +229,7 @@ public class ItemServiceImpl implements ItemService {
      * @return 物品数据封装列表
      */
     @Override
+    @Cacheable("listItemById")
     public List<ItemDto> listItemById(List<Long> itemIdList) {
         //收集分类信息
         Map<Long, List<Long>> typeMap = new ConcurrentHashMap<>();
@@ -231,6 +258,7 @@ public class ItemServiceImpl implements ItemService {
      * @param itemSearchDto @return 物品ID列表
      */
     @Override
+    @Cacheable("listItem")
     public PageListVo<ItemVo> listItem(ItemSearchDto itemSearchDto) {
         Page<Item> itemPage = itemMapper.selectPageItem(itemSearchDto.getPageEntity(), itemSearchDto);
         if (itemPage.getTotal() == 0L)
@@ -277,6 +305,12 @@ public class ItemServiceImpl implements ItemService {
      * @return 是否成功
      */
     @Override
+    @Caching(
+            evict = {
+                    @CacheEvict(value = "listItemById",allEntries = true),
+                    @CacheEvict(value = "listItem",allEntries = true)
+            }
+    )
     public Boolean updateItem(List<ItemVo> itemVoList, Integer editSame) {
         for (ItemVo itemVo : itemVoList) {
             ItemDto itemDto = new ItemDto(itemVo);
@@ -344,6 +378,12 @@ public class ItemServiceImpl implements ItemService {
      * @return 是否成功
      */
     @Override
+    @Caching(
+            evict = {
+                    @CacheEvict(value = "listItemById",allEntries = true),
+                    @CacheEvict(value = "listItem",allEntries = true)
+            }
+    )
     public Boolean joinItemsInType(List<Long> itemIdList, Long typeId) {
         if (itemTypeMapper.selectOne(Wrappers.<ItemType>lambdaQuery().eq(ItemType::getId, typeId)) == null)
             throw new RuntimeException("类型ID错误");
@@ -365,13 +405,15 @@ public class ItemServiceImpl implements ItemService {
      * @return 新物品ID
      */
     @Override
+    @Caching(
+            evict = {
+                    @CacheEvict(value = "listItemById",allEntries = true),
+                    @CacheEvict(value = "listItem",allEntries = true)
+            }
+    )
     public Long createItem(ItemDto itemDto) {
         Item item = itemDto.getEntity();
-//				//临时id
-//				.setItemId(-1L);
         itemMapper.insert(item);
-//		//正式更新id
-//		itemMapper.updateById(item.setItemId(item.getId()));
         //处理类型信息
         List<Long> typeIdList = itemDto.getTypeIdList();
         if (typeIdList != null) {
@@ -395,6 +437,12 @@ public class ItemServiceImpl implements ItemService {
      * @return 物品复制到地区结果前端封装
      */
     @Override
+    @Caching(
+            evict = {
+                    @CacheEvict(value = "listItemById",allEntries = true),
+                    @CacheEvict(value = "listItem",allEntries = true)
+            }
+    )
     public List<Long> copyItemToArea(List<Long> itemIdList, Long areaId) {
         //TODO 判断是否是末端地区，检查所有涉及地区的代码
         //TODO ID冲突问题
@@ -420,6 +468,13 @@ public class ItemServiceImpl implements ItemService {
      * @return 是否成功
      */
     @Override
+    @Caching(
+            evict = {
+                    @CacheEvict(value = "listItemById",allEntries = true),
+                    @CacheEvict(value = "listItem",allEntries = true),
+                    @CacheEvict(value = "listCommonItem",allEntries = true),
+            }
+    )
     public Boolean deleteItem(List<Long> itemIdList) {
         itemTypeLinkMapper.delete(Wrappers.<ItemTypeLink>lambdaQuery()
                 .in(ItemTypeLink::getItemId, itemIdList));
@@ -434,6 +489,7 @@ public class ItemServiceImpl implements ItemService {
      * @return 物品前端封装的分页封装
      */
     @Override
+    @Cacheable("listCommonItem")
     public PageListVo<ItemVo> listCommonItem(PageSearchDto pageSearchDto) {
         Page<ItemAreaPublic> areaPublicPage = itemAreaPublicMapper.selectPage(pageSearchDto.getPageEntity(), Wrappers.<ItemAreaPublic>query());
         if (areaPublicPage.getTotal() == 0L) {
@@ -456,6 +512,7 @@ public class ItemServiceImpl implements ItemService {
      * @return 是否成功
      */
     @Override
+    @CacheEvict(value = "listCommonItem",allEntries = true)
     public Boolean addCommonItem(List<Long> itemIdList) {
         return itemAreaPublicMBPService.saveBatch(itemIdList.parallelStream()
                 .map(id -> new ItemAreaPublic()
@@ -470,6 +527,7 @@ public class ItemServiceImpl implements ItemService {
      * @return 是否成功
      */
     @Override
+    @CacheEvict(value = "listCommonItem",allEntries = true)
     public Boolean deleteCommonItem(List<Long> itemIdList) {
         return itemAreaPublicMapper.delete(Wrappers.<ItemAreaPublic>lambdaQuery()
                 .in(ItemAreaPublic::getItemId, itemIdList))

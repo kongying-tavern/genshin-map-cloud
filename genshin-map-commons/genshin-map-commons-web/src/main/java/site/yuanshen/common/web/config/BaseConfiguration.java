@@ -70,7 +70,8 @@ public class BaseConfiguration {
             CaffeineCacheManager caffeineCacheManager = new CaffeineCacheManager();
             Caffeine<Object, Object> caffeine = Caffeine.newBuilder()
                     // 设置最后一次写入或访问后经过固定时间过期
-                    .expireAfterAccess(60, TimeUnit.MINUTES);
+                    .expireAfterAccess(60, TimeUnit.MINUTES)
+                    .softValues();
             caffeineCacheManager.setCaffeine(caffeine);
             return caffeineCacheManager;
         }
