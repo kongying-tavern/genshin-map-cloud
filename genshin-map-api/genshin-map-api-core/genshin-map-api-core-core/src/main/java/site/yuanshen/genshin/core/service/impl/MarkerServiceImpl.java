@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.dto.*;
@@ -238,14 +239,16 @@ public class MarkerServiceImpl implements MarkerService {
     public Boolean updateMarker(MarkerSingleDto markerSingleDto) {
         Boolean updated = markerMapper.update(markerSingleDto.getEntity(), Wrappers.<Marker>lambdaUpdate()
                 .eq(Marker::getId, markerSingleDto.getId())) == 1;
-        if(updated) {
-            if (markerSingleDto.getItemList() != null && !markerSingleDto.getItemList().isEmpty()) {
-                markerItemLinkMapper.delete(Wrappers.<MarkerItemLink>lambdaQuery().eq(MarkerItemLink::getMarkerId, markerSingleDto.getId()));
-                List<MarkerItemLink> itemLinkList = markerSingleDto.getItemList().parallelStream().map(markerItemLinkDto -> markerItemLinkDto.getEntity().setMarkerId(markerSingleDto.getId())).collect(Collectors.toList());
-                markerItemLinkMBPService.saveBatch(itemLinkList);
-            } else if (markerSingleDto.getItemList() != null) {
-                markerItemLinkMapper.delete(Wrappers.<MarkerItemLink>lambdaQuery().eq(MarkerItemLink::getMarkerId, markerSingleDto.getId()));
-            }
+        if(!updated) {
+            throw new OptimisticLockingFailureException("该点位已更新，请重新提交");
+        }
+
+        if (markerSingleDto.getItemList() != null && !markerSingleDto.getItemList().isEmpty()) {
+            markerItemLinkMapper.delete(Wrappers.<MarkerItemLink>lambdaQuery().eq(MarkerItemLink::getMarkerId, markerSingleDto.getId()));
+            List<MarkerItemLink> itemLinkList = markerSingleDto.getItemList().parallelStream().map(markerItemLinkDto -> markerItemLinkDto.getEntity().setMarkerId(markerSingleDto.getId())).collect(Collectors.toList());
+            markerItemLinkMBPService.saveBatch(itemLinkList);
+        } else if (markerSingleDto.getItemList() != null) {
+            markerItemLinkMapper.delete(Wrappers.<MarkerItemLink>lambdaQuery().eq(MarkerItemLink::getMarkerId, markerSingleDto.getId()));
         }
         return updated;
     }
