@@ -25,7 +25,7 @@ public class MybatisPlusMetaObjectHandler implements MetaObjectHandler {
         log.debug("auto insert fill: createTime, updateTime : " + date);
         this.setFieldValByName("createTime", date, metaObject);
         this.setFieldValByName("updateTime", date, metaObject);
-        this.setFieldValByName("version", 1, metaObject);
+        this.setFieldValByName("version", 1L, metaObject);
         ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         if (requestAttributes == null) return;
         String userId = requestAttributes.getRequest().getHeader("userId");
