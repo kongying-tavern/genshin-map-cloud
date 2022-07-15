@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 
 /**
  * mybatis-plus的拦截器
- * 用于updatedTime与createdTime的自动生成
+ * 用于updateTime与createTime的自动生成
  *
  * @author Moment
  */
@@ -22,10 +22,10 @@ public class MybatisPlusMetaObjectHandler implements MetaObjectHandler {
     @Override
     public void insertFill(MetaObject metaObject) {
         LocalDateTime date = LocalDateTime.now();
-        log.debug("auto insert fill: createdTime, updatedTime : " + date);
+        log.debug("auto insert fill: createTime, updateTime : " + date);
         this.setFieldValByName("createTime", date, metaObject);
         this.setFieldValByName("updateTime", date, metaObject);
-        this.setFieldValByName("revision", 1, metaObject);
+        this.setFieldValByName("version", 1, metaObject);
         ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         if (requestAttributes == null) return;
         String userId = requestAttributes.getRequest().getHeader("userId");
@@ -37,8 +37,8 @@ public class MybatisPlusMetaObjectHandler implements MetaObjectHandler {
     @Override
     public void updateFill(MetaObject metaObject) {
         LocalDateTime date = LocalDateTime.now();
-        log.debug("auto insert fill: createdTime, updatedTime : " + date);
-        this.setFieldValByName("updatedTime", date, metaObject);
+        log.debug("auto insert fill: createTime, updateTime : " + date);
+        this.setFieldValByName("updateTime", date, metaObject);
         ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         if (requestAttributes == null) return;
         String userId = requestAttributes.getRequest().getHeader("userId");

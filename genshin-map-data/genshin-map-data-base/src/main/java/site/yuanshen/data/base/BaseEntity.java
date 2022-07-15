@@ -32,6 +32,7 @@ public class BaseEntity implements Serializable {
      */
     @Version
     @Schema(title = "乐观锁：修改次数")
+    @TableField(fill = FieldFill.INSERT)
     private Long version;
 
     /**
