@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
-import site.yuanshen.common.core.utils.CachedBeanCopier;;
+import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.entity.Icon;
 import site.yuanshen.data.vo.IconSearchVo;
 
@@ -58,7 +58,7 @@ public class IconSearchDto {
     private Long size;
 
     public IconSearchDto(IconSearchVo iconSearchVo) {
-        CachedBeanCopier.copyProperties(iconSearchVo, this);
+        BeanUtils.copyProperties(iconSearchVo, this);
     }
 
     public Page<Icon> getPageEntity() {

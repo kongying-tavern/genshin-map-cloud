@@ -9,7 +9,6 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import site.yuanshen.common.core.utils.BeanUtils;
-import site.yuanshen.common.core.utils.CachedBeanCopier;
 import site.yuanshen.data.entity.Marker;
 import site.yuanshen.data.entity.MarkerExtra;
 import site.yuanshen.data.entity.MarkerItemLink;
@@ -125,11 +124,11 @@ public class MarkerDto {
     private Integer hiddenFlag;
 
     public MarkerDto(MarkerVo markerVo) {
-        CachedBeanCopier.copyProperties(markerVo, this);
+        BeanUtils.copyProperties(markerVo, this);
     }
 
     public MarkerDto(Marker marker, MarkerExtra markerExtra, List<MarkerItemLink> markerItemLinks) {
-        CachedBeanCopier.copyProperties(marker, this);
+        BeanUtils.copyProperties(marker, this);
         this.id = marker.getId();
         BeanUtils.copyNotNull(Optional.ofNullable(markerExtra).orElse(new MarkerExtra()).setId(null),
                 this);
@@ -138,12 +137,12 @@ public class MarkerDto {
     }
 
     public Marker getEntity() {
-        return CachedBeanCopier.copyProperties(this, Marker.class).setId(this.id);
+        return BeanUtils.copyProperties(this, Marker.class).setId(this.id);
     }
 
     public MarkerExtra getMarkerExtraEntity() {
         if (markerExtraContent == null || markerExtraContent.equals("")) markerExtraContent = "{}";
-        return CachedBeanCopier.copyProperties(this, MarkerExtra.class).setIsRelated(isRelated != null && isRelated.equals(1));
+        return BeanUtils.copyProperties(this, MarkerExtra.class).setIsRelated(isRelated != null && isRelated.equals(1));
     }
 
     public List<MarkerItemLink> getLinkEntity() {
@@ -151,7 +150,7 @@ public class MarkerDto {
     }
 
     public MarkerVo getVo() {
-        MarkerVo markerVo = CachedBeanCopier.copyProperties(this, MarkerVo.class);
+        MarkerVo markerVo = BeanUtils.copyProperties(this, MarkerVo.class);
         markerVo.setItemList(this.itemList.stream().map(MarkerItemLinkDto::getVo).collect(Collectors.toList()));
         return markerVo;
     }

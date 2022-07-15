@@ -8,7 +8,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
-import site.yuanshen.common.core.utils.CachedBeanCopier;;
+import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.entity.MarkerExtraPunctuate;
 import site.yuanshen.data.entity.MarkerItemLink;
 import site.yuanshen.data.entity.MarkerPunctuate;
@@ -155,24 +155,24 @@ public class MarkerPunctuateDto {
 
 
     public MarkerPunctuateDto(MarkerPunctuateVo punctuateVo) {
-        CachedBeanCopier.copyProperties(punctuateVo, this);
+        BeanUtils.copyProperties(punctuateVo, this);
     }
 
     public MarkerPunctuateDto(MarkerPunctuate punctuate, MarkerExtraPunctuate extraPunctuate) {
-        CachedBeanCopier.copyProperties(punctuate, this);
+        BeanUtils.copyProperties(punctuate, this);
         if (extraPunctuate != null) {
-            CachedBeanCopier.copyProperties(extraPunctuate, this);
+            BeanUtils.copyProperties(extraPunctuate, this);
         }
         this.itemList = JSONArray.parseArray(punctuate.getItemList(), MarkerItemLinkDto.class);
     }
 
     public MarkerPunctuate getEntity() {
-        return CachedBeanCopier.copyProperties(this, MarkerPunctuate.class);
+        return BeanUtils.copyProperties(this, MarkerPunctuate.class);
     }
 
     public MarkerExtraPunctuate getMarkerExtraEntity() {
         if (markerExtraContent == null || markerExtraContent.equals("")) markerExtraContent = "{}";
-        return CachedBeanCopier.copyProperties(this, MarkerExtraPunctuate.class).setIsRelated(isRelated != null && isRelated.equals(1));
+        return BeanUtils.copyProperties(this, MarkerExtraPunctuate.class).setIsRelated(isRelated != null && isRelated.equals(1));
     }
 
     public List<MarkerItemLink> getLinkEntity() {
@@ -180,7 +180,7 @@ public class MarkerPunctuateDto {
     }
 
     public MarkerPunctuateVo getVo() {
-        MarkerPunctuateVo punctuateVo = CachedBeanCopier.copyProperties(this, MarkerPunctuateVo.class);
+        MarkerPunctuateVo punctuateVo = BeanUtils.copyProperties(this, MarkerPunctuateVo.class);
         punctuateVo.setItemList(this.itemList.stream().map(MarkerItemLinkDto::getVo).collect(Collectors.toList()));
         return punctuateVo;
     }

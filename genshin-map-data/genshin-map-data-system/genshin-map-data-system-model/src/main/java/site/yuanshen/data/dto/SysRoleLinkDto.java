@@ -1,7 +1,7 @@
 package site.yuanshen.data.dto;
 
 import lombok.Data;
-import site.yuanshen.common.core.utils.CachedBeanCopier;;
+import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.entity.SysUserRoleLink;
 import site.yuanshen.data.vo.SysRoleLinkVo;
 
@@ -24,11 +24,11 @@ public class SysRoleLinkDto {
     private Long roleId;
 
     public SysRoleLinkDto(SysUserRoleLink userRoleLink) {
-        CachedBeanCopier.copyProperties(userRoleLink, this);
+        BeanUtils.copyProperties(userRoleLink, this);
     }
 
     public SysRoleLinkDto(SysRoleLinkVo linkVo) {
-        CachedBeanCopier.copyProperties(linkVo, this);
+        BeanUtils.copyProperties(linkVo, this);
     }
 
 }

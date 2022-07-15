@@ -1,7 +1,7 @@
 package site.yuanshen.data.dto;
 
 import lombok.Data;
-import site.yuanshen.common.core.utils.CachedBeanCopier;;
+import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.entity.SysRole;
 import site.yuanshen.data.vo.SysRoleVo;
 
@@ -34,19 +34,19 @@ public class SysRoleDto {
     private Integer sort;
 
     public SysRoleDto(SysRole sysRole) {
-        CachedBeanCopier.copyProperties(sysRole, this);
+        BeanUtils.copyProperties(sysRole, this);
     }
 
     public SysRoleDto(SysRoleVo sysRoleVo) {
-        CachedBeanCopier.copyProperties(sysRoleVo, this);
+        BeanUtils.copyProperties(sysRoleVo, this);
     }
 
     public SysRole getEntity() {
-        return CachedBeanCopier.copyProperties(this, SysRole.class);
+        return BeanUtils.copyProperties(this, SysRole.class);
     }
 
     public SysRoleVo getVo() {
-        return CachedBeanCopier.copyProperties(this, SysRoleVo.class);
+        return BeanUtils.copyProperties(this, SysRoleVo.class);
     }
 
 }

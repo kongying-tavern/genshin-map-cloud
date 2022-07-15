@@ -2,7 +2,6 @@ package site.yuanshen.data.vo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import site.yuanshen.common.core.utils.CachedBeanCopier;;
 import site.yuanshen.data.entity.SysUserRoleLink;
 
 /**

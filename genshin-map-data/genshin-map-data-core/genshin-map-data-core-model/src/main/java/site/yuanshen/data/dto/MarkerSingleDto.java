@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
-import site.yuanshen.common.core.utils.CachedBeanCopier;
+import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.entity.Marker;
 import site.yuanshen.data.entity.MarkerItemLink;
 import site.yuanshen.data.vo.MarkerSingleVo;
@@ -101,24 +101,24 @@ public class MarkerSingleDto {
     private Integer hiddenFlag;
 
     public MarkerSingleDto(MarkerSingleVo markerSingleVo) {
-        CachedBeanCopier.copyProperties(markerSingleVo, this);
+        BeanUtils.copyProperties(markerSingleVo, this);
         this.itemList = markerSingleVo.getItemList().stream().map(MarkerItemLinkDto::new).collect(Collectors.toList());
     }
 
     public MarkerSingleDto(Marker marker, List<MarkerItemLink> markerItemLinks) {
-        CachedBeanCopier.copyProperties(marker, this);
+        BeanUtils.copyProperties(marker, this);
         this.itemList = markerItemLinks.stream().map(MarkerItemLinkDto::new).collect(Collectors.toList());
 
     }
 
     public Marker getEntity() {
-        return CachedBeanCopier.copyProperties(this, Marker.class);
+        return BeanUtils.copyProperties(this, Marker.class);
     }
 
     public MarkerSingleVo getVo() {
-        MarkerSingleVo MarkerSingleVo = CachedBeanCopier.copyProperties(this, MarkerSingleVo.class);
+        MarkerSingleVo MarkerSingleVo = BeanUtils.copyProperties(this, MarkerSingleVo.class);
         MarkerSingleVo.setItemList(this.itemList.stream().map(MarkerItemLinkDto::getVo).collect(Collectors.toList()));
-        return CachedBeanCopier.copyProperties(this, MarkerSingleVo.class);
+        return BeanUtils.copyProperties(this, MarkerSingleVo.class);
     }
 
 }

@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
-import site.yuanshen.common.core.utils.CachedBeanCopier;;
+import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.entity.Item;
 import site.yuanshen.data.vo.ItemSearchVo;
 
@@ -52,7 +52,7 @@ public class ItemSearchDto {
     private Long size = 10L;
 
     public ItemSearchDto(ItemSearchVo itemSearchVo) {
-        CachedBeanCopier.copyProperties(itemSearchVo, this);
+        BeanUtils.copyProperties(itemSearchVo, this);
     }
 
     public Page<Item> getPageEntity() {

@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
-import site.yuanshen.common.core.utils.CachedBeanCopier;;
+import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.entity.MarkerExtraPunctuate;
 import site.yuanshen.data.vo.MarkerExtraPunctuateVo;
 
@@ -82,20 +82,20 @@ public class MarkerExtraPunctuateDto {
     private Integer methodType;
 
     public MarkerExtraPunctuateDto(MarkerExtraPunctuateVo extraPunctuateVo) {
-        CachedBeanCopier.copyProperties(extraPunctuateVo, this);
+        BeanUtils.copyProperties(extraPunctuateVo, this);
     }
 
     public MarkerExtraPunctuateDto(MarkerExtraPunctuate extraPunctuate) {
-        CachedBeanCopier.copyProperties(extraPunctuate, this);
+        BeanUtils.copyProperties(extraPunctuate, this);
     }
 
     public MarkerExtraPunctuate getMarkerExtraEntity() {
         if (markerExtraContent == null || markerExtraContent.equals("")) markerExtraContent = "{}";
-        return CachedBeanCopier.copyProperties(this, MarkerExtraPunctuate.class).setIsRelated(isRelated != null && isRelated.equals(1));
+        return BeanUtils.copyProperties(this, MarkerExtraPunctuate.class).setIsRelated(isRelated != null && isRelated.equals(1));
     }
 
     public MarkerExtraPunctuateVo getVo() {
-        MarkerExtraPunctuateVo extraPunctuateVo = CachedBeanCopier.copyProperties(this, MarkerExtraPunctuateVo.class);
+        MarkerExtraPunctuateVo extraPunctuateVo = BeanUtils.copyProperties(this, MarkerExtraPunctuateVo.class);
         return extraPunctuateVo;
     }
 

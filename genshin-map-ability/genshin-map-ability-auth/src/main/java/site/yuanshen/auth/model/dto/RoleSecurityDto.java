@@ -3,7 +3,7 @@ package site.yuanshen.auth.model.dto;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
-import site.yuanshen.common.core.utils.CachedBeanCopier;;
+import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.enums.RoleEnum;
 
 /**
@@ -36,6 +36,6 @@ public class RoleSecurityDto implements GrantedAuthority {
     }
 
     public RoleSecurityDto(String code) {
-        CachedBeanCopier.copyProperties(RoleEnum.valueOf(code), this);
+        BeanUtils.copyProperties(RoleEnum.valueOf(code), this);
     }
 }

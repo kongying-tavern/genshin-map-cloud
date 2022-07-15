@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import site.yuanshen.common.core.utils.CachedBeanCopier;;
+import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.vo.helper.PageSearchVo;
 
 /**
@@ -35,7 +35,7 @@ public class PageSearchDto {
     private Long size;
 
     public PageSearchDto(PageSearchVo pageSearchVo) {
-        CachedBeanCopier.copyProperties(pageSearchVo, this);
+        BeanUtils.copyProperties(pageSearchVo, this);
     }
 
     public <T> Page<T> getPageEntity() {

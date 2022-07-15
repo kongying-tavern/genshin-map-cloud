@@ -9,7 +9,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import site.yuanshen.auth.model.dto.UserSecurityDto;
-import site.yuanshen.common.core.utils.CachedBeanCopier;
+import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.dto.SysRoleDto;
 import site.yuanshen.data.dto.SysUserSecurityDto;
 import site.yuanshen.data.entity.SysUser;
@@ -43,7 +43,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private SysUserSecurityDto getUserSecurityByUserName(String userName) {
         SysUser sysUser = userMapper.selectOne(Wrappers.lambdaQuery(SysUser.class).eq(SysUser::getUsername, userName));
         SysUserSecurityDto sysUserSecurityDto = new SysUserSecurityDto();
-        CachedBeanCopier.copyProperties(sysUser, sysUserSecurityDto);
+        BeanUtils.copyProperties(sysUser, sysUserSecurityDto);
         sysUserSecurityDto.setUserId(sysUser.getId());
         //TODO 代码有待审查
         List<SysRoleDto> sysRoleDtoList = roleMapper.selectBatchIds(userRoleMapper.selectList(Wrappers.lambdaQuery(SysUserRoleLink.class)

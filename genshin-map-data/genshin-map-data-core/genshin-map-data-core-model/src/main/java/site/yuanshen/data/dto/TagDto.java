@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
-import site.yuanshen.common.core.utils.CachedBeanCopier;;
+import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.entity.Tag;
 import site.yuanshen.data.vo.TagVo;
 
@@ -57,18 +57,18 @@ public class TagDto {
     private String url;
 
     public TagDto(Tag tag) {
-        CachedBeanCopier.copyProperties(tag, this);
+        BeanUtils.copyProperties(tag, this);
     }
 
     public TagDto(TagVo tagVo) {
-        CachedBeanCopier.copyProperties(tagVo, this);
+        BeanUtils.copyProperties(tagVo, this);
     }
 
     public Tag getEntity() {
-        return CachedBeanCopier.copyProperties(this, Tag.class);
+        return BeanUtils.copyProperties(this, Tag.class);
     }
 
     public TagVo getVo() {
-        return CachedBeanCopier.copyProperties(this, TagVo.class);
+        return BeanUtils.copyProperties(this, TagVo.class);
     }
 }

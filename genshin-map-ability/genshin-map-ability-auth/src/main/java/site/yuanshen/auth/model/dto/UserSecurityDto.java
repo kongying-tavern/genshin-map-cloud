@@ -4,7 +4,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import site.yuanshen.common.core.utils.CachedBeanCopier;
+import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.dto.SysUserSecurityDto;
 
 import java.util.Collection;
@@ -56,10 +56,10 @@ public class UserSecurityDto implements UserDetails {
     private List<RoleSecurityDto> roleDtoList;
 
     public UserSecurityDto(SysUserSecurityDto sysUserSecurityDto) {
-        CachedBeanCopier.copyProperties(sysUserSecurityDto, this);
+        BeanUtils.copyProperties(sysUserSecurityDto, this);
         this.roleDtoList = sysUserSecurityDto.getRoleDtoList()
                 .stream().map(
-                        roleDto -> CachedBeanCopier.copyProperties(roleDto, RoleSecurityDto.class)
+                        roleDto -> BeanUtils.copyProperties(roleDto, RoleSecurityDto.class)
                 ).collect(Collectors.toList());
     }
 

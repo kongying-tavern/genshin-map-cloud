@@ -7,7 +7,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import site.yuanshen.api.system.service.SysBasicService;
 import site.yuanshen.api.system.service.SysUserService;
-import site.yuanshen.common.core.utils.CachedBeanCopier;
+import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.dto.SysRoleDto;
 import site.yuanshen.data.dto.SysUserDto;
 import site.yuanshen.data.dto.SysUserPasswordUpdateDto;
@@ -47,7 +47,7 @@ public class SysUserServiceImpl implements SysUserService {
     public Long register(SysUserRegisterVo registerVo) {
         if (basicService.getUser(registerVo.getUsername()).isEmpty()) {
             SysUser user = new SysUser();
-            CachedBeanCopier.copyProperties(registerVo, user);
+            BeanUtils.copyProperties(registerVo, user);
             user.setPassword(PasswordEncoderFactories.createDelegatingPasswordEncoder().encode(user.getPassword()));
             userMapper.insert(user);
             SysRole role = basicService.getRoleNotNull(RoleEnum.MAP_USER.getCode());
@@ -95,7 +95,7 @@ public class SysUserServiceImpl implements SysUserService {
     @Override
     public Boolean updateUser(SysUserUpdateDto updateDto) {
         SysUser user = basicService.getUserNotNull(updateDto.getUserId());
-        CachedBeanCopier.copyProperties(updateDto, user);
+        BeanUtils.copyProperties(updateDto, user);
         userMapper.updateById(user);
         return true;
     }

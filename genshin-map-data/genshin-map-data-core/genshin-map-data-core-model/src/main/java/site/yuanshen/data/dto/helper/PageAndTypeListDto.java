@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import site.yuanshen.common.core.utils.CachedBeanCopier;;
+import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.vo.helper.PageAndTypeListVo;
 
 import java.util.List;
@@ -47,7 +47,7 @@ public class PageAndTypeListDto {
     }
 
     public PageAndTypeListDto(PageAndTypeListVo searchVo) {
-        CachedBeanCopier.copyProperties(searchVo, this);
+        BeanUtils.copyProperties(searchVo, this);
     }
 
 }

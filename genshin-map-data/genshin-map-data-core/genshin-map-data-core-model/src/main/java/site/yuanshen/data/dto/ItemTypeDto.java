@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
-import site.yuanshen.common.core.utils.CachedBeanCopier;;
+import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.entity.ItemType;
 import site.yuanshen.data.vo.ItemTypeVo;
 
@@ -79,19 +79,19 @@ public class ItemTypeDto {
     private Integer sortIndex;
 
     public ItemTypeDto(ItemType itemType) {
-        CachedBeanCopier.copyProperties(itemType, this);
+        BeanUtils.copyProperties(itemType, this);
         this.typeId = itemType.getId();
     }
 
     public ItemTypeDto(ItemTypeVo itemTypeVo) {
-        CachedBeanCopier.copyProperties(itemTypeVo, this);
+        BeanUtils.copyProperties(itemTypeVo, this);
     }
 
     public ItemType getEntity() {
-        return CachedBeanCopier.copyProperties(this, ItemType.class).setId(this.typeId);
+        return BeanUtils.copyProperties(this, ItemType.class).setId(this.typeId);
     }
 
     public ItemTypeVo getVo() {
-        return CachedBeanCopier.copyProperties(this, ItemTypeVo.class);
+        return BeanUtils.copyProperties(this, ItemTypeVo.class);
     }
 }

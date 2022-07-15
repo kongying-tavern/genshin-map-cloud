@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
-import site.yuanshen.common.core.utils.CachedBeanCopier;
+import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.entity.MarkerExtra;
 import site.yuanshen.data.vo.MarkerExtraVo;
 
@@ -55,20 +55,20 @@ public class MarkerExtraDto {
     private Integer isRelated;
 
     public MarkerExtraDto(MarkerExtraVo markerExtraVo) {
-        CachedBeanCopier.copyProperties(markerExtraVo, this);
+        BeanUtils.copyProperties(markerExtraVo, this);
     }
 
     public MarkerExtraDto(MarkerExtra markerExtra) {
-        CachedBeanCopier.copyProperties(markerExtra, this);
+        BeanUtils.copyProperties(markerExtra, this);
     }
 
     public MarkerExtra getEntity() {
         if (markerExtraContent == null || markerExtraContent.equals("")) markerExtraContent = "{}";
-        return CachedBeanCopier.copyProperties(this, MarkerExtra.class).setIsRelated(isRelated != null && isRelated.equals(1));
+        return BeanUtils.copyProperties(this, MarkerExtra.class).setIsRelated(isRelated != null && isRelated.equals(1));
     }
 
     public MarkerExtraVo getVo() {
-        return CachedBeanCopier.copyProperties(this, MarkerExtraVo.class);
+        return BeanUtils.copyProperties(this, MarkerExtraVo.class);
     }
 
 }

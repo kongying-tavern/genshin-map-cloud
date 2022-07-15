@@ -13,7 +13,6 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import site.yuanshen.common.core.utils.BeanUtils;
-import site.yuanshen.common.core.utils.CachedBeanCopier;
 import site.yuanshen.data.dto.*;
 import site.yuanshen.data.dto.helper.PageSearchDto;
 import site.yuanshen.data.entity.*;
@@ -462,7 +461,7 @@ public class MarkerServiceImpl implements MarkerService {
             Marker oldMarker = Optional.ofNullable(markerMapper.selectOne(Wrappers.<Marker>lambdaQuery().eq(Marker::getId, originalMarkerId)))
                     .orElseThrow(() -> new RuntimeException("无法找到原始id对应的原始点位，无法做出更改，请联系管理员"));
             //原有点位拷贝一份作为新点位
-            Marker newMarker = CachedBeanCopier.copyProperties(oldMarker, Marker.class);
+            Marker newMarker = BeanUtils.copyProperties(oldMarker, Marker.class);
             //打点的更改信息复制到新点位中（使用了hutool的copy，忽略null值）
             BeanUtils.copyNotNull(markerPunctuate, newMarker);
             markerMapper.updateById(newMarker);
@@ -531,7 +530,7 @@ public class MarkerServiceImpl implements MarkerService {
         //新增操作
         if (methodType.equals(1)) {
             //插入自身
-            Marker marker = CachedBeanCopier.copyProperties(markerPunctuate, Marker.class)
+            Marker marker = BeanUtils.copyProperties(markerPunctuate, Marker.class)
                     //ID应为空
                     .setId(null);
             markerMapper.insert(marker);
@@ -574,7 +573,7 @@ public class MarkerServiceImpl implements MarkerService {
                     relatePunctuateList = relatePunctuateList.stream().filter(punctuate -> !punctuate.getPunctuateId().equals(punctuateId)).collect(Collectors.toList());
                     //将关联的提交点位复制到正式点位表，并存入提交ID与点位ID的映射关系
                     relatePunctuateList.forEach(punctuate -> {
-                        Marker relateMarker = CachedBeanCopier.copyProperties(punctuate, Marker.class);
+                        Marker relateMarker = BeanUtils.copyProperties(punctuate, Marker.class);
                         markerMapper.insert(relateMarker);
                         punctuateToOriginalIdMap.put(punctuate.getPunctuateId(), relateMarker.getId());
                     });

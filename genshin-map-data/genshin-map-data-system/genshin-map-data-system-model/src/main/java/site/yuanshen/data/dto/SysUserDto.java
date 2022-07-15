@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.Accessors;
-import site.yuanshen.common.core.utils.CachedBeanCopier;;
+import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.entity.SysUser;
 import site.yuanshen.data.vo.SysRoleVo;
 import site.yuanshen.data.vo.SysUserVo;
@@ -56,11 +56,11 @@ public class SysUserDto {
     private List<SysRoleVo> roleList;
 
     public SysUserDto(SysUser user) {
-        CachedBeanCopier.copyProperties(user, this);
+        BeanUtils.copyProperties(user, this);
     }
 
     public SysUserVo getVo() {
-        return CachedBeanCopier.copyProperties(this, SysUserVo.class);
+        return BeanUtils.copyProperties(this, SysUserVo.class);
     }
 
 }

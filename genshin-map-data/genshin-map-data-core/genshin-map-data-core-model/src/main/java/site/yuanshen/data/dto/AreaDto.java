@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
-import site.yuanshen.common.core.utils.CachedBeanCopier;;
+import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.entity.Area;
 import site.yuanshen.data.vo.AreaVo;
 
@@ -80,20 +80,20 @@ public class AreaDto {
     private Integer sortIndex;
 
     public AreaDto(AreaVo areaVo) {
-        CachedBeanCopier.copyProperties(areaVo, this);
+        BeanUtils.copyProperties(areaVo, this);
     }
 
     public AreaDto(Area area) {
-        CachedBeanCopier.copyProperties(area, this);
+        BeanUtils.copyProperties(area, this);
         this.areaId = area.getId();
     }
 
     public Area getEntity() {
-        return CachedBeanCopier.copyProperties(this, Area.class).setId(this.areaId);
+        return BeanUtils.copyProperties(this, Area.class).setId(this.areaId);
     }
 
     public AreaVo getVo() {
-        return CachedBeanCopier.copyProperties(this, AreaVo.class);
+        return BeanUtils.copyProperties(this, AreaVo.class);
     }
 
 }

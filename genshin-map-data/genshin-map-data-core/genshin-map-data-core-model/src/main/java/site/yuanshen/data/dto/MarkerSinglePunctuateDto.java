@@ -9,7 +9,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
-import site.yuanshen.common.core.utils.CachedBeanCopier;;
+import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.entity.MarkerItemLink;
 import site.yuanshen.data.entity.MarkerPunctuate;
 import site.yuanshen.data.vo.MarkerSinglePunctuateVo;
@@ -136,17 +136,17 @@ public class MarkerSinglePunctuateDto {
 
 
     public MarkerSinglePunctuateDto(MarkerSinglePunctuateVo punctuateSingleVo) {
-        CachedBeanCopier.copyProperties(punctuateSingleVo, this);
+        BeanUtils.copyProperties(punctuateSingleVo, this);
         this.itemList = punctuateSingleVo.getItemList().stream().map(MarkerItemLinkDto::new).collect(Collectors.toList());
     }
 
     public MarkerSinglePunctuateDto(MarkerPunctuate punctuate) {
-        CachedBeanCopier.copyProperties(punctuate, this);
+        BeanUtils.copyProperties(punctuate, this);
         this.itemList = JSONArray.parseArray(punctuate.getItemList(), MarkerItemLinkDto.class);
     }
 
     public MarkerPunctuate getEntity() {
-        return CachedBeanCopier.copyProperties(this, MarkerPunctuate.class).setItemList(JSON.toJSONString(this.itemList));
+        return BeanUtils.copyProperties(this, MarkerPunctuate.class).setItemList(JSON.toJSONString(this.itemList));
     }
 
     public List<MarkerItemLink> getLinkEntity() {
@@ -154,7 +154,7 @@ public class MarkerSinglePunctuateDto {
     }
 
     public MarkerSinglePunctuateVo getVo() {
-        MarkerSinglePunctuateVo punctuateSingleVo = CachedBeanCopier.copyProperties(this, MarkerSinglePunctuateVo.class);
+        MarkerSinglePunctuateVo punctuateSingleVo = BeanUtils.copyProperties(this, MarkerSinglePunctuateVo.class);
         punctuateSingleVo.setItemList(this.itemList.stream().map(MarkerItemLinkDto::getVo).collect(Collectors.toList()));
         return punctuateSingleVo;
     }

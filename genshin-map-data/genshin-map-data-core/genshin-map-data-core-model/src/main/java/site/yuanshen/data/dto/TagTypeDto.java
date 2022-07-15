@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
-import site.yuanshen.common.core.utils.CachedBeanCopier;;
+import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.entity.TagType;
 import site.yuanshen.data.vo.TagTypeVo;
 
@@ -56,20 +56,20 @@ public class TagTypeDto {
     private Boolean isFinal;
 
     public TagTypeDto(TagType tagType) {
-        CachedBeanCopier.copyProperties(tagType, this);
+        BeanUtils.copyProperties(tagType, this);
         this.id = tagType.getId();
     }
 
     public TagTypeDto(TagTypeVo tagTypeVo) {
-        CachedBeanCopier.copyProperties(tagTypeVo, this);
+        BeanUtils.copyProperties(tagTypeVo, this);
     }
 
     public TagType getEntity() {
-        return CachedBeanCopier.copyProperties(this, TagType.class).setId(this.id);
+        return BeanUtils.copyProperties(this, TagType.class).setId(this.id);
     }
 
     public TagTypeVo getVo() {
-        return CachedBeanCopier.copyProperties(this, TagTypeVo.class);
+        return BeanUtils.copyProperties(this, TagTypeVo.class);
     }
 
 }

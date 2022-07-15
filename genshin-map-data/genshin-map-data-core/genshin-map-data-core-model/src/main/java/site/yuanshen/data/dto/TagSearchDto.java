@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
-import site.yuanshen.common.core.utils.CachedBeanCopier;;
+import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.entity.Tag;
 import site.yuanshen.data.vo.TagSearchVo;
 
@@ -56,7 +56,7 @@ public class TagSearchDto {
     }
 
     public TagSearchDto(TagSearchVo searchVo) {
-        CachedBeanCopier.copyProperties(searchVo, this);
+        BeanUtils.copyProperties(searchVo, this);
     }
 
 }

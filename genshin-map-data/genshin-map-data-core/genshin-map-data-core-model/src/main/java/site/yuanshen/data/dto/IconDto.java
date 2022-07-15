@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
-import site.yuanshen.common.core.utils.CachedBeanCopier;;
+import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.entity.Icon;
 import site.yuanshen.data.vo.IconVo;
 
@@ -63,19 +63,19 @@ public class IconDto {
     private Long creator;
 
     public IconDto(Icon icon) {
-        CachedBeanCopier.copyProperties(icon, this);
+        BeanUtils.copyProperties(icon, this);
     }
 
     public IconDto(IconVo iconVo) {
-        CachedBeanCopier.copyProperties(iconVo, this);
+        BeanUtils.copyProperties(iconVo, this);
     }
 
     public Icon getEntity() {
-        return CachedBeanCopier.copyProperties(this, Icon.class);
+        return BeanUtils.copyProperties(this, Icon.class);
     }
 
     public IconVo getVo() {
-        return CachedBeanCopier.copyProperties(this, IconVo.class);
+        return BeanUtils.copyProperties(this, IconVo.class);
     }
 
 }

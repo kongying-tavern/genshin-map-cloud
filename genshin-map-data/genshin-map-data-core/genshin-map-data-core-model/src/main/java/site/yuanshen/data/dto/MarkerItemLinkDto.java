@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
-import site.yuanshen.common.core.utils.CachedBeanCopier;;
+import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.entity.MarkerItemLink;
 import site.yuanshen.data.vo.MarkerItemLinkVo;
 
@@ -43,19 +43,19 @@ public class MarkerItemLinkDto {
     private Integer count;
 
     public MarkerItemLinkDto(MarkerItemLink markerItemLink) {
-        CachedBeanCopier.copyProperties(markerItemLink, this);
+        BeanUtils.copyProperties(markerItemLink, this);
     }
 
     public MarkerItemLinkDto(MarkerItemLinkVo markerItemLinkVo) {
-        CachedBeanCopier.copyProperties(markerItemLinkVo, this);
+        BeanUtils.copyProperties(markerItemLinkVo, this);
     }
 
     public MarkerItemLink getEntity() {
-        return CachedBeanCopier.copyProperties(this, MarkerItemLink.class);
+        return BeanUtils.copyProperties(this, MarkerItemLink.class);
     }
 
     public MarkerItemLinkVo getVo() {
-        return CachedBeanCopier.copyProperties(this, MarkerItemLinkVo.class);
+        return BeanUtils.copyProperties(this, MarkerItemLinkVo.class);
     }
 
 }
