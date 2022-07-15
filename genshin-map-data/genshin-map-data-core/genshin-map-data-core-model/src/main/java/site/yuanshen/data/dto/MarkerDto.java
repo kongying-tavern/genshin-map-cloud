@@ -1,12 +1,15 @@
 package site.yuanshen.data.dto;
 
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.bean.copier.CopyOptions;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
-import site.yuanshen.data.base.CachedBeanCopier;
+import site.yuanshen.common.core.utils.BeanUtils;
+import site.yuanshen.common.core.utils.CachedBeanCopier;
 import site.yuanshen.data.entity.Marker;
 import site.yuanshen.data.entity.MarkerExtra;
 import site.yuanshen.data.entity.MarkerItemLink;
@@ -122,7 +125,8 @@ public class MarkerDto {
     public MarkerDto(Marker marker, MarkerExtra markerExtra, List<MarkerItemLink> markerItemLinks) {
         CachedBeanCopier.copyProperties(marker, this);
         this.id = marker.getId();
-        CachedBeanCopier.copyProperties(Optional.ofNullable(markerExtra).orElse(new MarkerExtra().setId(marker.getId())), this);
+        BeanUtils.copyNotNull(Optional.ofNullable(markerExtra.setId(null)).orElse(new MarkerExtra()),
+                this);
         markerItemLinks = Optional.ofNullable(markerItemLinks).orElse(new ArrayList<>());
         this.itemList = markerItemLinks.stream().map(MarkerItemLinkDto::new).collect(Collectors.toList());
     }

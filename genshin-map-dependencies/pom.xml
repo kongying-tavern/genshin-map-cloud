@@ -16,6 +16,7 @@
         <nimbus-jose-jwt.version>9.21</nimbus-jose-jwt.version>
         <springboot.version>2.3.12.RELEASE</springboot.version>
         <hutool.version>5.8.4</hutool.version>
+        <cglib.version>3.3.0</cglib.version>
     </properties>
 
     <dependencyManagement>
@@ -78,6 +79,18 @@
                 <version>${hutool.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-extra</artifactId>
+                <version>${hutool.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cglib</groupId>
+                <artifactId>cglib</artifactId>
+                <version>${cglib.version}</version>
+                <scope>compile</scope>
+            </dependency>
 
         </dependencies>
     </dependencyManagement>

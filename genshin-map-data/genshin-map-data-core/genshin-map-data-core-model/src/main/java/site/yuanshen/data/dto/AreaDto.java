@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
-import site.yuanshen.data.base.CachedBeanCopier;
+import site.yuanshen.common.core.utils.CachedBeanCopier;;
 import site.yuanshen.data.entity.Area;
 import site.yuanshen.data.vo.AreaVo;
 

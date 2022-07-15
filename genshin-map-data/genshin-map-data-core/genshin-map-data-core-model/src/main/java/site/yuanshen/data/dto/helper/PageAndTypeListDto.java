@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import site.yuanshen.data.base.CachedBeanCopier;
+import site.yuanshen.common.core.utils.CachedBeanCopier;;
 import site.yuanshen.data.vo.helper.PageAndTypeListVo;
 
 import java.util.List;

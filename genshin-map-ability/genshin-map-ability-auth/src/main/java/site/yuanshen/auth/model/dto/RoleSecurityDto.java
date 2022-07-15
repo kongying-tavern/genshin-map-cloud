@@ -3,7 +3,7 @@ package site.yuanshen.auth.model.dto;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
-import site.yuanshen.data.base.CachedBeanCopier;
+import site.yuanshen.common.core.utils.CachedBeanCopier;;
 import site.yuanshen.data.enums.RoleEnum;
 
 /**

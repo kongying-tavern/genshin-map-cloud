@@ -9,7 +9,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
-import site.yuanshen.data.base.CachedBeanCopier;
+import site.yuanshen.common.core.utils.CachedBeanCopier;;
 import site.yuanshen.data.entity.MarkerItemLink;
 import site.yuanshen.data.entity.MarkerPunctuate;
 import site.yuanshen.data.vo.MarkerSinglePunctuateVo;

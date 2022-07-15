@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.config.core.GrantedAuthorityDefaults;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.provider.ClientDetails;
-import site.yuanshen.data.base.CachedBeanCopier;
+import site.yuanshen.common.core.utils.CachedBeanCopier;;
 import site.yuanshen.data.dto.SysUserSecurityDto;
 import site.yuanshen.data.entity.OauthClientDetails;
 import site.yuanshen.data.enums.RoleEnum;

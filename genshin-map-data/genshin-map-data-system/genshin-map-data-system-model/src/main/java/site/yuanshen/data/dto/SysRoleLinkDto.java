@@ -1,7 +1,7 @@
 package site.yuanshen.data.dto;
 
 import lombok.Data;
-import site.yuanshen.data.base.CachedBeanCopier;
+import site.yuanshen.common.core.utils.CachedBeanCopier;;
 import site.yuanshen.data.entity.SysUserRoleLink;
 import site.yuanshen.data.vo.SysRoleLinkVo;
 
