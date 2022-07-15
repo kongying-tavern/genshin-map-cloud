@@ -359,6 +359,7 @@ public class ItemServiceImpl implements ItemService {
             }
             itemMapper.update(null,
                     Wrappers.<Item>lambdaUpdate().in(Item::getId, itemIds)
+                            .set(itemDto.getName() != null, Item::getName, itemDto.getName())
                             .set(itemDto.getDefaultContent() != null, Item::getDefaultContent, itemDto.getDefaultContent())
                             .set(itemDto.getIconTag() != null, Item::getIconTag, itemDto.getIconTag())
                             .set(itemDto.getIconStyleType() != null, Item::getIconStyleType, itemDto.getIconStyleType())
