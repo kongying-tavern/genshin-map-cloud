@@ -25,12 +25,6 @@ import site.yuanshen.data.vo.MarkerItemLinkVo;
 public class MarkerItemLinkDto {
 
     /**
-     * 乐观锁：修改次数
-     */
-    @Schema(title = "乐观锁：修改次数")
-    private Long version;
-
-    /**
      * 物品id
      */
     @Schema(title = "物品id")
