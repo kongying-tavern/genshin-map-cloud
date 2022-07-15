@@ -12,6 +12,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
+import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.common.core.utils.CachedBeanCopier;
 import site.yuanshen.data.dto.*;
 import site.yuanshen.data.dto.helper.PageSearchDto;
@@ -463,7 +464,7 @@ public class MarkerServiceImpl implements MarkerService {
             //原有点位拷贝一份作为新点位
             Marker newMarker = CachedBeanCopier.copyProperties(oldMarker, Marker.class);
             //打点的更改信息复制到新点位中（使用了hutool的copy，忽略null值）
-            BeanUtil.copyProperties(markerPunctuate, newMarker, CopyOptions.create().ignoreNullValue().ignoreError());
+            BeanUtils.copyNotNull(markerPunctuate, newMarker);
             markerMapper.updateById(newMarker);
             //是否有额外字段
             if (markerExtraPunctuateOptional.isPresent()) {
@@ -472,7 +473,7 @@ public class MarkerServiceImpl implements MarkerService {
                 MarkerExtra markerExtra = Optional.ofNullable(markerExtraMapper.selectOne(Wrappers.<MarkerExtra>lambdaQuery().eq(MarkerExtra::getMarkerId, originalMarkerId)))
                         .orElseThrow(() -> new RuntimeException("无原始的额外字段，请先对点位进行插入操作"));
                 //打点的额外信息更改复制到点位中（使用了hutool的copy，忽略null值）
-                BeanUtil.copyProperties(markerExtraPunctuate, markerExtra, CopyOptions.create().ignoreNullValue().ignoreError());
+                BeanUtils.copyNotNull(markerExtraPunctuate, markerExtra);
                 //更新额外信息
                 markerExtraMapper.updateById(markerExtra);
                 //查看是否有关联点位需要同步更改通过
@@ -507,7 +508,7 @@ public class MarkerServiceImpl implements MarkerService {
                                             Marker relateMarker = Optional.ofNullable(markerMapper.selectOne(Wrappers.<Marker>lambdaQuery().eq(Marker::getId, relateOriginalMarkerId)))
                                                     .orElseThrow(() -> new RuntimeException("无法找到原始id对应的原始点位，无法做出更改，请联系管理员"));
                                             //打点的更改信息复制到点位中（使用了hutool的copy，忽略null值）
-                                            BeanUtil.copyProperties(relateMarkerPunctuate, relateMarker, CopyOptions.create().ignoreNullValue().ignoreError());
+                                            BeanUtils.copyNotNull(relateMarkerPunctuate, relateMarker);
                                             markerMapper.updateById(relateMarker);
                                             //关联点位有extra信息，更新
                                             if (relateMarkerExtraPunctuateOptional.isPresent()) {
@@ -516,7 +517,7 @@ public class MarkerServiceImpl implements MarkerService {
                                                 MarkerExtra relateMarkerExtra = Optional.ofNullable(markerExtraMapper.selectOne(Wrappers.<MarkerExtra>lambdaQuery().eq(MarkerExtra::getMarkerId, relateOriginalMarkerId)))
                                                         .orElseThrow(() -> new RuntimeException("无原始的额外字段，请先对点位进行插入操作"));
                                                 //打点的额外信息更改复制到点位中（使用了hutool的copy，忽略null值）
-                                                BeanUtil.copyProperties(relateMarkerExtraPunctuate, relateMarkerExtra, CopyOptions.create().ignoreNullValue().ignoreError());
+                                                BeanUtils.copyNotNull(relateMarkerExtraPunctuate, relateMarkerExtra);
                                                 markerExtraMapper.updateById(relateMarkerExtra);
                                             }
                                         }
