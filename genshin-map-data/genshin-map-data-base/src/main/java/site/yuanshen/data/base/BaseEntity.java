@@ -45,7 +45,7 @@ public class BaseEntity implements Serializable {
     /**
      * 更新人
      */
-    @TableField(fill = FieldFill.UPDATE)
+    @TableField(fill = FieldFill.INSERT_UPDATE)
     @Schema(title = "更新人")
     private Long updaterId;
 
@@ -60,7 +60,7 @@ public class BaseEntity implements Serializable {
      * 更新时间
      */
     @Schema(title = "更新时间")
-    @TableField(fill = FieldFill.UPDATE)
+    @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
 
 
