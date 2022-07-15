@@ -102,13 +102,16 @@ public class MarkerSingleDto {
 
     public MarkerSingleDto(MarkerSingleVo markerSingleVo) {
         BeanUtils.copyProperties(markerSingleVo, this);
-        this.itemList = markerSingleVo.getItemList().stream().map(MarkerItemLinkDto::new).collect(Collectors.toList());
+        if(markerSingleVo.getItemList() != null) {
+            this.itemList = markerSingleVo.getItemList().stream().map(MarkerItemLinkDto::new).collect(Collectors.toList());
+        }
     }
 
     public MarkerSingleDto(Marker marker, List<MarkerItemLink> markerItemLinks) {
         BeanUtils.copyProperties(marker, this);
-        this.itemList = markerItemLinks.stream().map(MarkerItemLinkDto::new).collect(Collectors.toList());
-
+        if(markerItemLinks != null) {
+            this.itemList = markerItemLinks.stream().map(MarkerItemLinkDto::new).collect(Collectors.toList());
+        }
     }
 
     public Marker getEntity() {

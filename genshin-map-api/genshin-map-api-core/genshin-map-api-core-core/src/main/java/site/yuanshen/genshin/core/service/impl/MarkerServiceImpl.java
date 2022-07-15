@@ -1,7 +1,5 @@
 package site.yuanshen.genshin.core.service.impl;
 
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.bean.copier.CopyOptions;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -238,11 +236,11 @@ public class MarkerServiceImpl implements MarkerService {
             }
     )
     public Boolean updateMarker(MarkerSingleDto markerSingleDto) {
-        if (markerSingleDto.getItemList() != null || !markerSingleDto.getItemList().isEmpty()) {
+        if (markerSingleDto.getItemList() != null && !markerSingleDto.getItemList().isEmpty()) {
             markerItemLinkMapper.delete(Wrappers.<MarkerItemLink>lambdaQuery().eq(MarkerItemLink::getMarkerId, markerSingleDto.getId()));
             List<MarkerItemLink> itemLinkList = markerSingleDto.getItemList().parallelStream().map(markerItemLinkDto -> markerItemLinkDto.getEntity().setMarkerId(markerSingleDto.getId())).collect(Collectors.toList());
             markerItemLinkMBPService.saveBatch(itemLinkList);
-        } else {
+        } else if(markerSingleDto.getItemList() != null) {
             markerItemLinkMapper.delete(Wrappers.<MarkerItemLink>lambdaQuery().eq(MarkerItemLink::getMarkerId, markerSingleDto.getId()));
         }
         return markerMapper.update(markerSingleDto.getEntity(), Wrappers.<Marker>lambdaUpdate()
