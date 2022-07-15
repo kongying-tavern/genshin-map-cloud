@@ -25,6 +25,12 @@ import site.yuanshen.data.vo.IconTypeVo;
 public class IconTypeDto {
 
     /**
+     * 乐观锁：修改次数
+     */
+    @Schema(title = "乐观锁：修改次数")
+    private Long version;
+
+    /**
      * 分类ID
      */
     @Schema(title = "分类ID")

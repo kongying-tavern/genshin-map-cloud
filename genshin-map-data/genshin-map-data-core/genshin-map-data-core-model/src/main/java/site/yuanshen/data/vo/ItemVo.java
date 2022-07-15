@@ -22,6 +22,12 @@ import java.util.List;
 public class ItemVo {
 
     /**
+     * 乐观锁：修改次数
+     */
+    @Schema(title = "乐观锁：修改次数")
+    private Long version;
+
+    /**
      * 物品ID
      */
     @Schema(title = "物品ID")

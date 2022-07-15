@@ -27,6 +27,12 @@ import java.util.List;
 public class IconDto {
 
     /**
+     * 乐观锁：修改次数
+     */
+    @Schema(title = "乐观锁：修改次数")
+    private Long version;
+
+    /**
      * 图标ID
      */
     @Schema(title = "图标ID")

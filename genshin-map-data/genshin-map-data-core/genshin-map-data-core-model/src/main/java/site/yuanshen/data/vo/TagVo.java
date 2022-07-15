@@ -22,6 +22,12 @@ import java.util.List;
 public class TagVo {
 
     /**
+     * 乐观锁：修改次数
+     */
+    @Schema(title = "乐观锁：修改次数")
+    private Long version;
+
+    /**
      * 标签名
      */
     @Schema(title = "标签名")

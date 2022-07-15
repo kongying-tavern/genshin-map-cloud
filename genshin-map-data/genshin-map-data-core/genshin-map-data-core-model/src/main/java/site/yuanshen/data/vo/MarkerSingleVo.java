@@ -24,6 +24,12 @@ import java.util.List;
 public class MarkerSingleVo {
 
     /**
+     * 乐观锁：修改次数
+     */
+    @Schema(title = "乐观锁：修改次数")
+    private Long version;
+
+    /**
      * 点位ID
      */
     @Schema(title = "点位ID")

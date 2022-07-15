@@ -26,6 +26,12 @@ import site.yuanshen.data.vo.MarkerExtraPunctuateVo;
 public class MarkerExtraPunctuateDto {
 
     /**
+     * 乐观锁：修改次数
+     */
+    @Schema(title = "乐观锁：修改次数")
+    private Long version;
+
+    /**
      * 打点ID
      */
     @Schema(title = "打点ID")

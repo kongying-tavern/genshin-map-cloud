@@ -20,6 +20,12 @@ import lombok.NoArgsConstructor;
 public class AreaVo {
 
     /**
+     * 乐观锁：修改次数
+     */
+    @Schema(title = "乐观锁：修改次数")
+    private Long version;
+
+    /**
      * 地区ID
      */
     @Schema(title = "地区ID")

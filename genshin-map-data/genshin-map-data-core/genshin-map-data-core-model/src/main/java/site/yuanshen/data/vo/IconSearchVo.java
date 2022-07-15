@@ -22,6 +22,12 @@ import java.util.List;
 public class IconSearchVo {
 
     /**
+     * 乐观锁：修改次数
+     */
+    @Schema(title = "乐观锁：修改次数")
+    private Long version;
+
+    /**
      * 图标ID列表
      */
     @Schema(title = "图标ID列表")
