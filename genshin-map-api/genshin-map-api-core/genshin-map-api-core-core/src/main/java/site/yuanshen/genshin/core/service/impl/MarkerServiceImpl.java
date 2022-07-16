@@ -201,8 +201,9 @@ public class MarkerServiceImpl implements MarkerService {
     public Long createMarker(MarkerSingleDto markerSingleDto) {
         Marker marker = markerSingleDto.getEntity();
         markerMapper.insert(marker);
-        //正式更新id
-        List<MarkerItemLink> itemLinkList = markerSingleDto.getItemList().parallelStream().map(markerItemLinkDto -> markerItemLinkDto.getEntity().setMarkerId(marker.getId())).collect(Collectors.toList());
+        //正式更新id item_id+marker_id得唯一
+        List<MarkerItemLink> itemLinkList = markerSingleDto.getItemList().parallelStream().map(markerItemLinkDto -> markerItemLinkDto.getEntity().setMarkerId(marker.getId())).collect(
+                Collectors. collectingAndThen(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(o -> o.getItemId() + ";" + o.getMarkerId()))), ArrayList::new));
         markerItemLinkMBPService.saveBatch(itemLinkList);
         return marker.getId();
     }
