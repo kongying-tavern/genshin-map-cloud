@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import site.yuanshen.data.dto.ItemDto;
 import site.yuanshen.data.dto.ItemSearchDto;
@@ -17,6 +16,7 @@ import site.yuanshen.data.mapper.*;
 import site.yuanshen.data.vo.ItemTypeVo;
 import site.yuanshen.data.vo.ItemVo;
 import site.yuanshen.data.vo.helper.PageListVo;
+import site.yuanshen.genshin.core.service.CacheService;
 import site.yuanshen.genshin.core.service.ItemService;
 import site.yuanshen.genshin.core.service.mbp.ItemAreaPublicMBPService;
 import site.yuanshen.genshin.core.service.mbp.ItemMBPService;
@@ -36,6 +36,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService {
 
+    private final CacheService cacheService;
     private final ItemMapper itemMapper;
     private final ItemMBPService itemMBPService;
     private final ItemTypeMapper itemTypeMapper;
@@ -44,7 +45,6 @@ public class ItemServiceImpl implements ItemService {
     private final ItemTypeLinkMBPService itemTypeLinkMBPService;
     private final ItemAreaPublicMapper itemAreaPublicMapper;
     private final ItemAreaPublicMBPService itemAreaPublicMBPService;
-
     private final MarkerItemLinkMapper markerItemLinkMapper;
 
     /**
@@ -89,11 +89,6 @@ public class ItemServiceImpl implements ItemService {
      * @return 新物品类型ID
      */
     @Override
-    @Caching(
-            evict = {
-                    @CacheEvict(value = "listItemType",allEntries = true),
-            }
-    )
     public Long addItemType(ItemTypeDto itemTypeDto) {
         ItemType itemType = itemTypeDto.getEntity();
         //临时id
@@ -107,6 +102,7 @@ public class ItemServiceImpl implements ItemService {
                     .eq(ItemType::getId, itemType.getParentId())
                     .set(ItemType::getIsFinal, false));
         }
+        cacheService.cleanItemCache();
         return itemType.getId();
     }
 
@@ -117,11 +113,6 @@ public class ItemServiceImpl implements ItemService {
      * @return 是否成功
      */
     @Override
-    @Caching(
-            evict = {
-                    @CacheEvict(value = "listItemType",allEntries = true),
-            }
-    )
     public Boolean updateItemType(ItemTypeDto itemTypeDto) {
         //获取类型实体
         ItemType itemType = itemTypeMapper.selectOne(Wrappers.<ItemType>lambdaQuery()
@@ -152,6 +143,7 @@ public class ItemServiceImpl implements ItemService {
         }
         //更新实体
         itemTypeMapper.updateById(itemType);
+        cacheService.cleanItemCache();
         return true;
     }
 
@@ -163,11 +155,6 @@ public class ItemServiceImpl implements ItemService {
      * @return 是否成功
      */
     @Override
-    @Caching(
-            evict = {
-                    @CacheEvict(value = "listItemType",allEntries = true),
-            }
-    )
     public Boolean moveItemType(List<Long> itemTypeIdList, Long targetTypeId) {
         //选取实体
         List<ItemType> itemTypeList = itemTypeMapper.selectList(Wrappers.<ItemType>lambdaQuery()
@@ -190,6 +177,7 @@ public class ItemServiceImpl implements ItemService {
                         .set(ItemType::getIsFinal, true));
             }
         });
+        cacheService.cleanItemCache();
         return true;
     }
 
@@ -200,13 +188,6 @@ public class ItemServiceImpl implements ItemService {
      * @return 是否成功
      */
     @Override
-    @Caching(
-            evict = {
-                    @CacheEvict(value = "listItemType",allEntries = true),
-                    @CacheEvict(value = "listItemById",allEntries = true),
-                    @CacheEvict(value = "listItem",allEntries = true),
-            }
-    )
     public Boolean deleteItemType(Long itemTypeId) {
         List<Long> nowTypeIdList = Collections.singletonList(itemTypeId);
         while (!nowTypeIdList.isEmpty()) {
@@ -219,6 +200,7 @@ public class ItemServiceImpl implements ItemService {
                     .parallelStream()
                     .map(ItemType::getId).distinct().collect(Collectors.toList());
         }
+        cacheService.cleanItemCache();
         return true;
     }
 
@@ -305,12 +287,6 @@ public class ItemServiceImpl implements ItemService {
      * @return 是否成功
      */
     @Override
-    @Caching(
-            evict = {
-                    @CacheEvict(value = "listItemById",allEntries = true),
-                    @CacheEvict(value = "listItem",allEntries = true)
-            }
-    )
     public Boolean updateItem(List<ItemVo> itemVoList, Integer editSame) {
         for (ItemVo itemVo : itemVoList) {
             ItemDto itemDto = new ItemDto(itemVo);
@@ -368,6 +344,7 @@ public class ItemServiceImpl implements ItemService {
                             .set(itemDto.getSortIndex() != null, Item::getSortIndex, itemDto.getSortIndex())
             );
         }
+        cacheService.cleanItemCache();
         return true;
     }
 
@@ -379,24 +356,20 @@ public class ItemServiceImpl implements ItemService {
      * @return 是否成功
      */
     @Override
-    @Caching(
-            evict = {
-                    @CacheEvict(value = "listItemById",allEntries = true),
-                    @CacheEvict(value = "listItem",allEntries = true)
-            }
-    )
     public Boolean joinItemsInType(List<Long> itemIdList, Long typeId) {
         if (itemTypeMapper.selectOne(Wrappers.<ItemType>lambdaQuery().eq(ItemType::getId, typeId)) == null)
             throw new RuntimeException("类型ID错误");
         if (!itemMapper.selectCount(Wrappers.<Item>lambdaQuery().in(Item::getId, itemIdList)).equals((long) itemIdList.size()))
             throw new RuntimeException("物品ID存在错误");
-        return itemTypeLinkMBPService.saveBatch(
+        boolean res = itemTypeLinkMBPService.saveBatch(
                 itemIdList.stream()
                         .map(id -> new ItemTypeLink()
                                 .setItemId(id)
                                 .setTypeId(typeId))
                         .collect(Collectors.toList())
         );
+        cacheService.cleanItemCache();
+        return res;
     }
 
     /**
@@ -406,12 +379,6 @@ public class ItemServiceImpl implements ItemService {
      * @return 新物品ID
      */
     @Override
-    @Caching(
-            evict = {
-                    @CacheEvict(value = "listItemById",allEntries = true),
-                    @CacheEvict(value = "listItem",allEntries = true)
-            }
-    )
     public Long createItem(ItemDto itemDto) {
         Item item = itemDto.getEntity();
         itemMapper.insert(item);
@@ -427,6 +394,7 @@ public class ItemServiceImpl implements ItemService {
                             .collect(Collectors.toList())
             );
         }
+        cacheService.cleanItemCache();
         return item.getId();
     }
 
@@ -438,12 +406,6 @@ public class ItemServiceImpl implements ItemService {
      * @return 物品复制到地区结果前端封装
      */
     @Override
-    @Caching(
-            evict = {
-                    @CacheEvict(value = "listItemById",allEntries = true),
-                    @CacheEvict(value = "listItem",allEntries = true)
-            }
-    )
     public List<Long> copyItemToArea(List<Long> itemIdList, Long areaId) {
         //TODO 判断是否是末端地区，检查所有涉及地区的代码
         //TODO ID冲突问题
@@ -459,6 +421,7 @@ public class ItemServiceImpl implements ItemService {
 //			id++;
         }
         itemMBPService.saveBatch(items);
+        cacheService.cleanItemCache();
         return items.parallelStream().map(Item::getId).collect(Collectors.toList());
     }
 
@@ -469,18 +432,13 @@ public class ItemServiceImpl implements ItemService {
      * @return 是否成功
      */
     @Override
-    @Caching(
-            evict = {
-                    @CacheEvict(value = "listItemById",allEntries = true),
-                    @CacheEvict(value = "listItem",allEntries = true),
-                    @CacheEvict(value = "listCommonItem",allEntries = true),
-            }
-    )
     public Boolean deleteItem(Long itemId) {
         itemTypeLinkMapper.delete(Wrappers.<ItemTypeLink>lambdaQuery()
                 .eq(ItemTypeLink::getItemId, itemId));
-        return itemMapper.delete(Wrappers.<Item>lambdaQuery()
+        boolean deleted = itemMapper.delete(Wrappers.<Item>lambdaQuery()
                 .eq(Item::getId, itemId)) == 1;
+        cacheService.cleanItemCache();
+        return deleted;
     }
 
     /**

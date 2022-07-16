@@ -18,6 +18,7 @@ import site.yuanshen.data.entity.*;
 import site.yuanshen.data.mapper.*;
 import site.yuanshen.data.vo.*;
 import site.yuanshen.data.vo.helper.PageListVo;
+import site.yuanshen.genshin.core.service.CacheService;
 import site.yuanshen.genshin.core.service.MarkerService;
 import site.yuanshen.genshin.core.service.mbp.*;
 
@@ -37,6 +38,7 @@ import static com.google.common.primitives.Booleans.countTrue;
 @RequiredArgsConstructor
 public class MarkerServiceImpl implements MarkerService {
 
+    private final CacheService cacheService;
     private final MarkerMapper markerMapper;
     private final MarkerMBPService markerMBPService;
     private final MarkerExtraMapper markerExtraMapper;
@@ -188,16 +190,6 @@ public class MarkerServiceImpl implements MarkerService {
      * @return 新点位ID
      */
     @Override
-    @Caching(
-            evict = {
-                    @CacheEvict(value = "searchMarkerId",allEntries = true),
-                    @CacheEvict(value = "listMarkerById",allEntries = true),
-                    @CacheEvict(value = "listMarkerPage",allEntries = true),
-                    @CacheEvict(value = "listItemType",allEntries = true),
-                    @CacheEvict(value = "listItemById",allEntries = true),
-                    @CacheEvict(value = "listItem",allEntries = true),
-            }
-    )
     public Long createMarker(MarkerSingleDto markerSingleDto) {
         Marker marker = markerSingleDto.getEntity();
         markerMapper.insert(marker);
@@ -205,6 +197,10 @@ public class MarkerServiceImpl implements MarkerService {
         List<MarkerItemLink> itemLinkList = markerSingleDto.getItemList().parallelStream().map(markerItemLinkDto -> markerItemLinkDto.getEntity().setMarkerId(marker.getId())).collect(
                 Collectors. collectingAndThen(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(o -> o.getItemId() + ";" + o.getMarkerId()))), ArrayList::new));
         markerItemLinkMBPService.saveBatch(itemLinkList);
+
+        cacheService.cleanMarkerCache();
+        cacheService.cleanItemCache();
+
         return marker.getId();
     }
 
@@ -215,18 +211,13 @@ public class MarkerServiceImpl implements MarkerService {
      * @return 是否成功
      */
     @Override
-    @Caching(
-            evict = {
-                    @CacheEvict(value = "searchMarkerId",allEntries = true),
-                    @CacheEvict(value = "listMarkerById",allEntries = true),
-                    @CacheEvict(value = "listMarkerPage",allEntries = true),
-                    @CacheEvict(value = "listItemType",allEntries = true),
-                    @CacheEvict(value = "listItemById",allEntries = true),
-                    @CacheEvict(value = "listItem",allEntries = true),
-            }
-    )
     public Boolean addMarkerExtra(MarkerExtraDto markerExtraDto) {
-        return markerExtraMapper.insert(markerExtraDto.getEntity()) == 1;
+        boolean added = markerExtraMapper.insert(markerExtraDto.getEntity()) == 1;
+
+        cacheService.cleanMarkerCache();
+        cacheService.cleanItemCache();
+
+        return added;
     }
 
     /**
@@ -236,16 +227,6 @@ public class MarkerServiceImpl implements MarkerService {
      * @return 是否成功
      */
     @Override
-    @Caching(
-            evict = {
-                    @CacheEvict(value = "searchMarkerId",allEntries = true),
-                    @CacheEvict(value = "listMarkerById",allEntries = true),
-                    @CacheEvict(value = "listMarkerPage",allEntries = true),
-                    @CacheEvict(value = "listItemType",allEntries = true),
-                    @CacheEvict(value = "listItemById",allEntries = true),
-                    @CacheEvict(value = "listItem",allEntries = true),
-            }
-    )
     public Boolean updateMarker(MarkerSingleDto markerSingleDto) {
         Boolean updated = markerMapper.update(markerSingleDto.getEntity(), Wrappers.<Marker>lambdaUpdate()
                 .eq(Marker::getId, markerSingleDto.getId())) == 1;
@@ -260,6 +241,10 @@ public class MarkerServiceImpl implements MarkerService {
         } else if (markerSingleDto.getItemList() != null) {
             markerItemLinkMapper.delete(Wrappers.<MarkerItemLink>lambdaQuery().eq(MarkerItemLink::getMarkerId, markerSingleDto.getId()));
         }
+
+        cacheService.cleanMarkerCache();
+        cacheService.cleanItemCache();
+
         return updated;
     }
 
@@ -270,19 +255,14 @@ public class MarkerServiceImpl implements MarkerService {
      * @return 是否成功
      */
     @Override
-    @Caching(
-            evict = {
-                    @CacheEvict(value = "searchMarkerId",allEntries = true),
-                    @CacheEvict(value = "listMarkerById",allEntries = true),
-                    @CacheEvict(value = "listMarkerPage",allEntries = true),
-                    @CacheEvict(value = "listItemType",allEntries = true),
-                    @CacheEvict(value = "listItemById",allEntries = true),
-                    @CacheEvict(value = "listItem",allEntries = true),
-            }
-    )
     public Boolean updateMarkerExtra(MarkerExtraDto markerExtraDto) {
-        return markerExtraMapper.update(markerExtraDto.getEntity(), Wrappers.<MarkerExtra>lambdaUpdate()
+        boolean updated = markerExtraMapper.update(markerExtraDto.getEntity(), Wrappers.<MarkerExtra>lambdaUpdate()
                 .eq(MarkerExtra::getMarkerId, markerExtraDto.getMarkerId())) == 1;
+
+        cacheService.cleanMarkerCache();
+        cacheService.cleanItemCache();
+
+        return updated;
     }
 
     /**
@@ -292,20 +272,14 @@ public class MarkerServiceImpl implements MarkerService {
      * @return 是否成功
      */
     @Override
-    @Caching(
-            evict = {
-                    @CacheEvict(value = "searchMarkerId",allEntries = true),
-                    @CacheEvict(value = "listMarkerById",allEntries = true),
-                    @CacheEvict(value = "listMarkerPage",allEntries = true),
-                    @CacheEvict(value = "listItemType",allEntries = true),
-                    @CacheEvict(value = "listItemById",allEntries = true),
-                    @CacheEvict(value = "listItem",allEntries = true),
-            }
-    )
     public Boolean deleteMarker(Long markerId) {
         markerMapper.delete(Wrappers.<Marker>lambdaQuery().eq(Marker::getId, markerId));
         markerItemLinkMapper.delete(Wrappers.<MarkerItemLink>lambdaQuery().eq(MarkerItemLink::getMarkerId, markerId));
         markerExtraMapper.delete(Wrappers.<MarkerExtra>lambdaQuery().eq(MarkerExtra::getMarkerId, markerId));
+
+        cacheService.cleanMarkerCache();
+        cacheService.cleanItemCache();
+
         return true;
     }
 
