@@ -192,7 +192,10 @@ public class MarkerServiceImpl implements MarkerService {
             evict = {
                     @CacheEvict(value = "searchMarkerId",allEntries = true),
                     @CacheEvict(value = "listMarkerById",allEntries = true),
-                    @CacheEvict(value = "listMarkerPage",allEntries = true)
+                    @CacheEvict(value = "listMarkerPage",allEntries = true),
+                    @CacheEvict(value = "listItemType",allEntries = true),
+                    @CacheEvict(value = "listItemById",allEntries = true),
+                    @CacheEvict(value = "listItem",allEntries = true),
             }
     )
     public Long createMarker(MarkerSingleDto markerSingleDto) {
@@ -215,7 +218,10 @@ public class MarkerServiceImpl implements MarkerService {
             evict = {
                     @CacheEvict(value = "searchMarkerId",allEntries = true),
                     @CacheEvict(value = "listMarkerById",allEntries = true),
-                    @CacheEvict(value = "listMarkerPage",allEntries = true)
+                    @CacheEvict(value = "listMarkerPage",allEntries = true),
+                    @CacheEvict(value = "listItemType",allEntries = true),
+                    @CacheEvict(value = "listItemById",allEntries = true),
+                    @CacheEvict(value = "listItem",allEntries = true),
             }
     )
     public Boolean addMarkerExtra(MarkerExtraDto markerExtraDto) {
@@ -233,7 +239,10 @@ public class MarkerServiceImpl implements MarkerService {
             evict = {
                     @CacheEvict(value = "searchMarkerId",allEntries = true),
                     @CacheEvict(value = "listMarkerById",allEntries = true),
-                    @CacheEvict(value = "listMarkerPage",allEntries = true)
+                    @CacheEvict(value = "listMarkerPage",allEntries = true),
+                    @CacheEvict(value = "listItemType",allEntries = true),
+                    @CacheEvict(value = "listItemById",allEntries = true),
+                    @CacheEvict(value = "listItem",allEntries = true),
             }
     )
     public Boolean updateMarker(MarkerSingleDto markerSingleDto) {
@@ -264,7 +273,10 @@ public class MarkerServiceImpl implements MarkerService {
             evict = {
                     @CacheEvict(value = "searchMarkerId",allEntries = true),
                     @CacheEvict(value = "listMarkerById",allEntries = true),
-                    @CacheEvict(value = "listMarkerPage",allEntries = true)
+                    @CacheEvict(value = "listMarkerPage",allEntries = true),
+                    @CacheEvict(value = "listItemType",allEntries = true),
+                    @CacheEvict(value = "listItemById",allEntries = true),
+                    @CacheEvict(value = "listItem",allEntries = true),
             }
     )
     public Boolean updateMarkerExtra(MarkerExtraDto markerExtraDto) {
@@ -283,7 +295,10 @@ public class MarkerServiceImpl implements MarkerService {
             evict = {
                     @CacheEvict(value = "searchMarkerId",allEntries = true),
                     @CacheEvict(value = "listMarkerById",allEntries = true),
-                    @CacheEvict(value = "listMarkerPage",allEntries = true)
+                    @CacheEvict(value = "listMarkerPage",allEntries = true),
+                    @CacheEvict(value = "listItemType",allEntries = true),
+                    @CacheEvict(value = "listItemById",allEntries = true),
+                    @CacheEvict(value = "listItem",allEntries = true),
             }
     )
     public Boolean deleteMarker(Long markerId) {
