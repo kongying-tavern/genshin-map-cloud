@@ -18,10 +18,7 @@ import site.yuanshen.genshin.core.service.AreaService;
 import site.yuanshen.genshin.core.service.mbp.AreaMBPService;
 import site.yuanshen.genshin.core.service.mbp.ItemMBPService;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -64,7 +61,7 @@ public class AreaServiceImpl implements AreaService {
             nowAreaIdList = areaList.parallelStream().map(Area::getId).collect(Collectors.toList());
             result.addAll(areaList.stream().map(AreaDto::new).collect(Collectors.toList()));
         }
-        return result;
+        return result.stream().sorted(Comparator.comparing(AreaDto::getSortIndex).reversed()).collect(Collectors.toList());
     }
 
     /**

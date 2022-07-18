@@ -77,6 +77,7 @@ public class ItemServiceImpl implements ItemService {
         return new PageListVo<ItemTypeVo>()
                 .setRecord(itemTypePage.getRecords().stream()
                         .map(ItemTypeDto::new).map(ItemTypeDto::getVo)
+                        .sorted(Comparator.comparing(ItemTypeVo::getSortIndex).reversed())
                         .collect(Collectors.toList()))
                 .setSize(itemTypePage.getSize())
                 .setTotal(itemTypePage.getTotal());
@@ -231,6 +232,7 @@ public class ItemServiceImpl implements ItemService {
                 .map(item ->
                         new ItemDto(item)
                                 .setTypeIdList(typeMap.getOrDefault(item.getId(), new ArrayList<>())))
+                .sorted(Comparator.comparing(ItemDto::getSortIndex).reversed())
                 .collect(Collectors.toList());
     }
 
@@ -274,7 +276,8 @@ public class ItemServiceImpl implements ItemService {
                         .map(ItemDto::new)
                         .map(itemDto -> itemDto.setCount(Optional.ofNullable(markerItemLinkCount.get(itemDto.getItemId())).orElse(0)))
                         .map(itemDto -> itemDto.setTypeIdList(itemToTypeMap.get(itemDto.getItemId())))
-                        .map(ItemDto::getVo).collect(Collectors.toList()))
+                        .map(ItemDto::getVo)
+                        .sorted(Comparator.comparing(ItemVo::getSortIndex).reversed()).collect(Collectors.toList()))
                 .setTotal(itemPage.getTotal())
                 .setSize(itemPage.getSize());
     }
@@ -459,7 +462,8 @@ public class ItemServiceImpl implements ItemService {
                                 .in(Item::getId,
                                         areaPublicPage.getRecords().parallelStream()
                                                 .map(ItemAreaPublic::getItemId).collect(Collectors.toList())))
-                        .parallelStream().map(ItemDto::new).map(ItemDto::getVo).collect(Collectors.toList()))
+                        .parallelStream().map(ItemDto::new).map(ItemDto::getVo)
+                        .sorted(Comparator.comparing(ItemVo::getSortIndex).reversed()).collect(Collectors.toList()))
                 .setTotal(areaPublicPage.getTotal())
                 .setSize(areaPublicPage.getSize());
     }
