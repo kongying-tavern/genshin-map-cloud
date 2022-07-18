@@ -19,14 +19,13 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFactory;
+import site.yuanshen.auth.model.dto.RoleSecurityDto;
 import site.yuanshen.auth.model.dto.UserSecurityDto;
 import site.yuanshen.auth.service.ClientDetailsServiceImpl;
 
 import java.security.KeyPair;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 验证服务器配置
@@ -60,7 +59,10 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
             Map<String, Object> additionalInfo = new HashMap<>();
             if (principal instanceof UserSecurityDto) {
                 UserSecurityDto userPrincipal = (UserSecurityDto) principal;
+                List<RoleSecurityDto> roleList = userPrincipal.getRoleDtoList();
+                List<String> roleCodeList = Optional.of(roleList).orElse(new ArrayList<>()).stream().map(role -> role.getCode()).collect(Collectors.toList());
                 additionalInfo.put("userId", userPrincipal.getUserId());
+                additionalInfo.put("userRoles", roleCodeList);
             }
             ((DefaultOAuth2AccessToken) oAuth2AccessToken).setAdditionalInformation(additionalInfo);
             return oAuth2AccessToken;
