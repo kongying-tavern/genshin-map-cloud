@@ -58,7 +58,7 @@ public class AreaController {
     }
 
     @Operation(summary = "修改地区", description = "修改地区")
-    @PostMapping("/")
+    @PostMapping("")
     @Transactional
     public R<Boolean> updateArea(@RequestBody AreaVo areaVo) {
         return RUtils.create(
