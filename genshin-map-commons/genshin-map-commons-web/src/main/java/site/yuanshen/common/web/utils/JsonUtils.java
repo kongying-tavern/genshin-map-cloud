@@ -7,9 +7,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class JsonUtils {
-    public static Map<String, Object> merge(String jsonString, Map<String, Object> config) {
-        Map<String, Object> jsonObj = jsonToMap(jsonString);
-        return merge(jsonObj, config);
+
+    /**
+     *
+     * @param oldJsonStr 数据库中的老markerExtraContent
+     * @param newJsonStr 来自前端的新markerExtraContent
+     * @return 比较完后的markerExtraContent
+     */
+    public static String merge(String oldJsonStr, String newJsonStr) {
+        Map<String, Object> oldJsonObj = jsonToMap(oldJsonStr);
+        Map<String, Object> newJsonObj = jsonToMap(newJsonStr);
+        return JSON.toJSONString(merge(oldJsonObj, newJsonObj));
     }
 
     public static Map<String, Object> merge(Map<String, Object> jsonObj, Map<String, Object> config) {
