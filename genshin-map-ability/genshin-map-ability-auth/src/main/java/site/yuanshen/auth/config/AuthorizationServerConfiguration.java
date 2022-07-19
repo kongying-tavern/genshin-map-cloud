@@ -79,7 +79,7 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 
     @Bean
     public JwtAccessTokenConverter jwtAccessTokenConverter() {
-        JwtAccessTokenConverter accessTokenConverter = new JwtAccessTokenConverter();
+        JwtAccessToken accessTokenConverter = new JwtAccessToken();
         accessTokenConverter.setKeyPair(keyPair());//配置JWT使用的秘钥
         return accessTokenConverter;
     }
