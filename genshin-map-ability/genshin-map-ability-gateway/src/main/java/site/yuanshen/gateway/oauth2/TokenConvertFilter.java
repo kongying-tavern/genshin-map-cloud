@@ -77,6 +77,7 @@ public class TokenConvertFilter implements GlobalFilter, Ordered {
                 .headers(httpHeaders -> httpHeaders.remove("Authorization"))
                 .header("userName", userName)
                 .header("Authorities", authorities)
+                .header("isTestUser",authorities.contains(RoleEnum.MAP_NEIGUI.getCode())?"1":"")
                 .header("userId", userId).build();
         return chain.filter(exchange.mutate().request(request).build());
     }

@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import site.yuanshen.common.web.response.R;
 import site.yuanshen.common.web.response.RUtils;
@@ -36,7 +37,8 @@ public class MarkerController {
     @Operation(summary = "根据各种条件筛选查询点位ID",
             description = "支持根据末端地区、末端类型、物品来进行查询，三种查询不能同时生效，同时存在时报错，同时支持测试点位获取")
     @PostMapping("/get/id")
-    public R<List<Long>> searchMarkerId(@RequestBody MarkerSearchVo markerSearchVo) {
+    public R<List<Long>> searchMarkerId(@RequestHeader(value = "isTestUser",required = false) String isTestUser, @RequestBody MarkerSearchVo markerSearchVo) {
+        markerSearchVo.setIsTestUser(StringUtils.hasLength(isTestUser));
         return RUtils.create(
                 markerService.searchMarkerId(markerSearchVo)
         );
@@ -45,7 +47,8 @@ public class MarkerController {
     @Operation(summary = "根据各种条件筛选查询点位信息",
             description = "支持根据末端地区、末端类型、物品来进行查询，三种查询不能同时生效，同时存在时报错，同时支持测试点位获取")
     @PostMapping("/get/list_byinfo")
-    public R<List<MarkerVo>> searchMarker(@RequestBody MarkerSearchVo markerSearchVo) {
+    public R<List<MarkerVo>> searchMarker(@RequestHeader(value = "isTestUser",required = false) String isTestUser,@RequestBody MarkerSearchVo markerSearchVo) {
+        markerSearchVo.setIsTestUser(StringUtils.hasLength(isTestUser));
         return RUtils.create(
                 markerService.searchMarker(markerSearchVo).parallelStream()
                         .map(MarkerDto::getVo).collect(Collectors.toList())
@@ -54,18 +57,18 @@ public class MarkerController {
 
     @Operation(summary = "通过ID列表查询点位信息", description = "通过ID列表来进行查询点位信息")
     @PostMapping("/get/list_byid")
-    public R<List<MarkerVo>> listMarkerById(@RequestBody List<Long> markerIdList) {
+    public R<List<MarkerVo>> listMarkerById(@RequestHeader(value = "isTestUser",required = false) String isTestUser,@RequestBody List<Long> markerIdList) {
         return RUtils.create(
-                markerService.listMarkerById(markerIdList).parallelStream()
+                markerService.listMarkerById(markerIdList,StringUtils.hasLength(isTestUser)).parallelStream()
                         .map(MarkerDto::getVo).collect(Collectors.toList())
         );
     }
 
     @Operation(summary = "分页查询所有点位信息", description = "分页查询所有点位信息")
     @PostMapping("/get/page")
-    public R<PageListVo<MarkerVo>> listMarkerPage(@RequestBody PageSearchVo pageSearchVo) {
+    public R<PageListVo<MarkerVo>> listMarkerPage(@RequestHeader(value = "isTestUser",required = false) String isTestUser,@RequestBody PageSearchVo pageSearchVo) {
         return RUtils.create(
-                markerService.listMarkerPage(new PageSearchDto(pageSearchVo))
+                markerService.listMarkerPage(new PageSearchDto(pageSearchVo),StringUtils.hasLength(isTestUser))
         );
     }
 

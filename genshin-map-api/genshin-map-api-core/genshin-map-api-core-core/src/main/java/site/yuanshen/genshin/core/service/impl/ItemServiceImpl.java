@@ -56,13 +56,14 @@ public class ItemServiceImpl implements ItemService {
      */
     @Override
     @Cacheable("listItemType")
-    public PageListVo<ItemTypeVo> listItemType(PageAndTypeListDto searchDto, Integer self) {
+    public PageListVo<ItemTypeVo> listItemType(PageAndTypeListDto searchDto, Integer self,Boolean isTestUser) {
         Page<ItemType> itemTypePage = new Page<>();
         //查询自身
         List<Long> typeIdList = searchDto.getTypeIdList();
         if (self.equals(0)) {
             if (typeIdList != null && typeIdList.size() > 0) {
                 itemTypePage = itemTypeMapper.selectPage(searchDto.getPageEntity(), Wrappers.<ItemType>lambdaQuery()
+                        .ne(!isTestUser,ItemType::getHiddenFlag,2)
                         .in(ItemType::getId, typeIdList));
             } else {
                 itemTypePage.setTotal(0L);
@@ -71,6 +72,7 @@ public class ItemServiceImpl implements ItemService {
         //查询子级
         else if (self.equals(1)) {
             itemTypePage = itemTypeMapper.selectPage(searchDto.getPageEntity(), Wrappers.<ItemType>lambdaQuery()
+                    .ne(!isTestUser,ItemType::getHiddenFlag,2)
                     .in(ItemType::getParentId,
                             typeIdList != null && typeIdList.size() > 0 ? typeIdList : Collections.singletonList(-1L)));
         }
@@ -213,7 +215,7 @@ public class ItemServiceImpl implements ItemService {
      */
     @Override
     @Cacheable("listItemById")
-    public List<ItemDto> listItemById(List<Long> itemIdList) {
+    public List<ItemDto> listItemById(List<Long> itemIdList,Boolean isTestUser) {
         //收集分类信息
         Map<Long, List<Long>> typeMap = new ConcurrentHashMap<>();
         itemTypeLinkMapper.selectList(Wrappers.<ItemTypeLink>lambdaQuery()
@@ -227,6 +229,7 @@ public class ItemServiceImpl implements ItemService {
                         }));
         //取得实体类并转化为DTO，过程之中写入分类信息
         return itemMapper.selectList(Wrappers.<Item>lambdaQuery()
+                        .ne(!isTestUser,Item::getHiddenFlag,2)
                         .in(Item::getId, itemIdList))
                 .parallelStream()
                 .map(item ->

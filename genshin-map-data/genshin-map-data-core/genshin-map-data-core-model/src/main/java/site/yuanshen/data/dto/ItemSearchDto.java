@@ -51,6 +51,13 @@ public class ItemSearchDto {
     @Schema(title = "每页大小，默认为10")
     private Long size = 10L;
 
+
+    /**
+     * 是否为测试打点员
+     */
+    @Schema(title = "是否为测试打点员")
+    private Boolean isTestUser;
+
     public ItemSearchDto(ItemSearchVo itemSearchVo) {
         BeanUtils.copyProperties(itemSearchVo, this);
     }

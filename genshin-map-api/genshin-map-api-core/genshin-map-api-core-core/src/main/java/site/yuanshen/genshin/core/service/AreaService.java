@@ -26,7 +26,7 @@ public interface AreaService {
      * @param areaId 地区ID
      * @return 地区数据封装
      */
-    AreaDto getArea(Long areaId);
+    AreaDto getArea(Long areaId,Boolean isTestUser);
 
     /**
      * 新增地区

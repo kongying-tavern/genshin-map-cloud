@@ -47,7 +47,8 @@ public class AreaServiceImpl implements AreaService {
     public List<AreaDto> listArea(AreaSearchVo areaSearchVo) {
         //非递归查询
         if (!areaSearchVo.getIsTraverse()) {
-            return areaMapper.selectList(Wrappers.<Area>lambdaQuery()
+            //如果不为测试打点员,则搜索时hiddenFlag!=2
+            return areaMapper.selectList(Wrappers.<Area>lambdaQuery().ne(!areaSearchVo.getIsTestUser(),Area::getHiddenFlag,2)
                             .eq(Area::getParentId, Optional.ofNullable(areaSearchVo.getParentId()).orElse(-1L)))
                     .stream().map(AreaDto::new).collect(Collectors.toList());
         }
@@ -56,7 +57,7 @@ public class AreaServiceImpl implements AreaService {
         //存储查到的所有的地区信息
         List<AreaDto> result = new ArrayList<>();
         while (!nowAreaIdList.isEmpty()) {
-            List<Area> areaList = areaMapper.selectList(Wrappers.<Area>lambdaQuery()
+            List<Area> areaList = areaMapper.selectList(Wrappers.<Area>lambdaQuery().ne(!areaSearchVo.getIsTestUser(),Area::getHiddenFlag,2)
                     .in(Area::getParentId, nowAreaIdList));
             nowAreaIdList = areaList.parallelStream().map(Area::getId).collect(Collectors.toList());
             result.addAll(areaList.stream().map(AreaDto::new).collect(Collectors.toList()));
@@ -72,8 +73,8 @@ public class AreaServiceImpl implements AreaService {
      */
     @Override
     @Cacheable(value = "area",key = "#areaId")
-    public AreaDto getArea(Long areaId) {
-        return new AreaDto(areaMapper.selectOne(Wrappers.<Area>lambdaQuery()
+    public AreaDto getArea(Long areaId,Boolean isTestUser) {
+        return new AreaDto(areaMapper.selectOne(Wrappers.<Area>lambdaQuery().ne(!isTestUser,Area::getHiddenFlag,2)
                 .eq(Area::getId, areaId)));
     }
 

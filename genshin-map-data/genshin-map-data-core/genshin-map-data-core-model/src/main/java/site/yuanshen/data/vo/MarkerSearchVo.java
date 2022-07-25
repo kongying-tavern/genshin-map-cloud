@@ -44,4 +44,12 @@ public class MarkerSearchVo {
      */
     @Schema(title = "获取测试点位，默认为false不获取，为true时只获取测试点位")
     private Boolean getBeta = false;
+
+
+    /**
+     * 是否为测试打点员
+     */
+    @Schema(title = "是否为测试打点员")
+    private Boolean isTestUser;
+
 }

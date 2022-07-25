@@ -27,7 +27,7 @@ public interface ItemService {
      * @param self      查询自身还是查询子级，0为查询自身，1为查询子级
      * @return 物品类型的前端封装的分页封装
      */
-    PageListVo<ItemTypeVo> listItemType(PageAndTypeListDto searchDto, Integer self);
+    PageListVo<ItemTypeVo> listItemType(PageAndTypeListDto searchDto, Integer self,Boolean isTestUser);
 
     /**
      * 添加物品类型
@@ -72,7 +72,7 @@ public interface ItemService {
      * @param itemIdList 物品ID列表
      * @return 物品数据封装列表
      */
-    List<ItemDto> listItemById(List<Long> itemIdList);
+    List<ItemDto> listItemById(List<Long> itemIdList,Boolean isTestUser);
 
     /**
      * 根据筛选条件列出物品信息

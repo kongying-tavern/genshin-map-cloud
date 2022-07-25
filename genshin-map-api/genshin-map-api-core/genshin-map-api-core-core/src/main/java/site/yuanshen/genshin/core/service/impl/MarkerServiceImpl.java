@@ -12,6 +12,7 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import site.yuanshen.common.core.utils.BeanUtils;
+import site.yuanshen.common.web.utils.JsonUtils;
 import site.yuanshen.data.dto.*;
 import site.yuanshen.data.dto.helper.PageSearchDto;
 import site.yuanshen.data.entity.*;
@@ -69,7 +70,7 @@ public class MarkerServiceImpl implements MarkerService {
         List<Long> itemIdList = new ArrayList<>();
         if (isArea) {
             itemIdList = itemMapper.selectList(Wrappers.<Item>lambdaQuery()
-                            .in(Item::getAreaId, searchVo.getAreaIdList())
+                            .in(Item::getAreaId, searchVo.getAreaIdList()).ne(!searchVo.getIsTestUser(), Item::getHiddenFlag, 2)
                             .select(Item::getId))
                     .stream()
                     .map(Item::getId).distinct().collect(Collectors.toList());
@@ -84,6 +85,16 @@ public class MarkerServiceImpl implements MarkerService {
                     .stream()
                     .map(ItemTypeLink::getItemId).distinct().collect(Collectors.toList());
         }
+
+        //如果不是按地区筛选,也就是说没经过筛选内鬼这一步,则再筛一遍 TODO:感觉繁琐了
+        if (!isArea){
+            itemIdList = itemMapper.selectList(Wrappers.<Item>lambdaQuery()
+                            .in(Item::getId, itemIdList).ne(!searchVo.getIsTestUser(), Item::getHiddenFlag, 2)
+                            .select(Item::getId)).stream()
+                    .map(Item::getId).distinct().collect(Collectors.toList());
+        }
+
+
         if (!searchVo.getGetBeta()) {
             if (itemIdList.isEmpty()) return new ArrayList<>();
             return markerItemLinkMapper.selectList(Wrappers.<MarkerItemLink>lambdaQuery()
@@ -115,7 +126,7 @@ public class MarkerServiceImpl implements MarkerService {
     //此处是两个方法的缝合，不需要加缓存
     public List<MarkerDto> searchMarker(MarkerSearchVo markerSearchVo) {
         List<Long> markerIdList = searchMarkerId(markerSearchVo);
-        return listMarkerById(markerIdList);
+        return listMarkerById(markerIdList,markerSearchVo.getIsTestUser());
     }
 
 
@@ -127,7 +138,7 @@ public class MarkerServiceImpl implements MarkerService {
      */
     @Override
     @Cacheable(value = "listMarkerById")
-    public List<MarkerDto> listMarkerById(List<Long> markerIdList) {
+    public List<MarkerDto> listMarkerById(List<Long> markerIdList,Boolean isTestUser) {
         //为空直接返回
         if (markerIdList.isEmpty()) return new ArrayList<>();
         //获取所有的额外字段
@@ -144,7 +155,7 @@ public class MarkerServiceImpl implements MarkerService {
                                     return linkList;
                                 }));
         //构建返回
-        return markerMapper.selectList(Wrappers.<Marker>lambdaQuery().in(Marker::getId, markerIdList))
+        return markerMapper.selectList(Wrappers.<Marker>lambdaQuery().in(Marker::getId, markerIdList).ne(!isTestUser,Marker::getHiddenFlag,2))
                 .parallelStream().map(marker ->
                         new MarkerDto(marker,
                                 markerExtraMap.get(marker.getId()),
@@ -159,8 +170,8 @@ public class MarkerServiceImpl implements MarkerService {
      */
     @Override
     @Cacheable(value = "listMarkerPage")
-    public PageListVo<MarkerVo> listMarkerPage(PageSearchDto pageSearchDto) {
-        Page<Marker> markerPage = markerMapper.selectPage(pageSearchDto.getPageEntity(), Wrappers.lambdaQuery());
+    public PageListVo<MarkerVo> listMarkerPage(PageSearchDto pageSearchDto,Boolean isTestUser) {
+        Page<Marker> markerPage = markerMapper.selectPage(pageSearchDto.getPageEntity(), Wrappers.<Marker>lambdaQuery().ne(!isTestUser,Marker::getHiddenFlag,2));
         List<Long> markerIdList = markerPage.getRecords().stream()
                 .map(Marker::getId).collect(Collectors.toList());
         Map<Long, MarkerExtra> extraMap = markerExtraMapper.selectList(Wrappers.<MarkerExtra>lambdaQuery()
@@ -195,7 +206,7 @@ public class MarkerServiceImpl implements MarkerService {
         markerMapper.insert(marker);
         //正式更新id item_id+marker_id得唯一
         List<MarkerItemLink> itemLinkList = markerSingleDto.getItemList().parallelStream().map(markerItemLinkDto -> markerItemLinkDto.getEntity().setMarkerId(marker.getId())).collect(
-                Collectors. collectingAndThen(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(o -> o.getItemId() + ";" + o.getMarkerId()))), ArrayList::new));
+                Collectors.collectingAndThen(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(o -> o.getItemId() + ";" + o.getMarkerId()))), ArrayList::new));
         markerItemLinkMBPService.saveBatch(itemLinkList);
 
         cacheService.cleanMarkerCache();
@@ -230,7 +241,7 @@ public class MarkerServiceImpl implements MarkerService {
     public Boolean updateMarker(MarkerSingleDto markerSingleDto) {
         Boolean updated = markerMapper.update(markerSingleDto.getEntity(), Wrappers.<Marker>lambdaUpdate()
                 .eq(Marker::getId, markerSingleDto.getId())) == 1;
-        if(!updated) {
+        if (!updated) {
             throw new OptimisticLockingFailureException("该点位已更新，请重新提交");
         }
 
@@ -256,6 +267,16 @@ public class MarkerServiceImpl implements MarkerService {
      */
     @Override
     public Boolean updateMarkerExtra(MarkerExtraDto markerExtraDto) {
+        //TODO:如果增加乐观锁后,默认搜不到情况下version=0.第一个人先未找到,进行新增,此时version为默认值1.第二个人进行找到,0和1匹配不上,更新失败
+        //2.情况2-两人一起到达搜索,此时都找不到,1号先完成了添加,2号再完成了添加,此时会有两条一模一样数据,但是搜索出来的时候只会使用一条,影响不大.
+        MarkerExtra markerExtra = markerExtraMapper.selectOne(Wrappers.<MarkerExtra>lambdaQuery().eq(MarkerExtra::getMarkerId, markerExtraDto.getMarkerId()));
+        if (markerExtra == null) {
+            return addMarkerExtra(markerExtraDto);
+        }
+
+        String mergeResult = JsonUtils.merge(markerExtra.getMarkerExtraContent(), markerExtraDto.getMarkerExtraContent());
+        markerExtraDto.setMarkerExtraContent(mergeResult);
+
         boolean updated = markerExtraMapper.update(markerExtraDto.getEntity(), Wrappers.<MarkerExtra>lambdaUpdate()
                 .eq(MarkerExtra::getMarkerId, markerExtraDto.getMarkerId())) == 1;
 
@@ -413,13 +434,13 @@ public class MarkerServiceImpl implements MarkerService {
     @Override
     @Caching(
             evict = {
-                    @CacheEvict(value = "searchMarkerId",allEntries = true),
-                    @CacheEvict(value = "listMarkerById",allEntries = true),
-                    @CacheEvict(value = "listMarkerPage",allEntries = true),
-                    @CacheEvict(value = "searchPunctuateId",allEntries = true),
-                    @CacheEvict(value = "listPunctuateById",allEntries = true),
-                    @CacheEvict(value = "listAllPunctuatePage",allEntries = true),
-                    @CacheEvict(value = "listPunctuatePage",allEntries = true),
+                    @CacheEvict(value = "searchMarkerId", allEntries = true),
+                    @CacheEvict(value = "listMarkerById", allEntries = true),
+                    @CacheEvict(value = "listMarkerPage", allEntries = true),
+                    @CacheEvict(value = "searchPunctuateId", allEntries = true),
+                    @CacheEvict(value = "listPunctuateById", allEntries = true),
+                    @CacheEvict(value = "listAllPunctuatePage", allEntries = true),
+                    @CacheEvict(value = "listPunctuatePage", allEntries = true),
             }
     )
     public Long passPunctuate(Long punctuateId) {
@@ -653,10 +674,10 @@ public class MarkerServiceImpl implements MarkerService {
     @Override
     @Caching(
             evict = {
-                    @CacheEvict(value = "searchPunctuateId",allEntries = true),
-                    @CacheEvict(value = "listPunctuateById",allEntries = true),
-                    @CacheEvict(value = "listAllPunctuatePage",allEntries = true),
-                    @CacheEvict(value = "listPunctuatePage",allEntries = true),
+                    @CacheEvict(value = "searchPunctuateId", allEntries = true),
+                    @CacheEvict(value = "listPunctuateById", allEntries = true),
+                    @CacheEvict(value = "listAllPunctuatePage", allEntries = true),
+                    @CacheEvict(value = "listPunctuatePage", allEntries = true),
             }
     )
     public Boolean rejectPunctuate(Long punctuateId) {
@@ -687,10 +708,10 @@ public class MarkerServiceImpl implements MarkerService {
     @Override
     @Caching(
             evict = {
-                    @CacheEvict(value = "searchPunctuateId",allEntries = true),
-                    @CacheEvict(value = "listPunctuateById",allEntries = true),
-                    @CacheEvict(value = "listAllPunctuatePage",allEntries = true),
-                    @CacheEvict(value = "listPunctuatePage",allEntries = true),
+                    @CacheEvict(value = "searchPunctuateId", allEntries = true),
+                    @CacheEvict(value = "listPunctuateById", allEntries = true),
+                    @CacheEvict(value = "listAllPunctuatePage", allEntries = true),
+                    @CacheEvict(value = "listPunctuatePage", allEntries = true),
             }
     )
     public Boolean deletePunctuate(Long punctuateId) {
@@ -774,8 +795,8 @@ public class MarkerServiceImpl implements MarkerService {
     @Override
     @Caching(
             evict = {
-                    @CacheEvict(value = "listAllPunctuatePage",allEntries = true),
-                    @CacheEvict(value = "listPunctuatePage",allEntries = true),
+                    @CacheEvict(value = "listAllPunctuatePage", allEntries = true),
+                    @CacheEvict(value = "listPunctuatePage", allEntries = true),
             }
     )
     public Long addSinglePunctuate(MarkerSinglePunctuateDto markerSinglePunctuateDto) {
@@ -801,8 +822,8 @@ public class MarkerServiceImpl implements MarkerService {
     @Override
     @Caching(
             evict = {
-                    @CacheEvict(value = "listAllPunctuatePage",allEntries = true),
-                    @CacheEvict(value = "listPunctuatePage",allEntries = true),
+                    @CacheEvict(value = "listAllPunctuatePage", allEntries = true),
+                    @CacheEvict(value = "listPunctuatePage", allEntries = true),
             }
     )
     public Boolean addExtraPunctuate(MarkerExtraPunctuateDto markerExtraPunctuateDto) {
@@ -822,10 +843,10 @@ public class MarkerServiceImpl implements MarkerService {
     @Override
     @Caching(
             evict = {
-                    @CacheEvict(value = "searchPunctuateId",allEntries = true),
-                    @CacheEvict(value = "listPunctuateById",allEntries = true),
-                    @CacheEvict(value = "listAllPunctuatePage",allEntries = true),
-                    @CacheEvict(value = "listPunctuatePage",allEntries = true),
+                    @CacheEvict(value = "searchPunctuateId", allEntries = true),
+                    @CacheEvict(value = "listPunctuateById", allEntries = true),
+                    @CacheEvict(value = "listAllPunctuatePage", allEntries = true),
+                    @CacheEvict(value = "listPunctuatePage", allEntries = true),
             }
     )
     public Boolean pushPunctuate(Long authorId) {
@@ -846,10 +867,10 @@ public class MarkerServiceImpl implements MarkerService {
     @Override
     @Caching(
             evict = {
-                    @CacheEvict(value = "searchPunctuateId",allEntries = true),
-                    @CacheEvict(value = "listPunctuateById",allEntries = true),
-                    @CacheEvict(value = "listAllPunctuatePage",allEntries = true),
-                    @CacheEvict(value = "listPunctuatePage",allEntries = true),
+                    @CacheEvict(value = "searchPunctuateId", allEntries = true),
+                    @CacheEvict(value = "listPunctuateById", allEntries = true),
+                    @CacheEvict(value = "listAllPunctuatePage", allEntries = true),
+                    @CacheEvict(value = "listPunctuatePage", allEntries = true),
             }
     )
     public Boolean updateSelfSinglePunctuate(MarkerSinglePunctuateDto singlePunctuateDto) {
@@ -878,10 +899,10 @@ public class MarkerServiceImpl implements MarkerService {
     @Override
     @Caching(
             evict = {
-                    @CacheEvict(value = "searchPunctuateId",allEntries = true),
-                    @CacheEvict(value = "listPunctuateById",allEntries = true),
-                    @CacheEvict(value = "listAllPunctuatePage",allEntries = true),
-                    @CacheEvict(value = "listPunctuatePage",allEntries = true),
+                    @CacheEvict(value = "searchPunctuateId", allEntries = true),
+                    @CacheEvict(value = "listPunctuateById", allEntries = true),
+                    @CacheEvict(value = "listAllPunctuatePage", allEntries = true),
+                    @CacheEvict(value = "listPunctuatePage", allEntries = true),
             }
     )
     public Boolean updateSelfPunctuateExtra(MarkerExtraPunctuateDto extraPunctuateDto) {
@@ -911,10 +932,10 @@ public class MarkerServiceImpl implements MarkerService {
     @Override
     @Caching(
             evict = {
-                    @CacheEvict(value = "searchPunctuateId",allEntries = true),
-                    @CacheEvict(value = "listPunctuateById",allEntries = true),
-                    @CacheEvict(value = "listAllPunctuatePage",allEntries = true),
-                    @CacheEvict(value = "listPunctuatePage",allEntries = true),
+                    @CacheEvict(value = "searchPunctuateId", allEntries = true),
+                    @CacheEvict(value = "listPunctuateById", allEntries = true),
+                    @CacheEvict(value = "listAllPunctuatePage", allEntries = true),
+                    @CacheEvict(value = "listPunctuatePage", allEntries = true),
             }
     )
     public Boolean deleteSelfPunctuate(Long punctuateId, Long authorId) {

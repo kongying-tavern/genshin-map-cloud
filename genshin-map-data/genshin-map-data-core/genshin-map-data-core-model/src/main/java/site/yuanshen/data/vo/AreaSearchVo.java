@@ -31,4 +31,11 @@ public class AreaSearchVo {
     @Schema(title = "是否遍历子地区")
     private Boolean isTraverse;
 
+
+    /**
+     * 是否为测试打点员
+     */
+    @Schema(title = "是否为测试打点员")
+    private Boolean isTestUser;
+
 }

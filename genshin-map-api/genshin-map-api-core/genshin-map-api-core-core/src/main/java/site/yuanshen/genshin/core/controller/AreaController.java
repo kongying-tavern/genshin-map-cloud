@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import site.yuanshen.common.web.response.R;
 import site.yuanshen.common.web.response.RUtils;
@@ -33,7 +34,8 @@ public class AreaController {
 
     @Operation(summary = "列出地区", description = "可根据父级地区id列出子地区列表")
     @PostMapping("/get/list")
-    public R<List<AreaVo>> listArea(@RequestBody AreaSearchVo areaSearchVo) {
+    public R<List<AreaVo>> listArea(@RequestHeader(value = "isTestUser",required = false) String isTestUser, @RequestBody AreaSearchVo areaSearchVo) {
+        areaSearchVo.setIsTestUser(StringUtils.hasLength(isTestUser));
         return RUtils.create(
                 areaService.listArea(areaSearchVo)
                         .stream().map(AreaDto::getVo).collect(Collectors.toList())
@@ -42,9 +44,9 @@ public class AreaController {
 
     @Operation(summary = "获取单个地区信息", description = "获取单个地区信息")
     @PostMapping("/get/{areaId}")
-    public R<AreaVo> getArea(@PathVariable("areaId") Long areaId) {
+    public R<AreaVo> getArea(@RequestHeader(value = "isTestUser",required = false) String isTestUser,@PathVariable("areaId") Long areaId) {
         return RUtils.create(
-                areaService.getArea(areaId).getVo()
+                areaService.getArea(areaId,StringUtils.hasLength(isTestUser)).getVo()
         );
     }
 

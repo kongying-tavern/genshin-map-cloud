@@ -55,6 +55,9 @@
                     #{areaId}
                 </foreach>
             </if>
+            <if test="itemSearchDto.isTestUser != null and !itemSearchDto.isTestUser">
+                and hidden_flag != '2'
+            </if>
         </where>
     </select>
 

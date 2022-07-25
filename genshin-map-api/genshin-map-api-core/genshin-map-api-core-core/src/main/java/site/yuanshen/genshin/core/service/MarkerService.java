@@ -38,7 +38,7 @@ public interface MarkerService {
      * @param markerIdList 点位ID列表
      * @return 点位完整信息的数据封装列表
      */
-    List<MarkerDto> listMarkerById(List<Long> markerIdList);
+    List<MarkerDto> listMarkerById(List<Long> markerIdList,Boolean isTestUser);
 
     /**
      * 分页查询所有点位信息
@@ -46,7 +46,7 @@ public interface MarkerService {
      * @param pageSearchDto 分页查询数据封装
      * @return 点位完整信息的前端封装的分页记录
      */
-    PageListVo<MarkerVo> listMarkerPage(PageSearchDto pageSearchDto);
+    PageListVo<MarkerVo> listMarkerPage(PageSearchDto pageSearchDto,Boolean isTestUser);
 
     /**
      * 新增点位（不包括额外字段）
