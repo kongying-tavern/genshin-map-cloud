@@ -242,7 +242,7 @@ public class IconServiceImpl implements IconService {
             );
         }
         //TODO 异常处理
-        iconTypeMapper.insert(iconType);
+//        iconTypeMapper.insert(iconType);
         return iconType.getId();
     }
 

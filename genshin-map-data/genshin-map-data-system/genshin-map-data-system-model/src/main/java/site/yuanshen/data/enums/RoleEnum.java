@@ -8,7 +8,7 @@ public enum RoleEnum {
 
     ADMIN("ADMIN", "系统管理员", 3),
     MAP_MANAGER("MAP_MANAGER", "地图管理者", 4),
-    MAP_NEIGUI("MAP_NEIGUI", "打点测试员", 4),
+    MAP_NEIGUI("MAP_NEIGUI", "打点测试员", 7),
     MAP_PUNCTUATE("MAP_PUNCTUATE", "地图打点员", 5),
     MAP_USER("MAP_USER", "地图用户", 6),
     VISITOR("VISITOR", "匿名用户", 100),

@@ -35,8 +35,13 @@
             left join tag_type_link ttl on t.tag = ttl.tag_name
         </if>
         <where>
+             t.del_flag = 0
             <if test="tagSearchDto.typeIdList != null and tagSearchDto.typeIdList.size > 0">
-                ttl.type_id in
+                and  ttl.del_flag = 0
+            </if>
+
+            <if test="tagSearchDto.typeIdList != null and tagSearchDto.typeIdList.size > 0">
+                and ttl.type_id in
                 <foreach collection="tagSearchDto.typeIdList" open="(" separator="," close=")" item="typeId">
                     #{typeId}
                 </foreach>
