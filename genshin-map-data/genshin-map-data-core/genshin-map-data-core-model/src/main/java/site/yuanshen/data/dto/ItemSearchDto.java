@@ -1,5 +1,6 @@
 package site.yuanshen.data.dto;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -59,9 +60,9 @@ public class ItemSearchDto {
     private Boolean isTestUser;
 
     public ItemSearchDto(ItemSearchVo itemSearchVo) {
-        BeanUtils.copyProperties(itemSearchVo, this);
+        BeanUtils.copyNotNull(itemSearchVo, this);
     }
-
+    @JSONField(serialize = false)
     public Page<Item> getPageEntity() {
         return new Page<>(current, size);
     }

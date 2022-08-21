@@ -2,6 +2,7 @@ package site.yuanshen.data.dto;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
+import com.alibaba.fastjson.annotation.JSONField;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -136,19 +137,23 @@ public class MarkerDto {
         this.itemList = markerItemLinks.stream().map(MarkerItemLinkDto::new).collect(Collectors.toList());
     }
 
+    @JSONField(serialize = false)
     public Marker getEntity() {
         return BeanUtils.copyProperties(this, Marker.class).setId(this.id);
     }
 
+    @JSONField(serialize = false)
     public MarkerExtra getMarkerExtraEntity() {
         if (markerExtraContent == null || markerExtraContent.equals("")) markerExtraContent = "{}";
         return BeanUtils.copyProperties(this, MarkerExtra.class).setIsRelated(isRelated != null && isRelated.equals(1));
     }
 
+    @JSONField(serialize = false)
     public List<MarkerItemLink> getLinkEntity() {
         return this.itemList.stream().map(MarkerItemLinkDto::getEntity).collect(Collectors.toList());
     }
 
+    @JSONField(serialize = false)
     public MarkerVo getVo() {
         MarkerVo markerVo = BeanUtils.copyProperties(this, MarkerVo.class);
         markerVo.setItemList(this.itemList.stream().map(MarkerItemLinkDto::getVo).collect(Collectors.toList()));

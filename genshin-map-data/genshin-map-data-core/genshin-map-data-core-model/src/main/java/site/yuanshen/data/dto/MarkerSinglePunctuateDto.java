@@ -2,6 +2,7 @@ package site.yuanshen.data.dto;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.annotation.JSONField;
 import com.baomidou.mybatisplus.annotation.TableField;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -145,6 +146,7 @@ public class MarkerSinglePunctuateDto {
         this.itemList = JSONArray.parseArray(punctuate.getItemList(), MarkerItemLinkDto.class);
     }
 
+    @JSONField(serialize = false)
     public MarkerPunctuate getEntity() {
         return BeanUtils.copyProperties(this, MarkerPunctuate.class).setItemList(JSON.toJSONString(this.itemList));
     }
@@ -153,6 +155,7 @@ public class MarkerSinglePunctuateDto {
         return this.itemList.stream().map(MarkerItemLinkDto::getEntity).collect(Collectors.toList());
     }
 
+    @JSONField(serialize = false)
     public MarkerSinglePunctuateVo getVo() {
         MarkerSinglePunctuateVo punctuateSingleVo = BeanUtils.copyProperties(this, MarkerSinglePunctuateVo.class);
         punctuateSingleVo.setItemList(this.itemList.stream().map(MarkerItemLinkDto::getVo).collect(Collectors.toList()));

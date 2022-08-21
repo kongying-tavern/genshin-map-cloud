@@ -1,5 +1,6 @@
 package site.yuanshen.data.dto;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -63,10 +64,11 @@ public class IconTypeDto {
         BeanUtils.copyProperties(iconTypeVo, this);
     }
 
+    @JSONField(serialize = false)
     public IconType getEntity() {
         return BeanUtils.copyProperties(this, IconType.class).setId(this.id);
     }
-
+    @JSONField(serialize = false)
     public IconTypeVo getVo() {
         return BeanUtils.copyProperties(this, IconTypeVo.class);
     }

@@ -26,16 +26,16 @@ public class PageSearchDto {
      * 当前页，从0开始
      */
     @Schema(title = "当前页，从0开始")
-    private Long current;
+    private Long current = 0L;
 
     /**
      * 每页大小，默认为10
      */
     @Schema(title = "每页大小，默认为10")
-    private Long size;
+    private Long size= 10L;
 
     public PageSearchDto(PageSearchVo pageSearchVo) {
-        BeanUtils.copyProperties(pageSearchVo, this);
+        BeanUtils.copyNotNull(pageSearchVo, this);
     }
 
     public <T> Page<T> getPageEntity() {

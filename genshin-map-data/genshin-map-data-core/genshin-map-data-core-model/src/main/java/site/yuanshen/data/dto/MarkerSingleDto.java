@@ -1,5 +1,6 @@
 package site.yuanshen.data.dto;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -114,10 +115,14 @@ public class MarkerSingleDto {
         }
     }
 
+
+    @JSONField(serialize = false)
     public Marker getEntity() {
         return BeanUtils.copyProperties(this, Marker.class);
     }
 
+
+    @JSONField(serialize = false)
     public MarkerSingleVo getVo() {
         MarkerSingleVo MarkerSingleVo = BeanUtils.copyProperties(this, MarkerSingleVo.class);
         MarkerSingleVo.setItemList(this.itemList.stream().map(MarkerItemLinkDto::getVo).collect(Collectors.toList()));

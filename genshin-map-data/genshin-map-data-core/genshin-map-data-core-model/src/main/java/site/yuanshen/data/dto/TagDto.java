@@ -1,5 +1,6 @@
 package site.yuanshen.data.dto;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -64,10 +65,12 @@ public class TagDto {
         BeanUtils.copyProperties(tagVo, this);
     }
 
+    @JSONField(serialize = false)
     public Tag getEntity() {
         return BeanUtils.copyProperties(this, Tag.class);
     }
 
+    @JSONField(serialize = false)
     public TagVo getVo() {
         return BeanUtils.copyProperties(this, TagVo.class);
     }

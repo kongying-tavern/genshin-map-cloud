@@ -1,5 +1,6 @@
 package site.yuanshen.data.dto;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -62,11 +63,13 @@ public class MarkerExtraDto {
         BeanUtils.copyProperties(markerExtra, this);
     }
 
+    @JSONField(serialize = false)
     public MarkerExtra getEntity() {
         if (markerExtraContent == null || markerExtraContent.equals("")) markerExtraContent = "{}";
         return BeanUtils.copyProperties(this, MarkerExtra.class).setIsRelated(isRelated != null && isRelated.equals(1));
     }
 
+    @JSONField(serialize = false)
     public MarkerExtraVo getVo() {
         return BeanUtils.copyProperties(this, MarkerExtraVo.class);
     }

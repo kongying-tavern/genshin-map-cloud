@@ -28,13 +28,13 @@ public class PageAndTypeListDto {
      * 当前页，从0开始
      */
     @Schema(title = "当前页，从0开始")
-    private Long current;
+    private Long current = 0L;
 
     /**
      * 每页大小，默认为10
      */
     @Schema(title = "每页大小，默认为10")
-    private Long size;
+    private Long size = 10L;
 
     /**
      * 父级类型ID列表
@@ -47,7 +47,7 @@ public class PageAndTypeListDto {
     }
 
     public PageAndTypeListDto(PageAndTypeListVo searchVo) {
-        BeanUtils.copyProperties(searchVo, this);
+        BeanUtils.copyNotNull(searchVo, this);
     }
 
 }
