@@ -5,13 +5,13 @@
     <parent>
         <artifactId>genshin-map-data</artifactId>
         <groupId>site.yuanshen</groupId>
-        <version>${revision}</version>
+        <version>${gsapi.version}</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>genshin-map-data-core</artifactId>
     <packaging>pom</packaging>
-    <version>${revision}</version>
+    <version>${gsapi.version}</version>
 
     <modules>
         <module>genshin-map-data-core-model</module>

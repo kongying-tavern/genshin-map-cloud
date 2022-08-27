@@ -5,12 +5,12 @@
     <parent>
         <artifactId>genshin-map-commons</artifactId>
         <groupId>site.yuanshen</groupId>
-        <version>${revision}</version>
+        <version>${gsapi.version}</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>genshin-map-commons-mysql</artifactId>
-    <version>${revision}</version>
+    <version>${gsapi.version}</version>
 
     <dependencies>
         <dependency>

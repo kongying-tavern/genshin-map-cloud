@@ -7,7 +7,7 @@
     <groupId>site.yuanshen</groupId>
     <artifactId>genshin-map-cloud</artifactId>
     <packaging>pom</packaging>
-    <version>${revision}</version>
+    <version>${gsapi.version}</version>
 
     <modules>
         <module>genshin-map-ability</module>
@@ -29,7 +29,7 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <jdk.version>11</jdk.version>
-        <revision>1.0</revision>
+        <gsapi.version>1.0</gsapi.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -62,8 +62,8 @@
                 <scope>import</scope>
             </dependency>
 
-             <!--管理后续相关的依赖-->
-             <!--log4j2版本处理-->
+            <!--管理后续相关的依赖-->
+            <!--log4j2版本处理-->
             <dependency>
                 <groupId>org.apache.logging.log4j</groupId>
                 <artifactId>log4j-slf4j-impl</artifactId>
@@ -88,7 +88,7 @@
             <dependency>
                 <groupId>site.yuanshen</groupId>
                 <artifactId>genshin-map-dependencies</artifactId>
-                <version>${revision}</version>
+                <version>${gsapi.version}</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
@@ -104,11 +104,18 @@
                 <runtime-profile>dev</runtime-profile>
             </properties>
         </profile>
-        <!-- 测试环境 -->
+        <!-- 编译发布 -->
         <profile>
-            <id>test</id>
+            <id>prod</id>
             <properties>
-                <runtime-profile>test</runtime-profile>
+                <runtime-profile>prod</runtime-profile>
+            </properties>
+        </profile>
+        <!-- docker -->
+        <profile>
+            <id>docker</id>
+            <properties>
+                <runtime-profile>docker</runtime-profile>
             </properties>
         </profile>
     </profiles>
