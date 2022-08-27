@@ -1,0 +1,6 @@
+spring:
+  cloud:
+    nacos:
+      server-addr: ${YSAPI_NACOS_SERVER}
+      config:
+        file-extension: yaml
