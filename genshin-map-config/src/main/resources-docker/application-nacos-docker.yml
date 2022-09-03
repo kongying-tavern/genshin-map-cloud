@@ -1,6 +1,6 @@
 spring:
   cloud:
     nacos:
-      server-addr: ${YSAPI_NACOS_SERVER}
+      server-addr: ${YSAPI_NACOS_HOST}:${YSAPI_NACOS_PORT:8848}
       config:
         file-extension: yaml
