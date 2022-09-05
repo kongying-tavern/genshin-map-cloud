@@ -19,6 +19,7 @@ import site.yuanshen.data.entity.*;
 import site.yuanshen.data.mapper.*;
 import site.yuanshen.data.vo.*;
 import site.yuanshen.data.vo.helper.PageListVo;
+import site.yuanshen.genshin.core.convert.HistoryConvert;
 import site.yuanshen.genshin.core.service.CacheService;
 import site.yuanshen.genshin.core.service.MarkerService;
 import site.yuanshen.genshin.core.service.mbp.*;
@@ -52,6 +53,8 @@ public class MarkerServiceImpl implements MarkerService {
     private final MarkerExtraPunctuateMBPService markerExtraPunctuateMBPService;
     private final ItemMapper itemMapper;
     private final ItemTypeLinkMapper itemTypeLinkMapper;
+
+    private final HistoryMapper historyMapper;
 
     /**
      * 根据各种条件筛选查询点位ID
@@ -239,6 +242,11 @@ public class MarkerServiceImpl implements MarkerService {
      */
     @Override
     public Boolean updateMarker(MarkerSingleDto markerSingleDto) {
+        //保存历史记录
+        MarkerExtra markerExtra = markerExtraMapper.selectOne(Wrappers.<MarkerExtra>lambdaQuery().eq(MarkerExtra::getMarkerId, markerSingleDto.getId()));
+        saveHistoryMarker(buildMarkerDto(markerSingleDto.getId(),markerExtra));
+
+
         Boolean updated = markerMapper.update(markerSingleDto.getEntity(), Wrappers.<Marker>lambdaUpdate()
                 .eq(Marker::getId, markerSingleDto.getId())) == 1;
         if (!updated) {
@@ -259,6 +267,7 @@ public class MarkerServiceImpl implements MarkerService {
         return updated;
     }
 
+
     /**
      * 修改点位额外字段
      *
@@ -270,6 +279,8 @@ public class MarkerServiceImpl implements MarkerService {
         //TODO:如果增加乐观锁后,默认搜不到情况下version=0.第一个人先未找到,进行新增,此时version为默认值1.第二个人进行找到,0和1匹配不上,更新失败
         //2.情况2-两人一起到达搜索,此时都找不到,1号先完成了添加,2号再完成了添加,此时会有两条一模一样数据,但是搜索出来的时候只会使用一条,影响不大.
         MarkerExtra markerExtra = markerExtraMapper.selectOne(Wrappers.<MarkerExtra>lambdaQuery().eq(MarkerExtra::getMarkerId, markerExtraDto.getMarkerId()));
+
+        saveHistoryMarker(buildMarkerDto(markerExtraDto.getMarkerId(),markerExtra));
         if (markerExtra == null) {
             return addMarkerExtra(markerExtraDto);
         }
@@ -285,6 +296,7 @@ public class MarkerServiceImpl implements MarkerService {
 
         return updated;
     }
+
 
     /**
      * 根据点位ID删除点位
@@ -977,4 +989,23 @@ public class MarkerServiceImpl implements MarkerService {
         }
         return allPunctuateIdList;
     }
+
+
+
+    //--------------------储存历史信息-----------------------
+
+
+    private MarkerDto buildMarkerDto(Long markerId, MarkerExtra markerExtra){
+        Marker marker = markerMapper.selectOne(Wrappers.<Marker>lambdaQuery().eq(Marker::getId, markerId));
+        //获取关联的物品ID
+        List<MarkerItemLink> markerItemLinks = markerItemLinkMapper.selectList(Wrappers.<MarkerItemLink>lambdaQuery().eq(MarkerItemLink::getMarkerId, markerId));
+        return  new MarkerDto(marker,markerExtra,markerItemLinks);
+    }
+
+    private void saveHistoryMarker(MarkerDto dto) {
+        History history = HistoryConvert.convert(dto);
+        //存储入库
+        historyMapper.insert(history);
+    }
+
 }

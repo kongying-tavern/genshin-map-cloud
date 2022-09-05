@@ -16,6 +16,7 @@ import site.yuanshen.data.mapper.*;
 import site.yuanshen.data.vo.ItemTypeVo;
 import site.yuanshen.data.vo.ItemVo;
 import site.yuanshen.data.vo.helper.PageListVo;
+import site.yuanshen.genshin.core.convert.HistoryConvert;
 import site.yuanshen.genshin.core.service.CacheService;
 import site.yuanshen.genshin.core.service.ItemService;
 import site.yuanshen.genshin.core.service.mbp.ItemAreaPublicMBPService;
@@ -46,6 +47,9 @@ public class ItemServiceImpl implements ItemService {
     private final ItemAreaPublicMapper itemAreaPublicMapper;
     private final ItemAreaPublicMBPService itemAreaPublicMBPService;
     private final MarkerItemLinkMapper markerItemLinkMapper;
+
+
+    private final HistoryMapper historyMapper;
 
     /**
      * 列出物品类型
@@ -305,6 +309,11 @@ public class ItemServiceImpl implements ItemService {
             //物品ID
             List<Long> itemIds = new ArrayList<>(Collections.singletonList(itemDto.getItemId()));
             itemIds.addAll(sameItems.parallelStream().map(Item::getId).collect(Collectors.toList()));
+
+            //在更新逻辑之前做历史信息记录
+            saveHistoryItem(itemIds,sameItems);
+
+
             //对比类型信息是否更改
             Set<Long> oldTypeIds = itemTypeLinkMapper.selectList(Wrappers.<ItemTypeLink>lambdaQuery()
                             .eq(ItemTypeLink::getItemId, itemDto.getItemId()))
@@ -353,6 +362,7 @@ public class ItemServiceImpl implements ItemService {
         cacheService.cleanItemCache();
         return true;
     }
+
 
     /**
      * 将物品加入某一类型
@@ -513,4 +523,41 @@ public class ItemServiceImpl implements ItemService {
                 .eq(ItemAreaPublic::getItemId, itemId))
                 == 1;
     }
+
+
+
+    //---------------存储历史信息-------------------
+
+    /**
+     *
+     * @param itemIds
+     * @param sameItems 同名物品List(若无需同名则默认为空)
+     */
+    private void saveHistoryItem(List<Long> itemIds, List<Item> sameItems) {
+        //根据itemId查询(按目前逻辑只有一个Id),加上同名物品
+        List<Item> items = itemMapper.selectList(Wrappers.<Item>lambdaQuery()
+                .in(Item::getId, itemIds));
+        items.addAll(sameItems);
+
+        //根据每一个物品查询出对应的link记录,并转为DTO
+        List<ItemDto> itemDtoList = items.stream().map(
+                item -> {
+                    List<Long> typeLink = itemTypeLinkMapper.selectList(Wrappers.<ItemTypeLink>lambdaQuery()
+                                    .eq(ItemTypeLink::getItemId, item.getId()))
+                            .stream().map(ItemTypeLink::getTypeId).collect(Collectors.toList());
+
+                    return new ItemDto(item).setTypeIdList(typeLink);
+                }
+        ).collect(Collectors.toList());
+
+        //将DTO转为history
+        itemDtoList.forEach(
+               dto->{
+                   History history = HistoryConvert.convert(dto);
+                   //存储入库
+                   historyMapper.insert(history);
+               }
+        );
+    }
+
 }

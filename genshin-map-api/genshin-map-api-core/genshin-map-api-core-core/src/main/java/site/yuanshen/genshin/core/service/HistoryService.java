@@ -1,9 +1,17 @@
 package site.yuanshen.genshin.core.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import site.yuanshen.common.web.response.Codes;
+import site.yuanshen.data.dto.HistorySearchDto;
 import site.yuanshen.data.entity.History;
+import site.yuanshen.data.vo.HistoryVo;
+import site.yuanshen.data.vo.ItemVo;
+import site.yuanshen.data.vo.helper.PageListVo;
 
 public interface HistoryService extends IService<History> {
 
-//TODO 此处移至mbp包下，且更名
+    PageListVo<HistoryVo> listPage(HistorySearchDto historySearchDto);
+
+
+    //TODO 此处移至mbp包下，且更名
 }

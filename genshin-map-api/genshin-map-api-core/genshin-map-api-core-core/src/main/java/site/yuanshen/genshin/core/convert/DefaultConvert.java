@@ -1,7 +1,8 @@
 package site.yuanshen.genshin.core.convert;
 
+import cn.hutool.core.lang.Pair;
+import cn.hutool.extra.servlet.ServletUtil;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import site.yuanshen.data.entity.History;
@@ -20,7 +21,7 @@ public abstract class DefaultConvert implements Convert {
         ServletRequestAttributes servletRequestAttributes;
         if (Objects.nonNull(servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes())) {
             HttpServletRequest request = servletRequestAttributes.getRequest();
-            //ipv4 = ServletUtil.getClientIP(request);
+            ipv4 = ServletUtil.getClientIP(request);
         }
 
         Pair<String, Long> contentAndId = getContentAndId(o);

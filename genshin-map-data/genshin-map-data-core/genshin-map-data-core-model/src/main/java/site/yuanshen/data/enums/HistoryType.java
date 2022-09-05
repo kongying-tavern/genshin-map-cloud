@@ -10,9 +10,10 @@ import java.util.Arrays;
 public enum HistoryType {
 
     AREA(1),
-    TYPE(2),
+    ICON(2),
     ITEM(3),
     MARKER(4),
+    TAG(5)
     ;
 
     @Getter

@@ -5,12 +5,16 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 import site.yuanshen.data.base.BaseEntity;
 
 @Schema(title = "history")
 @Data
+@Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
 @TableName(value = "history")
 public class History extends BaseEntity {
@@ -52,4 +56,5 @@ public class History extends BaseEntity {
     @TableField(value = "ipv4")
     @Schema(title = "ipv4")
     private String ipv4;
+
 }
