@@ -27,6 +27,7 @@ genshin:
     MAP_MANAGER:
       - /api/marker/punctuate/check/**
       - /api/marker/**
+      - /api/history/**
     ADMIN:
       - /system/**
       - /api/tag/**
