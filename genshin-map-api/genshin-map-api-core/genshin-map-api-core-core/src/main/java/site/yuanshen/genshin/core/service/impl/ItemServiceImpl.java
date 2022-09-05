@@ -420,14 +420,28 @@ public class ItemServiceImpl implements ItemService {
 //		long id = itemMapper.selectOne(Wrappers.<Item>query().select("max(item_id) as itemId"))
 //				.getId() + 1;
         for (Item item : items) {
+
+            //先根据id找到typeLink中的数据
+            List<ItemTypeLink> itemTypeLinks = itemTypeLinkMapper.selectList(Wrappers.<ItemTypeLink>lambdaQuery().eq(ItemTypeLink::getItemId, item.getId()));
+
             //2022.07.07 清空主键id
             item.setId(null);
 //			item.setItemId(id);
             item.setAreaId(areaId);
 //			id++;
+
+            //新增记录
+            itemMBPService.save(item);
+            //根据新id给typeLink赋值并重新插入一份
+            itemTypeLinks = itemTypeLinks.stream().map(itemTypeLink ->
+                    itemTypeLink.setItemId(item.getId()).setId(null)
+            ).collect(Collectors.toList());
+            itemTypeLinkMBPService.saveBatch(itemTypeLinks);
+
         }
-        itemMBPService.saveBatch(items);
+//        itemMBPService.saveBatch(items);
         cacheService.cleanItemCache();
+
         return items.parallelStream().map(Item::getId).collect(Collectors.toList());
     }
 

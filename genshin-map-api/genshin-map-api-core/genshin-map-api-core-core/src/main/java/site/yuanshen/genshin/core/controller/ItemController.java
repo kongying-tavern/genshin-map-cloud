@@ -58,7 +58,7 @@ public class ItemController {
     }
 
     @Operation(summary = "修改物品类型", description = "修改物品类型")
-    @PostMapping("/type/{editSame}")
+    @PostMapping("/type")
     @Transactional
     public R<Boolean> updateItemType(@RequestBody ItemTypeVo itemTypeVo) {
         return RUtils.create(
