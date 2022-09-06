@@ -11,7 +11,7 @@
         <result column="create_time" property="createTime"/>
         <result column="update_time" property="updateTime"/>
         <result column="del_flag" property="delFlag"/>
-        <result column="area_id" property="areaId"/>
+<!--        <result column="area_id" property="areaId"/>-->
         <result column="name" property="name"/>
         <result column="content" property="content"/>
         <result column="icon_tag" property="iconTag"/>

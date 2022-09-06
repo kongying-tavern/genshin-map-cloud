@@ -1,5 +1,6 @@
 package site.yuanshen.genshin.core.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
@@ -7,6 +8,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
+import site.yuanshen.common.web.utils.JsonUtils;
 import site.yuanshen.data.dto.IconDto;
 import site.yuanshen.data.dto.IconSearchDto;
 import site.yuanshen.data.dto.IconTypeDto;
@@ -129,9 +131,9 @@ public class IconServiceImpl implements IconService {
                     .eq(IconTypeLink::getIconId, iconDto.getIconId()));
             iconTypeLinkMBPService.saveBatch(
                     newTypeIds.stream()
-                            .map(id -> new IconTypeLink()
-                                    .setIconId(iconDto.getIconId())
-                                    .setTypeId(id))
+                    .map(id -> new IconTypeLink()
+                            .setIconId(iconDto.getIconId())
+                            .setTypeId(id))
                             .collect(Collectors.toList())
             );
         }
@@ -165,7 +167,7 @@ public class IconServiceImpl implements IconService {
                 throw new RuntimeException("类型ID错误");
             iconTypeLinkMBPService.saveBatch(
                     typeIdList.stream()
-                            .map(id -> new IconTypeLink().setIconId(iconDto.getIconId()).setTypeId(id))
+                            .map(id -> new IconTypeLink().setIconId(icon.getId()).setTypeId(id))
                             .collect(Collectors.toList())
             );
         }

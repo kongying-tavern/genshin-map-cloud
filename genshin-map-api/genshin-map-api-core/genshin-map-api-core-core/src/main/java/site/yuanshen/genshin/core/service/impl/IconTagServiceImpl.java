@@ -11,10 +11,7 @@ import site.yuanshen.data.dto.TagDto;
 import site.yuanshen.data.dto.TagSearchDto;
 import site.yuanshen.data.dto.TagTypeDto;
 import site.yuanshen.data.dto.helper.PageAndTypeListDto;
-import site.yuanshen.data.entity.Icon;
-import site.yuanshen.data.entity.Tag;
-import site.yuanshen.data.entity.TagType;
-import site.yuanshen.data.entity.TagTypeLink;
+import site.yuanshen.data.entity.*;
 import site.yuanshen.data.mapper.IconMapper;
 import site.yuanshen.data.mapper.TagMapper;
 import site.yuanshen.data.mapper.TagTypeLinkMapper;
@@ -174,7 +171,13 @@ public class IconTagServiceImpl implements IconTagService {
     @Override
     @CacheEvict(value = "listIconTag", allEntries = true)
     public Boolean createTag(String tagName) {
-        return tagMapper.insert(new Tag().setTag(tagName)) == 1;
+        //判断是否重复
+        Tag tag = tagMapper.selectOne(Wrappers.<Tag>lambdaQuery().eq(Tag::getTag, tagName));
+        if (tag == null) {
+            return tagMapper.insert(new Tag().setTag(tagName)) == 1;
+        } else {
+            return false;
+        }
     }
 
     /**
