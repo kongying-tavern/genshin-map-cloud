@@ -15,10 +15,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Ping ddns.minemc.top
-      run: |
-        ping -c 4 momincong.com
-        ping -c 4 ddns.minemc.top
+    - name: ls -a via ssh
+      uses: garygrossgarten/github-action-ssh@release
+      with:
+        command: ls -a
+        host: ${{ secrets.DEV_SERVER_HOST }}
+        port: ${{ secrets.DEV_SERVER_PORT }}
+        username: garygrossgarten
+        privateKey: ${{ secrets.DEV_SERVER_SECRET }}
     - uses: actions/checkout@v3
     - name: Set up JDK 11
       uses: actions/setup-java@v3
