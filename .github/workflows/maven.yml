@@ -14,19 +14,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - run: |
-        mkdir test
-        touch test/test
-    - name: Deploy to Server
-      uses: easingthemes/ssh-deploy@main
-      env:
-          SSH_PRIVATE_KEY: ${{ secrets.DEV_SERVER_SECRET }}
-          ARGS: "-rltgoDzvO --delete"
-          SOURCE: "test/"
-          REMOTE_HOST: ${{ secrets.DEV_SERVER_HOST }}
-          REMOTE_PORT: ${{ secrets.DEV_SERVER_PORT }}
-          REMOTE_USER: ${{ secrets.DEV_SERVER_USER }}
-          TARGET: "~/test"
     - uses: actions/checkout@v3
     - name: Set up JDK 11
       uses: actions/setup-java@v3
@@ -36,6 +23,34 @@ jobs:
         cache: maven
     - name: Build with Maven
       run: mvn -B package --file pom.xml
+    - name: copy jar to publish folder
+      run: |
+        mkdir api
+        mkdir ability
+        cp genshin-map-api/genshin-map-api-core/genshin-map-api-core-core/target/genshin-map-api-core-core-1.0.jar api/genshin-map-api-core-core-1.0.jar
+        cp genshin-map-api/genshin-map-api-system/genshin-map-api-system-core/target/genshin-map-api-system-core-1.0.jar api/genshin-map-api-system-core-1.0.jar
+        cp genshin-map-ability/genshin-map-ability-auth/target/genshin-map-ability-auth-1.0.jar ability/genshin-map-ability-auth-1.0.jar
+        cp genshin-map-ability/genshin-map-ability-gateway/target/genshin-map-ability-gateway-1.0.jar ability/genshin-map-ability-gateway-1.0.jar
+    - name: Deploy to Server
+      uses: easingthemes/ssh-deploy@main
+      env:
+          SSH_PRIVATE_KEY: ${{ secrets.DEV_SERVER_SECRET }}
+          ARGS: "-tIvzr --progress"
+          SOURCE: "api/"
+          REMOTE_HOST: ${{ secrets.DEV_SERVER_HOST }}
+          REMOTE_PORT: ${{ secrets.DEV_SERVER_PORT }}
+          REMOTE_USER: ${{ secrets.DEV_SERVER_USER }}
+          TARGET: "~/genshin-map-cloud/api/"
+    - name: Deploy to Server
+      uses: easingthemes/ssh-deploy@main
+      env:
+          SSH_PRIVATE_KEY: ${{ secrets.DEV_SERVER_SECRET }}
+          ARGS: "-tIvzr --progress"
+          SOURCE: "ability/"
+          REMOTE_HOST: ${{ secrets.DEV_SERVER_HOST }}
+          REMOTE_PORT: ${{ secrets.DEV_SERVER_PORT }}
+          REMOTE_USER: ${{ secrets.DEV_SERVER_USER }}
+          TARGET: "~/genshin-map-cloud/ability/"
     - name: Upload api-core to Artifact
       uses: actions/upload-artifact@v3.1.0
       with:
