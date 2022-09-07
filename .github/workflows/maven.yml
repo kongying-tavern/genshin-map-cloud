@@ -22,6 +22,8 @@ jobs:
         java-version: '11'
         distribution: 'temurin'
         cache: maven
+    - name: ping server
+      run: ping -c 2 ddns.minemc.top
     - name: Build with Maven
       run: mvn -B package --file pom.xml
     - name: Upload api-core to Artifact
