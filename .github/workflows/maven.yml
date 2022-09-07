@@ -17,11 +17,6 @@ jobs:
     - run: |
         mkdir test
         touch test/test
-    - uses: kielabokkie/ssh-key-and-known-hosts-action@v1
-      with:
-        ssh-private-key: ${{ secrets.DEV_SERVER_SECRET }}
-        ssh-host: ${{ secrets.DEV_SERVER_HOST }}
-        ssh-port: ${{ secrets.DEV_SERVER_PORT }}
     - name: Deploy to Server
       uses: easingthemes/ssh-deploy@main
       env:
