@@ -17,8 +17,11 @@ jobs:
     - run: |
         mkdir test
         touch test/test
-    - run: |
-        echo "ddns.minemc.top,218.88.7.135 ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBHRkWv/54kZa9xlry/7gm+hUeCeYJZzmI4dUu6cJbrTrqFnCG8SwlQ1RMgT8t187O+WSHieNYvc6iwnP3MBvpXo=" > ~/.ssh/known_hosts
+    - uses: kielabokkie/ssh-key-and-known-hosts-action@v1
+      with:
+        ssh-private-key: ${{ secrets.DEV_SERVER_SECRET }}
+        ssh-host: ${{ secrets.DEV_SERVER_HOST }}
+        ssh-port: ${{ secrets.DEV_SERVER_PORT }}
     - name: Deploy to Server
       uses: easingthemes/ssh-deploy@main
       env:
