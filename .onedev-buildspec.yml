@@ -1,6 +1,6 @@
 version: 18
 jobs:
-- name: maven ci
+- name: CI/CD
   steps:
   - !CheckoutStep
     name: checkout
@@ -15,6 +15,29 @@ jobs:
     interpreter: !DefaultInterpreter
       commands:
       - /opt/apache-maven-3.8.6/bin/mvn clean package
+    useTTY: false
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  - !CommandStep
+    name: move package
+    runInContainer: false
+    interpreter: !DefaultInterpreter
+      commands:
+      - cp genshin-map-ability/genshin-map-ability-gateway/target/genshin-map-ability-gateway-1.0.jar
+        ~/genshin-map-cloud/ability/genshin-map-ability-gateway-1.0.jar
+      - cp genshin-map-ability/genshin-map-ability-auth/target/genshin-map-ability-auth-1.0.jar
+        ~/genshin-map-cloud/ability/genshin-map-ability-auth-1.0.jar
+      - cp genshin-map-api/genshin-map-api-system/genshin-map-api-system-core/target/genshin-map-api-system-core-1.0.jar
+        ~/genshin-map-cloud/api/genshin-map-api-system-core-1.0.jar
+      - cp genshin-map-api/genshin-map-api-core/genshin-map-api-core-core/target/genshin-map-api-core-core-1.0.jar
+        ~/genshin-map-cloud/api/genshin-map-api-core-core-1.0.jar
+    useTTY: false
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  - !CommandStep
+    name: restart service
+    runInContainer: false
+    interpreter: !DefaultInterpreter
+      commands:
+      - sh ~/genshin-map-cloud/restart.sh
     useTTY: false
     condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
   triggers:
