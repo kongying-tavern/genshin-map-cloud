@@ -26,5 +26,5 @@ jobs:
   memoryRequirement: 256
   caches:
   - key: maven-cache
-    path: /home/genshin-map/.m2
+    path: ~/.m2
   timeout: 3600
