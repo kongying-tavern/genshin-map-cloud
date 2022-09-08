@@ -10,7 +10,7 @@ jobs:
     condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
   - !CommandStep
     name: mvn package
-    runInContainer: true
+    runInContainer: false
     image: '@script:builtin:maven:determine-docker-image@'
     interpreter: !DefaultInterpreter
       commands:
