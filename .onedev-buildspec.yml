@@ -1,0 +1,30 @@
+version: 18
+jobs:
+- name: maven ci
+  steps:
+  - !CheckoutStep
+    name: checkout
+    cloneCredential: !DefaultCredential {}
+    withLfs: false
+    withSubmodules: false
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  - !CommandStep
+    name: mvn package
+    runInContainer: true
+    image: '@script:builtin:maven:determine-docker-image@'
+    interpreter: !DefaultInterpreter
+      commands:
+      - mvn clean package
+    useTTY: false
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  triggers:
+  - !BranchUpdateTrigger {}
+  retryCondition: never
+  maxRetries: 3
+  retryDelay: 30
+  cpuRequirement: 250
+  memoryRequirement: 256
+  caches:
+  - key: maven-cache
+    path: /root/.m2/repository
+  timeout: 3600
