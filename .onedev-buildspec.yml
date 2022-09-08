@@ -51,3 +51,20 @@ jobs:
   - key: maven-cache
     path: ~/.m2
   timeout: 3600
+- name: push to Github
+  jobExecutor: genshin-map-shell
+  steps:
+  - !PushRepository
+    name: genshin-map-cloud
+    remoteUrl: https://github.com/kongying-tavern/genshin-map-cloud.git
+    userName: momentderek
+    passwordSecret: moment-secret
+    withLfs: false
+    force: false
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  retryCondition: never
+  maxRetries: 3
+  retryDelay: 30
+  cpuRequirement: 250
+  memoryRequirement: 256
+  timeout: 3600
