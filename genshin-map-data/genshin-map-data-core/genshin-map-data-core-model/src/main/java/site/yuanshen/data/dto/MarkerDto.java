@@ -1,7 +1,5 @@
 package site.yuanshen.data.dto;
 
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.bean.copier.CopyOptions;
 import com.alibaba.fastjson.annotation.JSONField;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -9,6 +7,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import lombok.extern.slf4j.Slf4j;
 import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.entity.Item;
 import site.yuanshen.data.entity.Marker;
@@ -29,6 +28,7 @@ import java.util.stream.Collectors;
  * @since 2022-06-23
  */
 @Data
+@Slf4j
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
@@ -134,6 +134,7 @@ public class MarkerDto {
     /**
      * 构建点位返回的方法
      * 2022.09.12 增加传参,带入TagIcon
+     *
      * @param marker
      * @param markerExtra
      * @param markerItemLinks
@@ -144,9 +145,18 @@ public class MarkerDto {
         BeanUtils.copyNotNull(Optional.ofNullable(markerExtra).orElse(new MarkerExtra()).setId(null),
                 this);
         markerItemLinks = Optional.ofNullable(markerItemLinks).orElse(new ArrayList<>());
-        this.itemList = markerItemLinks.stream().map(
-                markerItemLink -> new MarkerItemLinkDto(markerItemLink).setIconTag(itemMap.get(markerItemLink.getItemId()).getIconTag())
-        ).collect(Collectors.toList());
+        this.itemList = markerItemLinks.stream()
+                //筛选无item信息的link，避免null
+                .filter(markerItemLink -> itemMap.get(markerItemLink.getItemId()) != null)
+                .map(markerItemLink ->
+                        new MarkerItemLinkDto(markerItemLink)
+                                .setIconTag(itemMap.get(markerItemLink.getItemId()).getIconTag())
+                )
+                .collect(Collectors.toList());
+        if (this.itemList.size()!=markerItemLinks.size())
+            log.error("marker 物品数据连接异常，建议清理 marker id:{}; item id list(some is old):{}",
+                    marker.getId(),
+                    markerItemLinks.stream().map(MarkerItemLink::getItemId).collect(Collectors.toList()));
     }
 
 

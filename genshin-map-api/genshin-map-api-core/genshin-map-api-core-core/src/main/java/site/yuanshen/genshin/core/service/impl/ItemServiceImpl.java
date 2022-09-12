@@ -465,9 +465,12 @@ public class ItemServiceImpl implements ItemService {
     public Boolean deleteItem(Long itemId) {
         itemTypeLinkMapper.delete(Wrappers.<ItemTypeLink>lambdaQuery()
                 .eq(ItemTypeLink::getItemId, itemId));
+        markerItemLinkMapper.delete(Wrappers.<MarkerItemLink>lambdaQuery()
+                .eq(MarkerItemLink::getItemId, itemId));
         boolean deleted = itemMapper.delete(Wrappers.<Item>lambdaQuery()
                 .eq(Item::getId, itemId)) == 1;
         cacheService.cleanItemCache();
+        cacheService.cleanMarkerCache();
         return deleted;
     }
 
