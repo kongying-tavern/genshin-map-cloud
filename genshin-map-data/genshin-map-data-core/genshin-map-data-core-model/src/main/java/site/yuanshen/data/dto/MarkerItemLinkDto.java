@@ -37,6 +37,14 @@ public class MarkerItemLinkDto {
     @Schema(title = "点位物品数量")
     private Integer count;
 
+
+    /**
+     * 图标标签
+     */
+    @Schema(title = "图标标签")
+    private String iconTag;
+
+
     public MarkerItemLinkDto(MarkerItemLink markerItemLink) {
         BeanUtils.copyProperties(markerItemLink, this);
     }

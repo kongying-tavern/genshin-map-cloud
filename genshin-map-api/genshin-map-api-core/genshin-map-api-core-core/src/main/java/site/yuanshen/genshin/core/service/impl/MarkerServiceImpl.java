@@ -90,7 +90,7 @@ public class MarkerServiceImpl implements MarkerService {
         }
 
         //如果不是按地区筛选,也就是说没经过筛选内鬼这一步,则再筛一遍 TODO:感觉繁琐了
-        if (!isArea){
+        if (!isArea) {
             itemIdList = itemMapper.selectList(Wrappers.<Item>lambdaQuery()
                             .in(Item::getId, itemIdList).ne(!searchVo.getIsTestUser(), Item::getHiddenFlag, 2)
                             .select(Item::getId)).stream()
@@ -129,7 +129,7 @@ public class MarkerServiceImpl implements MarkerService {
     //此处是两个方法的缝合，不需要加缓存
     public List<MarkerDto> searchMarker(MarkerSearchVo markerSearchVo) {
         List<Long> markerIdList = searchMarkerId(markerSearchVo);
-        return listMarkerById(markerIdList,markerSearchVo.getIsTestUser());
+        return listMarkerById(markerIdList, markerSearchVo.getIsTestUser());
     }
 
 
@@ -141,7 +141,7 @@ public class MarkerServiceImpl implements MarkerService {
      */
     @Override
     @Cacheable(value = "listMarkerById")
-    public List<MarkerDto> listMarkerById(List<Long> markerIdList,Boolean isTestUser) {
+    public List<MarkerDto> listMarkerById(List<Long> markerIdList, Boolean isTestUser) {
         //为空直接返回
         if (markerIdList.isEmpty()) return new ArrayList<>();
         //获取所有的额外字段
@@ -149,20 +149,28 @@ public class MarkerServiceImpl implements MarkerService {
                 .stream().collect(Collectors.toMap(MarkerExtra::getMarkerId, markerExtra -> markerExtra));
         //获取关联的物品Id
         Map<Long, List<MarkerItemLink>> itemLinkMap = new ConcurrentHashMap<>();
-        markerItemLinkMapper.selectList(Wrappers.<MarkerItemLink>lambdaQuery().in(MarkerItemLink::getMarkerId, markerIdList))
-                .parallelStream().forEach(markerItemLink ->
-                        itemLinkMap.compute(markerItemLink.getMarkerId(),
-                                (markerId, linkList) -> {
-                                    if (linkList == null) return new ArrayList<>(Collections.singletonList(markerItemLink));
-                                    linkList.add(markerItemLink);
-                                    return linkList;
-                                }));
+
+        List<MarkerItemLink> markerItemLinks = markerItemLinkMapper.selectList(Wrappers.<MarkerItemLink>lambdaQuery().in(MarkerItemLink::getMarkerId, markerIdList));
+        //获取item_id,得到item合集
+        Map<Long, Item> itemMap = itemMapper.selectList(Wrappers.<Item>lambdaQuery()
+                        .in(Item::getId, markerItemLinks.stream().map(MarkerItemLink::getItemId).collect(Collectors.toSet())))
+                .stream().collect(Collectors.toMap(Item::getId, Item -> Item));
+
+        markerItemLinks.parallelStream().forEach(markerItemLink ->
+                itemLinkMap.compute(markerItemLink.getMarkerId(),
+                        (markerId, linkList) -> {
+                            if (linkList == null) return new ArrayList<>(Collections.singletonList(markerItemLink));
+                            linkList.add(markerItemLink);
+                            return linkList;
+                        })
+        );
         //构建返回
-        return markerMapper.selectList(Wrappers.<Marker>lambdaQuery().in(Marker::getId, markerIdList).ne(!isTestUser,Marker::getHiddenFlag,2))
+        return markerMapper.selectList(Wrappers.<Marker>lambdaQuery().in(Marker::getId, markerIdList).ne(!isTestUser, Marker::getHiddenFlag, 2))
                 .parallelStream().map(marker ->
                         new MarkerDto(marker,
                                 markerExtraMap.get(marker.getId()),
-                                itemLinkMap.get(marker.getId()))).collect(Collectors.toList());
+                                itemLinkMap.get(marker.getId())
+                                ,itemMap)).collect(Collectors.toList());
     }
 
     /**
@@ -173,25 +181,31 @@ public class MarkerServiceImpl implements MarkerService {
      */
     @Override
     @Cacheable(value = "listMarkerPage")
-    public PageListVo<MarkerVo> listMarkerPage(PageSearchDto pageSearchDto,Boolean isTestUser) {
-        Page<Marker> markerPage = markerMapper.selectPage(pageSearchDto.getPageEntity(), Wrappers.<Marker>lambdaQuery().ne(!isTestUser,Marker::getHiddenFlag,2));
+    public PageListVo<MarkerVo> listMarkerPage(PageSearchDto pageSearchDto, Boolean isTestUser) {
+        Page<Marker> markerPage = markerMapper.selectPage(pageSearchDto.getPageEntity(), Wrappers.<Marker>lambdaQuery().ne(!isTestUser, Marker::getHiddenFlag, 2));
         List<Long> markerIdList = markerPage.getRecords().stream()
                 .map(Marker::getId).collect(Collectors.toList());
         Map<Long, MarkerExtra> extraMap = markerExtraMapper.selectList(Wrappers.<MarkerExtra>lambdaQuery()
                         .in(MarkerExtra::getMarkerId, markerIdList))
                 .stream().collect(Collectors.toMap(MarkerExtra::getMarkerId, markerExtra -> markerExtra));
         Map<Long, List<MarkerItemLink>> itemLinkMap = new ConcurrentHashMap<>();
-        markerItemLinkMapper.selectList(Wrappers.<MarkerItemLink>lambdaQuery().in(MarkerItemLink::getMarkerId, markerIdList))
-                .parallelStream().forEach(markerItemLink ->
+        List<MarkerItemLink> markerItemLinks = markerItemLinkMapper.selectList(Wrappers.<MarkerItemLink>lambdaQuery().in(MarkerItemLink::getMarkerId, markerIdList));
+        markerItemLinks.parallelStream().forEach(markerItemLink ->
                         itemLinkMap.compute(markerItemLink.getMarkerId(),
                                 (markerId, linkList) -> {
                                     if (linkList == null) return new ArrayList<>(Collections.singletonList(markerItemLink));
                                     linkList.add(markerItemLink);
                                     return linkList;
                                 }));
+        //获取item_id,得到item合集
+        Map<Long, Item> itemMap = itemMapper.selectList(Wrappers.<Item>lambdaQuery()
+                        .in(Item::getId, markerItemLinks.stream().map(MarkerItemLink::getItemId).collect(Collectors.toSet())))
+                .stream().collect(Collectors.toMap(Item::getId, Item -> Item));
+
+
         return new PageListVo<MarkerVo>()
                 .setRecord(markerPage.getRecords().parallelStream()
-                        .map(marker -> new MarkerDto(marker, extraMap.get(marker.getId()), itemLinkMap.get(marker.getId())).getVo())
+                        .map(marker -> new MarkerDto(marker, extraMap.get(marker.getId()), itemLinkMap.get(marker.getId()),itemMap).getVo())
                         .collect(Collectors.toList()))
                 .setTotal(markerPage.getTotal())
                 .setSize(markerPage.getSize());
@@ -244,7 +258,7 @@ public class MarkerServiceImpl implements MarkerService {
     public Boolean updateMarker(MarkerSingleDto markerSingleDto) {
         //保存历史记录
         MarkerExtra markerExtra = markerExtraMapper.selectOne(Wrappers.<MarkerExtra>lambdaQuery().eq(MarkerExtra::getMarkerId, markerSingleDto.getId()));
-        saveHistoryMarker(buildMarkerDto(markerSingleDto.getId(),markerExtra));
+        saveHistoryMarker(buildMarkerDto(markerSingleDto.getId(), markerExtra));
 
 
         Boolean updated = markerMapper.update(markerSingleDto.getEntity(), Wrappers.<Marker>lambdaUpdate()
@@ -280,7 +294,7 @@ public class MarkerServiceImpl implements MarkerService {
         //2.情况2-两人一起到达搜索,此时都找不到,1号先完成了添加,2号再完成了添加,此时会有两条一模一样数据,但是搜索出来的时候只会使用一条,影响不大.
         MarkerExtra markerExtra = markerExtraMapper.selectOne(Wrappers.<MarkerExtra>lambdaQuery().eq(MarkerExtra::getMarkerId, markerExtraDto.getMarkerId()));
 
-        saveHistoryMarker(buildMarkerDto(markerExtraDto.getMarkerId(),markerExtra));
+        saveHistoryMarker(buildMarkerDto(markerExtraDto.getMarkerId(), markerExtra));
         if (markerExtra == null) {
             return addMarkerExtra(markerExtraDto);
         }
@@ -991,15 +1005,14 @@ public class MarkerServiceImpl implements MarkerService {
     }
 
 
-
     //--------------------储存历史信息-----------------------
 
 
-    private MarkerDto buildMarkerDto(Long markerId, MarkerExtra markerExtra){
+    private MarkerDto buildMarkerDto(Long markerId, MarkerExtra markerExtra) {
         Marker marker = markerMapper.selectOne(Wrappers.<Marker>lambdaQuery().eq(Marker::getId, markerId));
         //获取关联的物品ID
         List<MarkerItemLink> markerItemLinks = markerItemLinkMapper.selectList(Wrappers.<MarkerItemLink>lambdaQuery().eq(MarkerItemLink::getMarkerId, markerId));
-        return  new MarkerDto(marker,markerExtra,markerItemLinks);
+        return new MarkerDto(marker, markerExtra, markerItemLinks);
     }
 
     private void saveHistoryMarker(MarkerDto dto) {

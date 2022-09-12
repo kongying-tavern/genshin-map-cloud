@@ -10,6 +10,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import site.yuanshen.common.core.utils.BeanUtils;
+import site.yuanshen.data.entity.Item;
 import site.yuanshen.data.entity.Marker;
 import site.yuanshen.data.entity.MarkerExtra;
 import site.yuanshen.data.entity.MarkerItemLink;
@@ -17,6 +18,7 @@ import site.yuanshen.data.vo.MarkerVo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -127,6 +129,26 @@ public class MarkerDto {
     public MarkerDto(MarkerVo markerVo) {
         BeanUtils.copyProperties(markerVo, this);
     }
+
+
+    /**
+     * 构建点位返回的方法
+     * 2022.09.12 增加传参,带入TagIcon
+     * @param marker
+     * @param markerExtra
+     * @param markerItemLinks
+     */
+    public MarkerDto(Marker marker, MarkerExtra markerExtra, List<MarkerItemLink> markerItemLinks, Map<Long, Item> itemMap) {
+        BeanUtils.copyProperties(marker, this);
+        this.id = marker.getId();
+        BeanUtils.copyNotNull(Optional.ofNullable(markerExtra).orElse(new MarkerExtra()).setId(null),
+                this);
+        markerItemLinks = Optional.ofNullable(markerItemLinks).orElse(new ArrayList<>());
+        this.itemList = markerItemLinks.stream().map(
+                markerItemLink -> new MarkerItemLinkDto(markerItemLink).setIconTag(itemMap.get(markerItemLink.getItemId()).getIconTag())
+        ).collect(Collectors.toList());
+    }
+
 
     public MarkerDto(Marker marker, MarkerExtra markerExtra, List<MarkerItemLink> markerItemLinks) {
         BeanUtils.copyProperties(marker, this);
