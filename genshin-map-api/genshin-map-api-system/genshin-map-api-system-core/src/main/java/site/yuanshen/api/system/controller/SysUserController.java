@@ -1,6 +1,7 @@
 package site.yuanshen.api.system.controller;
 
 import com.alibaba.fastjson.JSON;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,11 +11,14 @@ import site.yuanshen.common.web.response.R;
 import site.yuanshen.common.web.response.RUtils;
 import site.yuanshen.data.dto.SysUserDto;
 import site.yuanshen.data.dto.SysUserPasswordUpdateDto;
+import site.yuanshen.data.dto.SysUserSearchDto;
 import site.yuanshen.data.dto.SysUserUpdateDto;
 import site.yuanshen.data.entity.SysUser;
 import site.yuanshen.data.enums.RoleEnum;
 import site.yuanshen.data.vo.SysUserRegisterVo;
+import site.yuanshen.data.vo.SysUserSearchVo;
 import site.yuanshen.data.vo.SysUserVo;
+import site.yuanshen.data.vo.helper.PageListVo;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -48,6 +52,14 @@ public class SysUserController {
             throw new RuntimeException("权限不足，无法查看其他用户信息");
         return RUtils.create(userService.getUserInfo(userId));
     }
+
+
+    @Operation(summary = "用户信息批量查询", description = "用户信息批量查询")
+    @PostMapping("/info/userList")
+    public R<PageListVo<SysUserVo>> getUserList(@RequestBody SysUserSearchVo sysUserSearchVo){
+        return RUtils.create(userService.listPage(new SysUserSearchDto(sysUserSearchVo)));
+    }
+
 
     @PostMapping("/update")
     @Transactional

@@ -1,17 +1,18 @@
 package site.yuanshen.api.system.service.impl;
 
+import cn.hutool.core.util.ObjectUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import site.yuanshen.api.system.service.SysBasicService;
 import site.yuanshen.api.system.service.SysUserService;
 import site.yuanshen.common.core.utils.BeanUtils;
-import site.yuanshen.data.dto.SysRoleDto;
-import site.yuanshen.data.dto.SysUserDto;
-import site.yuanshen.data.dto.SysUserPasswordUpdateDto;
-import site.yuanshen.data.dto.SysUserUpdateDto;
+import site.yuanshen.data.dto.*;
 import site.yuanshen.data.entity.SysRole;
 import site.yuanshen.data.entity.SysUser;
 import site.yuanshen.data.entity.SysUserRoleLink;
@@ -21,7 +22,9 @@ import site.yuanshen.data.mapper.SysUserMapper;
 import site.yuanshen.data.mapper.SysUserRoleMapper;
 import site.yuanshen.data.vo.SysUserRegisterVo;
 import site.yuanshen.data.vo.SysUserVo;
+import site.yuanshen.data.vo.helper.PageListVo;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -114,5 +117,51 @@ public class SysUserServiceImpl implements SysUserService {
             return true;
         }
         throw new RuntimeException("密码错误");
+    }
+
+
+    /**
+     * 用户信息批量查询
+     * @param sysUserSearchDto
+     * @return
+     */
+    @Override
+    public PageListVo<SysUserVo> listPage(SysUserSearchDto sysUserSearchDto) {
+        Boolean nickNameSortIsAcs = null;
+        Boolean createTimeIsAcs = null;
+        List<String> sort = sysUserSearchDto.getSort();
+        for (String s :sort){
+            if (s.startsWith("createTime")){
+                if (s.endsWith("-")){
+                    createTimeIsAcs = false;
+                }else{
+                    createTimeIsAcs = true;
+                }
+            }
+
+            //Todo gbk 应改为自定义sql
+            if (s.startsWith("nickname")){
+                if (s.endsWith("-")){
+                    nickNameSortIsAcs = false;
+                }else{
+                    nickNameSortIsAcs = true;
+                }
+            }
+        }
+
+        QueryWrapper<SysUser> wrapper = new QueryWrapper<>();
+        wrapper.like(ObjectUtil.isNotNull(sysUserSearchDto.getNickname()), "nickname", sysUserSearchDto.getNickname())
+                .like(ObjectUtil.isNotNull(sysUserSearchDto.getUsername()), "username", sysUserSearchDto.getUsername())
+                .orderBy(ObjectUtil.isNotNull(createTimeIsAcs), Boolean.TRUE.equals(createTimeIsAcs),"create_time")
+                .orderBy(ObjectUtil.isNotNull(nickNameSortIsAcs),Boolean.TRUE.equals(nickNameSortIsAcs),"convert(nickname using gbk) collate gbk_chinese_ci");
+
+        Page<SysUser> sysUserPage = userMapper.selectPage(sysUserSearchDto.getPageEntity(),wrapper);
+        return new PageListVo<SysUserVo>()
+                .setRecord(sysUserPage.getRecords().stream()
+                        .map(SysUserDto::new)
+                        .map(SysUserDto::getVo)
+                        .collect(Collectors.toList()))
+                .setTotal(sysUserPage.getTotal())
+                .setSize(sysUserPage.getSize());
     }
 }

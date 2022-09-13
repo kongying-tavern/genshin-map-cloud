@@ -28,6 +28,7 @@ genshin:
       - /api/marker/punctuate/check/**
       - /api/marker/**
       - /api/history/**
+      - /system/user/info/userList
     ADMIN:
       - /system/**
       - /api/tag/**

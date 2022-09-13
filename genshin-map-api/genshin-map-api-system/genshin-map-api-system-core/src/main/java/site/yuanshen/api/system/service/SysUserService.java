@@ -1,10 +1,14 @@
 package site.yuanshen.api.system.service;
 
+import site.yuanshen.common.web.response.Codes;
 import site.yuanshen.data.dto.SysUserDto;
 import site.yuanshen.data.dto.SysUserPasswordUpdateDto;
+import site.yuanshen.data.dto.SysUserSearchDto;
 import site.yuanshen.data.dto.SysUserUpdateDto;
+import site.yuanshen.data.entity.SysUser;
 import site.yuanshen.data.vo.SysUserRegisterVo;
 import site.yuanshen.data.vo.SysUserVo;
+import site.yuanshen.data.vo.helper.PageListVo;
 
 /**
  * 用户相关服务类接口
@@ -45,4 +49,5 @@ public interface SysUserService {
      */
     Boolean updatePassword(SysUserPasswordUpdateDto passwordUpdateDto);
 
+    PageListVo<SysUserVo> listPage(SysUserSearchDto sysUserSearchDto);
 }
