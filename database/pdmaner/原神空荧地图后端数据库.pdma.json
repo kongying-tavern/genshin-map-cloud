@@ -4,7 +4,7 @@
   "avatar": "",
   "version": "4.1.5",
   "createdTime": "2022-4-22 02:18:22",
-  "updatedTime": "2022-9-15 22:31:24",
+  "updatedTime": "2022-9-15 22:44:15",
   "dbConns": [],
   "profile": {
     "default": {
@@ -7240,6 +7240,23 @@
           "refDict": "",
           "extProps": {},
           "id": "2508E025-14C7-4066-950F-513204F9EBE4"
+        },
+        {
+          "defKey": "logo",
+          "defName": "头像链接",
+          "comment": "",
+          "type": "",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "",
+          "extProps": {},
+          "domain": "3E948CEC-3070-472C-AF92-F3CA11EC9D15",
+          "id": "1B10A211-51C3-4DBA-A2C5-334CD6A08518"
         }
       ],
       "correlations": [],

@@ -59,4 +59,10 @@ public class SysUser extends BaseEntity {
     @TableField("phone")
     private String phone;
 
+    /**
+     * 头像链接
+     */
+    @TableField("logo")
+    private String logoUrl;
+
 }

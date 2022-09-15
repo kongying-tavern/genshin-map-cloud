@@ -1,5 +1,6 @@
 package site.yuanshen.data.vo;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -51,6 +52,12 @@ public class SysUserVo {
      */
     @Schema(title = "手机号")
     private String phone;
+
+    /**
+     * 头像链接
+     */
+    @Schema(title = "头像链接")
+    private String logoUrl;
 
     /**
      * 角色列表

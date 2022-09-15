@@ -1,5 +1,6 @@
 package site.yuanshen.data.dto;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -49,6 +50,11 @@ public class SysUserDto {
      * 手机号
      */
     private String phone;
+
+    /**
+     * 头像链接
+     */
+    private String logoUrl;
 
     /**
      * 角色列表
