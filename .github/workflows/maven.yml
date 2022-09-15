@@ -54,28 +54,28 @@ jobs:
     #       REMOTE_PORT: ${{ secrets.DEV_SERVER_PORT }}
     #       REMOTE_USER: ${{ secrets.DEV_SERVER_USER }}
     #       TARGET: "~/genshin-map-cloud/ability/"
-    - name: Upload api-core to Artifact
-      uses: actions/upload-artifact@v3.1.0
-      with:
-        # Artifact name
-        name: api-core
-        path: genshin-map-api/genshin-map-api-core/genshin-map-api-core-core/target/genshin-map-api-core-core-1.0.jar
-    - name: Upload api-system to Artifact
-      uses: actions/upload-artifact@v3.1.0
-      with:
-        # Artifact name
-        name: api-system
-        path: genshin-map-api/genshin-map-api-system/genshin-map-api-system-core/target/genshin-map-api-system-core-1.0.jar
-    - name: Upload ability-gateway to Artifact
-      uses: actions/upload-artifact@v3.1.0
-      with:
-        # Artifact name
-        name: ability-gateway
-        path: genshin-map-ability/genshin-map-ability-gateway/target/genshin-map-ability-gateway-1.0.jar
-    - name: Upload ability-gateway to Artifact
-      uses: actions/upload-artifact@v3.1.0
-      with:
-        # Artifact name
-        name: ability-auth
-        path: genshin-map-ability/genshin-map-ability-auth/target/genshin-map-ability-auth-1.0.jar
+#    - name: Upload api-core to Artifact
+#      uses: actions/upload-artifact@v3.1.0
+#      with:
+#        # Artifact name
+#        name: api-core
+#        path: genshin-map-api/genshin-map-api-core/genshin-map-api-core-core/target/genshin-map-api-core-core-1.0.jar
+#    - name: Upload api-system to Artifact
+#      uses: actions/upload-artifact@v3.1.0
+#      with:
+#        # Artifact name
+#        name: api-system
+#        path: genshin-map-api/genshin-map-api-system/genshin-map-api-system-core/target/genshin-map-api-system-core-1.0.jar
+#    - name: Upload ability-gateway to Artifact
+#      uses: actions/upload-artifact@v3.1.0
+#      with:
+#        # Artifact name
+#        name: ability-gateway
+#        path: genshin-map-ability/genshin-map-ability-gateway/target/genshin-map-ability-gateway-1.0.jar
+#    - name: Upload ability-gateway to Artifact
+#      uses: actions/upload-artifact@v3.1.0
+#      with:
+#        # Artifact name
+#        name: ability-auth
+#        path: genshin-map-ability/genshin-map-ability-auth/target/genshin-map-ability-auth-1.0.jar
 
