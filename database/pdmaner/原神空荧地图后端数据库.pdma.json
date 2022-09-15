@@ -4,7 +4,7 @@
   "avatar": "",
   "version": "4.1.5",
   "createdTime": "2022-4-22 02:18:22",
-  "updatedTime": "2022-9-15 22:44:15",
+  "updatedTime": "2022-9-15 22:51:34",
   "dbConns": [],
   "profile": {
     "default": {
@@ -7253,10 +7253,10 @@
           "autoIncrement": false,
           "defaultValue": "",
           "hideInGraph": false,
+          "domain": "3E948CEC-3070-472C-AF92-F3CA11EC9D15",
           "refDict": "",
           "extProps": {},
-          "domain": "3E948CEC-3070-472C-AF92-F3CA11EC9D15",
-          "id": "1B10A211-51C3-4DBA-A2C5-334CD6A08518"
+          "id": "E08A001B-345C-4B56-9F17-F7EBE0BF40D0"
         }
       ],
       "correlations": [],
