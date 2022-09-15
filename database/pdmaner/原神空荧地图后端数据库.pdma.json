@@ -2,9 +2,9 @@
   "name": "原神空荧地图后端数据库",
   "describe": "原神空荧地图后端数据库",
   "avatar": "",
-  "version": "4.1.1",
+  "version": "4.1.5",
   "createdTime": "2022-4-22 02:18:22",
-  "updatedTime": "2022-7-16 20:26:29",
+  "updatedTime": "2022-9-15 22:31:24",
   "dbConns": [],
   "profile": {
     "default": {
@@ -1368,6 +1368,20 @@
             }
           ],
           "id": "AF6989CD-E40F-461C-8299-F08E756F4652"
+        },
+        {
+          "defKey": "idx_markerId",
+          "defName": null,
+          "unique": false,
+          "comment": "点位id索引",
+          "fields": [
+            {
+              "fieldDefKey": "E99BC64C-B686-4CF0-A83C-D017DF74E91F",
+              "ascOrDesc": "A",
+              "id": "3B33C5FB-4243-4AB9-B8C5-101AD84F047D"
+            }
+          ],
+          "id": "20D5303B-6C4D-443A-A121-EB4D2ADCB073"
         }
       ]
     },
@@ -1872,7 +1886,7 @@
           "notNull": false,
           "autoIncrement": false,
           "defaultValue": "",
-          "hideInGraph": false,
+          "hideInGraph": true,
           "refDict": "",
           "domain": "9092C4E0-1A54-4859-ABBB-5B62DBC27573",
           "id": "12B60512-224F-44E1-ADA3-81DDE9C83265"
@@ -2635,6 +2649,25 @@
       "correlations": [],
       "indexes": [
         {
+          "defKey": "idx_itemId_delFlag",
+          "defName": null,
+          "unique": false,
+          "comment": "删除-物品id索引",
+          "fields": [
+            {
+              "fieldDefKey": "0BFFA759-258C-4638-8F82-BF8F5099F876",
+              "ascOrDesc": "A",
+              "id": "C7D98711-0881-4F25-B4FD-BB01DB53AAAD"
+            },
+            {
+              "fieldDefKey": "EE5D8F91-C721-4D36-8E02-001CCD12F986",
+              "ascOrDesc": "A",
+              "id": "237DC04F-47C4-4DEB-9C3C-57ADC37FFCC2"
+            }
+          ],
+          "id": "0F80AB11-0E47-4328-96DB-3C2DE30A2A1E"
+        },
+        {
           "defKey": "idx_syncTag",
           "defName": null,
           "unique": false,
@@ -2647,6 +2680,25 @@
             }
           ],
           "id": "FAAC0494-D7AC-4CEE-8565-175BC9D750CD"
+        },
+        {
+          "defKey": "idx_markerId_delFlag",
+          "defName": null,
+          "unique": false,
+          "comment": "删除-点位id索引",
+          "fields": [
+            {
+              "fieldDefKey": "0BFFA759-258C-4638-8F82-BF8F5099F876",
+              "ascOrDesc": "A",
+              "id": "6C6680E4-48E9-4AE7-AFB1-0C788B1EC191"
+            },
+            {
+              "fieldDefKey": "FD3D09EE-4548-4A26-A2E4-3894984FCC7A",
+              "ascOrDesc": "A",
+              "id": "555996A5-3F61-43A2-BC02-5F699360D9F4"
+            }
+          ],
+          "id": "E14393F5-FEF8-4747-93A7-F71F072DB85B"
         }
       ]
     },
@@ -3936,6 +3988,44 @@
             }
           ],
           "id": "C907F0BE-9E65-4BFC-BF47-734F3353656A"
+        },
+        {
+          "defKey": "idx_typeId_delFlag",
+          "defName": null,
+          "unique": false,
+          "comment": "删除-类型id索引",
+          "fields": [
+            {
+              "fieldDefKey": "B40E0C02-DA05-42B2-ADC1-5AA2BF42BD00",
+              "ascOrDesc": "A",
+              "id": "713ABAD2-A3CB-4A47-9DFB-0FC111F9E408"
+            },
+            {
+              "fieldDefKey": "6EDF2FFB-25D6-4CD3-A3F7-ACCAD47D041F",
+              "ascOrDesc": "A",
+              "id": "23E2AA5D-959A-4D72-AF13-18023F31579D"
+            }
+          ],
+          "id": "9450CB6A-3012-4169-A4DC-2B97BC9DDEC5"
+        },
+        {
+          "defKey": "idx_itemId_delFlag",
+          "defName": null,
+          "unique": false,
+          "comment": "删除-物品id索引",
+          "fields": [
+            {
+              "fieldDefKey": "B40E0C02-DA05-42B2-ADC1-5AA2BF42BD00",
+              "ascOrDesc": "A",
+              "id": "FAB36DB2-E81C-42A5-B07B-A7894A7D329E"
+            },
+            {
+              "fieldDefKey": "F10E2303-0E8F-465F-ACDE-D9CE7E6BD148",
+              "ascOrDesc": "A",
+              "id": "6649D230-38ED-49D2-B58C-DD6F5103DDC9"
+            }
+          ],
+          "id": "C700F441-677B-472C-A799-B1B88FB903B2"
         }
       ]
     },
@@ -5688,6 +5778,20 @@
             }
           ],
           "id": "E4A73C94-01FA-4AF3-A265-939B8DBDEA87"
+        },
+        {
+          "defKey": "idx_name",
+          "defName": null,
+          "unique": false,
+          "comment": "名称索引",
+          "fields": [
+            {
+              "fieldDefKey": "B107169F-8334-4421-B992-2FF2D05E6998",
+              "ascOrDesc": "A",
+              "id": "81431D41-0C25-4866-9D8D-D9D42C920202"
+            }
+          ],
+          "id": "CBC3D540-8003-4899-A722-1EF8BA0D65EB"
         }
       ]
     },
@@ -8267,6 +8371,304 @@
         }
       ],
       "correlations": []
+    },
+    {
+      "id": "CF88EAAB-2120-4E41-A96C-4261D6FAF1B5",
+      "defKey": "history",
+      "defName": "",
+      "comment": "",
+      "properties": {},
+      "fields": [
+        {
+          "defKey": "id",
+          "defName": "ID",
+          "comment": "",
+          "domain": "",
+          "type": "BIGINT",
+          "len": 20,
+          "scale": "",
+          "primaryKey": true,
+          "notNull": true,
+          "autoIncrement": true,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "",
+          "id": "02C8861D-D44E-4BE7-8B1D-4EA64BE2FF71",
+          "extProps": {}
+        },
+        {
+          "defKey": "content",
+          "defName": "",
+          "comment": null,
+          "domain": "3E948CEC-3070-472C-AF92-F3CA11EC9D15",
+          "type": "TEXT",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": true,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "",
+          "id": "E28AB25D-C816-42B2-91A2-A727B098CDD7",
+          "extProps": {}
+        },
+        {
+          "defKey": "md5",
+          "defName": "",
+          "comment": null,
+          "domain": "9092C4E0-1A54-4859-ABBB-5B62DBC27573",
+          "type": "VARCHAR",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "",
+          "id": "6A9D6508-6FF3-4CE7-8653-F783BCDC97EF",
+          "extProps": {}
+        },
+        {
+          "defKey": "t_id",
+          "defName": "",
+          "comment": null,
+          "domain": "",
+          "type": "BIGINT",
+          "len": 20,
+          "scale": "",
+          "primaryKey": false,
+          "notNull": true,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "",
+          "id": "7C900974-24A0-4B11-96E0-B7138EA89A9E",
+          "extProps": {}
+        },
+        {
+          "defKey": "type",
+          "defName": "",
+          "comment": null,
+          "domain": "9092C4E0-1A54-4859-ABBB-5B62DBC27573",
+          "type": "VARCHAR",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "",
+          "id": "4CBF4E2A-3689-40A3-AF53-820338F1078C",
+          "extProps": {}
+        },
+        {
+          "defKey": "ipv4",
+          "defName": "",
+          "comment": null,
+          "domain": "73FD2BAD-2358-4336-B96D-45DC897BD792",
+          "type": "VARCHAR",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "",
+          "id": "4392E7BA-8CBD-4B68-B817-0A4815C5E6BF",
+          "extProps": {}
+        },
+        {
+          "defKey": "creator_id",
+          "defName": "",
+          "comment": null,
+          "domain": "",
+          "type": "BIGINT",
+          "len": 20,
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "",
+          "id": "2AF23A35-BA27-47ED-B0B9-F709BD935F5F",
+          "extProps": {}
+        },
+        {
+          "defKey": "create_time",
+          "defName": "",
+          "comment": null,
+          "domain": "7CFFA0D3-6A93-4DDC-BC10-DF21211064DC",
+          "type": "DATETIME",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "",
+          "id": "918EA3C0-7F2A-4BA3-BAE5-D1E0F38CB634",
+          "extProps": {}
+        },
+        {
+          "defKey": "del_flag",
+          "defName": "",
+          "comment": null,
+          "domain": "6F7C1C5C-D159-41E6-BF9D-54DEEFA79AFF",
+          "type": "CHAR",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "'0'",
+          "hideInGraph": false,
+          "refDict": "",
+          "id": "8419BAEA-D50A-47F8-A928-2C926E601FC5",
+          "extProps": {}
+        },
+        {
+          "defKey": "version",
+          "defName": "",
+          "comment": null,
+          "domain": "",
+          "type": "BIGINT",
+          "len": 20,
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "",
+          "id": "CC74C8BB-D2FF-4A69-80E5-D5A7558174D4",
+          "extProps": {}
+        },
+        {
+          "defKey": "updater_id",
+          "defName": "",
+          "comment": null,
+          "domain": "",
+          "type": "BIGINT",
+          "len": 20,
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "",
+          "id": "4A2DD886-601C-4D0B-8E25-D6C3CE13F3E8",
+          "extProps": {}
+        },
+        {
+          "defKey": "update_time",
+          "defName": "",
+          "comment": null,
+          "domain": "7CFFA0D3-6A93-4DDC-BC10-DF21211064DC",
+          "type": "DATETIME",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "",
+          "id": "E722D3CA-071E-4CF8-9557-EA70309739EC",
+          "extProps": {}
+        }
+      ],
+      "indexes": [],
+      "nameTemplate": "{defKey}[{defName}]",
+      "headers": [
+        {
+          "freeze": false,
+          "refKey": "hideInGraph",
+          "hideInGraph": true
+        },
+        {
+          "freeze": true,
+          "refKey": "defKey",
+          "hideInGraph": false
+        },
+        {
+          "freeze": true,
+          "refKey": "defName",
+          "hideInGraph": false
+        },
+        {
+          "freeze": false,
+          "refKey": "primaryKey",
+          "hideInGraph": false
+        },
+        {
+          "freeze": false,
+          "refKey": "notNull",
+          "hideInGraph": true
+        },
+        {
+          "freeze": false,
+          "refKey": "autoIncrement",
+          "hideInGraph": true
+        },
+        {
+          "freeze": false,
+          "refKey": "domain",
+          "hideInGraph": true
+        },
+        {
+          "freeze": false,
+          "refKey": "type",
+          "hideInGraph": false
+        },
+        {
+          "freeze": false,
+          "refKey": "len",
+          "hideInGraph": false
+        },
+        {
+          "freeze": false,
+          "refKey": "scale",
+          "hideInGraph": false
+        },
+        {
+          "freeze": false,
+          "refKey": "comment",
+          "hideInGraph": true
+        },
+        {
+          "freeze": false,
+          "refKey": "refDict",
+          "hideInGraph": true
+        },
+        {
+          "freeze": false,
+          "refKey": "defaultValue",
+          "hideInGraph": true
+        },
+        {
+          "freeze": false,
+          "refKey": "isStandard",
+          "hideInGraph": false
+        },
+        {
+          "freeze": false,
+          "refKey": "uiHint",
+          "hideInGraph": true
+        },
+        {
+          "freeze": false,
+          "refKey": "extProps",
+          "hideInGraph": true
+        }
+      ],
+      "correlations": []
     }
   ],
   "views": [],
@@ -8706,7 +9108,8 @@
         "ECCBD500-AC77-4FD0-8D2F-2DA4CC546368",
         "95FCD0C8-2928-4C6F-867C-96FEA879B3B8",
         "15BE2482-6CDE-49BF-BB64-044AECE1F775",
-        "D94693A9-04FB-44D0-BD51-4109891FD70B"
+        "D94693A9-04FB-44D0-BD51-4109891FD70B",
+        "CF88EAAB-2120-4E41-A96C-4261D6FAF1B5"
       ],
       "refViews": [],
       "refDiagrams": [],
@@ -9292,246 +9695,17 @@
       "id": "3203E0C2-DF99-49E4-94A2-1B4AA4C3626C"
     }
   ],
-  "standardFields": [
-    {
-      "defKey": "personInfo",
-      "defName": "个人基本信息要素",
-      "fields": [
-        {
-          "defKey": "ID_CARD_NO",
-          "defName": "身份证号",
-          "comment": "",
-          "type": "VARCHAR",
-          "len": "60",
-          "scale": "",
-          "primaryKey": false,
-          "notNull": false,
-          "autoIncrement": false,
-          "defaultValue": "",
-          "hideInGraph": false,
-          "domain": "9092C4E0-1A54-4859-ABBB-5B62DBC27573",
-          "refDict": "",
-          "uiHint": "",
-          "id": "A64A91C8-A41F-4113-92FB-7563D7EF054D"
-        },
-        {
-          "defKey": "MOBILE_PHONE",
-          "defName": "手机号",
-          "comment": "",
-          "type": "VARCHAR",
-          "len": "60",
-          "scale": "",
-          "primaryKey": false,
-          "notNull": false,
-          "autoIncrement": false,
-          "defaultValue": "",
-          "hideInGraph": false,
-          "domain": "9092C4E0-1A54-4859-ABBB-5B62DBC27573",
-          "refDict": "",
-          "uiHint": "",
-          "id": "479DA2AB-1974-411A-A81E-92FB939E75EB"
-        },
-        {
-          "defKey": "GENDER",
-          "defName": "性别",
-          "comment": "",
-          "type": "VARCHAR",
-          "len": "32",
-          "scale": "",
-          "primaryKey": false,
-          "notNull": false,
-          "autoIncrement": false,
-          "defaultValue": "",
-          "hideInGraph": false,
-          "domain": "73FD2BAD-2358-4336-B96D-45DC897BD792",
-          "refDict": "BF9E20E0-80D3-486D-BD58-5FADCF3E4A1D",
-          "uiHint": "",
-          "id": "48473E29-6594-4912-AADE-C8AB44FCA3E9"
-        },
-        {
-          "defKey": "BIRTH",
-          "defName": "出生日期",
-          "comment": "",
-          "type": "DATETIME",
-          "len": "",
-          "scale": "",
-          "primaryKey": false,
-          "notNull": false,
-          "autoIncrement": false,
-          "defaultValue": "",
-          "hideInGraph": false,
-          "domain": "7CFFA0D3-6A93-4DDC-BC10-DF21211064DC",
-          "refDict": "",
-          "uiHint": "",
-          "id": "2BD3D2EE-2411-49A6-983D-84B81057312F"
-        },
-        {
-          "defKey": "AVATAR",
-          "defName": "头像",
-          "comment": "",
-          "type": "VARCHAR",
-          "len": "60",
-          "scale": "",
-          "primaryKey": false,
-          "notNull": false,
-          "autoIncrement": false,
-          "defaultValue": "",
-          "hideInGraph": false,
-          "domain": "9092C4E0-1A54-4859-ABBB-5B62DBC27573",
-          "refDict": "",
-          "uiHint": "",
-          "id": "FDD67CEE-4B52-4BD1-A1A3-9C5EBC6037E6"
-        },
-        {
-          "defKey": "HEIGHT",
-          "defName": "身高",
-          "comment": "",
-          "type": "INT",
-          "len": "",
-          "scale": "",
-          "primaryKey": false,
-          "notNull": false,
-          "autoIncrement": false,
-          "defaultValue": "",
-          "hideInGraph": false,
-          "domain": "6BC8F04B-6CFA-4995-98D3-318F5CDD774E",
-          "refDict": "",
-          "uiHint": "",
-          "id": "CAAA0E79-41A1-4758-B481-D171168C4D68"
-        },
-        {
-          "defKey": "WEIGHT",
-          "defName": "体重",
-          "comment": "",
-          "type": "INT",
-          "len": "",
-          "scale": "",
-          "primaryKey": false,
-          "notNull": false,
-          "autoIncrement": false,
-          "defaultValue": "",
-          "hideInGraph": false,
-          "domain": "6BC8F04B-6CFA-4995-98D3-318F5CDD774E",
-          "refDict": "",
-          "uiHint": "",
-          "id": "575482CE-64A6-4CB9-99DC-8E126D190AAA"
-        },
-        {
-          "defKey": "NATION",
-          "defName": "名族",
-          "comment": "",
-          "type": "VARCHAR",
-          "len": "32",
-          "scale": "",
-          "primaryKey": false,
-          "notNull": false,
-          "autoIncrement": false,
-          "defaultValue": "",
-          "hideInGraph": false,
-          "domain": "73FD2BAD-2358-4336-B96D-45DC897BD792",
-          "refDict": "115EDEFC-0323-410E-81AB-CCAB8879837A",
-          "uiHint": "",
-          "id": "15B0D75D-0B97-4985-A816-D0EAFA90446B"
-        },
-        {
-          "defKey": "POLITICAL",
-          "defName": "政治面貌",
-          "comment": "",
-          "type": "VARCHAR",
-          "len": "32",
-          "scale": "",
-          "primaryKey": false,
-          "notNull": false,
-          "autoIncrement": false,
-          "defaultValue": "",
-          "hideInGraph": false,
-          "domain": "73FD2BAD-2358-4336-B96D-45DC897BD792",
-          "refDict": "06EED564-BBA9-4747-8D73-AF809A330CB8",
-          "uiHint": "",
-          "id": "F458E86D-84D6-45A1-9DD3-51E6C8170D7F"
-        },
-        {
-          "defKey": "MARITAL",
-          "defName": "婚姻状况",
-          "comment": "",
-          "type": "VARCHAR",
-          "len": "32",
-          "scale": "",
-          "primaryKey": false,
-          "notNull": false,
-          "autoIncrement": false,
-          "defaultValue": "",
-          "hideInGraph": false,
-          "domain": "73FD2BAD-2358-4336-B96D-45DC897BD792",
-          "refDict": "EA1587B7-3954-437A-BFE0-FCB0453BCABA",
-          "uiHint": "",
-          "id": "7275E578-6893-4922-AC69-95B261BFBD61"
-        },
-        {
-          "defKey": "DOMICILE_PLACE_PROVINCE",
-          "defName": "籍贯（省）",
-          "comment": "",
-          "type": "VARCHAR",
-          "len": "60",
-          "scale": "",
-          "primaryKey": false,
-          "notNull": false,
-          "autoIncrement": false,
-          "defaultValue": "",
-          "hideInGraph": false,
-          "domain": "9092C4E0-1A54-4859-ABBB-5B62DBC27573",
-          "refDict": "",
-          "uiHint": "",
-          "id": "F04BF130-3EC1-4E02-9DED-3214CA88E352"
-        },
-        {
-          "defKey": "DOMICILE_PLACE_CITY",
-          "defName": "籍贯（市）",
-          "comment": "",
-          "type": "VARCHAR",
-          "len": "32",
-          "scale": "",
-          "primaryKey": false,
-          "notNull": false,
-          "autoIncrement": false,
-          "defaultValue": "",
-          "hideInGraph": false,
-          "domain": "73FD2BAD-2358-4336-B96D-45DC897BD792",
-          "refDict": "",
-          "uiHint": "",
-          "id": "B97F5BC2-33DE-4857-9DB8-ECFD02C9040C"
-        },
-        {
-          "defKey": "DOMICILE_PLACE_ADDRESS",
-          "defName": "户籍地址",
-          "comment": "",
-          "type": "VARCHAR",
-          "len": "60",
-          "scale": "",
-          "primaryKey": false,
-          "notNull": false,
-          "autoIncrement": false,
-          "defaultValue": "",
-          "hideInGraph": false,
-          "domain": "9092C4E0-1A54-4859-ABBB-5B62DBC27573",
-          "refDict": "",
-          "uiHint": "",
-          "id": "812ADF1D-8C03-40CA-B030-E539838FB889"
-        }
-      ],
-      "id": "F30202B9-4B5D-4CE7-87CE-B3890C84D3F2"
-    }
-  ],
+  "standardFields": [],
   "dbConn": [
     {
       "defKey": "3AA6E36E-4371-434D-999F-22CFC4106840",
-      "defName": "teamsystem",
+      "defName": "genshin_map",
       "type": "29D1CE08-4C35-4D2D-AAA9-23D93305B52E",
       "properties": {
         "driver_class_name": "com.mysql.cj.jdbc.Driver",
-        "url": "jdbc:mysql://localhost:3306/teamsystem_cloud?characterEncoding=UTF-8&useSSL=false&useUnicode=true&serverTimezone=UTC",
-        "password": "momincong",
-        "username": "root",
+        "url": "jdbc:mysql://cloud.yuanshen.site:3306/genshin_map?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai",
+        "password": "7brCCkWcHGaEcaHs",
+        "username": "genshin_map",
         "customer_driver": ""
       }
     }
