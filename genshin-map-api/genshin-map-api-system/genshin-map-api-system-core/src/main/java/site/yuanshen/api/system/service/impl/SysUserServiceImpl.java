@@ -154,10 +154,38 @@ public class SysUserServiceImpl implements SysUserService {
                 .orderBy(ObjectUtil.isNotNull(createTimeIsAcs), Boolean.TRUE.equals(createTimeIsAcs), "create_time")
                 .orderBy(ObjectUtil.isNotNull(nickNameSortIsAcs), Boolean.TRUE.equals(nickNameSortIsAcs), "convert(nickname using gbk) collate gbk_chinese_ci");
 
-        Page<SysUser> sysUserPage = userMapper.selectPage(sysUserSearchDto.getPageEntity(),wrapper);
+        //此处mbp的分页优化有问题，关闭分页优化，减少报错日志
+        Page<SysUser> sysUserPage = userMapper.selectPage(sysUserSearchDto.getPageEntity().setOptimizeCountSql(false), wrapper);
+
+        //构建用户ID->角色ID的map
+        Map<Long, List<Long>> roleLinkMap = new HashMap<>((int) sysUserPage.getTotal());
+        //记录当前筛选的角色ID
+        HashSet<Long> roleIdSet = new HashSet<>();
+        userRoleMapper
+                .selectList(Wrappers.<SysUserRoleLink>lambdaQuery().in(SysUserRoleLink::getUserId,
+                        sysUserPage.getRecords().parallelStream()
+                                .map(SysUser::getId).collect(Collectors.toList())))
+                .forEach(roleLink -> {
+                    List<Long> roleLinkList = roleLinkMap.getOrDefault(roleLink.getRoleId(), new ArrayList<>());
+                    roleLinkList.add(roleLink.getRoleId());
+                    roleLinkMap.put(roleLink.getUserId(), roleLinkList);
+                    roleIdSet.add(roleLink.getRoleId());
+                });
+        //构建角色ID->角色的map
+        Map<Long, SysRole> roleMap = sysRoleMapper
+                .selectList(Wrappers.<SysRole>lambdaQuery().in(SysRole::getId, roleIdSet))
+                .stream().collect(Collectors.toMap(SysRole::getId, role -> role));
+
         return new PageListVo<SysUserVo>()
-                .setRecord(sysUserPage.getRecords().stream()
+                .setRecord(sysUserPage.getRecords().parallelStream()
                         .map(SysUserDto::new)
+                        .map(dto -> dto.setRoleList(
+                                roleLinkMap.get(dto.getId())
+                                        .stream()
+                                        .map(roleMap::get)
+                                        .map(SysRoleDto::new)
+                                        .map(SysRoleDto::getVo)
+                                        .collect(Collectors.toList())))
                         .map(SysUserDto::getVo)
                         .collect(Collectors.toList()))
                 .setTotal(sysUserPage.getTotal())
