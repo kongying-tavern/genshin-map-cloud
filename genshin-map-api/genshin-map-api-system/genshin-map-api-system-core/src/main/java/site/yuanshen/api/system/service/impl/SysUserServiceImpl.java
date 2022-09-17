@@ -166,7 +166,7 @@ public class SysUserServiceImpl implements SysUserService {
                         sysUserPage.getRecords().parallelStream()
                                 .map(SysUser::getId).collect(Collectors.toList())))
                 .forEach(roleLink -> {
-                    List<Long> roleLinkList = roleLinkMap.getOrDefault(roleLink.getRoleId(), new ArrayList<>());
+                    List<Long> roleLinkList = roleLinkMap.getOrDefault(roleLink.getUserId(), new ArrayList<>());
                     roleLinkList.add(roleLink.getRoleId());
                     roleLinkMap.put(roleLink.getUserId(), roleLinkList);
                     roleIdSet.add(roleLink.getRoleId());
