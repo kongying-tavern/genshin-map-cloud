@@ -76,7 +76,7 @@ public class SysRoleServiceImpl implements SysRoleService {
     }
 
     /**
-     * 将角色从用户剥夺
+     * 将角色从用户剥夺，同时将高于此角色的角色全部剥夺
      *
      * @param roleLinkDto 角色关联数据封装
      * @return 是否成功
@@ -86,7 +86,7 @@ public class SysRoleServiceImpl implements SysRoleService {
         SysUser user = basicService.getUserNotNull(roleLinkDto.getUserId());
         SysRole role = basicService.getRoleNotNullById(roleLinkDto.getRoleId());
         SysUserRoleLink userRole = Optional.ofNullable(userRoleMapper.selectOne(Wrappers.lambdaQuery(SysUserRoleLink.class)
-                        .eq(SysUserRoleLink::getRoleId, role.getId())
+                        .lt(SysUserRoleLink::getRoleId, role.getId())
                         .eq(SysUserRoleLink::getUserId, user.getId())))
                 .orElseThrow(() -> new RuntimeException("用户并不拥有该权限"));
         userRoleMapper.deleteById(userRole.getId());

@@ -55,7 +55,7 @@ public class SysRoleController {
         );
     }
 
-    @Operation(summary = "将角色从用户剥夺", description = "将角色从用户剥夺")
+    @Operation(summary = "将角色从用户剥夺", description = "将角色从用户剥夺，同时将高于此角色的角色全部剥夺")
     @DeleteMapping("/user")
     @Transactional
     //TODO DeleteMapping

@@ -42,7 +42,7 @@ public interface SysRoleService {
     Boolean addRoleToUser(SysRoleLinkDto roleLinkDto);
 
     /**
-     * 将角色从用户剥夺
+     * 将角色从用户剥夺，同时将高于此角色的角色全部剥夺
      *
      * @param roleLinkDto 角色关联数据封装
      * @return 是否成功
