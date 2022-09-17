@@ -1,6 +1,7 @@
 package site.yuanshen.api.system.service.impl;
 
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -8,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 import site.yuanshen.api.system.service.SysBasicService;
 import site.yuanshen.api.system.service.SysUserService;
 import site.yuanshen.common.core.utils.BeanUtils;
@@ -24,8 +24,7 @@ import site.yuanshen.data.vo.SysUserRegisterVo;
 import site.yuanshen.data.vo.SysUserVo;
 import site.yuanshen.data.vo.helper.PageListVo;
 
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -150,10 +149,10 @@ public class SysUserServiceImpl implements SysUserService {
         }
 
         QueryWrapper<SysUser> wrapper = new QueryWrapper<>();
-        wrapper.like(ObjectUtil.isNotNull(sysUserSearchDto.getNickname()), "nickname", sysUserSearchDto.getNickname())
-                .like(ObjectUtil.isNotNull(sysUserSearchDto.getUsername()), "username", sysUserSearchDto.getUsername())
-                .orderBy(ObjectUtil.isNotNull(createTimeIsAcs), Boolean.TRUE.equals(createTimeIsAcs),"create_time")
-                .orderBy(ObjectUtil.isNotNull(nickNameSortIsAcs),Boolean.TRUE.equals(nickNameSortIsAcs),"convert(nickname using gbk) collate gbk_chinese_ci");
+        wrapper.like(StrUtil.isNotBlank(sysUserSearchDto.getNickname()), "nickname", sysUserSearchDto.getNickname())
+                .like(StrUtil.isNotBlank(sysUserSearchDto.getUsername()), "username", sysUserSearchDto.getUsername())
+                .orderBy(ObjectUtil.isNotNull(createTimeIsAcs), Boolean.TRUE.equals(createTimeIsAcs), "create_time")
+                .orderBy(ObjectUtil.isNotNull(nickNameSortIsAcs), Boolean.TRUE.equals(nickNameSortIsAcs), "convert(nickname using gbk) collate gbk_chinese_ci");
 
         Page<SysUser> sysUserPage = userMapper.selectPage(sysUserSearchDto.getPageEntity(),wrapper);
         return new PageListVo<SysUserVo>()
