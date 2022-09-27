@@ -132,7 +132,7 @@ public class ItemServiceImpl implements ItemService {
         itemType.setIsFinal(
                 itemTypeMapper.selectCount(Wrappers.<ItemType>lambdaQuery()
                         .eq(ItemType::getParentId, itemType.getId()))
-                        > 0);
+                        <= 0);
         //更改分类类型末端标志
         if (!itemType.getParentId().equals(itemTypeDto.getParentId())) {
             itemTypeMapper.update(null, Wrappers.<ItemType>lambdaUpdate()
@@ -145,6 +145,10 @@ public class ItemServiceImpl implements ItemService {
                 itemTypeMapper.update(null, Wrappers.<ItemType>lambdaUpdate()
                         .eq(ItemType::getId, itemType.getParentId())
                         .set(ItemType::getIsFinal, true));
+            } else {
+                itemTypeMapper.update(null, Wrappers.<ItemType>lambdaUpdate()
+                        .eq(ItemType::getId, itemType.getParentId())
+                        .set(ItemType::getIsFinal, false));
             }
             itemType.setParentId(itemTypeDto.getParentId());
         }
