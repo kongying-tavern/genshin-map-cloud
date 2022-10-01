@@ -6,6 +6,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
+import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.dto.AreaDto;
 import site.yuanshen.data.entity.Area;
 import site.yuanshen.data.entity.Item;
@@ -135,25 +136,29 @@ public class AreaServiceImpl implements AreaService {
         //获取地区实体
         Area area = areaMapper.selectOne(Wrappers.<Area>lambdaQuery()
                 .eq(Area::getId, areaDto.getAreaId()));
-        //判断是否是末端地区
-        area.setIsFinal(areaMapper.selectCount(Wrappers.<Area>lambdaQuery()
-                .eq(Area::getParentId, areaDto.getAreaId()))
-                > 0);
         //更新父级的末端标志
         if (!areaDto.getParentId().equals(area.getParentId())) {
             areaMapper.update(null, Wrappers.<Area>lambdaUpdate()
-                    .eq(Area::getId, areaDto.getParentId())
+                        .eq(Area::getId, areaDto.getParentId())
                     .set(Area::getIsFinal, false));
             //更改原父级的末端标志(如果原父级只剩这个子级的话)
             if (areaMapper.selectCount(Wrappers.<Area>lambdaQuery()
-                    .eq(Area::getParentId, areaDto.getAreaId()))
+                    .eq(Area::getParentId, area.getParentId()))
                     == 1) {
                 areaMapper.update(null, Wrappers.<Area>lambdaUpdate()
                         .eq(Area::getId, area.getParentId())
                         .set(Area::getIsFinal, true));
             }
         }
+        if (areaDto.getAreaId().equals(areaDto.getParentId())) {
+            throw new RuntimeException("地区ID不允许与父ID相同，会造成自身父子");
+        }
         //更新实体
+        BeanUtils.copyNotNull(areaDto.getEntity(),area);
+        //判断是否是末端地区
+        area.setIsFinal(areaMapper.selectCount(Wrappers.<Area>lambdaQuery()
+                .eq(Area::getParentId, areaDto.getAreaId()))
+                == 0);
         return areaMapper.updateById(area) == 1;
     }
 
