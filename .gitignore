@@ -40,3 +40,4 @@ sql
 
 .flattened-pom.xml
 application-datasource-dev.yml
+application-datasource-prod.yml
