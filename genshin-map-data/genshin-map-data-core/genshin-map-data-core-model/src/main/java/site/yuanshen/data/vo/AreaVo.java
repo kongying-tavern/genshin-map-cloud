@@ -38,6 +38,12 @@ public class AreaVo {
     private String name;
 
     /**
+     * 地区代码;
+     */
+    @Schema(title = "地区代码")
+    private String code;
+
+    /**
      * 地区说明
      */
     @Schema(title = "地区说明")

@@ -4,7 +4,7 @@
   "avatar": "",
   "version": "4.1.5",
   "createdTime": "2022-4-22 02:18:22",
-  "updatedTime": "2022-9-15 22:51:34",
+  "updatedTime": "2022-10-1 12:36:03",
   "dbConns": [],
   "profile": {
     "default": {
@@ -6816,6 +6816,23 @@
           "refDict": "",
           "domain": "9092C4E0-1A54-4859-ABBB-5B62DBC27573",
           "id": "FA3E130B-22CA-4F10-9E0C-29DC20CC3A5E"
+        },
+        {
+          "defKey": "code",
+          "defName": "地区代码",
+          "comment": "",
+          "type": "",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "",
+          "extProps": {},
+          "domain": "9092C4E0-1A54-4859-ABBB-5B62DBC27573",
+          "id": "E9051415-95D6-4D74-98B8-311C6CDB7BB5"
         },
         {
           "defKey": "content",

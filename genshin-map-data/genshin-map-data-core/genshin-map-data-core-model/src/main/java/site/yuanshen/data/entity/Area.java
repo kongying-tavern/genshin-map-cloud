@@ -34,19 +34,19 @@ public class Area extends BaseEntity {
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
-//	/**
-//	 * 地区id
-//	 */
-//	@Schema(title = "地区id")
-//	@TableField("area_id")
-//	private Long areaId;
-
     /**
      * 地区名称
      */
     @Schema(title = "地区名称")
     @TableField("name")
     private String name;
+
+    /**
+     * 地区代码;
+     */
+    @Schema(title = "地区代码")
+    @TableField("name")
+    private String code;
 
     /**
      * 地区说明
