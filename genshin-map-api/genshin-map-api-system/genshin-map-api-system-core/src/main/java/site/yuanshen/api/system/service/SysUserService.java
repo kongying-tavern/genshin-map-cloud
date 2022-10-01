@@ -24,6 +24,12 @@ public interface SysUserService {
     Long register(SysUserRegisterVo registerDto);
 
     /**
+     * @param registerDto 注册封装类（此处用户名为QQ）
+     * @return 用户ID
+     */
+    Long registerByQQ(SysUserRegisterVo registerDto);
+
+    /**
      * 获取用户信息
      *
      * @param Id 用户ID

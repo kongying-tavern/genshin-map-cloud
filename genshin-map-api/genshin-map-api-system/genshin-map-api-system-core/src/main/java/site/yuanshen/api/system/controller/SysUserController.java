@@ -37,11 +37,16 @@ public class SysUserController {
 
     private final SysUserService userService;
 
-    //todo 放行
     @PostMapping("/register")
     @Transactional
     public R<Long> registerUser(@RequestBody SysUserRegisterVo registerDto) {
         return RUtils.create(userService.register(registerDto));
+    }
+
+    @PostMapping("/register/qq")
+    @Transactional
+    public R<Long> registerUserByQQ(@RequestBody SysUserRegisterVo registerDto) {
+        return RUtils.create(userService.registerByQQ(registerDto));
     }
 
     @GetMapping("/info/{userId}")

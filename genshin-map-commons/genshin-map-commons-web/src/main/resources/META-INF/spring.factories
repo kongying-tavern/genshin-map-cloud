@@ -1,2 +1,3 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-site.yuanshen.common.web.config.BaseConfiguration
+site.yuanshen.common.web.config.BaseConfiguration,\
+  site.yuanshen.common.web.config.RestTemplateConfig

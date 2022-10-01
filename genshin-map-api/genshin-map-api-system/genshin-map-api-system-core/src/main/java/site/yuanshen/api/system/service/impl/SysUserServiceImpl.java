@@ -2,13 +2,19 @@ package site.yuanshen.api.system.service.impl;
 
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import site.yuanshen.api.system.service.SysBasicService;
 import site.yuanshen.api.system.service.SysUserService;
 import site.yuanshen.common.core.utils.BeanUtils;
@@ -25,6 +31,7 @@ import site.yuanshen.data.vo.SysUserVo;
 import site.yuanshen.data.vo.helper.PageListVo;
 
 import java.util.*;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -40,6 +47,8 @@ public class SysUserServiceImpl implements SysUserService {
     private final SysUserRoleMapper userRoleMapper;
     private final SysRoleMapper sysRoleMapper;
     private final SysBasicService basicService;
+
+    private final RestTemplate restTemplate;
 
     /**
      * @param registerVo 注册封装类
@@ -58,6 +67,47 @@ public class SysUserServiceImpl implements SysUserService {
         } else {
             throw new RuntimeException("用户已存在，请检查是否输入正确");
         }
+    }
+
+    /**
+     * @param registerDto 注册封装类（此处用户名为QQ）
+     * @return 用户ID
+     */
+    @Override
+    public Long registerByQQ(SysUserRegisterVo registerDto) {
+        String qq = registerDto.getUsername();
+        if (qq.isBlank() || !qq.matches("[1-9]\\d{4,10}")) {
+            throw new RuntimeException("qq号为空或格式不匹配");
+        }
+        if (basicService.getUser(qq).isPresent()) {
+            throw new RuntimeException("qq号已被注册，请联系管理员");
+        }
+        ResponseEntity<String> response = restTemplate.getForEntity("https://users.qzone.qq.com/fcg-bin/cgi_get_portrait.fcg?uins="+qq, String.class);
+        String qqInfo = response.getBody();
+        if (!response.getStatusCode().equals(HttpStatus.OK) || qqInfo == null || !qqInfo.contains("portraitCallBack")) {
+            throw new RuntimeException("服务器无法连接qq服务器，获取头像失败");
+        }
+        String qqName;
+        String qqLogo;
+        try {
+            qqInfo = qqInfo.substring(17, qqInfo.length() - 1);
+            JSONObject qqInfoJson = JSON.parseObject(qqInfo);
+            JSONArray infoArray = qqInfoJson.getJSONArray(qq);
+            qqName = infoArray.getString(6);
+            qqLogo = infoArray.getString(0);
+        } catch (Exception e) {
+            throw new RuntimeException("qq信息解析失败，错误内容:" + response.getBody());
+        }
+        SysUser user = new SysUser();
+        user.setUsername(qq);
+        user.setPassword(PasswordEncoderFactories.createDelegatingPasswordEncoder().encode(registerDto.getPassword()));
+        user.setNickname(qqName);
+        user.setQq(qq);
+        user.setLogoUrl(qqLogo);
+        userMapper.insert(user);
+        SysRole role = basicService.getRoleNotNull(RoleEnum.MAP_USER.getCode());
+        userRoleMapper.insert(new SysUserRoleLink().setRoleId(role.getId()).setUserId(user.getId()));
+        return user.getId();
     }
 
     /**
