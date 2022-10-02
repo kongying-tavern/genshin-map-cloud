@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
@@ -31,7 +32,6 @@ import site.yuanshen.data.vo.SysUserVo;
 import site.yuanshen.data.vo.helper.PageListVo;
 
 import java.util.*;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -40,7 +40,6 @@ import java.util.stream.Collectors;
  * @author Moment
  */
 @Service
-@RequiredArgsConstructor
 public class SysUserServiceImpl implements SysUserService {
 
     private final SysUserMapper userMapper;
@@ -48,7 +47,16 @@ public class SysUserServiceImpl implements SysUserService {
     private final SysRoleMapper sysRoleMapper;
     private final SysBasicService basicService;
 
-    private final RestTemplate restTemplate;
+    private final RestTemplate gbkRestTemplate;
+
+    public SysUserServiceImpl(SysUserMapper userMapper, SysUserRoleMapper userRoleMapper, SysRoleMapper sysRoleMapper, SysBasicService basicService,
+                              @Qualifier("gbkRestTemplate") RestTemplate gbkRestTemplate) {
+        this.userMapper = userMapper;
+        this.userRoleMapper = userRoleMapper;
+        this.sysRoleMapper = sysRoleMapper;
+        this.basicService = basicService;
+        this.gbkRestTemplate = gbkRestTemplate;
+    }
 
     /**
      * @param registerVo 注册封装类
@@ -82,22 +90,22 @@ public class SysUserServiceImpl implements SysUserService {
         if (basicService.getUser(qq).isPresent()) {
             throw new RuntimeException("qq号已被注册，请联系管理员");
         }
-        ResponseEntity<String> response = restTemplate.getForEntity("https://users.qzone.qq.com/fcg-bin/cgi_get_portrait.fcg?uins="+qq, String.class);
-        String qqInfo = response.getBody();
+        ResponseEntity<String> response = gbkRestTemplate.getForEntity("http://r.qzone.qq.com/fcg-bin/cgi_get_portrait.fcg?uins="+qq, String.class);
+        String qqInfo = null;
+            qqInfo = response.getBody();
         if (!response.getStatusCode().equals(HttpStatus.OK) || qqInfo == null || !qqInfo.contains("portraitCallBack")) {
             throw new RuntimeException("服务器无法连接qq服务器，获取头像失败");
         }
         String qqName;
-        String qqLogo;
         try {
             qqInfo = qqInfo.substring(17, qqInfo.length() - 1);
             JSONObject qqInfoJson = JSON.parseObject(qqInfo);
             JSONArray infoArray = qqInfoJson.getJSONArray(qq);
             qqName = infoArray.getString(6);
-            qqLogo = infoArray.getString(0);
         } catch (Exception e) {
             throw new RuntimeException("qq信息解析失败，错误内容:" + response.getBody());
         }
+        String qqLogo = "https://q1.qlogo.cn/g?b=qq&nk="+qq+"&s=640";
         SysUser user = new SysUser();
         user.setUsername(qq);
         user.setPassword(PasswordEncoderFactories.createDelegatingPasswordEncoder().encode(registerDto.getPassword()));
