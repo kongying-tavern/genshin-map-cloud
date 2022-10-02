@@ -56,7 +56,7 @@ public class SysRoleServiceImpl implements SysRoleService {
         //空置
         //SysRole role = roleDto.getEntity();
         //roleMapper.insert(role);
-        return true;
+        throw new RuntimeException("该api暂时作废");
     }
 
     /**
@@ -69,6 +69,9 @@ public class SysRoleServiceImpl implements SysRoleService {
     public Boolean addRoleToUser(SysRoleLinkDto roleLinkDto) {
         SysUser user = basicService.getUserNotNull(roleLinkDto.getUserId());
         SysRole role = basicService.getRoleNotNullById(roleLinkDto.getRoleId());
+        //清理旧角色
+        userRoleMapper.delete(Wrappers.<SysUserRoleLink>lambdaQuery().eq(SysUserRoleLink::getUserId, roleLinkDto.getUserId()));
+        //写入新角色
         userRoleMapper.insert(new SysUserRoleLink()
                 .setUserId(user.getId())
                 .setRoleId(role.getId()));
@@ -83,14 +86,14 @@ public class SysRoleServiceImpl implements SysRoleService {
      */
     @Override
     public Boolean removeRoleFromUser(SysRoleLinkDto roleLinkDto) {
-        SysUser user = basicService.getUserNotNull(roleLinkDto.getUserId());
-        SysRole role = basicService.getRoleNotNullById(roleLinkDto.getRoleId());
-        SysUserRoleLink userRole = Optional.ofNullable(userRoleMapper.selectOne(Wrappers.lambdaQuery(SysUserRoleLink.class)
-                        .lt(SysUserRoleLink::getRoleId, role.getId())
-                        .eq(SysUserRoleLink::getUserId, user.getId())))
-                .orElseThrow(() -> new RuntimeException("用户并不拥有该权限"));
-        userRoleMapper.deleteById(userRole.getId());
-        return true;
+        throw new RuntimeException("该api暂时作废");
+        //SysUser user = basicService.getUserNotNull(roleLinkDto.getUserId());
+        //SysRole role = basicService.getRoleNotNullById(roleLinkDto.getRoleId());
+        //SysUserRoleLink userRole = Optional.ofNullable(userRoleMapper.selectOne(Wrappers.lambdaQuery(SysUserRoleLink.class)
+        //                .lt(SysUserRoleLink::getRoleId, role.getId())
+        //                .eq(SysUserRoleLink::getUserId, user.getId())))
+        //        .orElseThrow(() -> new RuntimeException("用户并不拥有该权限"));
+        //userRoleMapper.deleteById(userRole.getId());
     }
 
     /**
@@ -101,8 +104,7 @@ public class SysRoleServiceImpl implements SysRoleService {
      */
     @Override
     public Boolean deleteRole(String roleCode) {
-        //空置
-        return true;
+        throw new RuntimeException("该api暂时作废");
     }
 
     /**
@@ -113,8 +115,7 @@ public class SysRoleServiceImpl implements SysRoleService {
      */
     @Override
     public Boolean deleteRoleBatch(List<String> roleCodeList) {
-        //空置函数
-        return true;
+        throw new RuntimeException("该api暂时作废");
         ////查找角色
         //List<SysRole> selectedRole = roleMapper.selectList(Wrappers.lambdaQuery(SysRole.class))
         //        .stream().filter(role ->
