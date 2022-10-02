@@ -8,6 +8,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import site.yuanshen.common.web.response.R;
 import site.yuanshen.common.web.response.RUtils;
+import site.yuanshen.data.dao.MarkerDao;
 import site.yuanshen.data.dto.*;
 import site.yuanshen.data.dto.helper.PageSearchDto;
 import site.yuanshen.data.vo.*;
@@ -15,6 +16,7 @@ import site.yuanshen.data.vo.helper.PageListVo;
 import site.yuanshen.data.vo.helper.PageSearchVo;
 import site.yuanshen.genshin.core.service.MarkerService;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,13 +33,14 @@ import java.util.stream.Collectors;
 public class MarkerController {
 
     private final MarkerService markerService;
+    private final MarkerDao markerDao;
 
     //////////////START:点位自身的API//////////////
 
     @Operation(summary = "根据各种条件筛选查询点位ID",
             description = "支持根据末端地区、末端类型、物品来进行查询，三种查询不能同时生效，同时存在时报错，同时支持测试点位获取")
     @PostMapping("/get/id")
-    public R<List<Long>> searchMarkerId(@RequestHeader(value = "isTestUser",required = false) String isTestUser, @RequestBody MarkerSearchVo markerSearchVo) {
+    public R<List<Long>> searchMarkerId(@RequestHeader(value = "isTestUser", required = false) String isTestUser, @RequestBody MarkerSearchVo markerSearchVo) {
         markerSearchVo.setIsTestUser(StringUtils.hasLength(isTestUser));
         return RUtils.create(
                 markerService.searchMarkerId(markerSearchVo)
@@ -47,7 +50,7 @@ public class MarkerController {
     @Operation(summary = "根据各种条件筛选查询点位信息",
             description = "支持根据末端地区、末端类型、物品来进行查询，三种查询不能同时生效，同时存在时报错，同时支持测试点位获取")
     @PostMapping("/get/list_byinfo")
-    public R<List<MarkerVo>> searchMarker(@RequestHeader(value = "isTestUser",required = false) String isTestUser,@RequestBody MarkerSearchVo markerSearchVo) {
+    public R<List<MarkerVo>> searchMarker(@RequestHeader(value = "isTestUser", required = false) String isTestUser, @RequestBody MarkerSearchVo markerSearchVo) {
         markerSearchVo.setIsTestUser(StringUtils.hasLength(isTestUser));
         return RUtils.create(
                 markerService.searchMarker(markerSearchVo).parallelStream()
@@ -57,18 +60,25 @@ public class MarkerController {
 
     @Operation(summary = "通过ID列表查询点位信息", description = "通过ID列表来进行查询点位信息")
     @PostMapping("/get/list_byid")
-    public R<List<MarkerVo>> listMarkerById(@RequestHeader(value = "isTestUser",required = false) String isTestUser,@RequestBody List<Long> markerIdList) {
+    public R<List<MarkerVo>> listMarkerById(@RequestHeader(value = "isTestUser", required = false) String isTestUser, @RequestBody List<Long> markerIdList) {
         return RUtils.create(
-                markerService.listMarkerById(markerIdList,StringUtils.hasLength(isTestUser)).parallelStream()
+                markerService.listMarkerById(markerIdList, StringUtils.hasLength(isTestUser)).parallelStream()
                         .map(MarkerDto::getVo).collect(Collectors.toList())
         );
     }
 
+    @Operation(summary = "通过bz2返回点位分页", description = "查询分页点位信息，返回bz2压缩格式的byte数组")
+    @PostMapping("/get/list_all_bz2/{index}")
+    public byte[] listPageMarkerBy7zip(@RequestHeader(value = "isTestUser", required = false) String isTestUser,
+                                      @PathVariable("index") Long index) throws IOException {
+        return markerDao.listPageMarkerByBz2(StringUtils.hasLength(isTestUser),index);
+    }
+
     @Operation(summary = "分页查询所有点位信息", description = "分页查询所有点位信息")
     @PostMapping("/get/page")
-    public R<PageListVo<MarkerVo>> listMarkerPage(@RequestHeader(value = "isTestUser",required = false) String isTestUser,@RequestBody PageSearchVo pageSearchVo) {
+    public R<PageListVo<MarkerVo>> listMarkerPage(@RequestHeader(value = "isTestUser", required = false) String isTestUser, @RequestBody PageSearchVo pageSearchVo) {
         return RUtils.create(
-                markerService.listMarkerPage(new PageSearchDto(pageSearchVo),StringUtils.hasLength(isTestUser))
+                markerService.listMarkerPage(new PageSearchDto(pageSearchVo), StringUtils.hasLength(isTestUser))
         );
     }
 
@@ -112,7 +122,7 @@ public class MarkerController {
     @Operation(summary = "删除点位", description = "根据点位ID列表批量删除点位")
     @DeleteMapping("/{markerId}")
     @Transactional
-    public R<Boolean> deleteMarker(@PathVariable("markerId")Long markerId) {
+    public R<Boolean> deleteMarker(@PathVariable("markerId") Long markerId) {
         return RUtils.create(
                 markerService.deleteMarker(markerId)
         );

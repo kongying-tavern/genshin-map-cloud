@@ -2,23 +2,18 @@ package site.yuanshen.api.system.service.impl;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import site.yuanshen.api.system.service.SysBasicService;
 import site.yuanshen.api.system.service.SysRoleService;
-import site.yuanshen.api.system.service.SysUserService;
 import site.yuanshen.data.dto.SysRoleDto;
 import site.yuanshen.data.dto.SysRoleLinkDto;
 import site.yuanshen.data.entity.SysRole;
 import site.yuanshen.data.entity.SysUser;
 import site.yuanshen.data.entity.SysUserRoleLink;
-import site.yuanshen.data.enums.RoleEnum;
 import site.yuanshen.data.mapper.SysRoleMapper;
 import site.yuanshen.data.mapper.SysUserRoleMapper;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -42,6 +37,8 @@ public class SysRoleServiceImpl implements SysRoleService {
         List<SysRoleDto> collect = roleMapper.selectList(Wrappers.query())
                 .stream()
                 .map(SysRoleDto::new).collect(Collectors.toList());
+        //TODO 待修改为下面的逻辑
+        //List<SysRoleDto> collect = Arrays.stream(RoleEnum.values()).filter(role->role.getSort()).map(RoleEnum::getRoleBean).map(SysRoleDto::new).collect(Collectors.toList());
         return collect;
     }
 

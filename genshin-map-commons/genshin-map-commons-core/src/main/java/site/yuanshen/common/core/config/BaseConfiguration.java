@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ComponentScan(basePackages = {
         "site.yuanshen.api",
+        "site.yuanshen.data.dao",
         "site.yuanshen.common.core.utils",
 })
 public class BaseConfiguration {

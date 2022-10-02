@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
@@ -13,6 +14,7 @@ import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.common.web.utils.JsonUtils;
+import site.yuanshen.data.dao.MarkerDao;
 import site.yuanshen.data.dto.*;
 import site.yuanshen.data.dto.helper.PageSearchDto;
 import site.yuanshen.data.entity.*;
@@ -42,6 +44,7 @@ public class MarkerServiceImpl implements MarkerService {
 
     private final CacheService cacheService;
     private final MarkerMapper markerMapper;
+    private final MarkerDao markerDao;
     private final MarkerMBPService markerMBPService;
     private final MarkerExtraMapper markerExtraMapper;
     private final MarkerExtraMBPService markerExtraMBPService;
@@ -170,45 +173,20 @@ public class MarkerServiceImpl implements MarkerService {
                         new MarkerDto(marker,
                                 markerExtraMap.get(marker.getId()),
                                 itemLinkMap.get(marker.getId())
-                                ,itemMap)).collect(Collectors.toList());
+                                , itemMap)).collect(Collectors.toList());
     }
+
 
     /**
      * 分页查询所有点位信息
      *
      * @param pageSearchDto 分页查询数据封装
+     * @param isTestUser    是否是测试服打点用户
      * @return 点位完整信息的前端封装的分页记录
      */
     @Override
-    @Cacheable(value = "listMarkerPage")
     public PageListVo<MarkerVo> listMarkerPage(PageSearchDto pageSearchDto, Boolean isTestUser) {
-        Page<Marker> markerPage = markerMapper.selectPage(pageSearchDto.getPageEntity(), Wrappers.<Marker>lambdaQuery().ne(!isTestUser, Marker::getHiddenFlag, 2));
-        List<Long> markerIdList = markerPage.getRecords().stream()
-                .map(Marker::getId).collect(Collectors.toList());
-        Map<Long, MarkerExtra> extraMap = markerExtraMapper.selectList(Wrappers.<MarkerExtra>lambdaQuery()
-                        .in(MarkerExtra::getMarkerId, markerIdList))
-                .stream().collect(Collectors.toMap(MarkerExtra::getMarkerId, markerExtra -> markerExtra));
-        Map<Long, List<MarkerItemLink>> itemLinkMap = new ConcurrentHashMap<>();
-        List<MarkerItemLink> markerItemLinks = markerItemLinkMapper.selectList(Wrappers.<MarkerItemLink>lambdaQuery().in(MarkerItemLink::getMarkerId, markerIdList));
-        markerItemLinks.parallelStream().forEach(markerItemLink ->
-                        itemLinkMap.compute(markerItemLink.getMarkerId(),
-                                (markerId, linkList) -> {
-                                    if (linkList == null) return new ArrayList<>(Collections.singletonList(markerItemLink));
-                                    linkList.add(markerItemLink);
-                                    return linkList;
-                                }));
-        //获取item_id,得到item合集
-        Map<Long, Item> itemMap = itemMapper.selectList(Wrappers.<Item>lambdaQuery()
-                        .in(Item::getId, markerItemLinks.stream().map(MarkerItemLink::getItemId).collect(Collectors.toSet())))
-                .stream().collect(Collectors.toMap(Item::getId, Item -> Item));
-
-
-        return new PageListVo<MarkerVo>()
-                .setRecord(markerPage.getRecords().parallelStream()
-                        .map(marker -> new MarkerDto(marker, extraMap.get(marker.getId()), itemLinkMap.get(marker.getId()),itemMap).getVo())
-                        .collect(Collectors.toList()))
-                .setTotal(markerPage.getTotal())
-                .setSize(markerPage.getSize());
+        return markerDao.listMarkerPage(pageSearchDto,isTestUser);
     }
 
     /**
@@ -226,8 +204,8 @@ public class MarkerServiceImpl implements MarkerService {
                 Collectors.collectingAndThen(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(o -> o.getItemId() + ";" + o.getMarkerId()))), ArrayList::new));
         markerItemLinkMBPService.saveBatch(itemLinkList);
 
-        cacheService.cleanMarkerCache();
         cacheService.cleanItemCache();
+        cacheService.cleanMarkerCache();
 
         return marker.getId();
     }
@@ -242,8 +220,8 @@ public class MarkerServiceImpl implements MarkerService {
     public Boolean addMarkerExtra(MarkerExtraDto markerExtraDto) {
         boolean added = markerExtraMapper.insert(markerExtraDto.getEntity()) == 1;
 
-        cacheService.cleanMarkerCache();
         cacheService.cleanItemCache();
+        cacheService.cleanMarkerCache();
 
         return added;
     }
@@ -275,8 +253,8 @@ public class MarkerServiceImpl implements MarkerService {
             markerItemLinkMapper.delete(Wrappers.<MarkerItemLink>lambdaQuery().eq(MarkerItemLink::getMarkerId, markerSingleDto.getId()));
         }
 
-        cacheService.cleanMarkerCache();
         cacheService.cleanItemCache();
+        cacheService.cleanMarkerCache();
 
         return updated;
     }
@@ -305,8 +283,8 @@ public class MarkerServiceImpl implements MarkerService {
         boolean updated = markerExtraMapper.update(markerExtraDto.getEntity(), Wrappers.<MarkerExtra>lambdaUpdate()
                 .eq(MarkerExtra::getMarkerId, markerExtraDto.getMarkerId())) == 1;
 
-        cacheService.cleanMarkerCache();
         cacheService.cleanItemCache();
+        cacheService.cleanMarkerCache();
 
         return updated;
     }
@@ -324,8 +302,8 @@ public class MarkerServiceImpl implements MarkerService {
         markerItemLinkMapper.delete(Wrappers.<MarkerItemLink>lambdaQuery().eq(MarkerItemLink::getMarkerId, markerId));
         markerExtraMapper.delete(Wrappers.<MarkerExtra>lambdaQuery().eq(MarkerExtra::getMarkerId, markerId));
 
-        cacheService.cleanMarkerCache();
         cacheService.cleanItemCache();
+        cacheService.cleanMarkerCache();
 
         return true;
     }

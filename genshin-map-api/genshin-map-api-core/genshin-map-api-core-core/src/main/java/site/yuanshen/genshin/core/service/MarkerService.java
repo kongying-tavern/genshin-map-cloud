@@ -1,5 +1,6 @@
 package site.yuanshen.genshin.core.service;
 
+import org.springframework.cache.annotation.Cacheable;
 import site.yuanshen.data.dto.*;
 import site.yuanshen.data.dto.helper.PageSearchDto;
 import site.yuanshen.data.vo.*;
@@ -44,6 +45,7 @@ public interface MarkerService {
      * 分页查询所有点位信息
      *
      * @param pageSearchDto 分页查询数据封装
+     * @param isTestUser    是否是测试服打点用户
      * @return 点位完整信息的前端封装的分页记录
      */
     PageListVo<MarkerVo> listMarkerPage(PageSearchDto pageSearchDto,Boolean isTestUser);
