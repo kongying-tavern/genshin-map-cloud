@@ -1,13 +1,13 @@
 server:
   port: 8101
-logging:
-  level:
-    org:
-      springframework:
-        cloud:
-          gateway.route.RouteDefinitionRouteLocator: INFO
-          gateway: DEBUG
-    site.yuanshen.gateway.oauth2.TokenConvertFilter: DEBUG
+#logging:
+#  level:
+#    org:
+#      springframework:
+#        cloud:
+#          gateway.route.RouteDefinitionRouteLocator: INFO
+#          gateway: DEBUG
+#    site.yuanshen.gateway.oauth2.TokenConvertFilter: DEBUG
 
 genshin:
   authorities-filter:
