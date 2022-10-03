@@ -16,6 +16,7 @@ import org.springframework.util.AntPathMatcher;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 import site.yuanshen.data.enums.RoleEnum;
+import site.yuanshen.gateway.config.GenshinGatewayProperties;
 
 import java.util.List;
 
@@ -30,15 +31,20 @@ import java.util.List;
 public class TokenConvertFilter implements GlobalFilter, Ordered {
 
     private final NimbusJwtDecoder jwtDecoder;
+    private final GenshinGatewayProperties genshinGatewayProperties;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         //判断是否是登录请求
         AntPathMatcher matcher = new AntPathMatcher();
-        String path = exchange.getRequest().getPath().value();
+        String path = exchange.getRequest().getHeaders().getFirst("originalPath");
         log.debug("path: " + path);
-        if (matcher.match("/oauth/**", path)) {
-            log.debug("match oauth2, pass");
+        boolean isPass = false;
+        for (String filter : genshinGatewayProperties.getPassFilter()) {
+            if(matcher.match(filter, path))isPass = true;
+        }
+        if (isPass) {
+            log.debug("match PassFilter, pass");
             return chain.filter(exchange);
         }
         //获取token

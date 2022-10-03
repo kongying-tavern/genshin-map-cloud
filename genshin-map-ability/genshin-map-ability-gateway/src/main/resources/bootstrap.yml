@@ -10,6 +10,9 @@ server:
 #    site.yuanshen.gateway.oauth2.TokenConvertFilter: DEBUG
 
 genshin:
+  pass-filter:
+    - /api/marker/get/**
+    - /oauth/**
   authorities-filter:
     VISITOR:
       - /system/user/register/qq

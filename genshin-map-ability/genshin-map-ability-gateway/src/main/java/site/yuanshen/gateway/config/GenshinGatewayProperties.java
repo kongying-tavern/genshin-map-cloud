@@ -15,4 +15,6 @@ public class GenshinGatewayProperties {
 
     private Map<String, List<String>> authoritiesFilter;
 
+    private List<String> passFilter;
+
 }
