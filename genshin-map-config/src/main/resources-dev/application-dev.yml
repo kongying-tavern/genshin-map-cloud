@@ -7,9 +7,9 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
 
-logging:
-  level:
-    org.springframework:
-        security: debug
-        cache: debug
-    site.yuanshen.data.mapper: debug
+#logging:
+#  level:
+#    org.springframework:
+#        security: debug
+#        cache: debug
+#    site.yuanshen.data.mapper: debug
