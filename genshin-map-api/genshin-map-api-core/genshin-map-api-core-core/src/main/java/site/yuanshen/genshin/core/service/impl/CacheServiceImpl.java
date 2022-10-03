@@ -1,12 +1,15 @@
 package site.yuanshen.genshin.core.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
 import site.yuanshen.data.dao.MarkerDao;
 import site.yuanshen.genshin.core.service.CacheService;
 
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +23,7 @@ import java.util.List;
 public class CacheServiceImpl implements CacheService {
 
     private final MarkerDao markerDao;
+    private final CacheManager cacheManager;
 
     @Override
     @Caching(
@@ -47,8 +51,6 @@ public class CacheServiceImpl implements CacheService {
                     @CacheEvict(value = "searchMarkerId",allEntries = true,beforeInvocation = true),
                     @CacheEvict(value = "listMarkerById",allEntries = true,beforeInvocation = true),
                     @CacheEvict(value = "listMarkerPage",allEntries = true,beforeInvocation = true),
-                    @CacheEvict(value = "listPageMarkerByBz2",allEntries = true,beforeInvocation = true),
-                    @CacheEvict(value = "listMarkerBz2MD5",allEntries = true,beforeInvocation = true),
                     @CacheEvict(value = "getMarkerCount",allEntries = true,beforeInvocation = true),
             }
     )

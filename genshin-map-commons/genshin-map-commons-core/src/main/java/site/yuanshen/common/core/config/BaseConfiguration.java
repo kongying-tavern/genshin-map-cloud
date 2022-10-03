@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Configuration;
 @SuppressWarnings("SpringComponentScan")
 @Configuration
 @ComponentScan(basePackages = {
+        "site.yuanshen.genshin.core",
         "site.yuanshen.api",
         "site.yuanshen.data.dao",
         "site.yuanshen.common.core.utils",

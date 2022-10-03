@@ -115,7 +115,7 @@ public class MarkerDaoImpl implements MarkerDao {
     }
 
     /**
-     * 通过返回点位分页bz2的md5数组
+     * 返回点位分页bz2的md5数组
      *
      * @param isTestUser 是否是测试打点用户
      * @return 分页字节数组的md5
