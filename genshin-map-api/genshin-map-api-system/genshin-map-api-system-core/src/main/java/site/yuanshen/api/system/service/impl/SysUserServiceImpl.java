@@ -8,7 +8,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -220,9 +219,11 @@ public class SysUserServiceImpl implements SysUserService {
         //记录当前筛选的角色ID
         HashSet<Long> roleIdSet = new HashSet<>();
         userRoleMapper
-                .selectList(Wrappers.<SysUserRoleLink>lambdaQuery().in(SysUserRoleLink::getUserId,
-                        sysUserPage.getRecords().parallelStream()
-                                .map(SysUser::getId).collect(Collectors.toList())))
+                .selectList(Wrappers.<SysUserRoleLink>lambdaQuery()
+                        .in(sysUserPage.getRecords().size() > 0,
+                                SysUserRoleLink::getUserId,
+                                sysUserPage.getRecords().parallelStream()
+                                        .map(SysUser::getId).collect(Collectors.toList())))
                 .forEach(roleLink -> {
                     List<Long> roleLinkList = roleLinkMap.getOrDefault(roleLink.getUserId(), new ArrayList<>());
                     roleLinkList.add(roleLink.getRoleId());
