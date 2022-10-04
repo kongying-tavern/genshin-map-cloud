@@ -5,6 +5,7 @@ import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
+import site.yuanshen.genshin.core.dao.ItemDao;
 import site.yuanshen.genshin.core.dao.MarkerDao;
 import site.yuanshen.genshin.core.service.CacheService;
 
@@ -21,17 +22,22 @@ import java.util.List;
 public class CacheServiceImpl implements CacheService {
 
     private final MarkerDao markerDao;
+    private final ItemDao itemDao;
     private final CacheManager cacheManager;
 
     @Override
     @Caching(
             evict = {
-                    @CacheEvict(value = "listItem",allEntries = true),
-                    @CacheEvict(value = "listItemType",allEntries = true),
-                    @CacheEvict(value = "listItemById",allEntries = true),
+                    @CacheEvict(value = "listItem",allEntries = true,beforeInvocation = true),
+                    @CacheEvict(value = "listItemType",allEntries = true,beforeInvocation = true),
+                    @CacheEvict(value = "listItemById",allEntries = true,beforeInvocation = true),
+                    @CacheEvict(value = "listAllItemBz2",allEntries = true,beforeInvocation = true),
+                    @CacheEvict(value = "listAllItemBz2Md5",allEntries = true,beforeInvocation = true),
             }
     )
     public void cleanItemCache() {
+        itemDao.listAllItemBz2();
+        itemDao.listAllItemBz2Md5();
     }
 
     @Override

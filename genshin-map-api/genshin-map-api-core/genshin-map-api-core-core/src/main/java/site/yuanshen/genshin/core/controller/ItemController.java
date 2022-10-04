@@ -19,6 +19,7 @@ import site.yuanshen.data.vo.ItemVo;
 import site.yuanshen.data.vo.helper.PageAndTypeListVo;
 import site.yuanshen.data.vo.helper.PageListVo;
 import site.yuanshen.data.vo.helper.PageSearchVo;
+import site.yuanshen.genshin.core.dao.ItemDao;
 import site.yuanshen.genshin.core.service.ItemService;
 
 import java.util.List;
@@ -37,6 +38,7 @@ import java.util.stream.Collectors;
 public class ItemController {
 
     private final ItemService itemService;
+    private final ItemDao itemDao;
 
     //////////////START:物品类型的API//////////////
 
@@ -87,6 +89,18 @@ public class ItemController {
     //////////////END:物品类型的API//////////////
 
     //////////////START:物品本身的API//////////////
+
+    @Operation(summary = "通过bz2返回所有物品信息", description = "查询所有物品信息，返回bz2压缩格式的byte数组")
+    @GetMapping("/get/all_bz2")
+    public byte[] listAllItemBz2() {
+        return itemDao.listAllItemBz2();
+    }
+
+    @Operation(summary = "返回所有物品信息bz2的md5", description = "返回所有物品信息bz2的md5")
+    @GetMapping("/get/all_bz2_md5")
+    public R<String> listAllItemBz2Md5() {
+        return RUtils.create(itemDao.listAllItemBz2Md5());
+    }
 
     @Operation(summary = "根据物品ID查询物品", description = "输入ID列表查询，单个查询也用此API")
     @PostMapping("/get/list_byid")

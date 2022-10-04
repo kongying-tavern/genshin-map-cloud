@@ -24,6 +24,7 @@ public class CacheInitListener implements ApplicationListener<ApplicationReadyEv
      */
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
+        cacheService.cleanItemCache();
         cacheService.cleanMarkerCache();
     }
 }

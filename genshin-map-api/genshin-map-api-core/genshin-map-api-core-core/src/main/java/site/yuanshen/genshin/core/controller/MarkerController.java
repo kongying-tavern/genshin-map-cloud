@@ -68,7 +68,7 @@ public class MarkerController {
     }
 
     @Operation(summary = "通过bz2返回点位分页", description = "查询分页点位信息，返回bz2压缩格式的byte数组")
-    @PostMapping("/get/list_page_bz2/{index}")
+    @GetMapping("/get/list_page_bz2/{index}")
     public byte[] listPageMarkerBy7zip(@RequestHeader(value = "isTestUser", required = false) String isTestUser,
                                       @PathVariable("index") Long index) throws IOException {
         return markerDao.listPageMarkerByBz2(StringUtils.hasLength(isTestUser),index);
