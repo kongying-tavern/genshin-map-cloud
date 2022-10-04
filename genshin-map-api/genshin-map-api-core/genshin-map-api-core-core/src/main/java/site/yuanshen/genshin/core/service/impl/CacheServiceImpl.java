@@ -52,6 +52,8 @@ public class CacheServiceImpl implements CacheService {
                     @CacheEvict(value = "listMarkerById",allEntries = true,beforeInvocation = true),
                     @CacheEvict(value = "listMarkerPage",allEntries = true,beforeInvocation = true),
                     @CacheEvict(value = "getMarkerCount",allEntries = true,beforeInvocation = true),
+                    @CacheEvict(value = "listPageMarkerByBz2",allEntries = true,beforeInvocation = true),
+                    @CacheEvict(value = "listMarkerBz2MD5",allEntries = true,beforeInvocation = true),
             }
     )
     public void cleanMarkerCache() {
