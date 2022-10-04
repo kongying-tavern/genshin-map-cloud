@@ -13,3 +13,9 @@ spring:
 #        security: debug
 #        cache: debug
 #    site.yuanshen.data.mapper: debug
+logging:
+  level:
+    site:
+      yuanshen:
+        genshin:
+          core: debug

@@ -109,7 +109,6 @@ public class ItemServiceImpl implements ItemService {
                     .eq(ItemType::getId, itemType.getParentId())
                     .set(ItemType::getIsFinal, false));
         }
-        cacheService.cleanItemCache();
         return itemType.getId();
     }
 
@@ -154,7 +153,6 @@ public class ItemServiceImpl implements ItemService {
         }
         //更新实体
         itemTypeMapper.updateById(itemType);
-        cacheService.cleanItemCache();
         return true;
     }
 
@@ -188,7 +186,6 @@ public class ItemServiceImpl implements ItemService {
                         .set(ItemType::getIsFinal, true));
             }
         });
-        cacheService.cleanItemCache();
         return true;
     }
 
@@ -211,7 +208,6 @@ public class ItemServiceImpl implements ItemService {
                     .parallelStream()
                     .map(ItemType::getId).distinct().collect(Collectors.toList());
         }
-        cacheService.cleanItemCache();
         return true;
     }
 
@@ -363,7 +359,6 @@ public class ItemServiceImpl implements ItemService {
                             .set(itemDto.getSortIndex() != null, Item::getSortIndex, itemDto.getSortIndex())
             );
         }
-        cacheService.cleanItemCache();
         return true;
     }
 
@@ -388,7 +383,6 @@ public class ItemServiceImpl implements ItemService {
                                 .setTypeId(typeId))
                         .collect(Collectors.toList())
         );
-        cacheService.cleanItemCache();
         return res;
     }
 
@@ -414,7 +408,6 @@ public class ItemServiceImpl implements ItemService {
                             .collect(Collectors.toList())
             );
         }
-        cacheService.cleanItemCache();
         return item.getId();
     }
 
@@ -454,7 +447,6 @@ public class ItemServiceImpl implements ItemService {
 
         }
 //        itemMBPService.saveBatch(items);
-        cacheService.cleanItemCache();
 
         return items.parallelStream().map(Item::getId).collect(Collectors.toList());
     }
@@ -473,8 +465,6 @@ public class ItemServiceImpl implements ItemService {
                 .eq(MarkerItemLink::getItemId, itemId));
         boolean deleted = itemMapper.delete(Wrappers.<Item>lambdaQuery()
                 .eq(Item::getId, itemId)) == 1;
-        cacheService.cleanItemCache();
-        cacheService.cleanMarkerCache();
         return deleted;
     }
 

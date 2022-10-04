@@ -104,7 +104,9 @@ public class MarkerDaoImpl implements MarkerDao {
      * @return 点位完整信息的前端封装的分页记录
      */
     @Override
+    @Cacheable("listMarkerIdRange")
     public List<MarkerVo> listMarkerIdRange(Long left, Long right, Boolean isTestUser) {
+        log.debug("listMarkerIdRange 入参：left:{}, right:{}, isTestUser:{}",left,right,isTestUser);
         List<Marker> markerList = markerMapper.selectList( Wrappers.<Marker>lambdaQuery().between(Marker::getId,left,right).ne(!isTestUser, Marker::getHiddenFlag, 2));
         if (markerList.size() == 0) return new ArrayList<>();
         List<Long> markerIdList = markerList.stream()
@@ -162,8 +164,8 @@ public class MarkerDaoImpl implements MarkerDao {
     @Override
     @Cacheable(value = "listMarkerBz2MD5")
     public List<String> listMarkerBz2MD5(Boolean isTestUser) {
+        log.debug("listMarkerBz2MD5 入参：isTestUser:{}",isTestUser);
         Cache markerBz2Cache = cacheManager.getCache("listPageMarkerByBz2");
-
         Long id = markerMapper.selectOne(Wrappers.<Marker>query().select("max(id) as id")).getId();
         int totalPages = (int) ((id + 3000 - 1) / 3000);
         List<Integer> indexList = new ArrayList<>();
@@ -182,13 +184,16 @@ public class MarkerDaoImpl implements MarkerDao {
                     } else {
                         markerBz2 = (byte[]) wrapper.get();
                     }
-                    return DigestUtils.md5DigestAsHex(markerBz2);
+                    String result = DigestUtils.md5DigestAsHex(markerBz2);
+                    log.debug("refresh md5: index:{}, result:{}",i,result);
+                    return result;
                 }).collect(Collectors.toList());
             } catch (Exception e) {
                 throw new RuntimeException("打包MD5缓存创建失败");
             }
         } else {
             markerBz2MD5List = indexList.parallelStream().map(i -> DigestUtils.md5DigestAsHex(listPageMarkerByBz2(false, i))).collect(Collectors.toList());
+            log.warn("listMarkerBz2MD5 全刷新：isTestUser:{} result:{}",isTestUser,markerBz2MD5List);
         }
         return markerBz2MD5List;
     }

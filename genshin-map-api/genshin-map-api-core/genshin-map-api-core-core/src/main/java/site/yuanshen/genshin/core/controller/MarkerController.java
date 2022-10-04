@@ -8,12 +8,13 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import site.yuanshen.common.web.response.R;
 import site.yuanshen.common.web.response.RUtils;
-import site.yuanshen.genshin.core.dao.MarkerDao;
 import site.yuanshen.data.dto.*;
 import site.yuanshen.data.dto.helper.PageSearchDto;
 import site.yuanshen.data.vo.*;
 import site.yuanshen.data.vo.helper.PageListVo;
 import site.yuanshen.data.vo.helper.PageSearchVo;
+import site.yuanshen.genshin.core.dao.MarkerDao;
+import site.yuanshen.genshin.core.service.CacheService;
 import site.yuanshen.genshin.core.service.MarkerService;
 
 import java.io.IOException;
@@ -34,6 +35,7 @@ public class MarkerController {
 
     private final MarkerService markerService;
     private final MarkerDao markerDao;
+    private final CacheService cacheService;
 
     //////////////START:点位自身的API//////////////
 
@@ -94,35 +96,45 @@ public class MarkerController {
     @PutMapping("/single")
     @Transactional
     public R<Long> createMarker(@RequestBody MarkerSingleVo markerSingleVo) {
-        return RUtils.create(
-                markerService.createMarker(new MarkerSingleDto(markerSingleVo))
-        );
+        Long newId = markerService.createMarker(new MarkerSingleDto(markerSingleVo));
+        cacheService.cleanItemCache();
+        cacheService.cleanMarkerCache();
+        return RUtils.create(newId);
     }
 
     @Operation(summary = "新增点位额外字段信息", description = "需保证额外字段的点位都已经添加成功")
     @PutMapping("/extra")
     @Transactional
     public R<Boolean> addMarkerExtra(@RequestBody MarkerExtraVo markerExtraVo) {
-        return RUtils.create(
-                markerService.addMarkerExtra(new MarkerExtraDto(markerExtraVo))
-        );
+        Boolean result = markerService.addMarkerExtra(new MarkerExtraDto(markerExtraVo));
+        if (result) {
+            cacheService.cleanItemCache();
+            cacheService.cleanMarkerCache();
+        }
+        return RUtils.create(result);
     }
 
     @Operation(summary = "修改点位（不包括额外字段）", description = "根据点位ID修改点位")
     @PostMapping("/single")
     @Transactional
     public R<Boolean> updateMarker(@RequestBody MarkerSingleVo markerSingleVo) {
-        return RUtils.create(
-                markerService.updateMarker(new MarkerSingleDto(markerSingleVo))
-        );
+        Boolean result = markerService.updateMarker(new MarkerSingleDto(markerSingleVo));
+        cacheService.cleanItemCache();
+        cacheService.cleanMarkerCache();
+        return RUtils.create(result);
     }
 
     @Operation(summary = "修改点位额外字段", description = "根据点位ID修改点位额外字段")
     @PostMapping("/extra")
     @Transactional
     public R<Boolean> updateMarkerExtra(@RequestBody MarkerExtraVo markerExtraVo) {
+        Boolean result = markerService.updateMarkerExtra(new MarkerExtraDto(markerExtraVo));
+        if (result) {
+            cacheService.cleanItemCache();
+            cacheService.cleanMarkerCache();
+        }
         return RUtils.create(
-                markerService.updateMarkerExtra(new MarkerExtraDto(markerExtraVo))
+                result
         );
     }
 
@@ -131,9 +143,10 @@ public class MarkerController {
     @DeleteMapping("/{markerId}")
     @Transactional
     public R<Boolean> deleteMarker(@PathVariable("markerId") Long markerId) {
-        return RUtils.create(
-                markerService.deleteMarker(markerId)
-        );
+        Boolean result = markerService.deleteMarker(markerId);
+        cacheService.cleanItemCache();
+        cacheService.cleanMarkerCache();
+        return RUtils.create(result);
     }
 
     //////////////END:点位自身的API//////////////

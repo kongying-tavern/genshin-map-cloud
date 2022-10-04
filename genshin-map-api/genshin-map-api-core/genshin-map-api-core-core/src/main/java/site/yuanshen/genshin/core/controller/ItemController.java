@@ -20,6 +20,7 @@ import site.yuanshen.data.vo.helper.PageAndTypeListVo;
 import site.yuanshen.data.vo.helper.PageListVo;
 import site.yuanshen.data.vo.helper.PageSearchVo;
 import site.yuanshen.genshin.core.dao.ItemDao;
+import site.yuanshen.genshin.core.service.CacheService;
 import site.yuanshen.genshin.core.service.ItemService;
 
 import java.util.List;
@@ -39,6 +40,7 @@ public class ItemController {
 
     private final ItemService itemService;
     private final ItemDao itemDao;
+    private final CacheService cacheService;
 
     //////////////START:物品类型的API//////////////
 
@@ -63,27 +65,27 @@ public class ItemController {
     @PostMapping("/type")
     @Transactional
     public R<Boolean> updateItemType(@RequestBody ItemTypeVo itemTypeVo) {
-        return RUtils.create(
-                itemService.updateItemType(new ItemTypeDto(itemTypeVo))
-        );
+        Boolean result = itemService.updateItemType(new ItemTypeDto(itemTypeVo));
+        cacheService.cleanItemCache();
+        return RUtils.create(result);
     }
 
     @Operation(summary = "批量移动类型为目标类型的子类型", description = "将类型批量移动到某个类型下作为其子类型")
     @PostMapping("/type/move/{targetTypeId}")
     @Transactional
     public R<Boolean> moveItemType(@RequestBody List<Long> itemTypeIdList, @PathVariable("targetTypeId") Long targetTypeId) {
-        return RUtils.create(
-                itemService.moveItemType(itemTypeIdList, targetTypeId)
-        );
+        Boolean result = itemService.moveItemType(itemTypeIdList, targetTypeId);
+        cacheService.cleanItemCache();
+        return RUtils.create(result);
     }
 
     @Operation(summary = "删除物品类型", description = "批量递归删除物品类型，需在前端做二次确认")
     @DeleteMapping("/type/{itemTypeId}")
     @Transactional
     public R<Boolean> deleteItemType(@PathVariable("itemTypeId") Long itemTypeId) {
-        return RUtils.create(
-                itemService.deleteItemType(itemTypeId)
-        );
+        Boolean result = itemService.deleteItemType(itemTypeId);
+        cacheService.cleanItemCache();
+        return RUtils.create(result);
     }
 
     //////////////END:物品类型的API//////////////
@@ -123,45 +125,48 @@ public class ItemController {
     @PostMapping("/update/{editSame}")
     @Transactional
     public R<Boolean> updateItem(@RequestBody List<ItemVo> itemVoList, @PathVariable("editSame") Integer editSame) {
-        return RUtils.create(
-                itemService.updateItem(itemVoList, editSame)
-        );
+        Boolean result = itemService.updateItem(itemVoList, editSame);
+        cacheService.cleanItemCache();
+        return RUtils.create(result);
     }
 
     @Operation(summary = "将物品加入某一类型", description = "根据物品ID列表批量加入，在加入多类型时需要注意类型的地区需一致，不一致会直接报错")
     @PostMapping("/join/{typeId}")
     @Transactional
     public R<Boolean> joinItemsInType(@RequestBody List<Long> itemIdList, @PathVariable("typeId") Long typeId) {
-        return RUtils.create(
-                itemService.joinItemsInType(itemIdList, typeId)
-        );
+        Boolean result = itemService.joinItemsInType(itemIdList, typeId);
+        cacheService.cleanItemCache();
+        return RUtils.create(result);
     }
 
     @Operation(summary = "新增物品", description = "新建成功后会返回新物品ID")
     @PutMapping("")
     @Transactional
     public R<Long> createItem(@RequestBody ItemVo itemVo) {
-        return RUtils.create(
-                itemService.createItem(new ItemDto(itemVo))
-        );
+        Long newId = itemService.createItem(new ItemDto(itemVo));
+        cacheService.cleanItemCache();
+        return RUtils.create(newId);
     }
 
     @Operation(summary = "复制物品到地区", description = "此操作估计会占用较长时间，根据物品ID列表复制物品到新地区，此操作会递归复制类型及父级类型。会返回新的物品列表与新的类型列表，用于反映新的ID")
     @PutMapping("/copy/{areaId}")
     @Transactional
     public R<List<Long>> copyItemToArea(@RequestBody List<Long> itemIdList, @PathVariable("areaId") Long areaId) {
-        return RUtils.create(
-                itemService.copyItemToArea(itemIdList, areaId)
-        );
+        List<Long> idList = itemService.copyItemToArea(itemIdList, areaId);
+        cacheService.cleanItemCache();
+        return RUtils.create(idList);
     }
 
     @Operation(summary = "删除物品", description = "根据物品ID列表批量删除物品")
     @DeleteMapping("/{itemId}")
     @Transactional
     public R<Boolean> deleteItem(@PathVariable("itemId")Long itemId) {
-        return RUtils.create(
-                itemService.deleteItem(itemId)
-        );
+        Boolean result = itemService.deleteItem(itemId);
+        if (result) {
+            cacheService.cleanItemCache();
+            cacheService.cleanMarkerCache();
+        }
+        return RUtils.create(result);
     }
 
     //////////////END:物品本身的API//////////////

@@ -203,9 +203,6 @@ public class MarkerServiceImpl implements MarkerService {
                 Collectors.collectingAndThen(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(o -> o.getItemId() + ";" + o.getMarkerId()))), ArrayList::new));
         markerItemLinkMBPService.saveBatch(itemLinkList);
 
-        cacheService.cleanItemCache();
-        cacheService.cleanMarkerCache();
-
         return marker.getId();
     }
 
@@ -219,8 +216,6 @@ public class MarkerServiceImpl implements MarkerService {
     public Boolean addMarkerExtra(MarkerExtraDto markerExtraDto) {
         boolean added = markerExtraMapper.insert(markerExtraDto.getEntity()) == 1;
 
-        cacheService.cleanItemCache();
-        cacheService.cleanMarkerCache();
 
         return added;
     }
@@ -251,10 +246,6 @@ public class MarkerServiceImpl implements MarkerService {
         } else if (markerSingleDto.getItemList() != null) {
             markerItemLinkMapper.delete(Wrappers.<MarkerItemLink>lambdaQuery().eq(MarkerItemLink::getMarkerId, markerSingleDto.getId()));
         }
-
-        cacheService.cleanItemCache();
-        cacheService.cleanMarkerCache();
-
         return updated;
     }
 
@@ -282,9 +273,6 @@ public class MarkerServiceImpl implements MarkerService {
         boolean updated = markerExtraMapper.update(markerExtraDto.getEntity(), Wrappers.<MarkerExtra>lambdaUpdate()
                 .eq(MarkerExtra::getMarkerId, markerExtraDto.getMarkerId())) == 1;
 
-        cacheService.cleanItemCache();
-        cacheService.cleanMarkerCache();
-
         return updated;
     }
 
@@ -301,8 +289,6 @@ public class MarkerServiceImpl implements MarkerService {
         markerItemLinkMapper.delete(Wrappers.<MarkerItemLink>lambdaQuery().eq(MarkerItemLink::getMarkerId, markerId));
         markerExtraMapper.delete(Wrappers.<MarkerExtra>lambdaQuery().eq(MarkerExtra::getMarkerId, markerId));
 
-        cacheService.cleanItemCache();
-        cacheService.cleanMarkerCache();
 
         return true;
     }

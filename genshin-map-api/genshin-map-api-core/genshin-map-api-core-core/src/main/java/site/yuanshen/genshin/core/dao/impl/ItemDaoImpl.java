@@ -96,6 +96,9 @@ public class ItemDaoImpl implements ItemDao {
         }
     }
 
+    /**
+     * @return 所有的物品信息的Bz2压缩的md5
+     */
     @Override
     @Cacheable("listAllItemBz2Md5")
     public String listAllItemBz2Md5() {
