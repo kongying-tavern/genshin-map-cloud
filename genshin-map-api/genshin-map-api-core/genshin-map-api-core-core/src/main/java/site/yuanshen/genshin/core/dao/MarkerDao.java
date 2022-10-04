@@ -1,4 +1,4 @@
-package site.yuanshen.data.dao;
+package site.yuanshen.genshin.core.dao;
 
 import site.yuanshen.data.dto.helper.PageSearchDto;
 import site.yuanshen.data.vo.MarkerVo;

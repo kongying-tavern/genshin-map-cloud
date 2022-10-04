@@ -8,7 +8,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import site.yuanshen.common.web.response.R;
 import site.yuanshen.common.web.response.RUtils;
-import site.yuanshen.data.dao.MarkerDao;
+import site.yuanshen.genshin.core.dao.MarkerDao;
 import site.yuanshen.data.dto.*;
 import site.yuanshen.data.dto.helper.PageSearchDto;
 import site.yuanshen.data.vo.*;

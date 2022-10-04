@@ -4,12 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Caching;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
-import site.yuanshen.data.dao.MarkerDao;
+import site.yuanshen.genshin.core.dao.MarkerDao;
 import site.yuanshen.genshin.core.service.CacheService;
 
-import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 

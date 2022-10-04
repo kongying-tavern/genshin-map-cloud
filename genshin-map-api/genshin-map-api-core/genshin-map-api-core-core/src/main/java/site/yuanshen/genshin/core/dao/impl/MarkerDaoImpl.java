@@ -1,4 +1,4 @@
-package site.yuanshen.data.dao.impl;
+package site.yuanshen.genshin.core.dao.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -11,7 +11,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 import site.yuanshen.common.core.utils.CompressUtils;
-import site.yuanshen.data.dao.MarkerDao;
+import site.yuanshen.genshin.core.dao.MarkerDao;
 import site.yuanshen.data.dto.MarkerDto;
 import site.yuanshen.data.dto.helper.PageSearchDto;
 import site.yuanshen.data.entity.Item;
@@ -123,7 +123,7 @@ public class MarkerDaoImpl implements MarkerDao {
     @Override
     @Cacheable(value = "listMarkerBz2MD5")
     public List<String> listMarkerBz2MD5(Boolean isTestUser) {
-        Cache markerBz2Cache = cacheManager.getCache("listPageMarkerBy7zip");
+        Cache markerBz2Cache = cacheManager.getCache("listPageMarkerByBz2");
 
         long totalPages = (getMarkerCount(isTestUser) + 3000 - 1) / 3000;
         List<Long> indexList = new ArrayList<>();
