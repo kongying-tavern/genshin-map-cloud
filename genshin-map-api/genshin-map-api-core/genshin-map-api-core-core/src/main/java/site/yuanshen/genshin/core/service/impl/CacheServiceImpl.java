@@ -66,7 +66,7 @@ public class CacheServiceImpl implements CacheService {
         for (int i = 1; i <= totalPages; i++) {
             indexList.add(i);
         }
-        indexList.parallelStream().forEach(i -> markerDao.listPageMarkerByBz2(false, (long) i));
+        indexList.parallelStream().forEach(i -> markerDao.listPageMarkerByBz2(false, i));
         markerDao.listMarkerBz2MD5(false);
     }
 }

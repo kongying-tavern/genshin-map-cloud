@@ -11,7 +11,6 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 import site.yuanshen.common.core.utils.CompressUtils;
-import site.yuanshen.genshin.core.dao.MarkerDao;
 import site.yuanshen.data.dto.MarkerDto;
 import site.yuanshen.data.dto.helper.PageSearchDto;
 import site.yuanshen.data.entity.Item;
@@ -24,6 +23,7 @@ import site.yuanshen.data.mapper.MarkerItemLinkMapper;
 import site.yuanshen.data.mapper.MarkerMapper;
 import site.yuanshen.data.vo.MarkerVo;
 import site.yuanshen.data.vo.helper.PageListVo;
+import site.yuanshen.genshin.core.dao.MarkerDao;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -96,6 +96,45 @@ public class MarkerDaoImpl implements MarkerDao {
     }
 
     /**
+     * 按点位ID区间查询所有点位信息
+     *
+     * @param left  左下标
+     * @param right  右下标
+     * @param isTestUser 是否是测试服打点用户
+     * @return 点位完整信息的前端封装的分页记录
+     */
+    @Override
+    public List<MarkerVo> listMarkerIdRange(Long left, Long right, Boolean isTestUser) {
+        List<Marker> markerList = markerMapper.selectList( Wrappers.<Marker>lambdaQuery().between(Marker::getId,left,right).ne(!isTestUser, Marker::getHiddenFlag, 2));
+        if (markerList.size() == 0) return new ArrayList<>();
+        List<Long> markerIdList = markerList.stream()
+                .map(Marker::getId).collect(Collectors.toList());
+        Map<Long, MarkerExtra> extraMap = markerExtraMapper.selectList(Wrappers.<MarkerExtra>lambdaQuery()
+                        .in(MarkerExtra::getMarkerId, markerIdList))
+                .stream().collect(Collectors.toMap(MarkerExtra::getMarkerId, markerExtra -> markerExtra));
+        Map<Long, List<MarkerItemLink>> itemLinkMap = new ConcurrentHashMap<>();
+        List<MarkerItemLink> markerItemLinks = markerItemLinkMapper.selectList(Wrappers.<MarkerItemLink>lambdaQuery().in(MarkerItemLink::getMarkerId, markerIdList));
+        markerItemLinks.parallelStream().forEach(markerItemLink ->
+                itemLinkMap.compute(markerItemLink.getMarkerId(),
+                        (markerId, linkList) -> {
+                            if (linkList == null) return new ArrayList<>(Collections.singletonList(markerItemLink));
+                            linkList.add(markerItemLink);
+                            return linkList;
+                        }));
+        //获取item_id,得到item合集
+        Map<Long, Item> itemMap = itemMapper.selectList(Wrappers.<Item>lambdaQuery()
+                        .in(Item::getId, markerItemLinks.stream().map(MarkerItemLink::getItemId).collect(Collectors.toSet())))
+                .stream().collect(Collectors.toMap(Item::getId, Item -> Item));
+        return markerList.parallelStream()
+                .map(marker -> new MarkerDto(marker, extraMap.get(marker.getId()), itemLinkMap.get(marker.getId()), itemMap).getVo())
+                .collect(Collectors.toList());
+    }
+
+    private List<MarkerVo> listMarkerId3000RangePage(int index, Boolean isTestUser) {
+        return listMarkerIdRange((index-1) * 3000L + 1, index * 3000L, isTestUser);
+    }
+
+    /**
      * 通过bz2返回点位分页
      *
      * @param isTestUser 是否是测试打点用户
@@ -104,10 +143,10 @@ public class MarkerDaoImpl implements MarkerDao {
      */
     @Override
     @Cacheable(value = "listPageMarkerByBz2", key = "#isTestUser+'#'+#index")
-    public byte[] listPageMarkerByBz2(Boolean isTestUser, Long index) {
+    public byte[] listPageMarkerByBz2(Boolean isTestUser, Integer index) {
         try {
             return CompressUtils.compress(JSON.toJSONString(
-                            listMarkerPage(new PageSearchDto(index, 3000L), isTestUser))
+                            listMarkerId3000RangePage(index, isTestUser))
                     .getBytes(StandardCharsets.UTF_8));
         } catch (Exception e) {
             throw new RuntimeException("创建压缩失败" + e);
@@ -125,9 +164,10 @@ public class MarkerDaoImpl implements MarkerDao {
     public List<String> listMarkerBz2MD5(Boolean isTestUser) {
         Cache markerBz2Cache = cacheManager.getCache("listPageMarkerByBz2");
 
-        long totalPages = (getMarkerCount(isTestUser) + 3000 - 1) / 3000;
-        List<Long> indexList = new ArrayList<>();
-        for (long i = 1; i <= totalPages; i++) {
+        Long id = markerMapper.selectOne(Wrappers.<Marker>query().select("max(id) as id")).getId();
+        int totalPages = (int) ((id + 3000 - 1) / 3000);
+        List<Integer> indexList = new ArrayList<>();
+        for (int i = 1; i <= totalPages; i++) {
             indexList.add(i);
         }
         List<String> markerBz2MD5List;
