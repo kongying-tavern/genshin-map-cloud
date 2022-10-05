@@ -14,8 +14,6 @@ import site.yuanshen.genshin.core.dao.ItemDao;
 import site.yuanshen.genshin.core.dao.MarkerDao;
 import site.yuanshen.genshin.core.service.CacheService;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -53,70 +51,41 @@ public class CacheServiceImpl implements CacheService {
     @Override
     @Caching(
             evict = {
-                    @CacheEvict(value = "iconTag", key = "#tagName", condition = "#tagName != null && #tagName != ''",beforeInvocation = true),
-                    @CacheEvict(value = "listIconTag", allEntries = true,beforeInvocation = true),
-                    @CacheEvict(value = "listAllTag", allEntries = true,beforeInvocation = true),
-                    @CacheEvict(value = "listAllTagBz2", allEntries = true,beforeInvocation = true),
-                    @CacheEvict(value = "listAllTagBz2Md5", allEntries = true,beforeInvocation = true)
+                    @CacheEvict(value = "iconTag", key = "#tagName", condition = "#tagName != null && #tagName != ''", beforeInvocation = true),
+                    @CacheEvict(value = "listIconTag", allEntries = true, beforeInvocation = true),
+                    @CacheEvict(value = "listAllTag", allEntries = true, beforeInvocation = true),
+                    @CacheEvict(value = "listAllTagBz2", allEntries = true, beforeInvocation = true),
+                    @CacheEvict(value = "listAllTagBz2Md5", allEntries = true, beforeInvocation = true)
             }
     )
     public void cleanIconTagCache(String tagName) {
-        if(TransactionSynchronizationManager.isActualTransactionActive()) {
-            // 当前存在事务
-            TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter() {
-                @Override
-                public void afterCommit() {
-                    executor.execute(() -> {
-                        if (StringUtils.isEmpty(tagName)) Objects.requireNonNull(cacheManager.getCache("iconTag")).clear();
-                        iconTagDao.listAllTagBz2Md5();
-                    });
-                }});
-        } else {
-            // 当前不存在事务
-            executor.execute(() ->{
-                if (StringUtils.isEmpty(tagName)) Objects.requireNonNull(cacheManager.getCache("iconTag")).clear();
-                iconTagDao.listAllTagBz2Md5();
-            });
-        }
+        runAfterTransaction(() -> {
+            if (StringUtils.isEmpty(tagName)) Objects.requireNonNull(cacheManager.getCache("iconTag")).clear();
+            iconTagDao.listAllTagBz2Md5();
+        });
     }
 
     @Override
     @Caching(
             evict = {
-                    @CacheEvict(value = "listItem",allEntries = true,beforeInvocation = true),
-                    @CacheEvict(value = "listItemType",allEntries = true,beforeInvocation = true),
-                    @CacheEvict(value = "listItemById",allEntries = true,beforeInvocation = true),
-                    @CacheEvict(value = "listAllItemBz2",allEntries = true,beforeInvocation = true),
-                    @CacheEvict(value = "listAllItemBz2Md5",allEntries = true,beforeInvocation = true),
+                    @CacheEvict(value = "listItem", allEntries = true, beforeInvocation = true),
+                    @CacheEvict(value = "listItemType", allEntries = true, beforeInvocation = true),
+                    @CacheEvict(value = "listItemById", allEntries = true, beforeInvocation = true),
+                    @CacheEvict(value = "listAllItemBz2", allEntries = true, beforeInvocation = true),
+                    @CacheEvict(value = "listAllItemBz2Md5", allEntries = true, beforeInvocation = true),
             }
     )
     public void cleanItemCache() {
-
-        if(TransactionSynchronizationManager.isActualTransactionActive()) {
-            // 当前存在事务
-            TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter() {
-                @Override
-                public void afterCommit() {
-                    executor.execute(() -> {
-                        itemDao.listAllItemBz2();
-                        itemDao.listAllItemBz2Md5();
-                    });
-                }});
-        } else {
-            // 当前不存在事务
-            executor.execute(() ->{
-                itemDao.listAllItemBz2();
-                itemDao.listAllItemBz2Md5();
-            });
-        }
-
-
+        runAfterTransaction(() -> {
+            itemDao.listAllItemBz2();
+            itemDao.listAllItemBz2Md5();
+        });
     }
 
     @Override
     @Caching(
             evict = {
-                    @CacheEvict(value = "listCommonItem",allEntries = true),
+                    @CacheEvict(value = "listCommonItem", allEntries = true),
             }
     )
     public void cleanCommonItemCache() {
@@ -125,28 +94,33 @@ public class CacheServiceImpl implements CacheService {
     @Override
     @Caching(
             evict = {
-                    @CacheEvict(value = "searchMarkerId",allEntries = true,beforeInvocation = true),
-                    @CacheEvict(value = "listMarkerById",allEntries = true,beforeInvocation = true),
-                    @CacheEvict(value = "listMarkerPage",allEntries = true,beforeInvocation = true),
-                    @CacheEvict(value = "getMarkerCount",allEntries = true,beforeInvocation = true),
-                    @CacheEvict(value = "listMarkerIdRange",allEntries = true,beforeInvocation = true),
-                    @CacheEvict(value = "listPageMarkerByBz2",allEntries = true,beforeInvocation = true),
-                    @CacheEvict(value = "listMarkerBz2MD5",allEntries = true,beforeInvocation = true),
+                    @CacheEvict(value = "searchMarkerId", allEntries = true, beforeInvocation = true),
+                    @CacheEvict(value = "listMarkerById", allEntries = true, beforeInvocation = true),
+                    @CacheEvict(value = "listMarkerPage", allEntries = true, beforeInvocation = true),
+                    @CacheEvict(value = "getMarkerCount", allEntries = true, beforeInvocation = true),
+                    @CacheEvict(value = "listMarkerIdRange", allEntries = true, beforeInvocation = true),
+                    @CacheEvict(value = "listPageMarkerByBz2", allEntries = true, beforeInvocation = true),
+                    @CacheEvict(value = "listMarkerBz2MD5", allEntries = true, beforeInvocation = true),
             }
     )
     public void cleanMarkerCache() {
         log.debug("cleanMarkerCache");
-        if(TransactionSynchronizationManager.isActualTransactionActive()) {
+        runAfterTransaction(() -> markerDao.listMarkerBz2MD5(false));
+    }
+
+
+    private void runAfterTransaction(Runnable r) {
+        if (TransactionSynchronizationManager.isActualTransactionActive()) {
             // 当前存在事务
             TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter() {
                 @Override
                 public void afterCommit() {
-                    executor.execute(() -> markerDao.listMarkerBz2MD5(false));
-                }});
+                    executor.execute(r);
+                }
+            });
         } else {
             // 当前不存在事务
-            executor.execute(() -> markerDao.listMarkerBz2MD5(false));
+            executor.execute(r);
         }
-
     }
 }

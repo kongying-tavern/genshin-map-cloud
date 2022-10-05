@@ -52,7 +52,6 @@ public class IconController {
 
     @Operation(summary = "修改图标信息", description = "由icon_id定位修改一个icon")
     @PostMapping("/update")
-    @Transactional
     public R<Boolean> updateIcon(@RequestBody IconVo iconVo) {
         return RUtils.create(
                 iconService.updateIcon(new IconDto(iconVo))
@@ -62,7 +61,6 @@ public class IconController {
     @Operation(summary = "新增图标", description = "无需指定icon的id，id由系统自动生成并在响应中返回," +
             "一组name和updater需要唯一（允许单一重复）")
     @PutMapping("/add")
-    @Transactional
     public R<Long> createIcon(@RequestBody IconVo iconVo) {
         return RUtils.create(
                 iconService.createIcon(new IconDto(iconVo))
@@ -71,7 +69,6 @@ public class IconController {
 
     @Operation(summary = "删除图标", description = "删除图标")
     @DeleteMapping("/delete/{iconId}")
-    @Transactional
     public R<Boolean> deleteIcon(@PathVariable("iconId") Long iconId) {
         return RUtils.create(
                 iconService.deleteIcon(iconId)
@@ -92,7 +89,6 @@ public class IconController {
 
     @Operation(summary = "新增分类", description = "类型id在创建后返回")
     @PutMapping("/type")
-    @Transactional
     public R<Long> addIconType(@RequestBody IconTypeVo iconTypeVo) {
         return RUtils.create(
                 iconService.addIconType(new IconTypeDto(iconTypeVo))
@@ -101,7 +97,6 @@ public class IconController {
 
     @Operation(summary = "修改分类", description = "由类型ID来定位修改一个分类")
     @PostMapping("/type")
-    @Transactional
     public R<Boolean> updateIconType(@RequestBody IconTypeVo iconTypeVo) {
         return RUtils.create(
                 iconService.updateIconType(new IconTypeDto(iconTypeVo))
@@ -110,7 +105,6 @@ public class IconController {
 
     @Operation(summary = "删除分类", description = "这个操作会递归删除，请在前端做二次确认")
     @DeleteMapping("/type/{typeId}")
-    @Transactional
     public R<Boolean> deleteIconType(@PathVariable("typeId") Long typeId) {
         return RUtils.create(
                 iconService.deleteIconType(typeId)

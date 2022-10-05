@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import site.yuanshen.api.system.service.SysBasicService;
 import site.yuanshen.api.system.service.SysUserService;
@@ -62,6 +63,7 @@ public class SysUserServiceImpl implements SysUserService {
      * @return 用户ID
      */
     @Override
+    @Transactional
     public Long register(SysUserRegisterVo registerVo) {
         if (basicService.getUser(registerVo.getUsername()).isEmpty()) {
             SysUser user = new SysUser();
@@ -81,6 +83,7 @@ public class SysUserServiceImpl implements SysUserService {
      * @return 用户ID
      */
     @Override
+    @Transactional
     public Long registerByQQ(SysUserRegisterVo registerDto) {
         String qq = registerDto.getUsername();
         if (qq.isBlank() || !qq.matches("[1-9]\\d{4,10}")) {
@@ -141,6 +144,7 @@ public class SysUserServiceImpl implements SysUserService {
      * @return 是否删除成功
      */
     @Override
+    @Transactional
     public Boolean deleteUser(Long id) {
         SysUser user = basicService.getUserNotNull(id);
         userMapper.deleteById(user.getId());
@@ -152,6 +156,7 @@ public class SysUserServiceImpl implements SysUserService {
      * @return 是否更新成功
      */
     @Override
+    @Transactional
     public Boolean updateUser(SysUserUpdateDto updateDto) {
         SysUser user = basicService.getUserNotNull(updateDto.getUserId());
         BeanUtils.copyProperties(updateDto, user);
@@ -164,6 +169,7 @@ public class SysUserServiceImpl implements SysUserService {
      * @return 是否更新成功
      */
     @Override
+    @Transactional
     public Boolean updatePassword(SysUserPasswordUpdateDto passwordUpdateDto) {
         SysUser user = basicService.getUserNotNull(passwordUpdateDto.getUserId());
         PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();

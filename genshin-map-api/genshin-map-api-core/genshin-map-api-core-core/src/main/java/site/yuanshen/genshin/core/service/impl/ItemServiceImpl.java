@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import site.yuanshen.data.dto.ItemDto;
 import site.yuanshen.data.dto.ItemSearchDto;
 import site.yuanshen.data.dto.ItemTypeDto;
@@ -96,6 +97,7 @@ public class ItemServiceImpl implements ItemService {
      * @return 新物品类型ID
      */
     @Override
+    @Transactional
     public Long addItemType(ItemTypeDto itemTypeDto) {
         ItemType itemType = itemTypeDto.getEntity();
         //临时id
@@ -119,6 +121,7 @@ public class ItemServiceImpl implements ItemService {
      * @return 是否成功
      */
     @Override
+    @Transactional
     public Boolean updateItemType(ItemTypeDto itemTypeDto) {
         //获取类型实体
         ItemType itemType = itemTypeMapper.selectOne(Wrappers.<ItemType>lambdaQuery()
@@ -164,6 +167,7 @@ public class ItemServiceImpl implements ItemService {
      * @return 是否成功
      */
     @Override
+    @Transactional
     public Boolean moveItemType(List<Long> itemTypeIdList, Long targetTypeId) {
         //选取实体
         List<ItemType> itemTypeList = itemTypeMapper.selectList(Wrappers.<ItemType>lambdaQuery()
@@ -196,6 +200,7 @@ public class ItemServiceImpl implements ItemService {
      * @return 是否成功
      */
     @Override
+    @Transactional
     public Boolean deleteItemType(Long itemTypeId) {
         List<Long> nowTypeIdList = Collections.singletonList(itemTypeId);
         while (!nowTypeIdList.isEmpty()) {
@@ -297,6 +302,7 @@ public class ItemServiceImpl implements ItemService {
      * @return 是否成功
      */
     @Override
+    @Transactional
     public Boolean updateItem(List<ItemVo> itemVoList, Integer editSame) {
         for (ItemVo itemVo : itemVoList) {
             ItemDto itemDto = new ItemDto(itemVo);
@@ -371,6 +377,7 @@ public class ItemServiceImpl implements ItemService {
      * @return 是否成功
      */
     @Override
+    @Transactional
     public Boolean joinItemsInType(List<Long> itemIdList, Long typeId) {
         if (itemTypeMapper.selectOne(Wrappers.<ItemType>lambdaQuery().eq(ItemType::getId, typeId)) == null)
             throw new RuntimeException("类型ID错误");
@@ -393,6 +400,7 @@ public class ItemServiceImpl implements ItemService {
      * @return 新物品ID
      */
     @Override
+    @Transactional
     public Long createItem(ItemDto itemDto) {
         Item item = itemDto.getEntity();
         itemMapper.insert(item);
@@ -419,6 +427,7 @@ public class ItemServiceImpl implements ItemService {
      * @return 物品复制到地区结果前端封装
      */
     @Override
+    @Transactional
     public List<Long> copyItemToArea(List<Long> itemIdList, Long areaId) {
         //TODO 判断是否是末端地区，检查所有涉及地区的代码
         //TODO ID冲突问题
@@ -458,6 +467,7 @@ public class ItemServiceImpl implements ItemService {
      * @return 是否成功
      */
     @Override
+    @Transactional
     public Boolean deleteItem(Long itemId) {
         itemTypeLinkMapper.delete(Wrappers.<ItemTypeLink>lambdaQuery()
                 .eq(ItemTypeLink::getItemId, itemId));
@@ -500,6 +510,7 @@ public class ItemServiceImpl implements ItemService {
      */
     @Override
     @CacheEvict(value = "listCommonItem",allEntries = true)
+    @Transactional
     public Boolean addCommonItem(List<Long> itemIdList) {
         return itemAreaPublicMBPService.saveBatch(itemIdList.parallelStream()
                 .map(id -> new ItemAreaPublic()
@@ -515,6 +526,7 @@ public class ItemServiceImpl implements ItemService {
      */
     @Override
     @CacheEvict(value = "listCommonItem",allEntries = true)
+    @Transactional
     public Boolean deleteCommonItem(Long itemId) {
         return itemAreaPublicMapper.delete(Wrappers.<ItemAreaPublic>lambdaQuery()
                 .eq(ItemAreaPublic::getItemId, itemId))

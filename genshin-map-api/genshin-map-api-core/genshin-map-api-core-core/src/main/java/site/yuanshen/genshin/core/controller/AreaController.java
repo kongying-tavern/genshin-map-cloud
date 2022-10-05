@@ -52,7 +52,6 @@ public class AreaController {
 
     @Operation(summary = "新增地区", description = "返回新增地区ID")
     @PutMapping("/add")
-    @Transactional
     public R<Long> createArea(@RequestBody AreaVo areaVo) {
         return RUtils.create(
                 areaService.createArea(new AreaDto(areaVo))
@@ -61,7 +60,6 @@ public class AreaController {
 
     @Operation(summary = "修改地区", description = "修改地区")
     @PostMapping("")
-    @Transactional
     public R<Boolean> updateArea(@RequestBody AreaVo areaVo) {
         return RUtils.create(
                 areaService.updateArea(new AreaDto(areaVo))
@@ -70,7 +68,6 @@ public class AreaController {
 
     @Operation(summary = "删除地区", description = "此操作会递归删除，请在前端做二次确认")
     @DeleteMapping("/{areaId}")
-    @Transactional
     public R<Boolean> deleteArea(@PathVariable("areaId") Long areaId) {
         return RUtils.create(
                 areaService.deleteArea(areaId)

@@ -3,6 +3,7 @@ package site.yuanshen.api.system.service.impl;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import site.yuanshen.api.system.service.SysBasicService;
 import site.yuanshen.api.system.service.SysRoleService;
 import site.yuanshen.data.dto.SysRoleDto;
@@ -49,6 +50,7 @@ public class SysRoleServiceImpl implements SysRoleService {
      * @return 是否成功
      */
     @Override
+    @Transactional
     public Boolean createRole(SysRoleDto roleDto) {
         //空置
         //SysRole role = roleDto.getEntity();
@@ -63,6 +65,7 @@ public class SysRoleServiceImpl implements SysRoleService {
      * @return 是否成功
      */
     @Override
+    @Transactional
     public Boolean addRoleToUser(SysRoleLinkDto roleLinkDto) {
         SysUser user = basicService.getUserNotNull(roleLinkDto.getUserId());
         SysRole role = basicService.getRoleNotNullById(roleLinkDto.getRoleId());
@@ -82,6 +85,7 @@ public class SysRoleServiceImpl implements SysRoleService {
      * @return 是否成功
      */
     @Override
+    @Transactional
     public Boolean removeRoleFromUser(SysRoleLinkDto roleLinkDto) {
         throw new RuntimeException("该api暂时作废");
         //SysUser user = basicService.getUserNotNull(roleLinkDto.getUserId());
@@ -100,6 +104,7 @@ public class SysRoleServiceImpl implements SysRoleService {
      * @return 是否成功
      */
     @Override
+    @Transactional
     public Boolean deleteRole(String roleCode) {
         throw new RuntimeException("该api暂时作废");
     }
@@ -111,6 +116,7 @@ public class SysRoleServiceImpl implements SysRoleService {
      * @return 是否成功
      */
     @Override
+    @Transactional
     public Boolean deleteRoleBatch(List<String> roleCodeList) {
         throw new RuntimeException("该api暂时作废");
         ////查找角色

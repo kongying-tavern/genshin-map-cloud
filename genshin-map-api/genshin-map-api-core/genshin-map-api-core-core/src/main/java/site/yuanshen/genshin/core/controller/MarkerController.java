@@ -3,7 +3,6 @@ package site.yuanshen.genshin.core.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import site.yuanshen.common.web.response.R;
@@ -94,7 +93,6 @@ public class MarkerController {
 
     @Operation(summary = "新增点位（不包括额外字段）", description = "新增完成后返回点位ID")
     @PutMapping("/single")
-    @Transactional
     public R<Long> createMarker(@RequestBody MarkerSingleVo markerSingleVo) {
         Long newId = markerService.createMarker(new MarkerSingleDto(markerSingleVo));
         cacheService.cleanItemCache();
@@ -104,7 +102,6 @@ public class MarkerController {
 
     @Operation(summary = "新增点位额外字段信息", description = "需保证额外字段的点位都已经添加成功")
     @PutMapping("/extra")
-    @Transactional
     public R<Boolean> addMarkerExtra(@RequestBody MarkerExtraVo markerExtraVo) {
         Boolean result = markerService.addMarkerExtra(new MarkerExtraDto(markerExtraVo));
         if (result) {
@@ -116,7 +113,6 @@ public class MarkerController {
 
     @Operation(summary = "修改点位（不包括额外字段）", description = "根据点位ID修改点位")
     @PostMapping("/single")
-    @Transactional
     public R<Boolean> updateMarker(@RequestBody MarkerSingleVo markerSingleVo) {
         Boolean result = markerService.updateMarker(new MarkerSingleDto(markerSingleVo));
         cacheService.cleanItemCache();
@@ -126,7 +122,6 @@ public class MarkerController {
 
     @Operation(summary = "修改点位额外字段", description = "根据点位ID修改点位额外字段")
     @PostMapping("/extra")
-    @Transactional
     public R<Boolean> updateMarkerExtra(@RequestBody MarkerExtraVo markerExtraVo) {
         Boolean result = markerService.updateMarkerExtra(new MarkerExtraDto(markerExtraVo));
         if (result) {
@@ -141,7 +136,6 @@ public class MarkerController {
 
     @Operation(summary = "删除点位", description = "根据点位ID列表批量删除点位")
     @DeleteMapping("/{markerId}")
-    @Transactional
     public R<Boolean> deleteMarker(@PathVariable("markerId") Long markerId) {
         Boolean result = markerService.deleteMarker(markerId);
         cacheService.cleanItemCache();
@@ -192,16 +186,14 @@ public class MarkerController {
     @Operation(summary = "通过点位审核",
             description = "通过审核，返回点位ID（如果是新建点位，则为新点位ID），通过额外字段关联的点位也会自动通过审核（但不会返回关联点位的ID）")
     @PostMapping("/punctuate/check/ok/{punctuateId}")
-    @Transactional
     public R<Long> passPunctuate(@PathVariable("punctuateId") Long punctuateId) {
-        return RUtils.create(
-                markerService.passPunctuate(punctuateId)
-        );
+        Long passId = markerService.passPunctuate(punctuateId);
+        cacheService.cleanMarkerCache();
+        return RUtils.create(passId);
     }
 
     @Operation(summary = "驳回点位审核", description = "驳回的点位和通过额外字段关联的点位会回到暂存区")
     @PostMapping("/punctuate/check/fail/{punctuateId}")
-    @Transactional
     public R<Boolean> rejectPunctuate(@PathVariable("punctuateId") Long punctuateId) {
         return RUtils.create(
                 markerService.rejectPunctuate(punctuateId)
@@ -210,7 +202,6 @@ public class MarkerController {
 
     @Operation(summary = "删除提交点位", description = "根据提交ID列表来删除提交点位")
     @DeleteMapping("/punctuate/check/{punctuateId}")
-    @Transactional
     public R<Boolean> deletePunctuate(@PathVariable("punctuateId") Long punctuateId) {
         return RUtils.create(
                 markerService.deletePunctuate(punctuateId)
@@ -249,7 +240,6 @@ public class MarkerController {
 
     @Operation(summary = "提交暂存点位（不含额外字段）", description = "成功则返回打点提交ID")
     @PutMapping("/punctuate/author/single")
-    @Transactional
     public R<Long> addSinglePunctuate(@RequestBody MarkerSinglePunctuateVo markerSinglePunctuateVo) {
         return RUtils.create(
                 markerService.addSinglePunctuate(new MarkerSinglePunctuateDto(markerSinglePunctuateVo))
@@ -258,7 +248,6 @@ public class MarkerController {
 
     @Operation(summary = "提交暂存点位额外字段", description = "在涉及的所有点位已经暂存后在使用该api")
     @PutMapping("/punctuate/author/extra")
-    @Transactional
     public R<Boolean> addExtraPunctuate(@RequestBody MarkerExtraPunctuateVo markerExtraPunctuateVo) {
         return RUtils.create(
                 markerService.addExtraPunctuate(new MarkerExtraPunctuateDto(markerExtraPunctuateVo))
@@ -267,7 +256,6 @@ public class MarkerController {
 
     @Operation(summary = "将暂存点位提交审核", description = "将暂存点位提交审核")
     @PutMapping("/punctuate/author/push/{authorId}")
-    @Transactional
     public R<Boolean> pushPunctuate(@PathVariable("authorId") Long authorId) {
         return RUtils.create(
                 markerService.pushPunctuate(authorId)
@@ -276,7 +264,6 @@ public class MarkerController {
 
     @Operation(summary = "修改自身未提交的暂存点位（不包括额外字段）", description = "根据点位ID修改点位")
     @PostMapping("/punctuate/author/single")
-    @Transactional
     public R<Boolean> updateSelfSinglePunctuate(@RequestBody MarkerSinglePunctuateVo singlePunctuateVo) {
         return RUtils.create(
                 markerService.updateSelfSinglePunctuate(new MarkerSinglePunctuateDto(singlePunctuateVo))
@@ -285,7 +272,6 @@ public class MarkerController {
 
     @Operation(summary = "修改自身未提交的暂存点位的额外字段", description = "根据点位ID修改点位")
     @PostMapping("/punctuate/author/extra")
-    @Transactional
     public R<Boolean> updateSelfPunctuateExtra(@RequestBody MarkerExtraPunctuateVo extraPunctuateVo) {
         return RUtils.create(
                 markerService.updateSelfPunctuateExtra(new MarkerExtraPunctuateDto(extraPunctuateVo))
@@ -294,7 +280,6 @@ public class MarkerController {
 
     @Operation(summary = "删除自己未通过的提交点位", description = "根据提交ID列表来删除提交点位，会对打点员ID进行校验")
     @DeleteMapping("/punctuate/author/{authorId}/{punctuateId}")
-    @Transactional
     public R<Boolean> deleteSelfPunctuate(@PathVariable("punctuateId") Long punctuateId, @PathVariable("authorId") Long authorId) {
         return RUtils.create(
                 markerService.deleteSelfPunctuate(punctuateId, authorId)

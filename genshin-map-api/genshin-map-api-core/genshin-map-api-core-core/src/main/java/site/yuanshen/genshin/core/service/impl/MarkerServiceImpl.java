@@ -11,6 +11,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.common.web.utils.JsonUtils;
 import site.yuanshen.genshin.core.dao.MarkerDao;
@@ -195,6 +196,7 @@ public class MarkerServiceImpl implements MarkerService {
      * @return 新点位ID
      */
     @Override
+    @Transactional
     public Long createMarker(MarkerSingleDto markerSingleDto) {
         Marker marker = markerSingleDto.getEntity();
         markerMapper.insert(marker);
@@ -213,6 +215,7 @@ public class MarkerServiceImpl implements MarkerService {
      * @return 是否成功
      */
     @Override
+    @Transactional
     public Boolean addMarkerExtra(MarkerExtraDto markerExtraDto) {
         boolean added = markerExtraMapper.insert(markerExtraDto.getEntity()) == 1;
 
@@ -227,6 +230,7 @@ public class MarkerServiceImpl implements MarkerService {
      * @return 是否成功
      */
     @Override
+    @Transactional
     public Boolean updateMarker(MarkerSingleDto markerSingleDto) {
         //保存历史记录
         MarkerExtra markerExtra = markerExtraMapper.selectOne(Wrappers.<MarkerExtra>lambdaQuery().eq(MarkerExtra::getMarkerId, markerSingleDto.getId()));
@@ -257,6 +261,7 @@ public class MarkerServiceImpl implements MarkerService {
      * @return 是否成功
      */
     @Override
+    @Transactional
     public Boolean updateMarkerExtra(MarkerExtraDto markerExtraDto) {
         //TODO:如果增加乐观锁后,默认搜不到情况下version=0.第一个人先未找到,进行新增,此时version为默认值1.第二个人进行找到,0和1匹配不上,更新失败
         //2.情况2-两人一起到达搜索,此时都找不到,1号先完成了添加,2号再完成了添加,此时会有两条一模一样数据,但是搜索出来的时候只会使用一条,影响不大.
@@ -284,6 +289,7 @@ public class MarkerServiceImpl implements MarkerService {
      * @return 是否成功
      */
     @Override
+    @Transactional
     public Boolean deleteMarker(Long markerId) {
         markerMapper.delete(Wrappers.<Marker>lambdaQuery().eq(Marker::getId, markerId));
         markerItemLinkMapper.delete(Wrappers.<MarkerItemLink>lambdaQuery().eq(MarkerItemLink::getMarkerId, markerId));
@@ -421,11 +427,9 @@ public class MarkerServiceImpl implements MarkerService {
      * @return 点位ID
      */
     @Override
+    @Transactional
     @Caching(
             evict = {
-                    @CacheEvict(value = "searchMarkerId", allEntries = true),
-                    @CacheEvict(value = "listMarkerById", allEntries = true),
-                    @CacheEvict(value = "listMarkerPage", allEntries = true),
                     @CacheEvict(value = "searchPunctuateId", allEntries = true),
                     @CacheEvict(value = "listPunctuateById", allEntries = true),
                     @CacheEvict(value = "listAllPunctuatePage", allEntries = true),
@@ -661,6 +665,7 @@ public class MarkerServiceImpl implements MarkerService {
      * @return 是否成功
      */
     @Override
+    @Transactional
     @Caching(
             evict = {
                     @CacheEvict(value = "searchPunctuateId", allEntries = true),
@@ -695,6 +700,7 @@ public class MarkerServiceImpl implements MarkerService {
      * @return 是否成功
      */
     @Override
+    @Transactional
     @Caching(
             evict = {
                     @CacheEvict(value = "searchPunctuateId", allEntries = true),
@@ -782,6 +788,7 @@ public class MarkerServiceImpl implements MarkerService {
      * @return 打点ID
      */
     @Override
+    @Transactional
     @Caching(
             evict = {
                     @CacheEvict(value = "listAllPunctuatePage", allEntries = true),
@@ -809,6 +816,7 @@ public class MarkerServiceImpl implements MarkerService {
      * @return 是否成功
      */
     @Override
+    @Transactional
     @Caching(
             evict = {
                     @CacheEvict(value = "listAllPunctuatePage", allEntries = true),
@@ -830,6 +838,7 @@ public class MarkerServiceImpl implements MarkerService {
      * @return 是否成功
      */
     @Override
+    @Transactional
     @Caching(
             evict = {
                     @CacheEvict(value = "searchPunctuateId", allEntries = true),
@@ -854,6 +863,7 @@ public class MarkerServiceImpl implements MarkerService {
      * @return 是否成功
      */
     @Override
+    @Transactional
     @Caching(
             evict = {
                     @CacheEvict(value = "searchPunctuateId", allEntries = true),
@@ -886,6 +896,7 @@ public class MarkerServiceImpl implements MarkerService {
      * @return 是否成功
      */
     @Override
+    @Transactional
     @Caching(
             evict = {
                     @CacheEvict(value = "searchPunctuateId", allEntries = true),
@@ -919,6 +930,7 @@ public class MarkerServiceImpl implements MarkerService {
      * @return 是否成功
      */
     @Override
+    @Transactional
     @Caching(
             evict = {
                     @CacheEvict(value = "searchPunctuateId", allEntries = true),

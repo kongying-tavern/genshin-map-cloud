@@ -6,6 +6,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.dto.AreaDto;
 import site.yuanshen.data.entity.Area;
@@ -86,6 +87,7 @@ public class AreaServiceImpl implements AreaService {
      * @return 新增地区ID
      */
     @Override
+    @Transactional
     @Caching(
             evict = {
                     @CacheEvict(value = "area", key = "#result"),
@@ -126,6 +128,7 @@ public class AreaServiceImpl implements AreaService {
      * @return 是否成功
      */
     @Override
+    @Transactional
     @Caching(
             evict = {
                     @CacheEvict(value = "area", key = "#areaDto.areaId"),
@@ -169,6 +172,7 @@ public class AreaServiceImpl implements AreaService {
      * @return 是否成功
      */
     @Override
+    @Transactional
     @Caching(
             evict = {
                     @CacheEvict(value = "area", key = "#areaId"),

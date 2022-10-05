@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import site.yuanshen.data.dto.TagDto;
 import site.yuanshen.data.dto.TagSearchDto;
 import site.yuanshen.data.dto.TagTypeDto;
@@ -124,6 +125,7 @@ public class IconTagServiceImpl implements IconTagService {
      * @return 是否成功
      */
     @Override
+    @Transactional
     public Boolean updateTag(String tagName, Long iconId) {
         boolean isUpdate = tagMapper.update(null, Wrappers.<Tag>lambdaUpdate()
                 .eq(Tag::getTag, tagName)
@@ -139,6 +141,7 @@ public class IconTagServiceImpl implements IconTagService {
      * @return 是否成功
      */
     @Override
+    @Transactional
     public Boolean updateTypeInTag(TagDto tagDto) {
         //删除旧类型链接
         tagTypeLinkMapper.delete(Wrappers.<TagTypeLink>lambdaQuery()
@@ -163,6 +166,7 @@ public class IconTagServiceImpl implements IconTagService {
      * @return 是否成功
      */
     @Override
+    @Transactional
     public Boolean createTag(String tagName) {
         //判断是否重复
         Tag tag = tagMapper.selectOne(Wrappers.<Tag>lambdaQuery().eq(Tag::getTag, tagName));
@@ -180,6 +184,7 @@ public class IconTagServiceImpl implements IconTagService {
      * @return 是否成功
      */
     @Override
+    @Transactional
     public Boolean deleteTag(String tagName) {
         tagTypeLinkMapper.delete(Wrappers.<TagTypeLink>lambdaQuery()
                 .eq(TagTypeLink::getTagName, tagName));
@@ -221,6 +226,7 @@ public class IconTagServiceImpl implements IconTagService {
      * @return 新图标标签分类ID
      */
     @Override
+    @Transactional
     @CacheEvict(value = "listIconTagType", allEntries = true)
     public Long addTagType(TagTypeDto tagTypeDto) {
         TagType tagType = tagTypeDto.getEntity()
@@ -242,6 +248,7 @@ public class IconTagServiceImpl implements IconTagService {
      * @return 是否成功
      */
     @Override
+    @Transactional
     @CacheEvict(value = "listIconTagType", allEntries = true)
     public Boolean updateTagType(TagTypeDto tagTypeDto) {
         //获取标签分类实体
@@ -281,6 +288,7 @@ public class IconTagServiceImpl implements IconTagService {
      * @return 是否成功
      */
     @Override
+    @Transactional
     @CacheEvict(value = "listIconTagType", allEntries = true)
     public Boolean deleteTagType(Long typeId) {
         //用于递归遍历删除的类型ID列表

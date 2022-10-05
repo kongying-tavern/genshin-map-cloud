@@ -8,6 +8,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import site.yuanshen.common.web.utils.JsonUtils;
 import site.yuanshen.data.dto.IconDto;
 import site.yuanshen.data.dto.IconSearchDto;
@@ -112,6 +113,7 @@ public class IconServiceImpl implements IconService {
      * @return 是否成功
      */
     @Override
+    @Transactional
     @Caching(
             evict = {
                     @CacheEvict(value = "icon", key = "#iconDto.iconId"),
@@ -151,6 +153,7 @@ public class IconServiceImpl implements IconService {
      * @return 新图标的ID
      */
     @Override
+    @Transactional
     @CacheEvict(value = "listIcon", allEntries = true)
     public Long createIcon(IconDto iconDto) {
         Icon icon = iconDto.getEntity()
@@ -181,6 +184,7 @@ public class IconServiceImpl implements IconService {
      * @return 是否成功
      */
     @Override
+    @Transactional
     @Caching(
             evict = {
                     @CacheEvict(value = "icon", key = "#iconId"),
@@ -226,6 +230,7 @@ public class IconServiceImpl implements IconService {
      * @return 新图标分类ID
      */
     @Override
+    @Transactional
     @Caching(
             evict = {
                     @CacheEvict(value = "listIcon", allEntries = true),
@@ -255,6 +260,7 @@ public class IconServiceImpl implements IconService {
      * @return 是否成功
      */
     @Override
+    @Transactional
     @Caching(
             evict = {
                     @CacheEvict(value = "icon", allEntries = true),
@@ -301,6 +307,7 @@ public class IconServiceImpl implements IconService {
      * @return 是否成功
      */
     @Override
+    @Transactional
     @Caching(
             evict = {
                     @CacheEvict(value = "icon", allEntries = true),

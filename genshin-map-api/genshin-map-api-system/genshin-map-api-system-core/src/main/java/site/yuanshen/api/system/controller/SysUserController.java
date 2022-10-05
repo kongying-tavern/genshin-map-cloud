@@ -32,19 +32,16 @@ import java.util.stream.Collectors;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/user")
-@Transactional
 public class SysUserController {
 
     private final SysUserService userService;
 
     @PostMapping("/register")
-    @Transactional
     public R<Long> registerUser(@RequestBody SysUserRegisterVo registerDto) {
         return RUtils.create(userService.register(registerDto));
     }
 
     @PostMapping("/register/qq")
-    @Transactional
     public R<Long> registerUserByQQ(@RequestBody SysUserRegisterVo registerDto) {
         return RUtils.create(userService.registerByQQ(registerDto));
     }
@@ -60,14 +57,12 @@ public class SysUserController {
 
 
     @Operation(summary = "用户信息批量查询", description = "用户信息批量查询")
-    @PostMapping("/info/userList")
     public R<PageListVo<SysUserVo>> getUserList(@RequestBody SysUserSearchVo sysUserSearchVo){
         return RUtils.create(userService.listPage(new SysUserSearchDto(sysUserSearchVo)));
     }
 
 
     @PostMapping("/update")
-    @Transactional
     public R<Boolean> updateUser(@RequestBody SysUserUpdateDto updateDto,
                                  @RequestHeader("userId") Long headerUserId, @RequestHeader("Authorities") String authoritiesString) {
         List<RoleEnum> userRoleList = JSON.parseArray(authoritiesString).toJavaList(String.class).stream().map(RoleEnum::valueOf).collect(Collectors.toList());
@@ -77,7 +72,6 @@ public class SysUserController {
     }
 
     @PostMapping("/update_password")
-    @Transactional
     public R<Boolean> updateUserPassword(@RequestBody SysUserPasswordUpdateDto passwordUpdateDto,
                                          @RequestHeader("userId") Long headerUserId, @RequestHeader("Authorities") String authoritiesString) {
         List<RoleEnum> userRoleList = JSON.parseArray(authoritiesString).toJavaList(String.class).stream().map(RoleEnum::valueOf).collect(Collectors.toList());
@@ -87,7 +81,6 @@ public class SysUserController {
     }
 
     @DeleteMapping("/{workId}")
-    @Transactional
     public R<Boolean> deleteUser(@PathVariable("workId") Long workId) {
         return RUtils.create(userService.deleteUser(workId));
     }
