@@ -95,7 +95,7 @@ public class MarkerServiceImpl implements MarkerService {
         //如果不是按地区筛选,也就是说没经过筛选内鬼这一步,则再筛一遍 TODO:感觉繁琐了
         if (!isArea) {
             itemIdList = itemMapper.selectList(Wrappers.<Item>lambdaQuery()
-                            .in(Item::getId, itemIdList).ne(!searchVo.getIsTestUser(), Item::getHiddenFlag, 2)
+                            .in(!itemIdList.isEmpty(),Item::getId, itemIdList).ne(!searchVo.getIsTestUser(), Item::getHiddenFlag, 2)
                             .select(Item::getId)).stream()
                     .map(Item::getId).distinct().collect(Collectors.toList());
         }
