@@ -9,15 +9,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionSynchronizationAdapter;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.util.StringUtils;
+import site.yuanshen.common.core.utils.DebounceExecutor;
 import site.yuanshen.genshin.core.dao.IconTagDao;
 import site.yuanshen.genshin.core.dao.ItemDao;
 import site.yuanshen.genshin.core.dao.MarkerDao;
 import site.yuanshen.genshin.core.service.CacheService;
 
 import java.util.Objects;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 /**
  * 缓存服务接口实现
@@ -34,7 +33,7 @@ public class CacheServiceImpl implements CacheService {
     private final IconTagDao iconTagDao;
     private final CacheManager cacheManager;
 
-    ThreadPoolExecutor executor = new ThreadPoolExecutor(5, 10, 200, TimeUnit.MILLISECONDS,
+    ThreadPoolExecutor executor = new ThreadPoolExecutor(10, 20, 200, TimeUnit.MILLISECONDS,
             new ArrayBlockingQueue<>(5));
 
     /**
@@ -59,10 +58,19 @@ public class CacheServiceImpl implements CacheService {
             }
     )
     public void cleanIconTagCache(String tagName) {
-        runAfterTransaction(() -> {
+        FutureTask<Status> futureTask = new FutureTask<>(() -> {
             if (StringUtils.isEmpty(tagName)) Objects.requireNonNull(cacheManager.getCache("iconTag")).clear();
-            iconTagDao.listAllTagBz2Md5();
+            return Status.OK;
         });
+        runAfterTransactionByFuture(futureTask);
+        try {
+            if (futureTask.get() == Status.OK)
+                runAfterTransactionDebounceByKey(iconTagDao::listAllTagBz2Md5, FunctionKeyEnum.listAllTagBz2Md5);
+            else
+                log.error("cleanIconTagCache执行失败,未知原因");
+        } catch (Exception e) {
+            log.error("cleanIconTagCache执行失败", e);
+        }
     }
 
     @Override
@@ -76,10 +84,7 @@ public class CacheServiceImpl implements CacheService {
             }
     )
     public void cleanItemCache() {
-        runAfterTransaction(() -> {
-            itemDao.listAllItemBz2();
-            itemDao.listAllItemBz2Md5();
-        });
+        runAfterTransactionDebounceByKey(itemDao::listAllItemBz2Md5, FunctionKeyEnum.listAllItemBz2Md5);
     }
 
     @Override
@@ -105,11 +110,34 @@ public class CacheServiceImpl implements CacheService {
     )
     public void cleanMarkerCache() {
         log.debug("cleanMarkerCache");
-        runAfterTransaction(() -> markerDao.listMarkerBz2MD5(false));
+        runAfterTransactionDebounceByKey(() ->
+                        markerDao.listMarkerBz2MD5(false),
+                FunctionKeyEnum.listMarkerBz2MD5);
+    }
+
+    enum FunctionKeyEnum {
+        listAllTagBz2Md5,
+        listAllItemBz2Md5,
+        listMarkerBz2MD5,
+    }
+
+    enum Status {
+        OK, FAIL
+    }
+
+    private void runAfterTransactionDebounceByKey(Runnable r, FunctionKeyEnum keyEnum) {
+        DebounceExecutor.debounce(keyEnum.name(), () -> {
+            log.info("Debounce Funtion Run: {}", keyEnum.name());
+            try {
+                executor.execute(r);
+            } catch (RejectedExecutionException e) {
+                log.error("线程池拒绝：{}",keyEnum.name());
+            }
+        }, 10, TimeUnit.SECONDS);
     }
 
 
-    private void runAfterTransaction(Runnable r) {
+    private void runAfterTransactionByFuture(FutureTask<Status> r) {
         if (TransactionSynchronizationManager.isActualTransactionActive()) {
             // 当前存在事务
             TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter() {
@@ -118,8 +146,7 @@ public class CacheServiceImpl implements CacheService {
                     executor.execute(r);
                 }
             });
-        } else {
-            // 当前不存在事务
+        } else { // 当前不存在事务
             executor.execute(r);
         }
     }
