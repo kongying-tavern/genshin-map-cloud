@@ -10,7 +10,6 @@ import site.yuanshen.data.enums.HistoryType;
 import static site.yuanshen.genshin.core.convert.HistoryConvert.MAPPER;
 
 //转换模块示例(暂不需要)
-@Deprecated
 public class AreaConvert extends DefaultConvert {
 	private static final JsonMapper mapper = MAPPER;
 
