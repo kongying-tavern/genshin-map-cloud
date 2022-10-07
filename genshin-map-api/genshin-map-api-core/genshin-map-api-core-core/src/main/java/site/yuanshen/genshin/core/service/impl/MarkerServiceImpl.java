@@ -102,6 +102,7 @@ public class MarkerServiceImpl implements MarkerService {
 
 
         if (!searchVo.getGetBeta()) {
+            log.info("获取正式点位:{}", itemIdList);
             if (itemIdList.isEmpty()) return new ArrayList<>();
             return markerItemLinkMapper.selectList(Wrappers.<MarkerItemLink>lambdaQuery()
                             .in(MarkerItemLink::getItemId, itemIdList)
@@ -110,6 +111,7 @@ public class MarkerServiceImpl implements MarkerService {
                     .map(MarkerItemLink::getMarkerId)
                     .distinct().collect(Collectors.toList());
         } else {
+            log.info("获取测试点位:{}", itemIdList);
             List<Long> result = new ArrayList<>();
             itemIdList.parallelStream().forEach(itemId ->
                     result.addAll(markerPunctuateMapper.selectList(Wrappers.<MarkerPunctuate>lambdaQuery()
