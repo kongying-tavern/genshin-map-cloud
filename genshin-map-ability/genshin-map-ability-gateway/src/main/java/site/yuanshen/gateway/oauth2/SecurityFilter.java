@@ -50,8 +50,8 @@ public class SecurityFilter implements GlobalFilter, Ordered {
         if (path == null) throw new RuntimeException("请求url拦截失败，请联系管理员");
         //配置文件中的url身份配置
         Map<String, List<String>> authoritiesFilter = genshinGatewayProperties.getAuthoritiesFilter();
-        log.info("Try to match security url map: {}", authoritiesFilter.toString());
-        log.info("The user authorities list is: {}", authorities);
+        log.debug("Try to match security url map: {}", authoritiesFilter.toString());
+        log.debug("The user authorities list is: {}", authorities);
         for (String roleName : authoritiesFilter.keySet()) {
             RoleEnum matchRole = RoleEnum.valueOf(roleName);
             boolean isMatch = false;
@@ -64,14 +64,14 @@ public class SecurityFilter implements GlobalFilter, Ordered {
             if (!isMatch) continue;
             AntPathMatcher matcher = new AntPathMatcher();
             List<String> urlMatches = authoritiesFilter.get(roleName);
-            log.info("{}'s Url matching: {}", roleName, urlMatches);
+            log.debug("{}'s Url matching: {}", roleName, urlMatches);
             for (String urlMatch : urlMatches) {
                 if (matcher.match(urlMatch, path)) {
                     log.info("Url matched: {} , has role, pass", urlMatch);
                     return chain.filter(exchange);
                 }
             }
-            log.info("{}'s Url no matched, find next", roleName);
+            log.debug("{}'s Url no matched, find next", roleName);
         }
         log.info("Has no permissions, reject");
         ServerHttpResponse response = exchange.getResponse();
