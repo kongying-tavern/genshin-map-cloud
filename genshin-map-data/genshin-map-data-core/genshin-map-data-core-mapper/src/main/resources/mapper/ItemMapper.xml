@@ -63,6 +63,7 @@
                 and hidden_flag != '2'
             </if>
         </where>
+        order by i.id
     </select>
 
 </mapper>

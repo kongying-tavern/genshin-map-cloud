@@ -257,13 +257,14 @@ public class ItemServiceImpl implements ItemService {
     @Cacheable("listItem")
     public PageListVo<ItemVo> listItem(ItemSearchDto itemSearchDto) {
         Page<Item> itemPage = itemMapper.selectPageItem(itemSearchDto.getPageEntity(), itemSearchDto);
+        itemPage.setRecords(itemPage.getRecords().parallelStream().distinct().collect(Collectors.toList()));
         if (itemPage.getTotal() == 0L)
             return new PageListVo<ItemVo>().setRecord(new ArrayList<>()).setSize(itemPage.getSize()).setTotal(0L);
         //获取分类数据
         List<ItemTypeLink> typeLinkList = itemTypeLinkMapper.selectList(Wrappers.<ItemTypeLink>lambdaQuery()
                 .in(ItemTypeLink::getItemId,
                         itemPage.getRecords().stream()
-                                .map(Item::getId).distinct().collect(Collectors.toList())));
+                                .map(Item::getId).collect(Collectors.toList())));
         Map<Long, List<Long>> itemToTypeMap = new HashMap<>();
         for (ItemTypeLink typeLink : typeLinkList) {
             Long itemId = typeLink.getItemId();
@@ -276,7 +277,7 @@ public class ItemServiceImpl implements ItemService {
         List<MarkerItemLink> markerItemLinkList = markerItemLinkMapper.selectList(Wrappers.<MarkerItemLink>lambdaQuery()
                 .in(MarkerItemLink::getItemId,
                         itemPage.getRecords().stream()
-                                .map(Item::getId).distinct().collect(Collectors.toList())));
+                                .map(Item::getId).collect(Collectors.toList())));
         //计算各个物品在点位中的数量合计
         Map<Long, Integer> markerItemLinkCount = new HashMap<>();
         markerItemLinkList.stream().collect(Collectors.groupingBy(MarkerItemLink::getItemId)).forEach(
