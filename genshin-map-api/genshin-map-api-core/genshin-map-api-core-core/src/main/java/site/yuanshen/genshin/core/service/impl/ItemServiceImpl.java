@@ -290,7 +290,7 @@ public class ItemServiceImpl implements ItemService {
                         .map(itemDto -> itemDto.setCount(Optional.ofNullable(markerItemLinkCount.get(itemDto.getItemId())).orElse(0)))
                         .map(itemDto -> itemDto.setTypeIdList(itemToTypeMap.get(itemDto.getItemId())))
                         .map(ItemDto::getVo)
-                        .sorted(Comparator.comparing(ItemVo::getSortIndex).reversed()).collect(Collectors.toList()))
+                        .sorted(Comparator.comparing(ItemVo::getSortIndex).thenComparing(ItemVo::getItemId).reversed()).collect(Collectors.toList()))
                 .setTotal(itemPage.getTotal())
                 .setSize(itemPage.getSize());
     }
