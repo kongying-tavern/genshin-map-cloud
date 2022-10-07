@@ -101,6 +101,7 @@ public class WebLogAspect {
             throw e;
         } finally {
             STOP_WATCH_THREAD_LOCAL.get().stop();
+            String s = JSON.toJSONString(result);
             log.info(
                     LINE_SEPARATOR
                             + "URL          : "
@@ -114,7 +115,7 @@ public class WebLogAspect {
                             + "/"
                             + proceedingJoinPoint.getSignature().getName() + LINE_SEPARATOR
                             + "请求出参     : "
-                            + JSON.toJSONString(result).substring(0, 100)
+                            + ((s.length()>100)?s.substring(0,99):s)
                             + LINE_SEPARATOR
                             + "请求耗时     : "
                             + STOP_WATCH_THREAD_LOCAL.get().getTotalTimeMillis()
