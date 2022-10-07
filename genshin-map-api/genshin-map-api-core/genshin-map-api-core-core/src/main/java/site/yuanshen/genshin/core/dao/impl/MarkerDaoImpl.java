@@ -164,7 +164,7 @@ public class MarkerDaoImpl implements MarkerDao {
     @Override
     @Cacheable(value = "listMarkerBz2MD5")
     public List<String> listMarkerBz2MD5(Boolean isTestUser) {
-        log.debug("listMarkerBz2MD5 入参：isTestUser:{}",isTestUser);
+        log.info("listMarkerBz2MD5 入参：isTestUser:{}",isTestUser);
         Cache markerBz2Cache = cacheManager.getCache("listPageMarkerByBz2");
         Long id = markerMapper.selectOne(Wrappers.<Marker>query().select("max(id) as id")).getId();
         int totalPages = (int) ((id + 3000 - 1) / 3000);
@@ -179,13 +179,13 @@ public class MarkerDaoImpl implements MarkerDao {
                     Cache.ValueWrapper wrapper = markerBz2Cache.get("false#" + i);
                     byte[] markerBz2;
                     if (wrapper == null || wrapper.get() == null || wrapper.get() instanceof byte[]) {
-                        log.warn("rebuild the marker page bz2:{}", i);
+                        log.debug("rebuild the marker page bz2:{}", i);
                         markerBz2 = listPageMarkerByBz2(false, i);
                     } else {
                         markerBz2 = (byte[]) wrapper.get();
                     }
                     String result = DigestUtils.md5DigestAsHex(markerBz2);
-                    log.debug("refresh md5: index:{}, result:{}",i,result);
+                    log.info("refresh md5: index:{}, result:{}",i,result);
                     return result;
                 }).collect(Collectors.toList());
             } catch (Exception e) {

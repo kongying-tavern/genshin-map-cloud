@@ -53,8 +53,6 @@ public class CacheServiceImpl implements CacheService {
                     @CacheEvict(value = "iconTag", key = "#tagName", condition = "#tagName != null && #tagName != ''", beforeInvocation = true),
                     @CacheEvict(value = "listIconTag", allEntries = true, beforeInvocation = true),
                     @CacheEvict(value = "listAllTag", allEntries = true, beforeInvocation = true),
-                    @CacheEvict(value = "listAllTagBz2", allEntries = true, beforeInvocation = true),
-                    @CacheEvict(value = "listAllTagBz2Md5", allEntries = true, beforeInvocation = true)
             }
     )
     public void cleanIconTagCache(String tagName) {
@@ -65,7 +63,7 @@ public class CacheServiceImpl implements CacheService {
         runAfterTransactionByFuture(futureTask);
         try {
             if (futureTask.get() == Status.OK)
-                runAfterTransactionDebounceByKey(iconTagDao::listAllTagBz2Md5, FunctionKeyEnum.listAllTagBz2Md5);
+                runAfterTransactionDebounceByKey(this::refreshIconTagBz2, FunctionKeyEnum.refreshIconTagBz2);
             else
                 log.error("cleanIconTagCache执行失败,未知原因");
         } catch (Exception e) {
@@ -79,12 +77,10 @@ public class CacheServiceImpl implements CacheService {
                     @CacheEvict(value = "listItem", allEntries = true, beforeInvocation = true),
                     @CacheEvict(value = "listItemType", allEntries = true, beforeInvocation = true),
                     @CacheEvict(value = "listItemById", allEntries = true, beforeInvocation = true),
-                    @CacheEvict(value = "listAllItemBz2", allEntries = true, beforeInvocation = true),
-                    @CacheEvict(value = "listAllItemBz2Md5", allEntries = true, beforeInvocation = true),
             }
     )
     public void cleanItemCache() {
-        runAfterTransactionDebounceByKey(itemDao::listAllItemBz2Md5, FunctionKeyEnum.listAllItemBz2Md5);
+        runAfterTransactionDebounceByKey(this::refreshItemBz2, FunctionKeyEnum.refreshItemBz2);
     }
 
     @Override
@@ -109,16 +105,49 @@ public class CacheServiceImpl implements CacheService {
             }
     )
     public void cleanMarkerCache() {
-        log.debug("cleanMarkerCache");
-        runAfterTransactionDebounceByKey(() ->
-                        markerDao.listMarkerBz2MD5(false),
-                FunctionKeyEnum.listMarkerBz2MD5);
+        log.info("cleanMarkerCache");
+        runAfterTransactionDebounceByKey(this::refreshMarkerBz2,
+                FunctionKeyEnum.refreshMarkerBz2);
+    }
+
+    @Caching(
+            evict = {
+                    @CacheEvict(value = "listAllTagBz2", allEntries = true, beforeInvocation = true),
+                    @CacheEvict(value = "listAllTagBz2Md5", allEntries = true, beforeInvocation = true)
+            }
+    )
+    public void refreshIconTagBz2() {
+        log.info("refreshIconTag");
+        iconTagDao.listAllTagBz2Md5();
+    }
+
+    @Caching(
+            evict = {
+                    @CacheEvict(value = "listAllItemBz2", allEntries = true, beforeInvocation = true),
+                    @CacheEvict(value = "listAllItemBz2Md5", allEntries = true, beforeInvocation = true),
+            }
+    )
+    public void refreshItemBz2() {
+        log.info("refreshMarkerBz2");
+        itemDao.listAllItemBz2Md5();
+    }
+
+
+    @Caching(
+            evict = {
+                    @CacheEvict(value = "listPageMarkerByBz2", allEntries = true, beforeInvocation = true),
+                    @CacheEvict(value = "listMarkerBz2MD5", allEntries = true, beforeInvocation = true),
+            }
+    )
+    public void refreshMarkerBz2() {
+        log.info("refreshMarkerBz2");
+        markerDao.listMarkerBz2MD5(false);
     }
 
     enum FunctionKeyEnum {
-        listAllTagBz2Md5,
-        listAllItemBz2Md5,
-        listMarkerBz2MD5,
+        refreshIconTagBz2,
+        refreshItemBz2,
+        refreshMarkerBz2,
     }
 
     enum Status {
