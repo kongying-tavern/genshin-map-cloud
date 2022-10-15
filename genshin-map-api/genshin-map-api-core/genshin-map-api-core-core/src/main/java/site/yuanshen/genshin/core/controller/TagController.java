@@ -11,7 +11,6 @@ import site.yuanshen.data.dto.TagSearchDto;
 import site.yuanshen.data.vo.TagSearchVo;
 import site.yuanshen.data.vo.TagVo;
 import site.yuanshen.data.vo.helper.PageListVo;
-import site.yuanshen.genshin.core.dao.IconTagDao;
 import site.yuanshen.genshin.core.service.CacheService;
 import site.yuanshen.genshin.core.service.IconTagService;
 
@@ -28,7 +27,6 @@ import site.yuanshen.genshin.core.service.IconTagService;
 public class TagController {
 
     private final IconTagService iconTagService;
-    private final IconTagDao iconTagDao;
     private final CacheService cacheService;
 
     //////////////START:标签本身的API//////////////
@@ -38,20 +36,6 @@ public class TagController {
     public R<PageListVo<TagVo>> listTag(@RequestBody TagSearchVo tagSearchVo) {
         return RUtils.create(
                 iconTagService.listTag(new TagSearchDto(tagSearchVo))
-        );
-    }
-
-    @Operation(summary = "获取所有标签信息的bz2压缩", description = "查询所有标签信息，返回bz2压缩格式的byte数组")
-    @GetMapping("/get/all_bz2")
-    public byte[] listAllTagBz2() {
-        return iconTagDao.listAllTagBz2();
-    }
-
-    @Operation(summary = "返回所有标签信息bz2的md5", description = "返回所有标签信息bz2的md5")
-    @GetMapping("/get/all_bz2_md5")
-    public R<String> listAllTagBz2Md5() {
-        return RUtils.create(
-                iconTagDao.listAllTagBz2Md5()
         );
     }
 
