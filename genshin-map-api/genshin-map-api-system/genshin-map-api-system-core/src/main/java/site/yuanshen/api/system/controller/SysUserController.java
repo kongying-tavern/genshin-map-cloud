@@ -57,6 +57,7 @@ public class SysUserController {
 
 
     @Operation(summary = "用户信息批量查询", description = "用户信息批量查询")
+    @PostMapping("/info/userList")
     public R<PageListVo<SysUserVo>> getUserList(@RequestBody SysUserSearchVo sysUserSearchVo){
         return RUtils.create(userService.listPage(new SysUserSearchDto(sysUserSearchVo)));
     }
