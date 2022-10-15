@@ -13,6 +13,8 @@ genshin:
   pass-filter:
     - /api/marker/get/**
     - /oauth/**
+    - /api/v3/api-docs
+    - /system/v3/api-docs
   authorities-filter:
     VISITOR:
       - /system/user/register/qq
@@ -46,6 +48,17 @@ genshin:
 
 ribbon:
   ServerListRefreshInterval: 1000
+
+springdoc:
+  swagger-ui:
+    urls:
+      - name: 核心API服务（需手动加前缀/api）
+        url: /api/v3/api-docs
+      - name: 系统管理服务（需手动加前缀/system）
+        url: /system/v3/api-docs
+  api-docs:
+    groups:
+      enabled: true
 
 spring:
   application:
@@ -105,3 +118,4 @@ spring:
             - Path=/api/**
           filters:
             - StripPrefix=1
+
