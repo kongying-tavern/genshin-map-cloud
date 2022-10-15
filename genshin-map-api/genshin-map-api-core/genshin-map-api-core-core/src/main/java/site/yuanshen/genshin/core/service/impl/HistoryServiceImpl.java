@@ -6,22 +6,15 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 import site.yuanshen.data.dto.HistoryDto;
 import site.yuanshen.data.dto.HistorySearchDto;
-import site.yuanshen.data.dto.ItemDto;
 import site.yuanshen.data.entity.History;
-import site.yuanshen.data.entity.Icon;
-import site.yuanshen.data.entity.Item;
 import site.yuanshen.data.mapper.HistoryMapper;
-import site.yuanshen.data.mapper.ItemMapper;
 import site.yuanshen.data.vo.HistoryVo;
-import site.yuanshen.data.vo.ItemVo;
 import site.yuanshen.data.vo.helper.PageListVo;
 import site.yuanshen.genshin.core.service.HistoryService;
 
 import java.util.Comparator;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service

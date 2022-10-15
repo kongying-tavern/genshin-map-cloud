@@ -12,15 +12,11 @@ import site.yuanshen.data.dto.IconTypeDto;
 import site.yuanshen.data.dto.helper.PageAndTypeListDto;
 import site.yuanshen.data.entity.IconType;
 import site.yuanshen.data.entity.IconTypeLink;
-import site.yuanshen.data.mapper.IconMapper;
 import site.yuanshen.data.mapper.IconTypeLinkMapper;
 import site.yuanshen.data.mapper.IconTypeMapper;
 import site.yuanshen.data.vo.IconTypeVo;
 import site.yuanshen.data.vo.helper.PageListVo;
 import site.yuanshen.genshin.core.service.IconTypeService;
-import site.yuanshen.genshin.core.service.mbp.IconMBPService;
-import site.yuanshen.genshin.core.service.mbp.IconTypeLinkMBPService;
-import site.yuanshen.genshin.core.service.mbp.IconTypeMBPService;
 
 import java.util.Collections;
 import java.util.List;
