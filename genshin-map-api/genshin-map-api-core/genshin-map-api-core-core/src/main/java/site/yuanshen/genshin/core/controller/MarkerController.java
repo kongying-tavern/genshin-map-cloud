@@ -12,16 +12,14 @@ import site.yuanshen.data.dto.helper.PageSearchDto;
 import site.yuanshen.data.vo.*;
 import site.yuanshen.data.vo.helper.PageListVo;
 import site.yuanshen.data.vo.helper.PageSearchVo;
-import site.yuanshen.genshin.core.dao.MarkerDao;
 import site.yuanshen.genshin.core.service.CacheService;
 import site.yuanshen.genshin.core.service.MarkerService;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * 地区 Controller 层
+ * 点位 Controller 层
  *
  * @author Moment
  * @since 2022-06-11
@@ -33,7 +31,6 @@ import java.util.stream.Collectors;
 public class MarkerController {
 
     private final MarkerService markerService;
-    private final MarkerDao markerDao;
     private final CacheService cacheService;
 
     //////////////START:点位自身的API//////////////
@@ -65,21 +62,6 @@ public class MarkerController {
         return RUtils.create(
                 markerService.listMarkerById(markerIdList, StringUtils.hasLength(isTestUser)).parallelStream()
                         .map(MarkerDto::getVo).collect(Collectors.toList())
-        );
-    }
-
-    @Operation(summary = "通过bz2返回点位分页", description = "查询分页点位信息，返回bz2压缩格式的byte数组")
-    @GetMapping("/get/list_page_bz2/{index}")
-    public byte[] listPageMarkerBy7zip(@RequestHeader(value = "isTestUser", required = false) String isTestUser,
-                                      @PathVariable("index") Integer index) throws IOException {
-        return markerDao.listPageMarkerByBz2(StringUtils.hasLength(isTestUser),index);
-    }
-
-    @Operation(summary = "返回点位分页bz2的md5数组", description = "返回点位分页bz2的md5数组")
-    @GetMapping("/get/list_page_bz2_md5")
-    public R<List<String>> listMarkerBz2MD5(@RequestHeader(value = "isTestUser", required = false) String isTestUser) {
-        return RUtils.create(
-                markerDao.listMarkerBz2MD5(StringUtils.hasLength(isTestUser))
         );
     }
 
