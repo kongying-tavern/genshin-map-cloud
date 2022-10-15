@@ -9,11 +9,9 @@ import site.yuanshen.common.web.response.R;
 import site.yuanshen.common.web.response.RUtils;
 import site.yuanshen.data.dto.ItemDto;
 import site.yuanshen.data.dto.ItemSearchDto;
-import site.yuanshen.data.dto.helper.PageSearchDto;
 import site.yuanshen.data.vo.ItemSearchVo;
 import site.yuanshen.data.vo.ItemVo;
 import site.yuanshen.data.vo.helper.PageListVo;
-import site.yuanshen.data.vo.helper.PageSearchVo;
 import site.yuanshen.genshin.core.service.CacheService;
 import site.yuanshen.genshin.core.service.ItemService;
 
@@ -98,32 +96,4 @@ public class ItemController {
     }
 
     //////////////END:物品本身的API//////////////
-
-    //////////////START:地区公用物品的API//////////////
-
-    @Operation(summary = "列出地区公用物品", description = "列出地区公用物品")
-    @PostMapping("/get/common")
-    public R<PageListVo<ItemVo>> listCommonItem(@RequestBody PageSearchVo pageSearchVo) {
-        return RUtils.create(
-                itemService.listCommonItem(new PageSearchDto(pageSearchVo))
-        );
-    }
-
-    @Operation(summary = "新增地区公用物品", description = "通过ID列表批量添加地区公用物品")
-    @PutMapping("/common")
-    public R<Boolean> addCommonItem(@RequestBody List<Long> itemIdList) {
-        return RUtils.create(
-                itemService.addCommonItem(itemIdList)
-        );
-    }
-
-    @Operation(summary = "删除地区公用物品", description = "通过ID列表批量删除地区公用物品")
-    @DeleteMapping("/common")
-    public R<Boolean> deleteCommonItem(@PathVariable("itemId")Long itemId) {
-        return RUtils.create(
-                itemService.deleteCommonItem(itemId)
-        );
-    }
-
-    //////////////END:地区公用物品的API//////////////
 }

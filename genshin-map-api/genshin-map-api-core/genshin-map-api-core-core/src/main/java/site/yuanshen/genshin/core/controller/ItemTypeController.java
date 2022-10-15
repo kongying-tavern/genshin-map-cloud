@@ -13,7 +13,7 @@ import site.yuanshen.data.vo.ItemTypeVo;
 import site.yuanshen.data.vo.helper.PageAndTypeListVo;
 import site.yuanshen.data.vo.helper.PageListVo;
 import site.yuanshen.genshin.core.service.CacheService;
-import site.yuanshen.genshin.core.service.ItemService;
+import site.yuanshen.genshin.core.service.ItemTypeService;
 
 import java.util.List;
 
@@ -29,7 +29,7 @@ import java.util.List;
 @Tag(name = "item_type", description = "物品分类API")
 public class ItemTypeController {
 
-    private final ItemService itemService;
+    private final ItemTypeService itemTypeService;
     private final CacheService cacheService;
 
     //////////////START:物品类型的API//////////////
@@ -38,7 +38,7 @@ public class ItemTypeController {
     @PostMapping("/get/list/{self}")
     public R<PageListVo<ItemTypeVo>> listItemType(@RequestHeader(value = "isTestUser",required = false) String isTestUser,@RequestBody PageAndTypeListVo pageAndTypeListVo, @PathVariable("self") Integer self) {
         return RUtils.create(
-                itemService.listItemType(new PageAndTypeListDto(pageAndTypeListVo), self, StringUtils.hasLength(isTestUser))
+                itemTypeService.listItemType(new PageAndTypeListDto(pageAndTypeListVo), self, StringUtils.hasLength(isTestUser))
         );
     }
 
@@ -46,14 +46,14 @@ public class ItemTypeController {
     @PutMapping("/add")
     public R<Long> addItemType(@RequestBody ItemTypeVo itemTypeVo) {
         return RUtils.create(
-                itemService.addItemType(new ItemTypeDto(itemTypeVo))
+                itemTypeService.addItemType(new ItemTypeDto(itemTypeVo))
         );
     }
 
     @Operation(summary = "修改物品类型", description = "修改物品类型")
     @PostMapping("/update")
     public R<Boolean> updateItemType(@RequestBody ItemTypeVo itemTypeVo) {
-        Boolean result = itemService.updateItemType(new ItemTypeDto(itemTypeVo));
+        Boolean result = itemTypeService.updateItemType(new ItemTypeDto(itemTypeVo));
         cacheService.cleanItemCache();
         return RUtils.create(result);
     }
@@ -61,7 +61,7 @@ public class ItemTypeController {
     @Operation(summary = "批量移动类型为目标类型的子类型", description = "将类型批量移动到某个类型下作为其子类型")
     @PostMapping("/move/{targetTypeId}")
     public R<Boolean> moveItemType(@RequestBody List<Long> itemTypeIdList, @PathVariable("targetTypeId") Long targetTypeId) {
-        Boolean result = itemService.moveItemType(itemTypeIdList, targetTypeId);
+        Boolean result = itemTypeService.moveItemType(itemTypeIdList, targetTypeId);
         cacheService.cleanItemCache();
         return RUtils.create(result);
     }
@@ -69,7 +69,7 @@ public class ItemTypeController {
     @Operation(summary = "删除物品类型", description = "批量递归删除物品类型，需在前端做二次确认")
     @DeleteMapping("/delete/{itemTypeId}")
     public R<Boolean> deleteItemType(@PathVariable("itemTypeId") Long itemTypeId) {
-        Boolean result = itemService.deleteItemType(itemTypeId);
+        Boolean result = itemTypeService.deleteItemType(itemTypeId);
         cacheService.cleanItemCache();
         return RUtils.create(result);
     }
