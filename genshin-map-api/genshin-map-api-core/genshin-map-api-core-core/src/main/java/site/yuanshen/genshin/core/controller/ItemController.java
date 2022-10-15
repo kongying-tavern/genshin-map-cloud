@@ -3,20 +3,15 @@ package site.yuanshen.genshin.core.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import site.yuanshen.common.web.response.R;
 import site.yuanshen.common.web.response.RUtils;
 import site.yuanshen.data.dto.ItemDto;
 import site.yuanshen.data.dto.ItemSearchDto;
-import site.yuanshen.data.dto.ItemTypeDto;
-import site.yuanshen.data.dto.helper.PageAndTypeListDto;
 import site.yuanshen.data.dto.helper.PageSearchDto;
 import site.yuanshen.data.vo.ItemSearchVo;
-import site.yuanshen.data.vo.ItemTypeVo;
 import site.yuanshen.data.vo.ItemVo;
-import site.yuanshen.data.vo.helper.PageAndTypeListVo;
 import site.yuanshen.data.vo.helper.PageListVo;
 import site.yuanshen.data.vo.helper.PageSearchVo;
 import site.yuanshen.genshin.core.dao.ItemDao;
@@ -41,50 +36,6 @@ public class ItemController {
     private final ItemService itemService;
     private final ItemDao itemDao;
     private final CacheService cacheService;
-
-    //////////////START:物品类型的API//////////////
-
-    @Operation(summary = "列出物品类型", description = "不递归遍历，只遍历子级；{self}表示查询自身还是查询子级，0为查询自身，1为查询子级")
-    @PostMapping("/get/type/{self}")
-    public R<PageListVo<ItemTypeVo>> listItemType(@RequestHeader(value = "isTestUser",required = false) String isTestUser,@RequestBody PageAndTypeListVo pageAndTypeListVo, @PathVariable("self") Integer self) {
-        return RUtils.create(
-                itemService.listItemType(new PageAndTypeListDto(pageAndTypeListVo), self, StringUtils.hasLength(isTestUser))
-        );
-    }
-
-    @Operation(summary = "添加物品类型", description = "成功后返回新的类型ID")
-    @PutMapping("/type")
-    public R<Long> addItemType(@RequestBody ItemTypeVo itemTypeVo) {
-        return RUtils.create(
-                itemService.addItemType(new ItemTypeDto(itemTypeVo))
-        );
-    }
-
-    @Operation(summary = "修改物品类型", description = "修改物品类型")
-    @PostMapping("/type")
-    public R<Boolean> updateItemType(@RequestBody ItemTypeVo itemTypeVo) {
-        Boolean result = itemService.updateItemType(new ItemTypeDto(itemTypeVo));
-        cacheService.cleanItemCache();
-        return RUtils.create(result);
-    }
-
-    @Operation(summary = "批量移动类型为目标类型的子类型", description = "将类型批量移动到某个类型下作为其子类型")
-    @PostMapping("/type/move/{targetTypeId}")
-    public R<Boolean> moveItemType(@RequestBody List<Long> itemTypeIdList, @PathVariable("targetTypeId") Long targetTypeId) {
-        Boolean result = itemService.moveItemType(itemTypeIdList, targetTypeId);
-        cacheService.cleanItemCache();
-        return RUtils.create(result);
-    }
-
-    @Operation(summary = "删除物品类型", description = "批量递归删除物品类型，需在前端做二次确认")
-    @DeleteMapping("/type/{itemTypeId}")
-    public R<Boolean> deleteItemType(@PathVariable("itemTypeId") Long itemTypeId) {
-        Boolean result = itemService.deleteItemType(itemTypeId);
-        cacheService.cleanItemCache();
-        return RUtils.create(result);
-    }
-
-    //////////////END:物品类型的API//////////////
 
     //////////////START:物品本身的API//////////////
 
