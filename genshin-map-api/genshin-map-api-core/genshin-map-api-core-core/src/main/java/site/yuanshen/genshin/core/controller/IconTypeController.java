@@ -11,7 +11,7 @@ import site.yuanshen.data.dto.helper.PageAndTypeListDto;
 import site.yuanshen.data.vo.IconTypeVo;
 import site.yuanshen.data.vo.helper.PageAndTypeListVo;
 import site.yuanshen.data.vo.helper.PageListVo;
-import site.yuanshen.genshin.core.service.IconService;
+import site.yuanshen.genshin.core.service.IconTypeService;
 
 /**
  * 图标库类别 Controller 层
@@ -25,7 +25,7 @@ import site.yuanshen.genshin.core.service.IconService;
 @Tag(name = "icon_type", description = "图标分类API")
 public class IconTypeController {
 
-    private final IconService iconService;
+    private final IconTypeService iconTypeService;
 
     //////////////START:图标分类的API//////////////
 
@@ -33,7 +33,7 @@ public class IconTypeController {
     @PostMapping("/get/list")
     public R<PageListVo<IconTypeVo>> listIconType(@RequestBody PageAndTypeListVo searchVo) {
         return RUtils.create(
-                iconService.listIconType(new PageAndTypeListDto(searchVo))
+                iconTypeService.listIconType(new PageAndTypeListDto(searchVo))
         );
     }
 
@@ -41,7 +41,7 @@ public class IconTypeController {
     @PutMapping("/update")
     public R<Long> addIconType(@RequestBody IconTypeVo iconTypeVo) {
         return RUtils.create(
-                iconService.addIconType(new IconTypeDto(iconTypeVo))
+                iconTypeService.addIconType(new IconTypeDto(iconTypeVo))
         );
     }
 
@@ -49,7 +49,7 @@ public class IconTypeController {
     @PostMapping("/add")
     public R<Boolean> updateIconType(@RequestBody IconTypeVo iconTypeVo) {
         return RUtils.create(
-                iconService.updateIconType(new IconTypeDto(iconTypeVo))
+                iconTypeService.updateIconType(new IconTypeDto(iconTypeVo))
         );
     }
 
@@ -57,7 +57,7 @@ public class IconTypeController {
     @DeleteMapping("/delete/{typeId}")
     public R<Boolean> deleteIconType(@PathVariable("typeId") Long typeId) {
         return RUtils.create(
-                iconService.deleteIconType(typeId)
+                iconTypeService.deleteIconType(typeId)
         );
     }
 
