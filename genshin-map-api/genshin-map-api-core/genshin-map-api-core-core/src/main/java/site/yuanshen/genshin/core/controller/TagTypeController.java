@@ -11,9 +11,8 @@ import site.yuanshen.data.dto.helper.PageAndTypeListDto;
 import site.yuanshen.data.vo.TagTypeVo;
 import site.yuanshen.data.vo.helper.PageAndTypeListVo;
 import site.yuanshen.data.vo.helper.PageListVo;
-import site.yuanshen.genshin.core.dao.IconTagDao;
 import site.yuanshen.genshin.core.service.CacheService;
-import site.yuanshen.genshin.core.service.IconTagService;
+import site.yuanshen.genshin.core.service.TagTypeService;
 
 /**
  * 图标标签分类 Controller 层
@@ -27,7 +26,7 @@ import site.yuanshen.genshin.core.service.IconTagService;
 @Tag(name = "tag_type", description = "图标标签分类API")
 public class TagTypeController {
 
-    private final IconTagService iconTagService;
+    private final TagTypeService tagTypeService;
     private final CacheService cacheService;
 
     //////////////START:标签分类的API//////////////
@@ -36,7 +35,7 @@ public class TagTypeController {
     @PostMapping("/get/list")
     public R<PageListVo<TagTypeVo>> listTagType(@RequestBody PageAndTypeListVo searchVo) {
         return RUtils.create(
-                iconTagService.listTagType(new PageAndTypeListDto(searchVo))
+                tagTypeService.listTagType(new PageAndTypeListDto(searchVo))
         );
     }
 
@@ -44,14 +43,14 @@ public class TagTypeController {
     @PutMapping("/update")
     public R<Long> addTagType(@RequestBody TagTypeVo tagTypeVo) {
         cacheService.cleanIconTagCache();
-        Long newTagId = iconTagService.addTagType(new TagTypeDto(tagTypeVo));
+        Long newTagId = tagTypeService.addTagType(new TagTypeDto(tagTypeVo));
         return RUtils.create(newTagId);
     }
 
     @Operation(summary = "修改分类", description = "由类型ID来定位修改一个分类")
     @PostMapping("/add")
     public R<Boolean> updateTagType(@RequestBody TagTypeVo tagTypeVo) {
-        Boolean result = iconTagService.updateTagType(new TagTypeDto(tagTypeVo));
+        Boolean result = tagTypeService.updateTagType(new TagTypeDto(tagTypeVo));
         if (result) cacheService.cleanIconTagCache();
         return RUtils.create(result);
     }
@@ -59,7 +58,7 @@ public class TagTypeController {
     @Operation(summary = "删除分类", description = "这个操作会递归删除，请在前端做二次确认")
     @DeleteMapping("/delete/{typeId}")
     public R<Boolean> deleteTagType(@PathVariable("typeId") Long typeId) {
-        Boolean result = iconTagService.deleteTagType(typeId);
+        Boolean result = tagTypeService.deleteTagType(typeId);
         if (result) cacheService.cleanIconTagCache();
         return RUtils.create(result);
     }

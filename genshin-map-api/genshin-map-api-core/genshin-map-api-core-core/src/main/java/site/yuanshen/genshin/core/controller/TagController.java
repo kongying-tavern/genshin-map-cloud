@@ -12,7 +12,7 @@ import site.yuanshen.data.vo.TagSearchVo;
 import site.yuanshen.data.vo.TagVo;
 import site.yuanshen.data.vo.helper.PageListVo;
 import site.yuanshen.genshin.core.service.CacheService;
-import site.yuanshen.genshin.core.service.IconTagService;
+import site.yuanshen.genshin.core.service.TagService;
 
 /**
  * 图标标签 Controller 层
@@ -26,7 +26,7 @@ import site.yuanshen.genshin.core.service.IconTagService;
 @Tag(name = "tag", description = "图标标签API")
 public class TagController {
 
-    private final IconTagService iconTagService;
+    private final TagService tagService;
     private final CacheService cacheService;
 
     //////////////START:标签本身的API//////////////
@@ -35,7 +35,7 @@ public class TagController {
     @PostMapping("/get/list")
     public R<PageListVo<TagVo>> listTag(@RequestBody TagSearchVo tagSearchVo) {
         return RUtils.create(
-                iconTagService.listTag(new TagSearchDto(tagSearchVo))
+                tagService.listTag(new TagSearchDto(tagSearchVo))
         );
     }
 
@@ -43,14 +43,14 @@ public class TagController {
     @PostMapping("/get/single/{name}")
     public R<TagVo> getTag(@PathVariable("name") String name) {
         return RUtils.create(
-                iconTagService.getTag(name).getVo()
+                tagService.getTag(name).getVo()
         );
     }
 
     @Operation(summary = "修改标签关联", description = "将标签关联到另一个图标上")
     @PostMapping("/{tagName}/{iconId}")
     public R<Boolean> updateTag(@PathVariable("tagName") String tagName, @PathVariable("iconId") Long iconId) {
-        Boolean result = iconTagService.updateTag(tagName, iconId);
+        Boolean result = tagService.updateTag(tagName, iconId);
         cacheService.cleanIconTagCache(tagName);
         return RUtils.create(result);
     }
@@ -58,7 +58,7 @@ public class TagController {
     @Operation(summary = "修改标签的分类信息", description = "本接口仅在后台使用，故分离出来")
     @PostMapping("/updateType")
     public R<Boolean> updateTypeInTag(@RequestBody TagVo tagVo) {
-        Boolean result = iconTagService.updateTypeInTag(new TagDto(tagVo));
+        Boolean result = tagService.updateTypeInTag(new TagDto(tagVo));
         cacheService.cleanIconTagCache(tagVo.getTag());
         return RUtils.create(result);
     }
@@ -66,7 +66,7 @@ public class TagController {
     @Operation(summary = "创建标签", description = "只创建一个空标签")
     @PutMapping("/{tagName}")
     public R<Boolean> createTag(@PathVariable("tagName") String tagName) {
-        Boolean result = iconTagService.createTag(tagName);
+        Boolean result = tagService.createTag(tagName);
         if (result) {
             cacheService.cleanIconTagCache(tagName);
         }
@@ -76,7 +76,7 @@ public class TagController {
     @Operation(summary = "删除标签", description = "需要确保已经没有条目在使用这个标签，否则会删除失败")
     @DeleteMapping("/{tagName}")
     public R<Boolean> deleteTag(@PathVariable("tagName") String tagName) {
-        Boolean result = iconTagService.deleteTag(tagName);
+        Boolean result = tagService.deleteTag(tagName);
         cacheService.cleanIconTagCache(tagName);
         return RUtils.create(result);
     }
