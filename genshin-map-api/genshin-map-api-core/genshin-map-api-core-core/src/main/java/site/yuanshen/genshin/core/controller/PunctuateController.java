@@ -14,7 +14,7 @@ import site.yuanshen.data.vo.MarkerPunctuateVo;
 import site.yuanshen.data.vo.MarkerSinglePunctuateVo;
 import site.yuanshen.data.vo.helper.PageListVo;
 import site.yuanshen.data.vo.helper.PageSearchVo;
-import site.yuanshen.genshin.core.service.MarkerService;
+import site.yuanshen.genshin.core.service.PunctuateService;
 
 /**
  * 打点 Controller 层
@@ -28,7 +28,7 @@ import site.yuanshen.genshin.core.service.MarkerService;
 @Tag(name = "punctuate", description = "打点API")
 public class PunctuateController {
 
-    private final MarkerService markerService;
+    private final PunctuateService punctuateService;
 
     //////////////START:打点员的API//////////////
 
@@ -36,7 +36,7 @@ public class PunctuateController {
     @PostMapping("/get/page")
     public R<PageListVo<MarkerPunctuateVo>> listPunctuatePage(@RequestBody PageSearchVo pageSearchVo) {
         return RUtils.create(
-                markerService.listPunctuatePage(new PageSearchDto(pageSearchVo))
+                punctuateService.listPunctuatePage(new PageSearchDto(pageSearchVo))
         );
     }
 
@@ -45,7 +45,7 @@ public class PunctuateController {
     @PostMapping("/get/page_single/{authorId}")
     public R<PageListVo<MarkerSinglePunctuateVo>> listSelfSinglePunctuatePage(@RequestBody PageSearchVo pageSearchVo, @PathVariable("authorId") Long authorId) {
         return RUtils.create(
-                markerService.listSelfSinglePunctuatePage(new PageSearchDto(pageSearchVo), authorId)
+                punctuateService.listSelfSinglePunctuatePage(new PageSearchDto(pageSearchVo), authorId)
         );
     }
 
@@ -54,7 +54,7 @@ public class PunctuateController {
     @PostMapping("/get/page_extra/{authorId}")
     public R<PageListVo<MarkerExtraPunctuateVo>> listSelfExtraPunctuatePage(@RequestBody PageSearchVo pageSearchVo, @PathVariable("authorId") Long authorId) {
         return RUtils.create(
-                markerService.listSelfExtraPunctuatePage(new PageSearchDto(pageSearchVo), authorId)
+                punctuateService.listSelfExtraPunctuatePage(new PageSearchDto(pageSearchVo), authorId)
         );
     }
 
@@ -62,7 +62,7 @@ public class PunctuateController {
     @PutMapping("/single")
     public R<Long> addSinglePunctuate(@RequestBody MarkerSinglePunctuateVo markerSinglePunctuateVo) {
         return RUtils.create(
-                markerService.addSinglePunctuate(new MarkerSinglePunctuateDto(markerSinglePunctuateVo))
+                punctuateService.addSinglePunctuate(new MarkerSinglePunctuateDto(markerSinglePunctuateVo))
         );
     }
 
@@ -70,7 +70,7 @@ public class PunctuateController {
     @PutMapping("/extra")
     public R<Boolean> addExtraPunctuate(@RequestBody MarkerExtraPunctuateVo markerExtraPunctuateVo) {
         return RUtils.create(
-                markerService.addExtraPunctuate(new MarkerExtraPunctuateDto(markerExtraPunctuateVo))
+                punctuateService.addExtraPunctuate(new MarkerExtraPunctuateDto(markerExtraPunctuateVo))
         );
     }
 
@@ -78,7 +78,7 @@ public class PunctuateController {
     @PutMapping("/push/{authorId}")
     public R<Boolean> pushPunctuate(@PathVariable("authorId") Long authorId) {
         return RUtils.create(
-                markerService.pushPunctuate(authorId)
+                punctuateService.pushPunctuate(authorId)
         );
     }
 
@@ -86,7 +86,7 @@ public class PunctuateController {
     @PostMapping("/single")
     public R<Boolean> updateSelfSinglePunctuate(@RequestBody MarkerSinglePunctuateVo singlePunctuateVo) {
         return RUtils.create(
-                markerService.updateSelfSinglePunctuate(new MarkerSinglePunctuateDto(singlePunctuateVo))
+                punctuateService.updateSelfSinglePunctuate(new MarkerSinglePunctuateDto(singlePunctuateVo))
         );
     }
 
@@ -94,7 +94,7 @@ public class PunctuateController {
     @PostMapping("/extra")
     public R<Boolean> updateSelfPunctuateExtra(@RequestBody MarkerExtraPunctuateVo extraPunctuateVo) {
         return RUtils.create(
-                markerService.updateSelfPunctuateExtra(new MarkerExtraPunctuateDto(extraPunctuateVo))
+                punctuateService.updateSelfPunctuateExtra(new MarkerExtraPunctuateDto(extraPunctuateVo))
         );
     }
 
@@ -102,7 +102,7 @@ public class PunctuateController {
     @DeleteMapping("/delete/{authorId}/{punctuateId}")
     public R<Boolean> deleteSelfPunctuate(@PathVariable("punctuateId") Long punctuateId, @PathVariable("authorId") Long authorId) {
         return RUtils.create(
-                markerService.deleteSelfPunctuate(punctuateId, authorId)
+                punctuateService.deleteSelfPunctuate(punctuateId, authorId)
         );
     }
 

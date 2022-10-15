@@ -13,7 +13,7 @@ import site.yuanshen.data.vo.PunctuateSearchVo;
 import site.yuanshen.data.vo.helper.PageListVo;
 import site.yuanshen.data.vo.helper.PageSearchVo;
 import site.yuanshen.genshin.core.service.CacheService;
-import site.yuanshen.genshin.core.service.MarkerService;
+import site.yuanshen.genshin.core.service.PunctuateAuditService;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 @Tag(name = "punctuate_audit", description = "打点审核API")
 public class PunctuateAuditController {
 
-    private final MarkerService markerService;
+    private final PunctuateAuditService punctuateAuditService;
     private final CacheService cacheService;
 
     //////////////START:审核员的API//////////////
@@ -40,7 +40,7 @@ public class PunctuateAuditController {
     @PostMapping("/get/id")
     public R<List<Long>> searchPunctuateId(@RequestBody PunctuateSearchVo punctuateSearchVo) {
         return RUtils.create(
-                markerService.searchPunctuateId(punctuateSearchVo)
+                punctuateAuditService.searchPunctuateId(punctuateSearchVo)
         );
     }
 
@@ -49,7 +49,7 @@ public class PunctuateAuditController {
     @PostMapping("/get/list_byinfo")
     public R<List<MarkerPunctuateVo>> searchPunctuate(@RequestBody PunctuateSearchVo punctuateSearchVo) {
         return RUtils.create(
-                markerService.searchPunctuate(punctuateSearchVo).stream()
+                punctuateAuditService.searchPunctuate(punctuateSearchVo).stream()
                         .map(MarkerPunctuateDto::getVo).collect(Collectors.toList())
         );
     }
@@ -58,7 +58,7 @@ public class PunctuateAuditController {
     @PostMapping("/get/list_byid")
     public R<List<MarkerPunctuateVo>> listPunctuateById(@RequestBody List<Long> punctuateIdList) {
         return RUtils.create(
-                markerService.listPunctuateById(punctuateIdList).stream()
+                punctuateAuditService.listPunctuateById(punctuateIdList).stream()
                         .map(MarkerPunctuateDto::getVo).collect(Collectors.toList())
         );
     }
@@ -67,7 +67,7 @@ public class PunctuateAuditController {
     @PostMapping("/get/page/all")
     public R<PageListVo<MarkerPunctuateVo>> listAllPunctuatePage(@RequestBody PageSearchVo pageSearchVo) {
         return RUtils.create(
-                markerService.listAllPunctuatePage(new PageSearchDto(pageSearchVo))
+                punctuateAuditService.listAllPunctuatePage(new PageSearchDto(pageSearchVo))
         );
     }
 
@@ -75,7 +75,7 @@ public class PunctuateAuditController {
             description = "通过审核，返回点位ID（如果是新建点位，则为新点位ID），通过额外字段关联的点位也会自动通过审核（但不会返回关联点位的ID）")
     @PostMapping("/pass/{punctuateId}")
     public R<Long> passPunctuate(@PathVariable("punctuateId") Long punctuateId) {
-        Long passId = markerService.passPunctuate(punctuateId);
+        Long passId = punctuateAuditService.passPunctuate(punctuateId);
         cacheService.cleanMarkerCache();
         return RUtils.create(passId);
     }
@@ -84,7 +84,7 @@ public class PunctuateAuditController {
     @PostMapping("/reject/{punctuateId}")
     public R<Boolean> rejectPunctuate(@PathVariable("punctuateId") Long punctuateId) {
         return RUtils.create(
-                markerService.rejectPunctuate(punctuateId)
+                punctuateAuditService.rejectPunctuate(punctuateId)
         );
     }
 
@@ -92,7 +92,7 @@ public class PunctuateAuditController {
     @DeleteMapping("/delete/{punctuateId}")
     public R<Boolean> deletePunctuate(@PathVariable("punctuateId") Long punctuateId) {
         return RUtils.create(
-                markerService.deletePunctuate(punctuateId)
+                punctuateAuditService.deletePunctuate(punctuateId)
         );
     }
 
