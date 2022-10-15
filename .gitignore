@@ -33,6 +33,7 @@ out/
 
 *.log
 *.log.gz
+logs/
 
 target/
 /generator/
