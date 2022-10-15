@@ -71,7 +71,7 @@ public class ItemController {
     }
 
     @Operation(summary = "新增物品", description = "新建成功后会返回新物品ID")
-    @PutMapping("")
+    @PutMapping("/add")
     public R<Long> createItem(@RequestBody ItemVo itemVo) {
         Long newId = itemService.createItem(new ItemDto(itemVo));
         cacheService.cleanItemCache();
@@ -87,7 +87,7 @@ public class ItemController {
     }
 
     @Operation(summary = "删除物品", description = "根据物品ID列表批量删除物品")
-    @DeleteMapping("/{itemId}")
+    @DeleteMapping("/delete/{itemId}")
     public R<Boolean> deleteItem(@PathVariable("itemId")Long itemId) {
         Boolean result = itemService.deleteItem(itemId);
         if (result) {
