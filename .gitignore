@@ -42,3 +42,5 @@ sql
 .flattened-pom.xml
 application-datasource-dev.yml
 application-datasource-prod.yml
+
+*backup*.chnr.json
