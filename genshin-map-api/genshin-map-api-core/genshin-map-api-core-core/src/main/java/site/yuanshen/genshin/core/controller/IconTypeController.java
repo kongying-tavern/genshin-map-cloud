@@ -38,7 +38,7 @@ public class IconTypeController {
     }
 
     @Operation(summary = "新增分类", description = "类型id在创建后返回")
-    @PutMapping("/update")
+    @PutMapping("/add")
     public R<Long> addIconType(@RequestBody IconTypeVo iconTypeVo) {
         return RUtils.create(
                 iconTypeService.addIconType(new IconTypeDto(iconTypeVo))
@@ -46,7 +46,7 @@ public class IconTypeController {
     }
 
     @Operation(summary = "修改分类", description = "由类型ID来定位修改一个分类")
-    @PostMapping("/add")
+    @PostMapping("/update")
     public R<Boolean> updateIconType(@RequestBody IconTypeVo iconTypeVo) {
         return RUtils.create(
                 iconTypeService.updateIconType(new IconTypeDto(iconTypeVo))

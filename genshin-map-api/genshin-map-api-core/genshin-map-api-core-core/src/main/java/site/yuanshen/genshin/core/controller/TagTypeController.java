@@ -40,7 +40,7 @@ public class TagTypeController {
     }
 
     @Operation(summary = "新增分类", description = "类型id在创建后返回")
-    @PutMapping("/update")
+    @PutMapping("/add")
     public R<Long> addTagType(@RequestBody TagTypeVo tagTypeVo) {
         cacheService.cleanIconTagCache();
         Long newTagId = tagTypeService.addTagType(new TagTypeDto(tagTypeVo));
@@ -48,7 +48,7 @@ public class TagTypeController {
     }
 
     @Operation(summary = "修改分类", description = "由类型ID来定位修改一个分类")
-    @PostMapping("/add")
+    @PostMapping("/update")
     public R<Boolean> updateTagType(@RequestBody TagTypeVo tagTypeVo) {
         Boolean result = tagTypeService.updateTagType(new TagTypeDto(tagTypeVo));
         if (result) cacheService.cleanIconTagCache();
