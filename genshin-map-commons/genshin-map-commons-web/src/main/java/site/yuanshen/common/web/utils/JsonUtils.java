@@ -10,9 +10,9 @@ public class JsonUtils {
 
     /**
      *
-     * @param oldJsonStr 数据库中的老markerExtraContent
-     * @param newJsonStr 来自前端的新markerExtraContent
-     * @return 比较完后的markerExtraContent
+     * @param oldJsonStr 旧Json数据，需要填补的原始数据
+     * @param newJsonStr 新Json数据，填补的数据
+     * @return 填补完成的Json
      */
     public static String merge(String oldJsonStr, String newJsonStr) {
         Map<String, Object> oldJsonObj = jsonToMap(oldJsonStr);
