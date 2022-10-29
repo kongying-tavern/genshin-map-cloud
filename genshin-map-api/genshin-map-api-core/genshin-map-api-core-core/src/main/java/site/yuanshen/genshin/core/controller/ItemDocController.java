@@ -25,13 +25,13 @@ public class ItemDocController {
     private final ItemDao itemDao;
 
     @Operation(summary = "通过bz2返回所有物品信息", description = "查询所有物品信息，返回bz2压缩格式的byte数组")
-    @GetMapping("/get/all_bz2")
+    @GetMapping("/all_bz2")
     public byte[] listAllItemBz2() {
         return itemDao.listAllItemBz2();
     }
 
     @Operation(summary = "返回所有物品信息bz2的md5", description = "返回所有物品信息bz2的md5")
-    @GetMapping("/get/all_bz2_md5")
+    @GetMapping("/all_bz2_md5")
     public R<String> listAllItemBz2Md5() {
         return RUtils.create(itemDao.listAllItemBz2Md5());
     }

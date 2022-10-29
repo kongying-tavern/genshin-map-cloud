@@ -25,13 +25,13 @@ public class TagDocController {
     private final IconTagDao iconTagDao;
 
     @Operation(summary = "获取所有标签信息的bz2压缩", description = "查询所有标签信息，返回bz2压缩格式的byte数组")
-    @GetMapping("/get/all_bz2")
+    @GetMapping("/all_bz2")
     public byte[] listAllTagBz2() {
         return iconTagDao.listAllTagBz2();
     }
 
     @Operation(summary = "返回所有标签信息bz2的md5", description = "返回所有标签信息bz2的md5")
-    @GetMapping("/get/all_bz2_md5")
+    @GetMapping("/all_bz2_md5")
     public R<String> listAllTagBz2Md5() {
         return RUtils.create(
                 iconTagDao.listAllTagBz2Md5()
