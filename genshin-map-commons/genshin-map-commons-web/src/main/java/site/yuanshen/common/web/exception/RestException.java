@@ -12,6 +12,7 @@ import site.yuanshen.common.web.response.R;
 import site.yuanshen.common.web.response.RUtils;
 import site.yuanshen.common.web.utils.RequestUtils;
 
+import javax.naming.AuthenticationException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -42,7 +43,7 @@ public class RestException {
             log.error("[Rest-Exception]-message: {}", t.getMessage());
             log.debug("[Rest-Exception]-debug error message:: {} - cause {}", t.getMessage(), t.getStackTrace());
         }
-        return RUtils.create(Codes.FAIL, Optional.ofNullable(t.getMessage()).orElse(t.toString()));
+        return RUtils.create(Codes.FAIL, Optional.ofNullable(t.getMessage()).orElse(t.toString()), null);
     }
 
     /**
@@ -61,9 +62,11 @@ public class RestException {
         //创建Response
         assert bindingResult != null;
         return RUtils.create(Codes.PARAMETER_ERROR,
+                null,
                 bindingResult.getAllErrors().stream()
                         .map(ObjectError::getDefaultMessage)
-                        .collect(Collectors.toSet()));
+                        .collect(Collectors.toSet()),
+                null);
     }
 
     /**
@@ -72,6 +75,7 @@ public class RestException {
     @ExceptionHandler(ConstraintViolationException.class)
     public R constraintViolationExceptionHandler(ConstraintViolationException e) {
         return RUtils.create(Codes.PARAMETER_ERROR,
+                null,
                 e.getConstraintViolations().stream()
                         .map(ConstraintViolation::getMessage)
                         .collect(Collectors.toSet()));
