@@ -19,20 +19,28 @@ genshin:
     VISITOR:
       - /system/user/register/qq
       - /api/tag/get/**
+      - /api/tag_type/get/**
+      - /api/tag_doc/**
       - /api/icon/get/**
+      - /api/icon_type/get/**
       - /api/area/get/**
       - /api/item/get/**
+      - /api/item_type/get/**
+      - /api/item_doc/**
       - /api/marker/get/**
     MAP_USER:
       - /system/user/info/**
       - /system/user/update
       - /system/user/update_password
     MAP_PUNCTUATE:
-      - /api/marker/punctuate/author/**
+      - /api/marker/punctuate/**
     MAP_MANAGER:
-      - /api/marker/punctuate/check/**
+      - /api/marker/punctuate_audit/**
       - /api/tag/**
+      - /api/tag_type/**
       - /api/icon/**
+      - /api/item/**
+      - /api/item_common/**
       - /api/area/**
       - /api/marker/**
       - /api/history/**
@@ -40,11 +48,6 @@ genshin:
       - /system/user/info/userList
     ADMIN:
       - /system/**
-      - /api/tag/**
-      - /api/icon/**
-      - /api/area/**
-      - /api/item/**
-      - /api/marker/**
 
 ribbon:
   ServerListRefreshInterval: 1000
