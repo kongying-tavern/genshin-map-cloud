@@ -29,7 +29,7 @@ public class SysRoleDto {
     private String code;
 
     /**
-     * 角色层级（越大级别越高）
+     * 角色层级（越小级别越高）
      */
     private Integer sort;
 

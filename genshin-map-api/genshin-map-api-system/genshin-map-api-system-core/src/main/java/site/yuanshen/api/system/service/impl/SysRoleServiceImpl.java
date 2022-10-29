@@ -37,7 +37,8 @@ public class SysRoleServiceImpl implements SysRoleService {
     public List<SysRoleDto> listRole() {
         List<SysRoleDto> collect = roleMapper.selectList(Wrappers.query())
                 .stream()
-                .map(SysRoleDto::new).collect(Collectors.toList());
+                .map(SysRoleDto::new)
+                .sorted((a,b)->a.getSort()).collect(Collectors.toList());
         //TODO 待修改为下面的逻辑
         //List<SysRoleDto> collect = Arrays.stream(RoleEnum.values()).filter(role->role.getSort()).map(RoleEnum::getRoleBean).map(SysRoleDto::new).collect(Collectors.toList());
         return collect;
