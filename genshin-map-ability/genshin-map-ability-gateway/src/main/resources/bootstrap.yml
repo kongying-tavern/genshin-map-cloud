@@ -28,6 +28,7 @@ genshin:
       - /api/item_type/get/**
       - /api/item_doc/**
       - /api/marker/get/**
+      - /api/marker_doc/**
     MAP_USER:
       - /system/user/info/**
       - /system/user/update
