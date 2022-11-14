@@ -45,7 +45,7 @@ public class Area extends BaseEntity {
      * 地区代码;
      */
     @Schema(title = "地区代码")
-    @TableField("name")
+    @TableField("code")
     private String code;
 
     /**

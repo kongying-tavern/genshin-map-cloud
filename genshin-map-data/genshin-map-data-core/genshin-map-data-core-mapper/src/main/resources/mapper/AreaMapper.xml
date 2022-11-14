@@ -13,6 +13,7 @@
         <result column="del_flag" property="delFlag"/>
 <!--        <result column="area_id" property="areaId"/>-->
         <result column="name" property="name"/>
+        <result column="code" property="code"/>
         <result column="content" property="content"/>
         <result column="icon_tag" property="iconTag"/>
         <result column="parent_id" property="parentId"/>
