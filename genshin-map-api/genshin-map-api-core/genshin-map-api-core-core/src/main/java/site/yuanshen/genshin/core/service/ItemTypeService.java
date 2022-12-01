@@ -21,9 +21,18 @@ public interface ItemTypeService {
      *
      * @param searchDto 带分类的分页查询数据封装
      * @param self      查询自身还是查询子级，0为查询自身，1为查询子级
+     * @param isTestUser 是否搜索内测类型
      * @return 物品类型的前端封装的分页封装
      */
     PageListVo<ItemTypeVo> listItemType(PageAndTypeListDto searchDto, Integer self,Boolean isTestUser);
+
+    /**
+     * 列出所有物品类型
+     *
+     * @param isTestUser 是否搜索内测类型
+     * @return 物品类型的前端封装的列表
+     */
+    List<ItemTypeVo> listAllItemType(Boolean isTestUser);
 
     /**
      * 添加物品类型

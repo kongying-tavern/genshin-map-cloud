@@ -42,6 +42,14 @@ public class ItemTypeController {
         );
     }
 
+    @Operation(summary = "列出所有物品类型", description = "返回所有可访问的物品类型")
+    @PostMapping("/get/list_all")
+    public R<List<ItemTypeVo>> listItemType(@RequestHeader(value = "isTestUser",required = false) String isTestUser) {
+        return RUtils.create(
+                itemTypeService.listAllItemType(StringUtils.hasLength(isTestUser))
+        );
+    }
+
     @Operation(summary = "添加物品类型", description = "成功后返回新的类型ID")
     @PutMapping("/add")
     public R<Long> addItemType(@RequestBody ItemTypeVo itemTypeVo) {

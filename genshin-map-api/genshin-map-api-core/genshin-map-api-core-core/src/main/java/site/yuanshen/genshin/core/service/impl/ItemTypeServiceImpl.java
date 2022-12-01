@@ -74,6 +74,23 @@ public class ItemTypeServiceImpl implements ItemTypeService {
     }
 
     /**
+     * 列出所有物品类型
+     *
+     * @param isTestUser 是否搜索内测类型
+     * @return 物品类型的前端封装的列表
+     */
+    @Override
+    @Cacheable("listAllItemType")
+    public List<ItemTypeVo> listAllItemType(Boolean isTestUser) {
+        return itemTypeMapper.selectList(Wrappers.<ItemType>lambdaQuery()
+                        .ne(!isTestUser, ItemType::getHiddenFlag, 2))
+                .stream()
+                .map(ItemTypeDto::new)
+                .map(ItemTypeDto::getVo)
+                .collect(Collectors.toList());
+    }
+
+    /**
      * 添加物品类型
      *
      * @param itemTypeDto 物品类型数据封装

@@ -76,6 +76,7 @@ public class CacheServiceImpl implements CacheService {
             evict = {
                     @CacheEvict(value = "listItem", allEntries = true, beforeInvocation = true),
                     @CacheEvict(value = "listItemType", allEntries = true, beforeInvocation = true),
+                    @CacheEvict(value = "listAllItemType", allEntries = true, beforeInvocation = true),
                     @CacheEvict(value = "listItemById", allEntries = true, beforeInvocation = true),
             }
     )
