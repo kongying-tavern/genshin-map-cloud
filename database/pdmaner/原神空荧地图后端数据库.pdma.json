@@ -4,7 +4,7 @@
   "avatar": "",
   "version": "4.2.2",
   "createdTime": "2022-4-22 02:18:22",
-  "updatedTime": "2022-12-3 04:05:59",
+  "updatedTime": "2022-12-3 04:41:04",
   "dbConns": [],
   "profile": {
     "default": {
@@ -8470,7 +8470,7 @@
         }
       },
       "defKey": "sys_user_archive",
-      "defName": "系统用户存档槽位表",
+      "defName": "系统用户存档表",
       "comment": "",
       "properties": {
         "partitioned by": "(date string)",
