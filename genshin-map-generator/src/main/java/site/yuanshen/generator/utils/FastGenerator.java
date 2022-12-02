@@ -65,7 +65,7 @@ public class FastGenerator {
                         .disableSerialVersionUID()
                         //entity公共父类设置
                         .superClass(BaseEntity.class)
-                        .addSuperEntityColumns("revision", "create_time", "update_time", "creatorId", "updaterId", "del_flag")
+                        .addSuperEntityColumns("revision", "create_time", "update_time", "creator_id", "updater_id", "del_flag")
 
                         //service配置
                         .serviceBuilder()
