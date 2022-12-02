@@ -1,6 +1,5 @@
 package site.yuanshen.data.dto;
 
-import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,7 +13,7 @@ import site.yuanshen.data.vo.SysUserVo;
 import java.util.List;
 
 /**
- * 用户信息
+ * 用户信息Dto
  *
  * @author Moment
  * @since 2022-04-20 10:18:18

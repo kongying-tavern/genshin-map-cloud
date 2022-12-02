@@ -3,7 +3,7 @@ package site.yuanshen.data.dto;
 import lombok.Data;
 
 /**
- * TODO
+ * 用户密码修改Dto
  *
  * @author Moment
  */

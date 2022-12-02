@@ -1,10 +1,9 @@
 package site.yuanshen.data.dto;
 
-import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 
 /**
- * TODO
+ * 用户信息更新Dto
  *
  * @author Moment
  */

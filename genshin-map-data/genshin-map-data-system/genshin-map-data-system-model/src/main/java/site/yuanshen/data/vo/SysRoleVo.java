@@ -1,15 +1,15 @@
 package site.yuanshen.data.vo;
 
-import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 /**
- * TODO
+ * 角色Vo
  *
  * @author Moment
  */
 @Data
+@Schema(title = "角色Vo", description = "角色Vo")
 public class SysRoleVo {
 
     /**

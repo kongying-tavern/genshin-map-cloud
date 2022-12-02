@@ -2,14 +2,14 @@ package site.yuanshen.data.vo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import site.yuanshen.data.entity.SysUserRoleLink;
 
 /**
- * 角色关联Dto
+ * 角色关联Vo
  *
  * @author Moment
  */
 @Data
+@Schema(title = "角色关联Vo", description = "角色关联Vo")
 public class SysRoleLinkVo {
 
     /**

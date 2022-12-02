@@ -1,13 +1,10 @@
 package site.yuanshen.data.vo;
 
-import com.baomidou.mybatisplus.annotation.TableField;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import lombok.experimental.Accessors;
-import site.yuanshen.data.entity.SysUser;
 
 import java.util.List;
 
@@ -21,6 +18,7 @@ import java.util.List;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
+@Schema(title = "用户信息Vo", description = "用户信息Vo")
 public class SysUserVo {
 
     /**
