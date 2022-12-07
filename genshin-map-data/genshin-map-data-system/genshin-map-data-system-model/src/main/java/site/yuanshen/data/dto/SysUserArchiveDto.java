@@ -23,8 +23,8 @@ import java.util.LinkedList;
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true)
-@EqualsAndHashCode(callSuper = true)
-public class SysUserArchiveDto extends BaseEntity {
+@EqualsAndHashCode(callSuper = false)
+public class SysUserArchiveDto {
 
     /**
      * 存档ID
