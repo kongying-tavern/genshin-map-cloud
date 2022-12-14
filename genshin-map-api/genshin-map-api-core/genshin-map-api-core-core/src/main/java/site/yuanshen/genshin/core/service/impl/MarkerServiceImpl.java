@@ -146,7 +146,7 @@ public class MarkerServiceImpl implements MarkerService {
         List<MarkerItemLink> markerItemLinks = markerItemLinkMapper.selectList(Wrappers.<MarkerItemLink>lambdaQuery().in(MarkerItemLink::getMarkerId, markerIdList));
         //获取item_id,得到item合集
         Map<Long, Item> itemMap = itemMapper.selectList(Wrappers.<Item>lambdaQuery()
-                        .in(Item::getId, markerItemLinks.stream().map(MarkerItemLink::getItemId).collect(Collectors.toSet())))
+                        .in(!markerItemLinks.isEmpty(),Item::getId, markerItemLinks.stream().map(MarkerItemLink::getItemId).collect(Collectors.toSet())))
                 .stream().collect(Collectors.toMap(Item::getId, Item -> Item));
 
         markerItemLinks.parallelStream().forEach(markerItemLink ->
