@@ -11,7 +11,6 @@ server:
 
 genshin:
   pass-filter:
-    - /api/marker/get/**
     - /oauth/**
     - /api/v3/api-docs
     - /system/v3/api-docs
@@ -29,12 +28,12 @@ genshin:
       - /system/user/update_password
     MAP_PUNCTUATE:
       - /api/marker/punctuate/author/**
+      - /api/marker/**
     MAP_MANAGER:
       - /api/marker/punctuate/check/**
       - /api/tag/**
       - /api/icon/**
       - /api/area/**
-      - /api/marker/**
       - /api/history/**
       - /system/user/register
       - /system/user/info/userList

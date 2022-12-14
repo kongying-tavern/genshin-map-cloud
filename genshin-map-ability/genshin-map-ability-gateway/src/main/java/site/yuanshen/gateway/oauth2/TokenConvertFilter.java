@@ -42,7 +42,7 @@ public class TokenConvertFilter implements GlobalFilter, Ordered {
         log.debug("path: " + path);
         boolean isPass = false;
         for (String filter : genshinGatewayProperties.getPassFilter()) {
-            if(matcher.match(filter, path))isPass = true;
+            if(matcher.match(filter, path)) isPass = true;
         }
         if (isPass) {
             log.debug("match PassFilter, pass");
