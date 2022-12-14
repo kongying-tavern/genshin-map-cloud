@@ -1,6 +1,7 @@
 package site.yuanshen.gateway.oauth2;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
@@ -83,7 +84,7 @@ public class TokenConvertFilter implements GlobalFilter, Ordered {
                 .headers(httpHeaders -> httpHeaders.remove("Authorization"))
                 .header("userName", userName)
                 .header("Authorities", authorities)
-                .header("isTestUser",authorities.contains(RoleEnum.MAP_NEIGUI.getCode())?"1":"")
+                .header("isTestUser", String.valueOf(JSONArray.parseArray(authorities, RoleEnum.class).stream().anyMatch(role -> role.getSort() <= RoleEnum.MAP_NEIGUI.getSort())))
                 .header("userId", userId).build();
         return chain.filter(exchange.mutate().request(request).build());
     }
