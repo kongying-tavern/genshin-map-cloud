@@ -57,7 +57,7 @@ public class ItemSearchDto {
      * 是否为测试打点员
      */
     @Schema(title = "是否为测试打点员")
-    private Boolean isTestUser;
+    private Boolean isTestUser = false;
 
     public ItemSearchDto(ItemSearchVo itemSearchVo) {
         BeanUtils.copyNotNull(itemSearchVo, this);

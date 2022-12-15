@@ -80,11 +80,12 @@ public class TokenConvertFilter implements GlobalFilter, Ordered {
         log.debug("userName: " + userName);
         log.debug("authorities: " + authorities);
         log.debug("userId: " + userId);
+        final boolean isTestUser = JSONArray.parseArray(authorities, RoleEnum.class).stream().anyMatch(role -> role.getSort() <= RoleEnum.MAP_NEIGUI.getSort());
         ServerHttpRequest request = exchange.getRequest().mutate()
                 .headers(httpHeaders -> httpHeaders.remove("Authorization"))
                 .header("userName", userName)
                 .header("Authorities", authorities)
-                .header("isTestUser", String.valueOf(JSONArray.parseArray(authorities, RoleEnum.class).stream().anyMatch(role -> role.getSort() <= RoleEnum.MAP_NEIGUI.getSort())))
+                .header("isTestUser", isTestUser ? "TEST" : "")
                 .header("userId", userId).build();
         return chain.filter(exchange.mutate().request(request).build());
     }
