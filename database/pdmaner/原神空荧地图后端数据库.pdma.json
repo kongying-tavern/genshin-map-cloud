@@ -2,9 +2,9 @@
   "name": "原神空荧地图后端数据库",
   "describe": "原神空荧地图后端数据库",
   "avatar": "",
-  "version": "4.2.2",
+  "version": "4.1.5",
   "createdTime": "2022-4-22 02:18:22",
-  "updatedTime": "2022-12-3 04:41:04",
+  "updatedTime": "2022-12-14 21:08:11",
   "dbConns": [],
   "profile": {
     "default": {
