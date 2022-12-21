@@ -36,6 +36,7 @@ public class ItemServiceImpl implements ItemService {
     private final ItemTypeLinkMapper itemTypeLinkMapper;
     private final ItemTypeLinkMBPService itemTypeLinkMBPService;
     private final MarkerItemLinkMapper markerItemLinkMapper;
+    private final MarkerMapper markerMapper;
 
     private final HistoryMapper historyMapper;
 
@@ -47,7 +48,7 @@ public class ItemServiceImpl implements ItemService {
      */
     @Override
     @Cacheable("listItemById")
-    public List<ItemDto> listItemById(List<Long> itemIdList,Boolean isTestUser) {
+    public List<ItemDto> listItemById(List<Long> itemIdList, Boolean isTestUser) {
         //收集分类信息
         Map<Long, List<Long>> typeMap = new ConcurrentHashMap<>();
         itemTypeLinkMapper.selectList(Wrappers.<ItemTypeLink>lambdaQuery()
@@ -61,7 +62,7 @@ public class ItemServiceImpl implements ItemService {
                         }));
         //取得实体类并转化为DTO，过程之中写入分类信息
         return itemMapper.selectList(Wrappers.<Item>lambdaQuery()
-                        .ne(!isTestUser,Item::getHiddenFlag,2)
+                        .ne(!isTestUser, Item::getHiddenFlag, 2)
                         .in(Item::getId, itemIdList))
                 .parallelStream()
                 .map(item ->
@@ -79,6 +80,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Cacheable("listItem")
     public PageListVo<ItemVo> listItem(ItemSearchDto itemSearchDto) {
+//        itemSearchDto.setIsTestUser(Boolean.TRUE);
         Page<Item> itemPage = itemMapper.selectPageItem(itemSearchDto.getPageEntity(), itemSearchDto);
         itemPage.setRecords(itemPage.getRecords().parallelStream().distinct().collect(Collectors.toList()));
         if (itemPage.getTotal() == 0L)
@@ -101,11 +103,20 @@ public class ItemServiceImpl implements ItemService {
                 .in(MarkerItemLink::getItemId,
                         itemPage.getRecords().stream()
                                 .map(Item::getId).collect(Collectors.toList())));
+        //获取其中的正常点位 hidden_flag=0 若为内鬼用户,则增加hidden_flag=2
+        List<Long> normalMarkerList = markerMapper.selectList(Wrappers.<Marker>lambdaQuery()
+                        .and(i-> i.eq(Marker::getHiddenFlag, 0).or(itemSearchDto.getIsTestUser(),n-> n.eq(Marker::getHiddenFlag, 2)))
+                        .in(Marker::getId, markerItemLinkList.stream().map(MarkerItemLink::getMarkerId).collect(Collectors.toList())))
+                .stream().map(Marker::getId).collect(Collectors.toList());
+
+        //先过滤出正常点位
         //计算各个物品在点位中的数量合计
         Map<Long, Integer> markerItemLinkCount = new HashMap<>();
-        markerItemLinkList.stream().collect(Collectors.groupingBy(MarkerItemLink::getItemId)).forEach(
-                (itemId, list) -> markerItemLinkCount.put(itemId, list.stream().mapToInt(MarkerItemLink::getCount).sum())
-        );
+        markerItemLinkList.stream().filter(markerItemLink -> normalMarkerList.contains(markerItemLink.getMarkerId()))
+                .collect(Collectors.groupingBy(MarkerItemLink::getItemId)).forEach(
+                        (itemId, list) -> markerItemLinkCount.put(itemId, list.stream().mapToInt(MarkerItemLink::getCount).sum())
+                );
+
 
         return new PageListVo<ItemVo>()
                 .setRecord(itemPage.getRecords().stream()
@@ -141,7 +152,7 @@ public class ItemServiceImpl implements ItemService {
             itemIds.addAll(sameItems.parallelStream().map(Item::getId).collect(Collectors.toList()));
 
             //在更新逻辑之前做历史信息记录
-            saveHistoryItem(itemIds,sameItems);
+            saveHistoryItem(itemIds, sameItems);
 
 
             //对比类型信息是否更改
@@ -305,7 +316,6 @@ public class ItemServiceImpl implements ItemService {
     //---------------存储历史信息-------------------
 
     /**
-     *
      * @param itemIds
      * @param sameItems 同名物品List(若无需同名则默认为空)
      */
@@ -328,11 +338,11 @@ public class ItemServiceImpl implements ItemService {
 
         //将DTO转为history
         itemDtoList.forEach(
-               dto->{
-                   History history = HistoryConvert.convert(dto);
-                   //存储入库
-                   historyMapper.insert(history);
-               }
+                dto -> {
+                    History history = HistoryConvert.convert(dto);
+                    //存储入库
+                    historyMapper.insert(history);
+                }
         );
     }
 
