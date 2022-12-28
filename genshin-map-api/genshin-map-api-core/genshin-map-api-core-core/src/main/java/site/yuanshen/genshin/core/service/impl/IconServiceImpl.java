@@ -55,6 +55,9 @@ public class IconServiceImpl implements IconService {
                 .stream()
                 .map(IconDto::new)
                 .collect(Collectors.toList());
+        if(iconDtoList.isEmpty()){
+            return new PageListVo<IconVo>().setRecord(new ArrayList<>()).setSize(iconPage.getSize()).setTotal(iconPage.getTotal());
+        }
         //收集分类信息
         Map<Long, List<Long>> typeMap = new ConcurrentHashMap<>();
         iconTypeLinkMapper.selectList(Wrappers.<IconTypeLink>lambdaQuery()

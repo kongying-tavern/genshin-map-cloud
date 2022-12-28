@@ -17,6 +17,7 @@ import reactor.core.publisher.Mono;
 import site.yuanshen.data.enums.RoleEnum;
 import site.yuanshen.gateway.config.GenshinGatewayProperties;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -55,14 +56,15 @@ public class SecurityFilter implements GlobalFilter, Ordered {
         for (String roleName : authoritiesFilter.keySet()) {
             RoleEnum matchRole = RoleEnum.valueOf(roleName);
             boolean isMatch = false;
-            int userDataLevel = 0;
+            //userData直接取最大值,和请求权限无关
+            int userDataLevel = userRoleList.stream().map(RoleEnum::getUserDataLevel).max(Comparator.comparing(x->x)).orElse(0);
             for (RoleEnum userRole : userRoleList) {
                 if (userRole.getSort() <= matchRole.getSort()) {
                     isMatch = true;
-                    userDataLevel = userRole.getUserDataLevel();
                     break;
                 }
             }
+
             if (!isMatch) continue;
             AntPathMatcher matcher = new AntPathMatcher();
             List<String> urlMatches = authoritiesFilter.get(roleName);
