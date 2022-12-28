@@ -8,12 +8,13 @@ import site.yuanshen.api.system.service.SysBasicService;
 import site.yuanshen.api.system.service.SysRoleService;
 import site.yuanshen.data.dto.SysRoleDto;
 import site.yuanshen.data.dto.SysRoleLinkDto;
-import site.yuanshen.data.entity.SysRole;
 import site.yuanshen.data.entity.SysUser;
 import site.yuanshen.data.entity.SysUserRoleLink;
-import site.yuanshen.data.mapper.SysRoleMapper;
+import site.yuanshen.data.enums.RoleEnum;
 import site.yuanshen.data.mapper.SysUserRoleMapper;
 
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,7 +28,6 @@ import java.util.stream.Collectors;
 public class SysRoleServiceImpl implements SysRoleService {
 
     private final SysUserRoleMapper userRoleMapper;
-    private final SysRoleMapper roleMapper;
     private final SysBasicService basicService;
 
     /**
@@ -35,12 +35,10 @@ public class SysRoleServiceImpl implements SysRoleService {
      */
     @Override
     public List<SysRoleDto> listRole() {
-        List<SysRoleDto> collect = roleMapper.selectList(Wrappers.query())
-                .stream()
+        List<SysRoleDto> collect = Arrays.stream(RoleEnum.values())
+                .sorted(Comparator.comparingInt(RoleEnum::getSort))
                 .map(SysRoleDto::new)
-                .sorted((a,b)->a.getSort()).collect(Collectors.toList());
-        //TODO 待修改为下面的逻辑
-        //List<SysRoleDto> collect = Arrays.stream(RoleEnum.values()).filter(role->role.getSort()).map(RoleEnum::getRoleBean).map(SysRoleDto::new).collect(Collectors.toList());
+                .collect(Collectors.toList());
         return collect;
     }
 
@@ -52,6 +50,7 @@ public class SysRoleServiceImpl implements SysRoleService {
      */
     @Override
     @Transactional
+    @Deprecated
     public Boolean createRole(SysRoleDto roleDto) {
         //空置
         //SysRole role = roleDto.getEntity();
@@ -69,7 +68,7 @@ public class SysRoleServiceImpl implements SysRoleService {
     @Transactional
     public Boolean addRoleToUser(SysRoleLinkDto roleLinkDto) {
         SysUser user = basicService.getUserNotNull(roleLinkDto.getUserId());
-        SysRole role = basicService.getRoleNotNullById(roleLinkDto.getRoleId());
+        RoleEnum role = RoleEnum.getRoleFromId(roleLinkDto.getRoleId());
         //清理旧角色
         userRoleMapper.delete(Wrappers.<SysUserRoleLink>lambdaQuery().eq(SysUserRoleLink::getUserId, roleLinkDto.getUserId()));
         //写入新角色
@@ -87,6 +86,7 @@ public class SysRoleServiceImpl implements SysRoleService {
      */
     @Override
     @Transactional
+    @Deprecated
     public Boolean removeRoleFromUser(SysRoleLinkDto roleLinkDto) {
         throw new RuntimeException("该api暂时作废");
         //SysUser user = basicService.getUserNotNull(roleLinkDto.getUserId());
@@ -106,6 +106,7 @@ public class SysRoleServiceImpl implements SysRoleService {
      */
     @Override
     @Transactional
+    @Deprecated
     public Boolean deleteRole(String roleCode) {
         throw new RuntimeException("该api暂时作废");
     }
@@ -118,6 +119,7 @@ public class SysRoleServiceImpl implements SysRoleService {
      */
     @Override
     @Transactional
+    @Deprecated
     public Boolean deleteRoleBatch(List<String> roleCodeList) {
         throw new RuntimeException("该api暂时作废");
         ////查找角色

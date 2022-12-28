@@ -60,7 +60,7 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
             if (principal instanceof UserSecurityDto) {
                 UserSecurityDto userPrincipal = (UserSecurityDto) principal;
                 List<RoleSecurityDto> roleList = userPrincipal.getRoleDtoList();
-                List<String> roleCodeList = Optional.of(roleList).orElse(new ArrayList<>()).stream().map(role -> role.getCode()).collect(Collectors.toList());
+                List<String> roleCodeList = Optional.of(roleList).orElse(new ArrayList<>()).stream().map(RoleSecurityDto::getCode).collect(Collectors.toList());
                 additionalInfo.put("userId", userPrincipal.getUserId());
                 additionalInfo.put("userRoles", roleCodeList);
             }

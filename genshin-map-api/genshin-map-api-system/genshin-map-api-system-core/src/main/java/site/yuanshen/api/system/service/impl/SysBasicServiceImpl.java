@@ -4,9 +4,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import site.yuanshen.api.system.service.SysBasicService;
-import site.yuanshen.data.entity.SysRole;
 import site.yuanshen.data.entity.SysUser;
-import site.yuanshen.data.mapper.SysRoleMapper;
 import site.yuanshen.data.mapper.SysUserMapper;
 
 import java.util.Optional;
@@ -22,7 +20,6 @@ public class SysBasicServiceImpl implements SysBasicService {
 
     private final SysUserMapper userMapper;
 
-    private final SysRoleMapper roleMapper;
 
     /**
      * 此方法建议只用于同级service
@@ -57,47 +54,4 @@ public class SysBasicServiceImpl implements SysBasicService {
         return Optional.ofNullable(userMapper.selectOne(Wrappers.lambdaQuery(SysUser.class).eq(SysUser::getUsername, userName)));
     }
 
-    /**
-     * 此方法建议只用于同级service
-     *
-     * @param roleCode 角色代码
-     * @return 角色实体类Optional
-     */
-    @Override
-    public Optional<SysRole> getRole(String roleCode) {
-        return Optional.ofNullable(roleMapper.selectOne(Wrappers.lambdaQuery(SysRole.class).eq(SysRole::getCode, roleCode)));
-    }
-
-    /**
-     * 此方法建议只用于同级service
-     *
-     * @param roleCode 角色代码
-     * @return 角色实体类
-     */
-    @Override
-    public SysRole getRoleNotNull(String roleCode) {
-        return getRole(roleCode).orElseThrow(() -> new RuntimeException("角色不存在"));
-    }
-
-    /**
-     * 此方法建议只用于同级service
-     *
-     * @param roleId 角色ID
-     * @return 角色实体类Optional
-     */
-    @Override
-    public Optional<SysRole> getRoleById(Long roleId) {
-        return Optional.ofNullable(roleMapper.selectOne(Wrappers.lambdaQuery(SysRole.class).eq(SysRole::getId, roleId)));
-    }
-
-    /**
-     * 此方法建议只用于同级service
-     *
-     * @param roleId 角色ID
-     * @return 角色实体类
-     */
-    @Override
-    public SysRole getRoleNotNullById(Long roleId) {
-        return getRoleById(roleId).orElseThrow(() -> new RuntimeException("角色不存在"));
-    }
 }

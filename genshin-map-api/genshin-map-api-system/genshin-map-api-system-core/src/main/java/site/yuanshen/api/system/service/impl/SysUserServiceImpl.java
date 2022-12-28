@@ -24,7 +24,6 @@ import site.yuanshen.data.entity.SysRole;
 import site.yuanshen.data.entity.SysUser;
 import site.yuanshen.data.entity.SysUserRoleLink;
 import site.yuanshen.data.enums.RoleEnum;
-import site.yuanshen.data.mapper.SysRoleMapper;
 import site.yuanshen.data.mapper.SysUserMapper;
 import site.yuanshen.data.mapper.SysUserRoleMapper;
 import site.yuanshen.data.vo.SysUserRegisterVo;
@@ -44,16 +43,14 @@ public class SysUserServiceImpl implements SysUserService {
 
     private final SysUserMapper userMapper;
     private final SysUserRoleMapper userRoleMapper;
-    private final SysRoleMapper sysRoleMapper;
     private final SysBasicService basicService;
 
     private final RestTemplate gbkRestTemplate;
 
-    public SysUserServiceImpl(SysUserMapper userMapper, SysUserRoleMapper userRoleMapper, SysRoleMapper sysRoleMapper, SysBasicService basicService,
+    public SysUserServiceImpl(SysUserMapper userMapper, SysUserRoleMapper userRoleMapper, SysBasicService basicService,
                               @Qualifier("gbkRestTemplate") RestTemplate gbkRestTemplate) {
         this.userMapper = userMapper;
         this.userRoleMapper = userRoleMapper;
-        this.sysRoleMapper = sysRoleMapper;
         this.basicService = basicService;
         this.gbkRestTemplate = gbkRestTemplate;
     }
@@ -70,8 +67,7 @@ public class SysUserServiceImpl implements SysUserService {
             BeanUtils.copyProperties(registerVo, user);
             user.setPassword(PasswordEncoderFactories.createDelegatingPasswordEncoder().encode(user.getPassword()));
             userMapper.insert(user);
-            SysRole role = basicService.getRoleNotNull(RoleEnum.MAP_USER.getCode());
-            userRoleMapper.insert(new SysUserRoleLink().setRoleId(role.getId()).setUserId(user.getId()));
+            userRoleMapper.insert(new SysUserRoleLink().setRoleId(RoleEnum.MAP_USER.getId()).setUserId(user.getId()));
             return user.getId();
         } else {
             throw new RuntimeException("用户已存在，请检查是否输入正确");
@@ -115,8 +111,7 @@ public class SysUserServiceImpl implements SysUserService {
         user.setQq(qq);
         user.setLogoUrl(qqLogo);
         userMapper.insert(user);
-        SysRole role = basicService.getRoleNotNull(RoleEnum.MAP_USER.getCode());
-        userRoleMapper.insert(new SysUserRoleLink().setRoleId(role.getId()).setUserId(user.getId()));
+        userRoleMapper.insert(new SysUserRoleLink().setRoleId(RoleEnum.MAP_USER.getId()).setUserId(user.getId()));
         return user.getId();
     }
 
@@ -128,14 +123,16 @@ public class SysUserServiceImpl implements SysUserService {
      */
     @Override
     public SysUserVo getUserInfo(Long Id) {
-        List<SysUserRoleLink> roleLinks = userRoleMapper.selectList(Wrappers.<SysUserRoleLink>lambdaQuery().eq(SysUserRoleLink::getUserId, Id));
-        List<SysRole> roleList = sysRoleMapper.selectList(Wrappers.<SysRole>lambdaQuery().in(SysRole::getId,
-                roleLinks.stream().map(SysUserRoleLink::getRoleId).distinct().collect(Collectors.toList())
-        ));
+        SysRoleDto roleDto = userRoleMapper.selectList(Wrappers.<SysUserRoleLink>lambdaQuery()
+                        .eq(SysUserRoleLink::getUserId, Id))
+                .stream()
+                .map(SysUserRoleLink::getRoleId)
+                .map(RoleEnum::getRoleFromId)
+                .min(Comparator.comparingInt(RoleEnum::getSort))
+                .map(SysRoleDto::new)
+                .orElseThrow(() -> new RuntimeException("用户未绑定角色"));
         return new SysUserDto(basicService.getUserNotNull(Id))
-                .setRoleList(roleList.parallelStream()
-                        .map(roleEntity -> (new SysRoleDto(roleEntity)).getVo())
-                        .collect(Collectors.toList()))
+                .setRoleList(Collections.singletonList(roleDto.getVo()))
                 .getVo();
     }
 
@@ -237,9 +234,8 @@ public class SysUserServiceImpl implements SysUserService {
                     roleIdSet.add(roleLink.getRoleId());
                 });
         //构建角色ID->角色的map
-        Map<Long, SysRole> roleMap = sysRoleMapper
-                .selectList(Wrappers.<SysRole>lambdaQuery().in(SysRole::getId, roleIdSet))
-                .stream().collect(Collectors.toMap(SysRole::getId, role -> role));
+        Map<Long, SysRole> roleMap = roleIdSet.stream()
+                .collect(Collectors.toMap(id -> id, id -> RoleEnum.getRoleFromId(id).getRoleBean()));
 
         return new PageListVo<SysUserVo>()
                 .setRecord(sysUserPage.getRecords().parallelStream()

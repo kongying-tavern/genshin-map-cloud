@@ -1,6 +1,5 @@
 package site.yuanshen.api.system.service;
 
-import site.yuanshen.data.entity.SysRole;
 import site.yuanshen.data.entity.SysUser;
 
 import java.util.Optional;
@@ -35,37 +34,5 @@ public interface SysBasicService {
      * @return 用户实体类Optional
      */
     Optional<SysUser> getUser(String userName);
-
-    /**
-     * 此方法建议只用于同级service
-     *
-     * @param roleCode 角色代码
-     * @return 角色实体类Optional
-     */
-    Optional<SysRole> getRole(String roleCode);
-
-    /**
-     * 此方法建议只用于同级service
-     *
-     * @param roleCode 角色代码
-     * @return 角色实体类
-     */
-    SysRole getRoleNotNull(String roleCode);
-
-    /**
-     * 此方法建议只用于同级service
-     *
-     * @param roleId 角色ID
-     * @return 角色实体类Optional
-     */
-    Optional<SysRole> getRoleById(Long roleId);
-
-    /**
-     * 此方法建议只用于同级service
-     *
-     * @param roleId 角色ID
-     * @return 角色实体类
-     */
-    SysRole getRoleNotNullById(Long roleId);
 
 }

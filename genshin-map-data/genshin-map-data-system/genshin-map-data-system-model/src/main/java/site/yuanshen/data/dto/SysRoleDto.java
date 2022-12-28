@@ -3,6 +3,7 @@ package site.yuanshen.data.dto;
 import lombok.Data;
 import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.entity.SysRole;
+import site.yuanshen.data.enums.RoleEnum;
 import site.yuanshen.data.vo.SysRoleVo;
 
 /**
@@ -35,6 +36,13 @@ public class SysRoleDto {
 
     public SysRoleDto(SysRole sysRole) {
         BeanUtils.copyProperties(sysRole, this);
+    }
+
+    public SysRoleDto(RoleEnum roleEnum) {
+        this.id = roleEnum.getId();
+        this.name = roleEnum.getName();
+        this.code = roleEnum.getCode();
+        this.sort = roleEnum.getSort();
     }
 
     public SysRoleDto(SysRoleVo sysRoleVo) {

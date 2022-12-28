@@ -14,12 +14,12 @@ import site.yuanshen.data.dto.SysRoleDto;
 import site.yuanshen.data.dto.SysUserSecurityDto;
 import site.yuanshen.data.entity.SysUser;
 import site.yuanshen.data.entity.SysUserRoleLink;
-import site.yuanshen.data.mapper.SysRoleMapper;
+import site.yuanshen.data.enums.RoleEnum;
 import site.yuanshen.data.mapper.SysUserMapper;
 import site.yuanshen.data.mapper.SysUserRoleMapper;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Collections;
+import java.util.Comparator;
 
 /**
  * 用户信息加载服务
@@ -33,7 +33,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final SysUserMapper userMapper;
     private final SysUserRoleMapper userRoleMapper;
-    private final SysRoleMapper roleMapper;
 
     @Override
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
@@ -45,15 +44,15 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         SysUserSecurityDto sysUserSecurityDto = new SysUserSecurityDto();
         BeanUtils.copyProperties(sysUser, sysUserSecurityDto);
         sysUserSecurityDto.setUserId(sysUser.getId());
-        //TODO 代码有待审查
-        List<SysRoleDto> sysRoleDtoList = roleMapper.selectBatchIds(userRoleMapper.selectList(Wrappers.lambdaQuery(SysUserRoleLink.class)
-                                .eq(SysUserRoleLink::getUserId, sysUser.getId()))
-                        .stream()
-                        .map(SysUserRoleLink::getRoleId)
-                        .collect(Collectors.toList()))
+        SysRoleDto roleDto = userRoleMapper.selectList(Wrappers.<SysUserRoleLink>lambdaQuery()
+                        .eq(SysUserRoleLink::getUserId, sysUser.getId()))
                 .stream()
-                .map(SysRoleDto::new).collect(Collectors.toList());
-        sysUserSecurityDto.setRoleDtoList(sysRoleDtoList);
+                .map(SysUserRoleLink::getRoleId)
+                .map(RoleEnum::getRoleFromId)
+                .min(Comparator.comparingInt(RoleEnum::getSort))
+                .map(SysRoleDto::new)
+                .orElseThrow(() -> new RuntimeException("用户未绑定角色"));
+        sysUserSecurityDto.setRoleDtoList(Collections.singletonList(roleDto));
         return sysUserSecurityDto;
     }
 
