@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 /**
  * 地区查询前端封装
  *
@@ -32,10 +34,7 @@ public class AreaSearchVo {
     private Boolean isTraverse;
 
 
-    /**
-     * 是否为测试打点员
-     */
-    @Schema(title = "是否为测试打点员")
-    private Boolean isTestUser = false;
+    @Schema(title = "数据等级(hidden_flag范围)")
+    private List<Integer> hiddenFlagList;
 
 }

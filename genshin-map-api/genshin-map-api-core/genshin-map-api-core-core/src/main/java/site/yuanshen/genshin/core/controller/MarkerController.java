@@ -11,6 +11,7 @@ import site.yuanshen.data.dto.MarkerDto;
 import site.yuanshen.data.dto.MarkerExtraDto;
 import site.yuanshen.data.dto.MarkerSingleDto;
 import site.yuanshen.data.dto.helper.PageSearchDto;
+import site.yuanshen.data.enums.HiddenFlagEnum;
 import site.yuanshen.data.vo.MarkerExtraVo;
 import site.yuanshen.data.vo.MarkerSearchVo;
 import site.yuanshen.data.vo.MarkerSingleVo;
@@ -43,8 +44,8 @@ public class MarkerController {
     @Operation(summary = "根据各种条件筛选查询点位ID",
             description = "支持根据末端地区、末端类型、物品来进行查询，三种查询不能同时生效，同时存在时报错，同时支持测试点位获取")
     @PostMapping("/get/id")
-    public R<List<Long>> searchMarkerId(@RequestHeader(value = "isTestUser", required = false) String isTestUser, @RequestBody MarkerSearchVo markerSearchVo) {
-        markerSearchVo.setIsTestUser(StringUtils.hasLength(isTestUser));
+    public R<List<Long>> searchMarkerId(@RequestHeader(value = "userDataLevel", required = false) String userDataLevel, @RequestBody MarkerSearchVo markerSearchVo) {
+        markerSearchVo.setHiddenFlagList(HiddenFlagEnum.getFlagList(userDataLevel));
         return RUtils.create(
                 markerService.searchMarkerId(markerSearchVo)
         );
@@ -53,8 +54,8 @@ public class MarkerController {
     @Operation(summary = "根据各种条件筛选查询点位信息",
             description = "支持根据末端地区、末端类型、物品来进行查询，三种查询不能同时生效，同时存在时报错，同时支持测试点位获取")
     @PostMapping("/get/list_byinfo")
-    public R<List<MarkerVo>> searchMarker(@RequestHeader(value = "isTestUser", required = false) String isTestUser, @RequestBody MarkerSearchVo markerSearchVo) {
-        markerSearchVo.setIsTestUser(StringUtils.hasLength(isTestUser));
+    public R<List<MarkerVo>> searchMarker(@RequestHeader(value = "userDataLevel", required = false) String userDataLevel, @RequestBody MarkerSearchVo markerSearchVo) {
+        markerSearchVo.setHiddenFlagList(HiddenFlagEnum.getFlagList(userDataLevel));
         return RUtils.create(
                 markerService.searchMarker(markerSearchVo).parallelStream()
                         .map(MarkerDto::getVo).collect(Collectors.toList())
@@ -63,18 +64,18 @@ public class MarkerController {
 
     @Operation(summary = "通过ID列表查询点位信息", description = "通过ID列表来进行查询点位信息")
     @PostMapping("/get/list_byid")
-    public R<List<MarkerVo>> listMarkerById(@RequestHeader(value = "isTestUser", required = false) String isTestUser, @RequestBody List<Long> markerIdList) {
+    public R<List<MarkerVo>> listMarkerById(@RequestHeader(value = "userDataLevel", required = false) String userDataLevel, @RequestBody List<Long> markerIdList) {
         return RUtils.create(
-                markerService.listMarkerById(markerIdList, StringUtils.hasLength(isTestUser)).parallelStream()
+                markerService.listMarkerById(markerIdList,HiddenFlagEnum.getFlagList(userDataLevel)).parallelStream()
                         .map(MarkerDto::getVo).collect(Collectors.toList())
         );
     }
 
     @Operation(summary = "分页查询所有点位信息", description = "分页查询所有点位信息")
     @PostMapping("/get/page")
-    public R<PageListVo<MarkerVo>> listMarkerPage(@RequestHeader(value = "isTestUser", required = false) String isTestUser, @RequestBody PageSearchVo pageSearchVo) {
+    public R<PageListVo<MarkerVo>> listMarkerPage(@RequestHeader(value = "userDataLevel", required = false) String userDataLevel, @RequestBody PageSearchVo pageSearchVo) {
         return RUtils.create(
-                markerService.listMarkerPage(new PageSearchDto(pageSearchVo), StringUtils.hasLength(isTestUser))
+                markerService.listMarkerPage(new PageSearchDto(pageSearchVo), HiddenFlagEnum.getFlagList(userDataLevel))
         );
     }
 

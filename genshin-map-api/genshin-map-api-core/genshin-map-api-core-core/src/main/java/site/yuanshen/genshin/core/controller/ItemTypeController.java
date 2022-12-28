@@ -9,6 +9,7 @@ import site.yuanshen.common.web.response.R;
 import site.yuanshen.common.web.response.RUtils;
 import site.yuanshen.data.dto.ItemTypeDto;
 import site.yuanshen.data.dto.helper.PageAndTypeListDto;
+import site.yuanshen.data.enums.HiddenFlagEnum;
 import site.yuanshen.data.vo.ItemTypeVo;
 import site.yuanshen.data.vo.helper.PageAndTypeListVo;
 import site.yuanshen.data.vo.helper.PageListVo;
@@ -36,17 +37,17 @@ public class ItemTypeController {
 
     @Operation(summary = "列出物品类型", description = "不递归遍历，只遍历子级；{self}表示查询自身还是查询子级，0为查询自身，1为查询子级")
     @PostMapping("/get/list/{self}")
-    public R<PageListVo<ItemTypeVo>> listItemType(@RequestHeader(value = "isTestUser",required = false) String isTestUser,@RequestBody PageAndTypeListVo pageAndTypeListVo, @PathVariable("self") Integer self) {
+    public R<PageListVo<ItemTypeVo>> listItemType(@RequestHeader(value = "userDataLevel",required = false) String userDataLevel,@RequestBody PageAndTypeListVo pageAndTypeListVo, @PathVariable("self") Integer self) {
         return RUtils.create(
-                itemTypeService.listItemType(new PageAndTypeListDto(pageAndTypeListVo), self, StringUtils.hasLength(isTestUser))
+                itemTypeService.listItemType(new PageAndTypeListDto(pageAndTypeListVo), self, HiddenFlagEnum.getFlagList(userDataLevel))
         );
     }
 
     @Operation(summary = "列出所有物品类型", description = "返回所有可访问的物品类型")
     @PostMapping("/get/list_all")
-    public R<List<ItemTypeVo>> listItemType(@RequestHeader(value = "isTestUser",required = false) String isTestUser) {
+    public R<List<ItemTypeVo>> listItemType(@RequestHeader(value = "userDataLevel",required = false) String userDataLevel) {
         return RUtils.create(
-                itemTypeService.listAllItemType(StringUtils.hasLength(isTestUser))
+                itemTypeService.listAllItemType(HiddenFlagEnum.getFlagList(userDataLevel))
         );
     }
 

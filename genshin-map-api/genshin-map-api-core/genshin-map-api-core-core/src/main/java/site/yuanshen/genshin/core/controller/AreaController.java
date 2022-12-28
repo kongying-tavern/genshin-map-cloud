@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import site.yuanshen.common.web.response.R;
 import site.yuanshen.common.web.response.RUtils;
 import site.yuanshen.data.dto.AreaDto;
+import site.yuanshen.data.enums.HiddenFlagEnum;
 import site.yuanshen.data.vo.AreaSearchVo;
 import site.yuanshen.data.vo.AreaVo;
 import site.yuanshen.genshin.core.service.AreaService;
@@ -34,8 +35,8 @@ public class AreaController {
 
     @Operation(summary = "列出地区", description = "可根据父级地区id列出子地区列表")
     @PostMapping("/get/list")
-    public R<List<AreaVo>> listArea(@RequestHeader(value = "isTestUser",required = false) String isTestUser, @RequestBody AreaSearchVo areaSearchVo) {
-        areaSearchVo.setIsTestUser(StringUtils.hasLength(isTestUser));
+    public R<List<AreaVo>> listArea(@RequestHeader(value = "userDataLevel",required = false) String userDataLevel, @RequestBody AreaSearchVo areaSearchVo) {
+        areaSearchVo.setHiddenFlagList(HiddenFlagEnum.getFlagList(userDataLevel));
         return RUtils.create(
                 areaService.listArea(areaSearchVo)
                         .stream().map(AreaDto::getVo).collect(Collectors.toList())
@@ -44,9 +45,9 @@ public class AreaController {
 
     @Operation(summary = "获取单个地区信息", description = "获取单个地区信息")
     @PostMapping("/get/{areaId}")
-    public R<AreaVo> getArea(@RequestHeader(value = "isTestUser",required = false) String isTestUser,@PathVariable("areaId") Long areaId) {
+    public R<AreaVo> getArea(@RequestHeader(value = "userDataLevel",required = false) String userDataLevel,@PathVariable("areaId") Long areaId) {
         return RUtils.create(
-                areaService.getArea(areaId,StringUtils.hasLength(isTestUser)).getVo()
+                areaService.getArea(areaId,HiddenFlagEnum.getFlagList(userDataLevel)).getVo()
         );
     }
 

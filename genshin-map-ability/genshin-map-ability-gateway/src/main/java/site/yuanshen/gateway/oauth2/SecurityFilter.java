@@ -55,9 +55,11 @@ public class SecurityFilter implements GlobalFilter, Ordered {
         for (String roleName : authoritiesFilter.keySet()) {
             RoleEnum matchRole = RoleEnum.valueOf(roleName);
             boolean isMatch = false;
+            int userDataLevel = 0;
             for (RoleEnum userRole : userRoleList) {
                 if (userRole.getSort() <= matchRole.getSort()) {
                     isMatch = true;
+                    userDataLevel = userRole.getUserDataLevel();
                     break;
                 }
             }
@@ -68,6 +70,8 @@ public class SecurityFilter implements GlobalFilter, Ordered {
             for (String urlMatch : urlMatches) {
                 if (matcher.match(urlMatch, path)) {
                     log.info("Url matched: {} , has role, pass", urlMatch);
+                    log.info("Url userDataLevel: {}", userDataLevel);
+                    exchange.getRequest().mutate().header("userDataLevel", String.valueOf(userDataLevel));
                     return chain.filter(exchange);
                 }
             }

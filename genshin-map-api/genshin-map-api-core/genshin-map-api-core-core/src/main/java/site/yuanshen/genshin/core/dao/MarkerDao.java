@@ -9,19 +9,19 @@ import java.util.List;
 public interface MarkerDao {
 
     /**
-     * @param isTestUser 是否是测试服打点用户
+     * @param hiddenFlagList hidden_flag范围
      * @return 点位总数
      */
-    Long getMarkerCount(Boolean isTestUser);
+    Long getMarkerCount(List<Integer> hiddenFlagList);
 
     /**
      * 分页查询所有点位信息
      *
      * @param pageSearchDto 分页查询数据封装
-     * @param isTestUser    是否是测试服打点用户
+     * @param hiddenFlagList    hidden_flag范围
      * @return 点位完整信息的前端封装的分页记录
      */
-    PageListVo<MarkerVo> listMarkerPage(PageSearchDto pageSearchDto, Boolean isTestUser);
+    PageListVo<MarkerVo> listMarkerPage(PageSearchDto pageSearchDto, List<Integer> hiddenFlagList);
 
     /**
      * 按点位ID区间查询所有点位信息

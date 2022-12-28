@@ -44,14 +44,14 @@ public class ItemTypeServiceImpl implements ItemTypeService {
      */
     @Override
     @Cacheable("listItemType")
-    public PageListVo<ItemTypeVo> listItemType(PageAndTypeListDto searchDto, Integer self,Boolean isTestUser) {
+    public PageListVo<ItemTypeVo> listItemType(PageAndTypeListDto searchDto, Integer self,List<Integer> hiddenFlagList) {
         Page<ItemType> itemTypePage = new Page<>();
         //查询自身
         List<Long> typeIdList = searchDto.getTypeIdList();
         if (self.equals(0)) {
             if (typeIdList != null && typeIdList.size() > 0) {
                 itemTypePage = itemTypeMapper.selectPage(searchDto.getPageEntity(), Wrappers.<ItemType>lambdaQuery()
-                        .ne(!isTestUser,ItemType::getHiddenFlag,2)
+                        .in(!hiddenFlagList.isEmpty(),ItemType::getHiddenFlag,hiddenFlagList)
                         .in(ItemType::getId, typeIdList));
             } else {
                 itemTypePage.setTotal(0L);
@@ -60,7 +60,7 @@ public class ItemTypeServiceImpl implements ItemTypeService {
         //查询子级
         else if (self.equals(1)) {
             itemTypePage = itemTypeMapper.selectPage(searchDto.getPageEntity(), Wrappers.<ItemType>lambdaQuery()
-                    .ne(!isTestUser,ItemType::getHiddenFlag,2)
+                    .in(!hiddenFlagList.isEmpty(),ItemType::getHiddenFlag,hiddenFlagList)
                     .in(ItemType::getParentId,
                             typeIdList != null && typeIdList.size() > 0 ? typeIdList : Collections.singletonList(-1L)));
         }
@@ -76,14 +76,14 @@ public class ItemTypeServiceImpl implements ItemTypeService {
     /**
      * 列出所有物品类型
      *
-     * @param isTestUser 是否搜索内测类型
+     * @param hiddenFlagList hidden_flag范围
      * @return 物品类型的前端封装的列表
      */
     @Override
     @Cacheable("listAllItemType")
-    public List<ItemTypeVo> listAllItemType(Boolean isTestUser) {
+    public List<ItemTypeVo> listAllItemType(List<Integer> hiddenFlagList) {
         return itemTypeMapper.selectList(Wrappers.<ItemType>lambdaQuery()
-                        .ne(!isTestUser, ItemType::getHiddenFlag, 2))
+                        .in(!hiddenFlagList.isEmpty(), ItemType::getHiddenFlag, hiddenFlagList))
                 .stream()
                 .map(ItemTypeDto::new)
                 .map(ItemTypeDto::getVo)

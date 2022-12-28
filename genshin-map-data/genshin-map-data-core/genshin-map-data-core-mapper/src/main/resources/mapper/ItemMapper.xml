@@ -60,8 +60,11 @@
                     #{areaId}
                 </foreach>
             </if>
-            <if test="itemSearchDto.isTestUser == null or !itemSearchDto.isTestUser">
-                and hidden_flag != '2'
+            <if test="itemSearchDto.hiddenFlagList != null and itemSearchDto.hiddenFlagList.size > 0">
+                and i.hidden_flag in
+                <foreach collection="itemSearchDto.hiddenFlagList" open="(" separator="," close=")" item="hiddenFlag">
+                    #{hiddenFlag}
+                </foreach>
             </if>
         </where>
         order by i.id)

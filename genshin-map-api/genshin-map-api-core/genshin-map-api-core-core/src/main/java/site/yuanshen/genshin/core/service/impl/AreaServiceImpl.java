@@ -50,7 +50,7 @@ public class AreaServiceImpl implements AreaService {
         //非递归查询
         if (!areaSearchVo.getIsTraverse()) {
             //如果不为测试打点员,则搜索时hiddenFlag!=2
-            return areaMapper.selectList(Wrappers.<Area>lambdaQuery().ne(!areaSearchVo.getIsTestUser(),Area::getHiddenFlag,2)
+            return areaMapper.selectList(Wrappers.<Area>lambdaQuery().in(!areaSearchVo.getHiddenFlagList().isEmpty(),Area::getHiddenFlag,areaSearchVo.getHiddenFlagList())
                             .eq(Area::getParentId, Optional.ofNullable(areaSearchVo.getParentId()).orElse(-1L)))
                     .stream().map(AreaDto::new).collect(Collectors.toList());
         }
@@ -59,7 +59,7 @@ public class AreaServiceImpl implements AreaService {
         //存储查到的所有的地区信息
         List<AreaDto> result = new ArrayList<>();
         while (!nowAreaIdList.isEmpty()) {
-            List<Area> areaList = areaMapper.selectList(Wrappers.<Area>lambdaQuery().ne(!areaSearchVo.getIsTestUser(),Area::getHiddenFlag,2)
+            List<Area> areaList = areaMapper.selectList(Wrappers.<Area>lambdaQuery().in(!areaSearchVo.getHiddenFlagList().isEmpty(),Area::getHiddenFlag,areaSearchVo.getHiddenFlagList())
                     .in(Area::getParentId, nowAreaIdList));
             nowAreaIdList = areaList.parallelStream().map(Area::getId).collect(Collectors.toList());
             result.addAll(areaList.stream().map(AreaDto::new).collect(Collectors.toList()));
@@ -75,8 +75,8 @@ public class AreaServiceImpl implements AreaService {
      */
     @Override
     @Cacheable(value = "area",key = "#areaId")
-    public AreaDto getArea(Long areaId,Boolean isTestUser) {
-        return new AreaDto(areaMapper.selectOne(Wrappers.<Area>lambdaQuery().ne(!isTestUser,Area::getHiddenFlag,2)
+    public AreaDto getArea(Long areaId,List<Integer> hiddenFlagList) {
+        return new AreaDto(areaMapper.selectOne(Wrappers.<Area>lambdaQuery().in(!hiddenFlagList.isEmpty(),Area::getHiddenFlag,hiddenFlagList)
                 .eq(Area::getId, areaId)));
     }
 

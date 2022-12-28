@@ -64,7 +64,7 @@ public class MarkerServiceImpl implements MarkerService {
         List<Long> itemIdList = new ArrayList<>();
         if (isArea) {
             itemIdList = itemMapper.selectList(Wrappers.<Item>lambdaQuery()
-                            .in(Item::getAreaId, searchVo.getAreaIdList()).ne(!searchVo.getIsTestUser(), Item::getHiddenFlag, 2)
+                            .in(Item::getAreaId, searchVo.getAreaIdList()).in(!searchVo.getHiddenFlagList().isEmpty(), Item::getHiddenFlag, searchVo.getHiddenFlagList())
                             .select(Item::getId))
                     .stream()
                     .map(Item::getId).distinct().collect(Collectors.toList());
@@ -83,7 +83,7 @@ public class MarkerServiceImpl implements MarkerService {
         //如果不是按地区筛选,也就是说没经过筛选内鬼这一步,则再筛一遍 TODO:感觉繁琐了
         if (!isArea) {
             itemIdList = itemMapper.selectList(Wrappers.<Item>lambdaQuery()
-                            .in(!itemIdList.isEmpty(),Item::getId, itemIdList).ne(!searchVo.getIsTestUser(), Item::getHiddenFlag, 2)
+                            .in(!itemIdList.isEmpty(),Item::getId, itemIdList).in(!searchVo.getHiddenFlagList().isEmpty(),Item::getHiddenFlag, searchVo.getHiddenFlagList())
                             .select(Item::getId)).stream()
                     .map(Item::getId).distinct().collect(Collectors.toList());
         }
@@ -122,7 +122,7 @@ public class MarkerServiceImpl implements MarkerService {
     //此处是两个方法的缝合，不需要加缓存
     public List<MarkerDto> searchMarker(MarkerSearchVo markerSearchVo) {
         List<Long> markerIdList = searchMarkerId(markerSearchVo);
-        return listMarkerById(markerIdList, markerSearchVo.getIsTestUser());
+        return listMarkerById(markerIdList, markerSearchVo.getHiddenFlagList());
     }
 
 
@@ -134,7 +134,7 @@ public class MarkerServiceImpl implements MarkerService {
      */
     @Override
     @Cacheable(value = "listMarkerById")
-    public List<MarkerDto> listMarkerById(List<Long> markerIdList, Boolean isTestUser) {
+    public List<MarkerDto> listMarkerById(List<Long> markerIdList, List<Integer> hiddenFlagList) {
         //为空直接返回
         if (markerIdList.isEmpty()) return new ArrayList<>();
         //获取所有的额外字段
@@ -158,7 +158,7 @@ public class MarkerServiceImpl implements MarkerService {
                         })
         );
         //构建返回
-        return markerMapper.selectList(Wrappers.<Marker>lambdaQuery().in(Marker::getId, markerIdList).ne(!isTestUser, Marker::getHiddenFlag, 2))
+        return markerMapper.selectList(Wrappers.<Marker>lambdaQuery().in(Marker::getId, markerIdList).in(!hiddenFlagList.isEmpty(), Marker::getHiddenFlag, hiddenFlagList))
                 .parallelStream().map(marker ->
                         new MarkerDto(marker,
                                 markerExtraMap.get(marker.getId()),
@@ -171,12 +171,12 @@ public class MarkerServiceImpl implements MarkerService {
      * 分页查询所有点位信息
      *
      * @param pageSearchDto 分页查询数据封装
-     * @param isTestUser    是否是测试服打点用户
+     * @param hiddenFlagList   hidden_flag范围
      * @return 点位完整信息的前端封装的分页记录
      */
     @Override
-    public PageListVo<MarkerVo> listMarkerPage(PageSearchDto pageSearchDto, Boolean isTestUser) {
-        return markerDao.listMarkerPage(pageSearchDto,isTestUser);
+    public PageListVo<MarkerVo> listMarkerPage(PageSearchDto pageSearchDto,List<Integer> hiddenFlagList) {
+        return markerDao.listMarkerPage(pageSearchDto,hiddenFlagList);
     }
 
     /**

@@ -52,21 +52,21 @@ public class MarkerDaoImpl implements MarkerDao {
 
     @Override
     @Cacheable(value = "getMarkerCount")
-    public Long getMarkerCount(Boolean isTestUser) {
-        return markerMapper.selectCount(Wrappers.<Marker>lambdaQuery().ne(!isTestUser, Marker::getHiddenFlag, 2));
+    public Long getMarkerCount(List<Integer> hiddenFlagList) {
+        return markerMapper.selectCount(Wrappers.<Marker>lambdaQuery().in(!hiddenFlagList.isEmpty(), Marker::getHiddenFlag, hiddenFlagList));
     }
 
     /**
      * 分页查询所有点位信息
      *
      * @param pageSearchDto 分页查询数据封装
-     * @param isTestUser    是否是测试服打点用户
+     * @param hiddenFlagList    hidden_flag范围
      * @return 点位完整信息的前端封装的分页记录
      */
     @Override
     @Cacheable(value = "listMarkerPage")
-    public PageListVo<MarkerVo> listMarkerPage(PageSearchDto pageSearchDto, Boolean isTestUser) {
-        Page<Marker> markerPage = markerMapper.selectPage(pageSearchDto.getPageEntity(), Wrappers.<Marker>lambdaQuery().ne(!isTestUser, Marker::getHiddenFlag, 2));
+    public PageListVo<MarkerVo> listMarkerPage(PageSearchDto pageSearchDto, List<Integer> hiddenFlagList) {
+        Page<Marker> markerPage = markerMapper.selectPage(pageSearchDto.getPageEntity(), Wrappers.<Marker>lambdaQuery().in(!hiddenFlagList.isEmpty(), Marker::getHiddenFlag, hiddenFlagList));
         List<Long> markerIdList = markerPage.getRecords().stream()
                 .map(Marker::getId).collect(Collectors.toList());
         Map<Long, MarkerExtra> extraMap = markerExtraMapper.selectList(Wrappers.<MarkerExtra>lambdaQuery()

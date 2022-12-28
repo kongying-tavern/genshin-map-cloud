@@ -9,6 +9,7 @@ import site.yuanshen.common.web.response.R;
 import site.yuanshen.common.web.response.RUtils;
 import site.yuanshen.data.dto.ItemDto;
 import site.yuanshen.data.dto.ItemSearchDto;
+import site.yuanshen.data.enums.HiddenFlagEnum;
 import site.yuanshen.data.vo.ItemSearchVo;
 import site.yuanshen.data.vo.ItemVo;
 import site.yuanshen.data.vo.helper.PageListVo;
@@ -37,18 +38,18 @@ public class ItemController {
 
     @Operation(summary = "根据物品ID查询物品", description = "输入ID列表查询，单个查询也用此API")
     @PostMapping("/get/list_byid")
-    public R<List<ItemVo>> listItemById(@RequestHeader(value = "isTestUser",required = false) String isTestUser,@RequestBody List<Long> itemIdList) {
+    public R<List<ItemVo>> listItemById(@RequestHeader(value = "userDataLevel",required = false) String userDataLevel,@RequestBody List<Long> itemIdList) {
         return RUtils.create(
-                itemService.listItemById(itemIdList,StringUtils.hasLength(isTestUser))
+                itemService.listItemById(itemIdList,HiddenFlagEnum.getFlagList(userDataLevel))
                         .stream().map(ItemDto::getVo).collect(Collectors.toList())
         );
     }
 
     @Operation(summary = "根据筛选条件列出物品信息", description = "传入的物品类型ID和地区ID列表，必须为末端的类型或地区")
     @PostMapping("/get/list")
-    public R<PageListVo<ItemVo>> listItemIdByType(@RequestHeader(value = "isTestUser",required = false) String isTestUser,@RequestBody ItemSearchVo itemSearchVo) {
+    public R<PageListVo<ItemVo>> listItemIdByType(@RequestHeader(value = "userDataLevel",required = false) String userDataLevel,@RequestBody ItemSearchVo itemSearchVo) {
         return RUtils.create(
-                itemService.listItem(new ItemSearchDto(itemSearchVo).setIsTestUser(StringUtils.hasLength(isTestUser)))
+                itemService.listItem(new ItemSearchDto(itemSearchVo).setHiddenFlagList(HiddenFlagEnum.getFlagList(userDataLevel)))
         );
     }
 

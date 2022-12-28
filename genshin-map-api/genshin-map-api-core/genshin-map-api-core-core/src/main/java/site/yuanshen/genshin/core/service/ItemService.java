@@ -22,7 +22,7 @@ public interface ItemService {
      * @param itemIdList 物品ID列表
      * @return 物品数据封装列表
      */
-    List<ItemDto> listItemById(List<Long> itemIdList,Boolean isTestUser);
+    List<ItemDto> listItemById(List<Long> itemIdList,List<Integer> hiddenFlagList);
 
     /**
      * 根据筛选条件列出物品信息

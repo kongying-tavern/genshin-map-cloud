@@ -48,7 +48,7 @@ public class ItemServiceImpl implements ItemService {
      */
     @Override
     @Cacheable("listItemById")
-    public List<ItemDto> listItemById(List<Long> itemIdList, Boolean isTestUser) {
+    public List<ItemDto> listItemById(List<Long> itemIdList, List<Integer> hiddenFlagList) {
         //收集分类信息
         Map<Long, List<Long>> typeMap = new ConcurrentHashMap<>();
         itemTypeLinkMapper.selectList(Wrappers.<ItemTypeLink>lambdaQuery()
@@ -62,7 +62,7 @@ public class ItemServiceImpl implements ItemService {
                         }));
         //取得实体类并转化为DTO，过程之中写入分类信息
         return itemMapper.selectList(Wrappers.<Item>lambdaQuery()
-                        .ne(!isTestUser, Item::getHiddenFlag, 2)
+                        .in(!hiddenFlagList.isEmpty(), Item::getHiddenFlag, hiddenFlagList)
                         .in(Item::getId, itemIdList))
                 .parallelStream()
                 .map(item ->
@@ -104,8 +104,9 @@ public class ItemServiceImpl implements ItemService {
                         itemPage.getRecords().stream()
                                 .map(Item::getId).collect(Collectors.toList())));
         //获取其中的正常点位 hidden_flag=0 若为内鬼用户,则增加hidden_flag=2
+
         List<Long> normalMarkerList = markerMapper.selectList(Wrappers.<Marker>lambdaQuery()
-                        .and(i-> i.eq(Marker::getHiddenFlag, 0).or(itemSearchDto.getIsTestUser(),n-> n.eq(Marker::getHiddenFlag, 2)))
+                        .in(!itemSearchDto.getHiddenFlagList().isEmpty(),Marker::getHiddenFlag,itemSearchDto.getHiddenFlagList())
                         .in(Marker::getId, markerItemLinkList.stream().map(MarkerItemLink::getMarkerId).collect(Collectors.toList())))
                 .stream().map(Marker::getId).collect(Collectors.toList());
 
@@ -128,6 +129,29 @@ public class ItemServiceImpl implements ItemService {
                 .setTotal(itemPage.getTotal())
                 .setSize(itemPage.getSize());
     }
+
+
+//    public static void main(String[] args) {
+//
+//
+//        //用户权限
+//        int user = 1+4;
+//        test(user);
+//
+//
+//    }
+//
+//    public static void test(int userDataLevel){
+//        int normal = 0;
+//        int invisible = 1;
+//        int test = 2;
+//
+//        System.out.println((userDataLevel&1<<invisible));
+//
+//        Wrappers.<Marker>lambdaQuery().eq((userDataLevel&1<<normal)>0,Marker::getHiddenFlag,normal);
+//    }
+
+
 
     /**
      * 修改物品

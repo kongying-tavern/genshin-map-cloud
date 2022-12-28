@@ -53,11 +53,9 @@ public class ItemSearchDto {
     private Long size = 10L;
 
 
-    /**
-     * 是否为测试打点员
-     */
-    @Schema(title = "是否为测试打点员")
-    private Boolean isTestUser = false;
+    @Schema(title = "数据等级(hidden_flag范围)")
+    private List<Integer> hiddenFlagList;
+
 
     public ItemSearchDto(ItemSearchVo itemSearchVo) {
         BeanUtils.copyNotNull(itemSearchVo, this);
