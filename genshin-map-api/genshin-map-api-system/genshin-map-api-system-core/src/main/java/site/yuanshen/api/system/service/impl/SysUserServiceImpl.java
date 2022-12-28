@@ -123,6 +123,7 @@ public class SysUserServiceImpl implements SysUserService {
      */
     @Override
     public SysUserVo getUserInfo(Long Id) {
+        SysUser user = basicService.getUserNotNull(Id);
         SysRoleDto roleDto = userRoleMapper.selectList(Wrappers.<SysUserRoleLink>lambdaQuery()
                         .eq(SysUserRoleLink::getUserId, Id))
                 .stream()
@@ -131,7 +132,7 @@ public class SysUserServiceImpl implements SysUserService {
                 .min(Comparator.comparingInt(RoleEnum::getSort))
                 .map(SysRoleDto::new)
                 .orElseThrow(() -> new RuntimeException("用户未绑定角色"));
-        return new SysUserDto(basicService.getUserNotNull(Id))
+        return new SysUserDto(user)
                 .setRoleList(Collections.singletonList(roleDto.getVo()))
                 .getVo();
     }
