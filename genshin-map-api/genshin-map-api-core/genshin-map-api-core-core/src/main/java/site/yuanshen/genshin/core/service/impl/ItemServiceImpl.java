@@ -56,7 +56,7 @@ public class ItemServiceImpl implements ItemService {
                 .parallelStream()
                 .forEach(typeLink ->
                         typeMap.compute(typeLink.getItemId(), (itemId, typeList) -> {
-                            if (typeList == null) return Collections.singletonList(typeLink.getTypeId());
+                            if (typeList == null) return new ArrayList<>(Collections.singletonList(typeLink.getTypeId()));
                             typeList.add(typeLink.getTypeId());
                             return typeList;
                         }));

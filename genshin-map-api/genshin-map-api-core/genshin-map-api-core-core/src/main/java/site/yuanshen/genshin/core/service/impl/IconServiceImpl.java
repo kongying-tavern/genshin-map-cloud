@@ -67,7 +67,7 @@ public class IconServiceImpl implements IconService {
                 .parallelStream()
                 .forEach(typeLink ->
                         typeMap.compute(typeLink.getIconId(), (iconId, typeList) -> {
-                            if (typeList == null) return Collections.singletonList(typeLink.getTypeId());
+                            if (typeList == null) return new ArrayList<>(Collections.singletonList(typeLink.getTypeId()));
                             typeList.add(typeLink.getTypeId());
                             return typeList;
                         }));
