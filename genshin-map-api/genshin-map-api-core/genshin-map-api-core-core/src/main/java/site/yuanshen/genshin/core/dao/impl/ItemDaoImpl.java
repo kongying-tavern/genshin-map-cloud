@@ -12,6 +12,7 @@ import site.yuanshen.common.core.utils.CompressUtils;
 import site.yuanshen.data.dto.ItemDto;
 import site.yuanshen.data.entity.Item;
 import site.yuanshen.data.entity.ItemTypeLink;
+import site.yuanshen.data.entity.Marker;
 import site.yuanshen.data.entity.MarkerItemLink;
 import site.yuanshen.data.mapper.*;
 import site.yuanshen.data.vo.ItemVo;
@@ -39,6 +40,7 @@ public class ItemDaoImpl implements ItemDao {
     private final ItemMapper itemMapper;
     private final ItemTypeLinkMapper itemTypeLinkMapper;
     private final MarkerItemLinkMapper markerItemLinkMapper;
+    private final MarkerMapper markerMapper;
 
     /**
      * @return 所有的物品信息
@@ -46,7 +48,10 @@ public class ItemDaoImpl implements ItemDao {
     @Override
     @Cacheable("listAllItem")
     public List<ItemVo> listAllItem() {
-        List<Item> itemList = itemMapper.selectList(Wrappers.query());
+        List<Item> itemList = itemMapper
+                .selectList(
+                        Wrappers.<Item>lambdaQuery()
+                                .eq(Item::getHiddenFlag, 0));
         if (itemList.size() == 0)
             return new ArrayList<>();
         //获取分类数据
@@ -67,12 +72,17 @@ public class ItemDaoImpl implements ItemDao {
                 .in(MarkerItemLink::getItemId,
                         itemList.stream()
                                 .map(Item::getId).distinct().collect(Collectors.toList())));
+        List<Long> markerIdList = markerMapper.selectList(Wrappers.<Marker>lambdaQuery()
+                        .eq(Marker::getHiddenFlag, 0)
+                        .select(Marker::getId))
+                .parallelStream().map(Marker::getId).collect(Collectors.toList());
         //计算各个物品在点位中的数量合计
         Map<Long, Integer> markerItemLinkCount = new HashMap<>();
-        markerItemLinkList.stream().collect(Collectors.groupingBy(MarkerItemLink::getItemId)).forEach(
-                (itemId, list) -> markerItemLinkCount.put(itemId, list.stream().mapToInt(MarkerItemLink::getCount).sum())
-        );
-
+        markerItemLinkList.parallelStream()
+                .filter(markerItemLink -> markerIdList.contains(markerItemLink.getMarkerId()))
+                .collect(Collectors.groupingBy(MarkerItemLink::getItemId)).forEach(
+                        (itemId, list) -> markerItemLinkCount.put(itemId, list.stream().mapToInt(MarkerItemLink::getCount).sum())
+                );
         return itemList.stream()
                 .map(ItemDto::new)
                 .map(itemDto -> itemDto.setCount(Optional.ofNullable(markerItemLinkCount.get(itemDto.getItemId())).orElse(0)))

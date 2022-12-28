@@ -105,9 +105,11 @@ public class MarkerDaoImpl implements MarkerDao {
      */
     @Override
     @Cacheable("listMarkerIdRange")
-    public List<MarkerVo> listMarkerIdRange(Long left, Long right, Boolean isTestUser) {
-        log.debug("listMarkerIdRange 入参：left:{}, right:{}, isTestUser:{}",left,right,isTestUser);
-        List<Marker> markerList = markerMapper.selectList( Wrappers.<Marker>lambdaQuery().between(Marker::getId,left,right).ne(!isTestUser, Marker::getHiddenFlag, 2));
+    public List<MarkerVo> listMarkerIdRange(Long left, Long right) {
+        log.debug("listMarkerIdRange 入参：left:{}, right:{}",left,right);
+        List<Marker> markerList = markerMapper.selectList(Wrappers.<Marker>lambdaQuery()
+                .between(Marker::getId,left,right)
+                .eq(Marker::getHiddenFlag, 0));
         if (markerList.size() == 0) return new ArrayList<>();
         List<Long> markerIdList = markerList.stream()
                 .map(Marker::getId).collect(Collectors.toList());
@@ -132,23 +134,22 @@ public class MarkerDaoImpl implements MarkerDao {
                 .collect(Collectors.toList());
     }
 
-    private List<MarkerVo> listMarkerId3000RangePage(int index, Boolean isTestUser) {
-        return listMarkerIdRange((index-1) * 3000L + 1, index * 3000L, isTestUser);
+    private List<MarkerVo> listMarkerId3000RangePage(int index) {
+        return listMarkerIdRange((index-1) * 3000L + 1, index * 3000L);
     }
 
     /**
      * 通过bz2返回点位分页
      *
-     * @param isTestUser 是否是测试打点用户
-     * @param index      下标（从1开始）
+     * @param index 下标（从1开始）
      * @return 压缩后的字节数组
      */
     @Override
-    @Cacheable(value = "listPageMarkerByBz2", key = "#isTestUser+'#'+#index")
-    public byte[] listPageMarkerByBz2(Boolean isTestUser, Integer index) {
+    @Cacheable(value = "listPageMarkerByBz2", key = "#index")
+    public byte[] listPageMarkerByBz2(Integer index) {
         try {
             return CompressUtils.compress(JSON.toJSONString(
-                            listMarkerId3000RangePage(index, isTestUser))
+                            listMarkerId3000RangePage(index))
                     .getBytes(StandardCharsets.UTF_8));
         } catch (Exception e) {
             throw new RuntimeException("创建压缩失败" + e);
@@ -163,8 +164,8 @@ public class MarkerDaoImpl implements MarkerDao {
      */
     @Override
     @Cacheable(value = "listMarkerBz2MD5")
-    public List<String> listMarkerBz2MD5(Boolean isTestUser) {
-        log.info("listMarkerBz2MD5 入参：isTestUser:{}",isTestUser);
+    public List<String> listMarkerBz2MD5() {
+        log.debug("listMarkerBz2MD5 调用");
         Cache markerBz2Cache = cacheManager.getCache("listPageMarkerByBz2");
         Long id = markerMapper.selectOne(Wrappers.<Marker>query().select("max(id) as id")).getId();
         int totalPages = (int) ((id + 3000 - 1) / 3000);
@@ -180,10 +181,11 @@ public class MarkerDaoImpl implements MarkerDao {
                     byte[] markerBz2;
                     if (wrapper == null || wrapper.get() == null || wrapper.get() instanceof byte[]) {
                         log.debug("rebuild the marker page bz2:{}", i);
-                        markerBz2 = listPageMarkerByBz2(false, i);
+                        markerBz2 = listPageMarkerByBz2(i);
                     } else {
                         markerBz2 = (byte[]) wrapper.get();
                     }
+                    assert markerBz2 != null;
                     String result = DigestUtils.md5DigestAsHex(markerBz2);
                     log.info("refresh md5: index:{}, result:{}",i,result);
                     return result;
@@ -192,8 +194,8 @@ public class MarkerDaoImpl implements MarkerDao {
                 throw new RuntimeException("打包MD5缓存创建失败");
             }
         } else {
-            markerBz2MD5List = indexList.parallelStream().map(i -> DigestUtils.md5DigestAsHex(listPageMarkerByBz2(false, i))).collect(Collectors.toList());
-            log.warn("listMarkerBz2MD5 全刷新：isTestUser:{} result:{}",isTestUser,markerBz2MD5List);
+            markerBz2MD5List = indexList.parallelStream().map(i -> DigestUtils.md5DigestAsHex(listPageMarkerByBz2(i))).collect(Collectors.toList());
+            log.warn("listMarkerBz2MD5 全刷新 result:{}",markerBz2MD5List);
         }
         return markerBz2MD5List;
     }

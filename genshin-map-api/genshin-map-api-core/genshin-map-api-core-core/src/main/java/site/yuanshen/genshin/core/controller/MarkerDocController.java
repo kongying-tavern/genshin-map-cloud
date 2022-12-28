@@ -28,16 +28,15 @@ public class MarkerDocController {
 
     @Operation(summary = "通过bz2返回点位分页", description = "查询分页点位信息，返回bz2压缩格式的byte数组")
     @GetMapping("/list_page_bz2/{index}")
-    public byte[] listPageMarkerBy7zip(@RequestHeader(value = "isTestUser", required = false) String isTestUser,
-                                      @PathVariable("index") Integer index) throws IOException {
-        return markerDao.listPageMarkerByBz2(StringUtils.hasLength(isTestUser),index);
+    public byte[] listPageMarkerBy7zip(@PathVariable("index") Integer index) throws IOException {
+        return markerDao.listPageMarkerByBz2(index);
     }
 
     @Operation(summary = "返回点位分页bz2的md5数组", description = "返回点位分页bz2的md5数组")
     @GetMapping("/list_page_bz2_md5")
-    public R<List<String>> listMarkerBz2MD5(@RequestHeader(value = "isTestUser", required = false) String isTestUser) {
+    public R<List<String>> listMarkerBz2MD5() {
         return RUtils.create(
-                markerDao.listMarkerBz2MD5(StringUtils.hasLength(isTestUser))
+                markerDao.listMarkerBz2MD5()
         );
     }
 }

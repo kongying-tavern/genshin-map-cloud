@@ -142,7 +142,7 @@ public class CacheServiceImpl implements CacheService {
     )
     public void refreshMarkerBz2() {
         log.info("refreshMarkerBz2");
-        markerDao.listMarkerBz2MD5(false);
+        markerDao.listMarkerBz2MD5();
     }
 
     enum FunctionKeyEnum {

@@ -31,7 +31,7 @@ public class CacheInitListener implements ApplicationListener<ApplicationReadyEv
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
         long startTime = System.currentTimeMillis();
-        markerDao.listMarkerBz2MD5(false);
+        markerDao.listMarkerBz2MD5();
         itemDao.listAllItemBz2Md5();
         iconTagDao.listAllTagBz2Md5();
         log.info("完成缓存初始化，花费{}", System.currentTimeMillis() - startTime);
