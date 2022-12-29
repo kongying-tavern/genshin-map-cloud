@@ -34,13 +34,6 @@ public class Item extends BaseEntity {
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
-//	/**
-//	 * 物品id
-//	 */
-//	@Schema(title = "物品id")
-//	@TableField("item_id")
-//	private Long itemId;
-
     /**
      * 物品名称
      */
@@ -103,5 +96,13 @@ public class Item extends BaseEntity {
     @Schema(title = "默认物品数量")
     @TableField("default_count")
     private Integer defaultCount;
+
+    /**
+     * 特殊物品标记，二进制表示<br>
+     * 低位第一位：是否为显示物品
+     */
+    @Schema(title = "特殊物品标记")
+    @TableField("special_flag")
+    private Integer specialFlag;
 
 }

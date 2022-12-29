@@ -4,7 +4,7 @@
   "avatar": "",
   "version": "4.1.5",
   "createdTime": "2022-4-22 02:18:22",
-  "updatedTime": "2022-12-14 21:08:11",
+  "updatedTime": "2022-12-29 18:16:35",
   "dbConns": [],
   "profile": {
     "default": {
@@ -3146,6 +3146,23 @@
           "extProps": {},
           "domain": "6BC8F04B-6CFA-4995-98D3-318F5CDD774E",
           "id": "7E089D1D-7069-4C24-82C5-1B8C8BB89924"
+        },
+        {
+          "defKey": "special_flag",
+          "defName": "特殊物品标记",
+          "comment": "二进制表示；低位第一位：是否为显示物品",
+          "type": "",
+          "len": "",
+          "scale": "",
+          "primaryKey": false,
+          "notNull": false,
+          "autoIncrement": false,
+          "defaultValue": "",
+          "hideInGraph": false,
+          "refDict": "",
+          "extProps": {},
+          "domain": "6BC8F04B-6CFA-4995-98D3-318F5CDD774E",
+          "id": "9E5E40ED-C237-40BA-BF0B-07263CB09E6B"
         },
         {
           "defKey": "sync_tag",

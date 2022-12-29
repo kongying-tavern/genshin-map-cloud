@@ -1,6 +1,7 @@
 package site.yuanshen.data.dto;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import com.baomidou.mybatisplus.annotation.TableField;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -98,6 +99,13 @@ public class ItemDto {
      */
     @Schema(title = "默认物品数量")
     private Integer defaultCount;
+
+    /**
+     * 特殊物品标记，二进制表示<br>
+     * 低位第一位：是否为显示物品
+     */
+    @Schema(title = "特殊物品标记")
+    private Integer specialFlag;
 
     /**
      * 查询条件下物品总数
