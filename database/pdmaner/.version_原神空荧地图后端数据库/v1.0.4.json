@@ -1,14 +1,14 @@
 {
   "name": "v1.0.4",
   "desc": "\n/* --------------- 修改表 --------------- */\nitem[物品表]\n    添加字段：\n\tspecial_flag[特殊物品标记]\n",
-  "date": 1672308995257,
+  "date": 1672322549367,
   "data": {
     "name": "原神空荧地图后端数据库",
     "describe": "原神空荧地图后端数据库",
     "avatar": "",
     "version": "4.1.5",
     "createdTime": "2022-4-22 02:18:22",
-    "updatedTime": "2022-12-29 18:16:27",
+    "updatedTime": "2022-12-29 19:05:04",
     "dbConns": [],
     "profile": {
       "default": {
@@ -3161,7 +3161,7 @@
             "primaryKey": false,
             "notNull": false,
             "autoIncrement": false,
-            "defaultValue": "",
+            "defaultValue": "0",
             "hideInGraph": false,
             "refDict": "",
             "extProps": {},

@@ -4,7 +4,7 @@
   "avatar": "",
   "version": "4.1.5",
   "createdTime": "2022-4-22 02:18:22",
-  "updatedTime": "2022-12-29 18:16:35",
+  "updatedTime": "2022-12-29 22:22:01",
   "dbConns": [],
   "profile": {
     "default": {
@@ -1291,7 +1291,7 @@
           "defKey": "marker_extra_content",
           "defName": "额外特殊字段具体内容",
           "comment": "",
-          "type": "",
+          "type": "JSON",
           "len": "",
           "scale": "",
           "primaryKey": false,
@@ -1300,7 +1300,7 @@
           "defaultValue": "",
           "hideInGraph": false,
           "refDict": "",
-          "domain": "F698B7AF-78D1-4C57-968A-4035DD5213C6",
+          "domain": "",
           "id": "020D2566-F41F-4B2B-90F3-E08420429BEE"
         },
         {
@@ -3157,7 +3157,7 @@
           "primaryKey": false,
           "notNull": false,
           "autoIncrement": false,
-          "defaultValue": "",
+          "defaultValue": "0",
           "hideInGraph": false,
           "refDict": "",
           "extProps": {},
