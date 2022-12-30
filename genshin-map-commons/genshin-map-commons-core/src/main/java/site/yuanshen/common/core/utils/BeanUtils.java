@@ -11,10 +11,10 @@ import org.slf4j.LoggerFactory;
  * @author Moment
  */
 public class BeanUtils {
-
     public static void copyNotNull(Object source, Object target) {
         BeanUtil.copyProperties(source,target, CopyOptions.create().ignoreNullValue().ignoreError());
     }
+
 
 
     private static final Logger logger = LoggerFactory.getLogger(BeanUtils.class);
@@ -29,7 +29,7 @@ public class BeanUtils {
     }
 
     public static <T, R> T copyProperties(R r, T t) {
-        BeanUtil.copyProperties(r,t);
+        CachedBeanCopier.copyProperties(r,t);
         return t;
     }
 
