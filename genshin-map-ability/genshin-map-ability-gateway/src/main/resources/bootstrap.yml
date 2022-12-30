@@ -33,10 +33,10 @@ genshin:
       - /system/user/update
       - /system/user/update_password
     MAP_PUNCTUATE:
-      - /api/marker/punctuate/author/**
+      - /api/punctuate/**
       - /api/marker/**
     MAP_MANAGER:
-      - /api/marker/punctuate/check/**
+      - /api/punctuate_audit/**
       - /api/tag/**
       - /api/tag_type/**
       - /api/icon/**
