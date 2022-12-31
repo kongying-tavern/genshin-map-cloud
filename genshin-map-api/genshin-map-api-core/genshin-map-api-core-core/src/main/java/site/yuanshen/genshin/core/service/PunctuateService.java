@@ -37,7 +37,7 @@ public interface PunctuateService {
      * @param markerSinglePunctuateDto 打点无额外字段的数据封装
      * @return 打点ID
      */
-    Long addSinglePunctuate(MarkerPunctuateDto markerSinglePunctuateDto);
+    Long addPunctuate(MarkerPunctuateDto markerSinglePunctuateDto);
 
     /**
      * 将暂存点位提交审核
@@ -53,7 +53,7 @@ public interface PunctuateService {
      * @param singlePunctuateDto 打点无额外字段的数据封装
      * @return 是否成功
      */
-    Boolean updateSelfSinglePunctuate(MarkerPunctuateDto singlePunctuateDto);
+    Boolean updateSelfPunctuate(MarkerPunctuateDto singlePunctuateDto);
 
     /**
      * 删除自己未通过的提交点位

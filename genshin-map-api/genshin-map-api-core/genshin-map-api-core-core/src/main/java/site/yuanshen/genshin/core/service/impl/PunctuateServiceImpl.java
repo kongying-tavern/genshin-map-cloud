@@ -84,7 +84,7 @@ public class PunctuateServiceImpl implements PunctuateService {
     /**
      * 提交暂存点位
      *
-     * @param markerSinglePunctuateDto 打点无额外字段的数据封装
+     * @param markerPunctuateDto 打点的数据封装
      * @return 打点ID
      */
     @Override
@@ -95,8 +95,8 @@ public class PunctuateServiceImpl implements PunctuateService {
                     @CacheEvict(value = "listPunctuatePage", allEntries = true),
             }
     )
-    public Long addSinglePunctuate(MarkerPunctuateDto markerSinglePunctuateDto) {
-        MarkerPunctuate markerPunctuate = markerSinglePunctuateDto.getEntity()
+    public Long addPunctuate(MarkerPunctuateDto markerPunctuateDto) {
+        MarkerPunctuate markerPunctuate = markerPunctuateDto.getEntity()
                 //临时id
                 .setPunctuateId(-1L)
                 //TODO 将status做成常量
@@ -150,7 +150,7 @@ public class PunctuateServiceImpl implements PunctuateService {
                     @CacheEvict(value = "listPunctuatePage", allEntries = true),
             }
     )
-    public Boolean updateSelfSinglePunctuate(MarkerPunctuateDto singlePunctuateDto) {
+    public Boolean updateSelfPunctuate(MarkerPunctuateDto singlePunctuateDto) {
         Long punctuateId = singlePunctuateDto.getPunctuateId();
         //旧打点信息
         MarkerPunctuate punctuate = markerPunctuateMapper.selectOne(Wrappers.<MarkerPunctuate>lambdaQuery()

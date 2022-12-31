@@ -49,10 +49,10 @@ public class PunctuateController {
 
     @Operation(summary = "提交暂存点位", description = "成功则返回打点提交ID")
     @PutMapping("/")
-    public R<Long> addSinglePunctuate(@RequestBody MarkerPunctuateVo markerPunctuateVo, @RequestHeader("userId") Long userId) {
+    public R<Long> addPunctuate(@RequestBody MarkerPunctuateVo markerPunctuateVo, @RequestHeader("userId") Long userId) {
         if (!userId.equals(markerPunctuateVo.getAuthor())) throw new RuntimeException("无权限为其他人提交打点信息");
         return RUtils.create(
-                punctuateService.addSinglePunctuate(new MarkerPunctuateDto(markerPunctuateVo))
+                punctuateService.addPunctuate(new MarkerPunctuateDto(markerPunctuateVo))
         );
     }
 
@@ -67,10 +67,10 @@ public class PunctuateController {
 
     @Operation(summary = "修改自身未提交的暂存点位", description = "根据点位ID修改点位")
     @PostMapping("/")
-    public R<Boolean> updateSelfSinglePunctuate(@RequestBody MarkerPunctuateVo markerPunctuateVo, @RequestHeader("userId") Long userId) {
+    public R<Boolean> updateSelfPunctuate(@RequestBody MarkerPunctuateVo markerPunctuateVo, @RequestHeader("userId") Long userId) {
         if (!userId.equals(markerPunctuateVo.getAuthor())) throw new RuntimeException("无权限修改其他人未提交的打点信息");
         return RUtils.create(
-                punctuateService.updateSelfSinglePunctuate(new MarkerPunctuateDto(markerPunctuateVo))
+                punctuateService.updateSelfPunctuate(new MarkerPunctuateDto(markerPunctuateVo))
         );
     }
 
