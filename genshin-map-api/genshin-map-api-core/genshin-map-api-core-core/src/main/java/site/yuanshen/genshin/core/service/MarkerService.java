@@ -1,8 +1,6 @@
 package site.yuanshen.genshin.core.service;
 
 import site.yuanshen.data.dto.MarkerDto;
-import site.yuanshen.data.dto.MarkerExtraDto;
-import site.yuanshen.data.dto.MarkerSingleDto;
 import site.yuanshen.data.dto.helper.PageSearchDto;
 import site.yuanshen.data.vo.MarkerSearchVo;
 import site.yuanshen.data.vo.MarkerVo;
@@ -48,7 +46,6 @@ public interface MarkerService {
      * 分页查询所有点位信息
      *
      * @param pageSearchDto 分页查询数据封装
-     * @param isTestUser    是否是测试服打点用户
      * @return 点位完整信息的前端封装的分页记录
      */
     PageListVo<MarkerVo> listMarkerPage(PageSearchDto pageSearchDto,List<Integer> hiddenFlagList);
@@ -56,34 +53,18 @@ public interface MarkerService {
     /**
      * 新增点位（不包括额外字段）
      *
-     * @param markerSingleDto 点位无Extra的数据封装
+     * @param markerDto 点位无Extra的数据封装
      * @return 新点位ID
      */
-    Long createMarker(MarkerSingleDto markerSingleDto);
-
-    /**
-     * 新增点位额外字段信息
-     *
-     * @param markerExtraDto 点位额外信息的数据封装
-     * @return 是否成功
-     */
-    Boolean addMarkerExtra(MarkerExtraDto markerExtraDto);
+    Long createMarker(MarkerDto markerDto);
 
     /**
      * 修改点位（不包括额外字段）
      *
-     * @param markerSingleDto 点位无Extra的数据封装
+     * @param markerDto 点位无Extra的数据封装
      * @return 是否成功
      */
-    Boolean updateMarker(MarkerSingleDto markerSingleDto);
-
-    /**
-     * 修改点位额外字段
-     *
-     * @param markerExtraDto 点位额外信息的数据封装
-     * @return 是否成功
-     */
-    Boolean updateMarkerExtra(MarkerExtraDto markerExtraDto);
+    Boolean updateMarker(MarkerDto markerDto);
 
     /**
      * 根据点位ID删除点位

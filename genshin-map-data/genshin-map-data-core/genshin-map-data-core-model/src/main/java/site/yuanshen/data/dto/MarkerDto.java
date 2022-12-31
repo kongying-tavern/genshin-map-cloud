@@ -11,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.entity.Item;
 import site.yuanshen.data.entity.Marker;
-import site.yuanshen.data.entity.MarkerExtra;
 import site.yuanshen.data.entity.MarkerItemLink;
 import site.yuanshen.data.vo.MarkerVo;
 
@@ -97,22 +96,10 @@ public class MarkerDto {
     private String videoPath;
 
     /**
-     * 额外特殊字段具体内容
+     * 额外特殊字段
      */
-    @Schema(title = "额外特殊字段具体内容")
-    private String markerExtraContent;
-
-    /**
-     * 父点位ID
-     */
-    @Schema(title = "父点位ID")
-    private Long parentId;
-
-    /**
-     * 关联其他点位Flag
-     */
-    @Schema(title = "关联其他点位Flag")
-    private Integer isRelated;
+    @Schema(title = "额外特殊字段")
+    private String extra;
 
     /**
      * 刷新时间
@@ -136,14 +123,11 @@ public class MarkerDto {
      * 2022.09.12 增加传参,带入TagIcon
      *
      * @param marker
-     * @param markerExtra
      * @param markerItemLinks
      */
-    public MarkerDto(Marker marker, MarkerExtra markerExtra, List<MarkerItemLink> markerItemLinks, Map<Long, Item> itemMap) {
+    public MarkerDto(Marker marker, List<MarkerItemLink> markerItemLinks, Map<Long, Item> itemMap) {
         BeanUtils.copyProperties(marker, this);
         this.id = marker.getId();
-        BeanUtils.copyNotNull(Optional.ofNullable(markerExtra).orElse(new MarkerExtra()).setId(null),
-                this);
         markerItemLinks = Optional.ofNullable(markerItemLinks).orElse(new ArrayList<>());
         this.itemList = markerItemLinks.stream()
                 //筛选无item信息的link，避免null
@@ -160,11 +144,9 @@ public class MarkerDto {
     }
 
 
-    public MarkerDto(Marker marker, MarkerExtra markerExtra, List<MarkerItemLink> markerItemLinks) {
+    public MarkerDto(Marker marker, List<MarkerItemLink> markerItemLinks) {
         BeanUtils.copyProperties(marker, this);
         this.id = marker.getId();
-        BeanUtils.copyNotNull(Optional.ofNullable(markerExtra).orElse(new MarkerExtra()).setId(null),
-                this);
         markerItemLinks = Optional.ofNullable(markerItemLinks).orElse(new ArrayList<>());
         this.itemList = markerItemLinks.stream().map(MarkerItemLinkDto::new).collect(Collectors.toList());
     }
@@ -172,12 +154,6 @@ public class MarkerDto {
     @JSONField(serialize = false)
     public Marker getEntity() {
         return BeanUtils.copyProperties(this, Marker.class).setId(this.id);
-    }
-
-    @JSONField(serialize = false)
-    public MarkerExtra getMarkerExtraEntity() {
-        if (markerExtraContent == null || markerExtraContent.equals("")) markerExtraContent = "{}";
-        return BeanUtils.copyProperties(this, MarkerExtra.class).setIsRelated(isRelated != null && isRelated.equals(1));
     }
 
     @JSONField(serialize = false)

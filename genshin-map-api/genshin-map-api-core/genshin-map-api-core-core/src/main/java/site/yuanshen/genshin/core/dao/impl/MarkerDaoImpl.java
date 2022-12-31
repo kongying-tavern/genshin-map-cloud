@@ -15,10 +15,8 @@ import site.yuanshen.data.dto.MarkerDto;
 import site.yuanshen.data.dto.helper.PageSearchDto;
 import site.yuanshen.data.entity.Item;
 import site.yuanshen.data.entity.Marker;
-import site.yuanshen.data.entity.MarkerExtra;
 import site.yuanshen.data.entity.MarkerItemLink;
 import site.yuanshen.data.mapper.ItemMapper;
-import site.yuanshen.data.mapper.MarkerExtraMapper;
 import site.yuanshen.data.mapper.MarkerItemLinkMapper;
 import site.yuanshen.data.mapper.MarkerMapper;
 import site.yuanshen.data.vo.MarkerVo;
@@ -45,7 +43,6 @@ public class MarkerDaoImpl implements MarkerDao {
 
     private final CacheManager cacheManager;
     private final MarkerMapper markerMapper;
-    private final MarkerExtraMapper markerExtraMapper;
     private final MarkerItemLinkMapper markerItemLinkMapper;
     private final ItemMapper itemMapper;
 
@@ -69,9 +66,6 @@ public class MarkerDaoImpl implements MarkerDao {
         Page<Marker> markerPage = markerMapper.selectPage(pageSearchDto.getPageEntity(), Wrappers.<Marker>lambdaQuery().in(!hiddenFlagList.isEmpty(), Marker::getHiddenFlag, hiddenFlagList));
         List<Long> markerIdList = markerPage.getRecords().stream()
                 .map(Marker::getId).collect(Collectors.toList());
-        Map<Long, MarkerExtra> extraMap = markerExtraMapper.selectList(Wrappers.<MarkerExtra>lambdaQuery()
-                        .in(MarkerExtra::getMarkerId, markerIdList))
-                .stream().collect(Collectors.toMap(MarkerExtra::getMarkerId, markerExtra -> markerExtra));
         Map<Long, List<MarkerItemLink>> itemLinkMap = new ConcurrentHashMap<>();
         List<MarkerItemLink> markerItemLinks = markerItemLinkMapper.selectList(Wrappers.<MarkerItemLink>lambdaQuery().in(MarkerItemLink::getMarkerId, markerIdList));
         markerItemLinks.parallelStream().forEach(markerItemLink ->
@@ -89,7 +83,7 @@ public class MarkerDaoImpl implements MarkerDao {
 
         return new PageListVo<MarkerVo>()
                 .setRecord(markerPage.getRecords().parallelStream()
-                        .map(marker -> new MarkerDto(marker, extraMap.get(marker.getId()), itemLinkMap.get(marker.getId()), itemMap).getVo())
+                        .map(marker -> new MarkerDto(marker, itemLinkMap.get(marker.getId()), itemMap).getVo())
                         .collect(Collectors.toList()))
                 .setTotal(markerPage.getTotal())
                 .setSize(markerPage.getSize());
@@ -100,7 +94,6 @@ public class MarkerDaoImpl implements MarkerDao {
      *
      * @param left  左下标
      * @param right  右下标
-     * @param isTestUser 是否是测试服打点用户
      * @return 点位完整信息的前端封装的分页记录
      */
     @Override
@@ -113,9 +106,6 @@ public class MarkerDaoImpl implements MarkerDao {
         if (markerList.size() == 0) return new ArrayList<>();
         List<Long> markerIdList = markerList.stream()
                 .map(Marker::getId).collect(Collectors.toList());
-        Map<Long, MarkerExtra> extraMap = markerExtraMapper.selectList(Wrappers.<MarkerExtra>lambdaQuery()
-                        .in(MarkerExtra::getMarkerId, markerIdList))
-                .stream().collect(Collectors.toMap(MarkerExtra::getMarkerId, markerExtra -> markerExtra));
         Map<Long, List<MarkerItemLink>> itemLinkMap = new ConcurrentHashMap<>();
         List<MarkerItemLink> markerItemLinks = markerItemLinkMapper.selectList(Wrappers.<MarkerItemLink>lambdaQuery().in(MarkerItemLink::getMarkerId, markerIdList));
         markerItemLinks.parallelStream().forEach(markerItemLink ->
@@ -130,7 +120,7 @@ public class MarkerDaoImpl implements MarkerDao {
                         .in(Item::getId, markerItemLinks.stream().map(MarkerItemLink::getItemId).collect(Collectors.toSet())))
                 .stream().collect(Collectors.toMap(Item::getId, Item -> Item));
         return markerList.parallelStream()
-                .map(marker -> new MarkerDto(marker, extraMap.get(marker.getId()), itemLinkMap.get(marker.getId()), itemMap).getVo())
+                .map(marker -> new MarkerDto(marker, itemLinkMap.get(marker.getId()), itemMap).getVo())
                 .collect(Collectors.toList());
     }
 
@@ -159,7 +149,6 @@ public class MarkerDaoImpl implements MarkerDao {
     /**
      * 返回点位分页bz2的md5数组
      *
-     * @param isTestUser 是否是测试打点用户
      * @return 分页字节数组的md5
      */
     @Override

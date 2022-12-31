@@ -7,10 +7,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import site.yuanshen.common.web.utils.JsonUtils;
 import site.yuanshen.data.dto.MarkerDto;
-import site.yuanshen.data.dto.MarkerExtraDto;
-import site.yuanshen.data.dto.MarkerSingleDto;
 import site.yuanshen.data.dto.helper.PageSearchDto;
 import site.yuanshen.data.entity.*;
 import site.yuanshen.data.mapper.*;
@@ -38,13 +35,11 @@ public class MarkerServiceImpl implements MarkerService {
 
     private final MarkerMapper markerMapper;
     private final MarkerDao markerDao;
-    private final MarkerExtraMapper markerExtraMapper;
     private final MarkerItemLinkMapper markerItemLinkMapper;
     private final MarkerItemLinkMBPService markerItemLinkMBPService;
     private final MarkerPunctuateMapper markerPunctuateMapper;
     private final ItemMapper itemMapper;
     private final ItemTypeLinkMapper itemTypeLinkMapper;
-
     private final HistoryMapper historyMapper;
 
     /**
@@ -137,9 +132,6 @@ public class MarkerServiceImpl implements MarkerService {
     public List<MarkerDto> listMarkerById(List<Long> markerIdList, List<Integer> hiddenFlagList) {
         //为空直接返回
         if (markerIdList.isEmpty()) return new ArrayList<>();
-        //获取所有的额外字段
-        Map<Long, MarkerExtra> markerExtraMap = markerExtraMapper.selectList(Wrappers.<MarkerExtra>lambdaQuery().in(MarkerExtra::getMarkerId, markerIdList))
-                .stream().collect(Collectors.toMap(MarkerExtra::getMarkerId, markerExtra -> markerExtra));
         //获取关联的物品Id
         Map<Long, List<MarkerItemLink>> itemLinkMap = new ConcurrentHashMap<>();
 
@@ -160,10 +152,8 @@ public class MarkerServiceImpl implements MarkerService {
         //构建返回
         return markerMapper.selectList(Wrappers.<Marker>lambdaQuery().in(Marker::getId, markerIdList).in(!hiddenFlagList.isEmpty(), Marker::getHiddenFlag, hiddenFlagList))
                 .parallelStream().map(marker ->
-                        new MarkerDto(marker,
-                                markerExtraMap.get(marker.getId()),
-                                itemLinkMap.get(marker.getId())
-                                , itemMap)).collect(Collectors.toList());
+                        new MarkerDto(marker, itemLinkMap.get(marker.getId()), itemMap))
+                .collect(Collectors.toList());
     }
 
 
@@ -182,16 +172,16 @@ public class MarkerServiceImpl implements MarkerService {
     /**
      * 新增点位（不包括额外字段）
      *
-     * @param markerSingleDto 点位无Extra的数据封装
+     * @param markerDto 点位无Extra的数据封装
      * @return 新点位ID
      */
     @Override
     @Transactional
-    public Long createMarker(MarkerSingleDto markerSingleDto) {
-        Marker marker = markerSingleDto.getEntity();
+    public Long createMarker(MarkerDto markerDto) {
+        Marker marker = markerDto.getEntity();
         markerMapper.insert(marker);
         //正式更新id item_id+marker_id得唯一
-        List<MarkerItemLink> itemLinkList = markerSingleDto.getItemList().parallelStream().map(markerItemLinkDto -> markerItemLinkDto.getEntity().setMarkerId(marker.getId())).collect(
+        List<MarkerItemLink> itemLinkList = markerDto.getItemList().parallelStream().map(markerItemLinkDto -> markerItemLinkDto.getEntity().setMarkerId(marker.getId())).collect(
                 Collectors.collectingAndThen(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(o -> o.getItemId() + ";" + o.getMarkerId()))), ArrayList::new));
         markerItemLinkMBPService.saveBatch(itemLinkList);
 
@@ -199,75 +189,31 @@ public class MarkerServiceImpl implements MarkerService {
     }
 
     /**
-     * 新增点位额外字段信息
-     *
-     * @param markerExtraDto 点位额外信息的数据封装
-     * @return 是否成功
-     */
-    @Override
-    @Transactional
-    public Boolean addMarkerExtra(MarkerExtraDto markerExtraDto) {
-        boolean added = markerExtraMapper.insert(markerExtraDto.getEntity()) == 1;
-
-
-        return added;
-    }
-
-    /**
      * 修改点位（不包括额外字段）
      *
-     * @param markerSingleDto 点位无Extra的数据封装
+     * @param markerDto 点位无Extra的数据封装
      * @return 是否成功
      */
     @Override
     @Transactional
-    public Boolean updateMarker(MarkerSingleDto markerSingleDto) {
+    public Boolean updateMarker(MarkerDto markerDto) {
         //保存历史记录
-        MarkerExtra markerExtra = markerExtraMapper.selectOne(Wrappers.<MarkerExtra>lambdaQuery().eq(MarkerExtra::getMarkerId, markerSingleDto.getId()));
-        saveHistoryMarker(buildMarkerDto(markerSingleDto.getId(), markerExtra));
+        saveHistoryMarker(buildMarkerDto(markerDto.getId()));
 
 
-        Boolean updated = markerMapper.update(markerSingleDto.getEntity(), Wrappers.<Marker>lambdaUpdate()
-                .eq(Marker::getId, markerSingleDto.getId())) == 1;
+        Boolean updated = markerMapper.update(markerDto.getEntity(), Wrappers.<Marker>lambdaUpdate()
+                .eq(Marker::getId, markerDto.getId())) == 1;
         if (!updated) {
             throw new OptimisticLockingFailureException("该点位已更新，请重新提交");
         }
 
-        if (markerSingleDto.getItemList() != null && !markerSingleDto.getItemList().isEmpty()) {
-            markerItemLinkMapper.delete(Wrappers.<MarkerItemLink>lambdaQuery().eq(MarkerItemLink::getMarkerId, markerSingleDto.getId()));
-            List<MarkerItemLink> itemLinkList = markerSingleDto.getItemList().parallelStream().map(markerItemLinkDto -> markerItemLinkDto.getEntity().setMarkerId(markerSingleDto.getId())).collect(Collectors.toList());
+        if (markerDto.getItemList() != null && !markerDto.getItemList().isEmpty()) {
+            markerItemLinkMapper.delete(Wrappers.<MarkerItemLink>lambdaQuery().eq(MarkerItemLink::getMarkerId, markerDto.getId()));
+            List<MarkerItemLink> itemLinkList = markerDto.getItemList().parallelStream().map(markerItemLinkDto -> markerItemLinkDto.getEntity().setMarkerId(markerDto.getId())).collect(Collectors.toList());
             markerItemLinkMBPService.saveBatch(itemLinkList);
-        } else if (markerSingleDto.getItemList() != null) {
-            markerItemLinkMapper.delete(Wrappers.<MarkerItemLink>lambdaQuery().eq(MarkerItemLink::getMarkerId, markerSingleDto.getId()));
+        } else if (markerDto.getItemList() != null) {
+            markerItemLinkMapper.delete(Wrappers.<MarkerItemLink>lambdaQuery().eq(MarkerItemLink::getMarkerId, markerDto.getId()));
         }
-        return updated;
-    }
-
-
-    /**
-     * 修改点位额外字段
-     *
-     * @param markerExtraDto 点位额外信息的数据封装
-     * @return 是否成功
-     */
-    @Override
-    @Transactional
-    public Boolean updateMarkerExtra(MarkerExtraDto markerExtraDto) {
-        //TODO:如果增加乐观锁后,默认搜不到情况下version=0.第一个人先未找到,进行新增,此时version为默认值1.第二个人进行找到,0和1匹配不上,更新失败
-        //2.情况2-两人一起到达搜索,此时都找不到,1号先完成了添加,2号再完成了添加,此时会有两条一模一样数据,但是搜索出来的时候只会使用一条,影响不大.
-        MarkerExtra markerExtra = markerExtraMapper.selectOne(Wrappers.<MarkerExtra>lambdaQuery().eq(MarkerExtra::getMarkerId, markerExtraDto.getMarkerId()));
-
-        saveHistoryMarker(buildMarkerDto(markerExtraDto.getMarkerId(), markerExtra));
-        if (markerExtra == null) {
-            return addMarkerExtra(markerExtraDto);
-        }
-
-        String mergeResult = JsonUtils.merge(markerExtra.getMarkerExtraContent(), markerExtraDto.getMarkerExtraContent());
-        markerExtraDto.setMarkerExtraContent(mergeResult);
-
-        boolean updated = markerExtraMapper.update(markerExtraDto.getEntity(), Wrappers.<MarkerExtra>lambdaUpdate()
-                .eq(MarkerExtra::getMarkerId, markerExtraDto.getMarkerId())) == 1;
-
         return updated;
     }
 
@@ -283,19 +229,16 @@ public class MarkerServiceImpl implements MarkerService {
     public Boolean deleteMarker(Long markerId) {
         markerMapper.delete(Wrappers.<Marker>lambdaQuery().eq(Marker::getId, markerId));
         markerItemLinkMapper.delete(Wrappers.<MarkerItemLink>lambdaQuery().eq(MarkerItemLink::getMarkerId, markerId));
-        markerExtraMapper.delete(Wrappers.<MarkerExtra>lambdaQuery().eq(MarkerExtra::getMarkerId, markerId));
-
-
         return true;
     }
 
     //--------------------储存历史信息-----------------------
 
-    private MarkerDto buildMarkerDto(Long markerId, MarkerExtra markerExtra) {
+    private MarkerDto buildMarkerDto(Long markerId) {
         Marker marker = markerMapper.selectOne(Wrappers.<Marker>lambdaQuery().eq(Marker::getId, markerId));
         //获取关联的物品ID
         List<MarkerItemLink> markerItemLinks = markerItemLinkMapper.selectList(Wrappers.<MarkerItemLink>lambdaQuery().eq(MarkerItemLink::getMarkerId, markerId));
-        return new MarkerDto(marker, markerExtra, markerItemLinks);
+        return new MarkerDto(marker, markerItemLinks);
     }
 
     private void saveHistoryMarker(MarkerDto dto) {

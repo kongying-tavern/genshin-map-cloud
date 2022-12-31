@@ -103,4 +103,11 @@ public class Marker extends BaseEntity {
     @Schema(title = "隐藏标志")
     @TableField("hidden_flag")
     private Integer hiddenFlag;
+
+    /**
+     * 额外特殊字段
+     */
+    @Schema(title = "额外特殊字段")
+    @TableField("extra")
+    private String extra;
 }

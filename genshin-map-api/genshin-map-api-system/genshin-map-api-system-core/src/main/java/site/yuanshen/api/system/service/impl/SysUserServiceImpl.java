@@ -47,6 +47,7 @@ public class SysUserServiceImpl implements SysUserService {
 
     private final RestTemplate gbkRestTemplate;
 
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public SysUserServiceImpl(SysUserMapper userMapper, SysUserRoleMapper userRoleMapper, SysBasicService basicService,
                               @Qualifier("gbkRestTemplate") RestTemplate gbkRestTemplate) {
         this.userMapper = userMapper;

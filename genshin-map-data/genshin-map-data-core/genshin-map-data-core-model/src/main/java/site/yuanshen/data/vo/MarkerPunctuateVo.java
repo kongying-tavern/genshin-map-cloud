@@ -89,23 +89,10 @@ public class MarkerPunctuateVo {
     private String videoPath;
 
     /**
-     * 额外特殊字段具体内容
+     * 额外特殊字段
      */
-    @Schema(title = "额外特殊字段具体内容")
-    private String markerExtraContent;
-
-    /**
-     * 父点位ID
-     */
-    @Schema(title = "父点位ID")
-    private Long parentId;
-
-    /**
-     * 关联其他点位Flag
-     */
-    @Schema(title = "关联其他点位Flag")
-    private Integer isRelated;
-
+    @Schema(title = "额外特殊字段")
+    private String extra;
 
     /**
      * 点位提交者id

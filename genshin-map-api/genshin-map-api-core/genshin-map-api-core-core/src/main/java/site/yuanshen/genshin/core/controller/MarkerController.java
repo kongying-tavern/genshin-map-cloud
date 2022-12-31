@@ -3,18 +3,13 @@ package site.yuanshen.genshin.core.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import site.yuanshen.common.web.response.R;
 import site.yuanshen.common.web.response.RUtils;
 import site.yuanshen.data.dto.MarkerDto;
-import site.yuanshen.data.dto.MarkerExtraDto;
-import site.yuanshen.data.dto.MarkerSingleDto;
 import site.yuanshen.data.dto.helper.PageSearchDto;
 import site.yuanshen.data.enums.HiddenFlagEnum;
-import site.yuanshen.data.vo.MarkerExtraVo;
 import site.yuanshen.data.vo.MarkerSearchVo;
-import site.yuanshen.data.vo.MarkerSingleVo;
 import site.yuanshen.data.vo.MarkerVo;
 import site.yuanshen.data.vo.helper.PageListVo;
 import site.yuanshen.data.vo.helper.PageSearchVo;
@@ -81,46 +76,21 @@ public class MarkerController {
 
     @Operation(summary = "新增点位（不包括额外字段）", description = "新增完成后返回点位ID")
     @PutMapping("/single")
-    public R<Long> createMarker(@RequestBody MarkerSingleVo markerSingleVo) {
-        Long newId = markerService.createMarker(new MarkerSingleDto(markerSingleVo));
+    public R<Long> createMarker(@RequestBody MarkerVo markerVo) {
+        Long newId = markerService.createMarker(new MarkerDto(markerVo));
         cacheService.cleanItemCache();
         cacheService.cleanMarkerCache();
         return RUtils.create(newId);
     }
 
-    @Operation(summary = "新增点位额外字段信息", description = "需保证额外字段的点位都已经添加成功")
-    @PutMapping("/extra")
-    public R<Boolean> addMarkerExtra(@RequestBody MarkerExtraVo markerExtraVo) {
-        Boolean result = markerService.addMarkerExtra(new MarkerExtraDto(markerExtraVo));
-        if (result) {
-            cacheService.cleanItemCache();
-            cacheService.cleanMarkerCache();
-        }
-        return RUtils.create(result);
-    }
-
     @Operation(summary = "修改点位（不包括额外字段）", description = "根据点位ID修改点位")
     @PostMapping("/single")
-    public R<Boolean> updateMarker(@RequestBody MarkerSingleVo markerSingleVo) {
-        Boolean result = markerService.updateMarker(new MarkerSingleDto(markerSingleVo));
+    public R<Boolean> updateMarker(@RequestBody MarkerVo markerVo) {
+        Boolean result = markerService.updateMarker(new MarkerDto(markerVo));
         cacheService.cleanItemCache();
         cacheService.cleanMarkerCache();
         return RUtils.create(result);
     }
-
-    @Operation(summary = "修改点位额外字段", description = "根据点位ID修改点位额外字段")
-    @PostMapping("/extra")
-    public R<Boolean> updateMarkerExtra(@RequestBody MarkerExtraVo markerExtraVo) {
-        Boolean result = markerService.updateMarkerExtra(new MarkerExtraDto(markerExtraVo));
-        if (result) {
-            cacheService.cleanItemCache();
-            cacheService.cleanMarkerCache();
-        }
-        return RUtils.create(
-                result
-        );
-    }
-
 
     @Operation(summary = "删除点位", description = "根据点位ID列表批量删除点位")
     @DeleteMapping("/{markerId}")

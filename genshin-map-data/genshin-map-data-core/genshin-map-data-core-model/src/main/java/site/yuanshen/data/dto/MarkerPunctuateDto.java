@@ -10,7 +10,6 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import site.yuanshen.common.core.utils.BeanUtils;
-import site.yuanshen.data.entity.MarkerExtraPunctuate;
 import site.yuanshen.data.entity.MarkerItemLink;
 import site.yuanshen.data.entity.MarkerPunctuate;
 import site.yuanshen.data.vo.MarkerPunctuateVo;
@@ -159,11 +158,8 @@ public class MarkerPunctuateDto {
         BeanUtils.copyProperties(punctuateVo, this);
     }
 
-    public MarkerPunctuateDto(MarkerPunctuate punctuate, MarkerExtraPunctuate extraPunctuate) {
+    public MarkerPunctuateDto(MarkerPunctuate punctuate) {
         BeanUtils.copyProperties(punctuate, this);
-        if (extraPunctuate != null) {
-            BeanUtils.copyProperties(extraPunctuate, this);
-        }
         this.itemList = JSONArray.parseArray(punctuate.getItemList(), MarkerItemLinkDto.class);
     }
 
@@ -171,13 +167,6 @@ public class MarkerPunctuateDto {
     @JSONField(serialize = false)
     public MarkerPunctuate getEntity() {
         return BeanUtils.copyProperties(this, MarkerPunctuate.class);
-    }
-
-
-    @JSONField(serialize = false)
-    public MarkerExtraPunctuate getMarkerExtraEntity() {
-        if (markerExtraContent == null || markerExtraContent.equals("")) markerExtraContent = "{}";
-        return BeanUtils.copyProperties(this, MarkerExtraPunctuate.class).setIsRelated(isRelated != null && isRelated.equals(1));
     }
 
     @JSONField(serialize = false)
