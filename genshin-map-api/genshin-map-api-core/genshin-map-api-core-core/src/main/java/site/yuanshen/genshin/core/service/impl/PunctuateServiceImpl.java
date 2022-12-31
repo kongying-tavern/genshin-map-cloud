@@ -168,6 +168,7 @@ public class PunctuateServiceImpl implements PunctuateService {
                         .eq(MarkerPunctuate::getStatus, 2)));
         //赋予新信息对应的固有字段
         MarkerPunctuate newPunctuate = singlePunctuateDto.getEntity()
+                .setMarkerCreatorId(punctuate.getOriginalMarkerId())
                 .setStatus(0)
                 .setAuditRemark(punctuate.getAuditRemark())
                 .setId(punctuate.getId());
