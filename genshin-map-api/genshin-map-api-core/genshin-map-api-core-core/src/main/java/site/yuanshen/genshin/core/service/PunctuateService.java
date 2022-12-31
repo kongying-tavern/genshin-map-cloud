@@ -23,7 +23,7 @@ public interface PunctuateService {
     PageListVo<MarkerPunctuateVo> listPunctuatePage(PageSearchDto pageSearchDto);    //////////////START:打点员的接口//////////////
 
     /**
-     * 分页查询自己提交的未通过的打点信息（不包含额外字段）
+     * 分页查询自己提交的未通过的打点信息
      *
      * @param pageSearchDto 分页查询数据封装
      * @param authorId      打点员ID
@@ -32,7 +32,7 @@ public interface PunctuateService {
     PageListVo<MarkerPunctuateVo> listSelfPunctuatePage(PageSearchDto pageSearchDto, Long authorId);
 
     /**
-     * 提交暂存点位（不含额外字段）
+     * 提交暂存点位
      *
      * @param markerSinglePunctuateDto 打点无额外字段的数据封装
      * @return 打点ID
@@ -48,7 +48,7 @@ public interface PunctuateService {
     Boolean pushPunctuate(Long authorId);
 
     /**
-     * 修改自身未提交的暂存点位（不包括额外字段）
+     * 修改自身未提交的暂存点位
      *
      * @param singlePunctuateDto 打点无额外字段的数据封装
      * @return 是否成功
