@@ -104,19 +104,6 @@ public class MarkerPunctuateDto {
     private String markerExtraContent;
 
     /**
-     * 父点位ID
-     */
-    @Schema(title = "父点位ID")
-    private Long parentId;
-
-    /**
-     * 关联其他点位Flag
-     */
-    @Schema(title = "关联其他点位Flag")
-    private Integer isRelated;
-
-
-    /**
      * 点位提交者id
      */
     @Schema(title = "点位提交者id")

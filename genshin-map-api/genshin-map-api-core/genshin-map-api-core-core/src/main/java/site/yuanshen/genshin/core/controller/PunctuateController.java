@@ -49,10 +49,13 @@ public class PunctuateController {
 
     @Operation(summary = "提交暂存点位", description = "成功则返回打点提交ID")
     @PutMapping("/")
-    public R<Long> addPunctuate(@RequestBody MarkerPunctuateVo markerPunctuateVo, @RequestHeader("userId") Long userId) {
-        if (!userId.equals(markerPunctuateVo.getAuthor())) throw new RuntimeException("无权限为其他人提交打点信息");
+    public R<Long> addPunctuate(@RequestBody MarkerPunctuateVo punctuateVo, @RequestHeader("userId") Long userId) {
+        if (!userId.equals(punctuateVo.getAuthor()))
+            throw new RuntimeException("无权限为其他人提交打点信息");
+        if (punctuateVo.getOriginalMarkerId()==null && !punctuateVo.getMarkerCreatorId().equals(userId))
+            throw new RuntimeException("新增点位时，点位初始标记者需为用户自身");
         return RUtils.create(
-                punctuateService.addPunctuate(new MarkerPunctuateDto(markerPunctuateVo))
+                punctuateService.addPunctuate(new MarkerPunctuateDto(punctuateVo))
         );
     }
 

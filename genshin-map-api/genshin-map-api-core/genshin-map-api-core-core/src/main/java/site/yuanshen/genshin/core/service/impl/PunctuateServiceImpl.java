@@ -11,7 +11,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.yuanshen.data.dto.MarkerPunctuateDto;
 import site.yuanshen.data.dto.helper.PageSearchDto;
+import site.yuanshen.data.entity.Marker;
 import site.yuanshen.data.entity.MarkerPunctuate;
+import site.yuanshen.data.mapper.MarkerMapper;
 import site.yuanshen.data.mapper.MarkerPunctuateMapper;
 import site.yuanshen.data.vo.MarkerPunctuateVo;
 import site.yuanshen.data.vo.helper.PageListVo;
@@ -32,6 +34,8 @@ import java.util.stream.Collectors;
 public class PunctuateServiceImpl implements PunctuateService {
 
     private final MarkerPunctuateMapper markerPunctuateMapper;
+
+    private final MarkerMapper markerMapper;
 
     /**
      * 分页查询所有打点信息
@@ -84,7 +88,7 @@ public class PunctuateServiceImpl implements PunctuateService {
     /**
      * 提交暂存点位
      *
-     * @param markerPunctuateDto 打点的数据封装
+     * @param punctuateDto 打点的数据封装
      * @return 打点ID
      */
     @Override
@@ -95,13 +99,16 @@ public class PunctuateServiceImpl implements PunctuateService {
                     @CacheEvict(value = "listPunctuatePage", allEntries = true),
             }
     )
-    public Long addPunctuate(MarkerPunctuateDto markerPunctuateDto) {
-        MarkerPunctuate markerPunctuate = markerPunctuateDto.getEntity()
+    public Long addPunctuate(MarkerPunctuateDto punctuateDto) {
+        //保留原点位的初始标记者
+        if (punctuateDto.getOriginalMarkerId() != null) {
+            Marker marker = markerMapper.selectById(punctuateDto.getOriginalMarkerId());
+            punctuateDto.setMarkerCreatorId(marker.getMarkerCreatorId());
+        }
+        MarkerPunctuate markerPunctuate = punctuateDto.getEntity()
                 //临时id
                 .setPunctuateId(-1L)
-                //TODO 将status做成常量
                 .setStatus(0);
-        //TODO 异常处理，第一次出错隔1+random(3)值重试
         markerPunctuateMapper.insert(markerPunctuate);
         //正式更新id
         markerPunctuateMapper.updateById(
