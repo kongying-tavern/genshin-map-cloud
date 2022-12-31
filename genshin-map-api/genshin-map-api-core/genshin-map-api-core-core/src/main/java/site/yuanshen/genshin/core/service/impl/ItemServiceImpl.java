@@ -98,25 +98,31 @@ public class ItemServiceImpl implements ItemService {
             itemToTypeMap.put(itemId, typeList);
         }
 
+
+
+        //先过滤出正常点位
+        //计算各个物品在点位中的数量合计
+        Map<Long, Integer> markerItemLinkCount = new HashMap<>();
+
         //获取点位数据
         List<MarkerItemLink> markerItemLinkList = markerItemLinkMapper.selectList(Wrappers.<MarkerItemLink>lambdaQuery()
                 .in(MarkerItemLink::getItemId,
                         itemPage.getRecords().stream()
                                 .map(Item::getId).collect(Collectors.toList())));
+
         //获取其中的正常点位 hidden_flag=0 若为内鬼用户,则增加hidden_flag=2
+        List<Long> normalMarkerList;
 
-        List<Long> normalMarkerList = markerMapper.selectList(Wrappers.<Marker>lambdaQuery()
-                        .in(!itemSearchDto.getHiddenFlagList().isEmpty(),Marker::getHiddenFlag,itemSearchDto.getHiddenFlagList())
-                        .in(Marker::getId, markerItemLinkList.stream().map(MarkerItemLink::getMarkerId).collect(Collectors.toList())))
-                .stream().map(Marker::getId).collect(Collectors.toList());
-
-        //先过滤出正常点位
-        //计算各个物品在点位中的数量合计
-        Map<Long, Integer> markerItemLinkCount = new HashMap<>();
-        markerItemLinkList.stream().filter(markerItemLink -> normalMarkerList.contains(markerItemLink.getMarkerId()))
-                .collect(Collectors.groupingBy(MarkerItemLink::getItemId)).forEach(
-                        (itemId, list) -> markerItemLinkCount.put(itemId, list.stream().mapToInt(MarkerItemLink::getCount).sum())
-                );
+        if (!markerItemLinkList.isEmpty()) {
+            normalMarkerList = markerMapper.selectList(Wrappers.<Marker>lambdaQuery()
+                            .in(!itemSearchDto.getHiddenFlagList().isEmpty(),Marker::getHiddenFlag,itemSearchDto.getHiddenFlagList())
+                            .in(Marker::getId, markerItemLinkList.stream().map(MarkerItemLink::getMarkerId).collect(Collectors.toList())))
+                    .stream().map(Marker::getId).collect(Collectors.toList());
+            markerItemLinkList.stream().filter(markerItemLink -> normalMarkerList.contains(markerItemLink.getMarkerId()))
+                    .collect(Collectors.groupingBy(MarkerItemLink::getItemId)).forEach(
+                            (itemId, list) -> markerItemLinkCount.put(itemId, list.stream().mapToInt(MarkerItemLink::getCount).sum())
+                    );
+        }
 
 
         return new PageListVo<ItemVo>()
@@ -129,29 +135,6 @@ public class ItemServiceImpl implements ItemService {
                 .setTotal(itemPage.getTotal())
                 .setSize(itemPage.getSize());
     }
-
-
-//    public static void main(String[] args) {
-//
-//
-//        //用户权限
-//        int user = 1+4;
-//        test(user);
-//
-//
-//    }
-//
-//    public static void test(int userDataLevel){
-//        int normal = 0;
-//        int invisible = 1;
-//        int test = 2;
-//
-//        System.out.println((userDataLevel&1<<invisible));
-//
-//        Wrappers.<Marker>lambdaQuery().eq((userDataLevel&1<<normal)>0,Marker::getHiddenFlag,normal);
-//    }
-
-
 
     /**
      * 修改物品
