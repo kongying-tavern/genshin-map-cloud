@@ -166,7 +166,7 @@ public class MarkerPunctuateDto {
 
     @JSONField(serialize = false)
     public MarkerPunctuate getEntity() {
-        return BeanUtils.copyProperties(this, MarkerPunctuate.class);
+        return BeanUtils.copyProperties(this, MarkerPunctuate.class).setItemList(JSONArray.toJSONString(this.itemList));
     }
 
     @JSONField(serialize = false)
