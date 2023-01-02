@@ -100,6 +100,7 @@ public class MarkerDaoImpl implements MarkerDao {
     @Cacheable("listMarkerIdRange")
     public List<MarkerVo> listMarkerIdRange(Long left, Long right) {
         log.debug("listMarkerIdRange 入参：left:{}, right:{}",left,right);
+        //取得marker列表
         List<Marker> markerList = markerMapper.selectList(Wrappers.<Marker>lambdaQuery()
                 .between(Marker::getId,left,right)
                 .eq(Marker::getHiddenFlag, 0));

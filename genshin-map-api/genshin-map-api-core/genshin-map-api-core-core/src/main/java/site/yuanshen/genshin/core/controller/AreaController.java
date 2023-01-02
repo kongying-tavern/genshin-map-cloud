@@ -36,6 +36,7 @@ public class AreaController {
     @Operation(summary = "列出地区", description = "可根据父级地区id列出子地区列表")
     @PostMapping("/get/list")
     public R<List<AreaVo>> listArea(@RequestHeader(value = "userDataLevel",required = false) String userDataLevel, @RequestBody AreaSearchVo areaSearchVo) {
+        //todo userDataLevel应该作为参数传入，vo作为前端传值不应该加userDataLevel
         areaSearchVo.setHiddenFlagList(HiddenFlagEnum.getFlagList(userDataLevel));
         return RUtils.create(
                 areaService.listArea(areaSearchVo)

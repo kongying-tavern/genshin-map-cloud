@@ -23,10 +23,11 @@ public interface AreaService {
     /**
      * 获取单个地区信息
      *
-     * @param areaId 地区ID
+     * @param areaId         地区ID
+     * @param hiddenFlagList 显隐等级List
      * @return 地区数据封装
      */
-    AreaDto getArea(Long areaId,List<Integer> hiddenFlagList);
+    AreaDto getArea(Long areaId, List<Integer> hiddenFlagList);
 
     /**
      * 新增地区

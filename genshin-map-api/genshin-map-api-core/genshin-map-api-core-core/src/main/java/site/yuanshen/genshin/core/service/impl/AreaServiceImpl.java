@@ -71,11 +71,12 @@ public class AreaServiceImpl implements AreaService {
      * 获取单个地区信息
      *
      * @param areaId 地区ID
+     * @param hiddenFlagList 显隐等级List
      * @return 地区数据封装
      */
     @Override
     @Cacheable(value = "area",key = "#areaId")
-    public AreaDto getArea(Long areaId,List<Integer> hiddenFlagList) {
+    public AreaDto getArea(Long areaId, List<Integer> hiddenFlagList) {
         return new AreaDto(areaMapper.selectOne(Wrappers.<Area>lambdaQuery().in(!hiddenFlagList.isEmpty(),Area::getHiddenFlag,hiddenFlagList)
                 .eq(Area::getId, areaId)));
     }
