@@ -88,6 +88,8 @@ public class RouteServiceImpl implements RouteService {
         SysUser user = getUserNotNull(routeDto.getCreatorId());
         routeDto.setCreatorNickname(StringUtils.isNotBlank(user.getNickname()) ? user.getNickname() : user.getUsername());
         Route entity = routeDto.getEntity();
+        entity.setVersion(0L);
+        entity.setId(0L);
         routeMapper.insert(entity);
         return entity.getId();
     }
