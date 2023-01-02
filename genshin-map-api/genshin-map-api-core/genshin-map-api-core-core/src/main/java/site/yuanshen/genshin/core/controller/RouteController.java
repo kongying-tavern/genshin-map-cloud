@@ -17,6 +17,7 @@ import site.yuanshen.data.vo.helper.PageListVo;
 import site.yuanshen.data.vo.helper.PageSearchVo;
 import site.yuanshen.genshin.core.service.RouteService;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -80,7 +81,7 @@ public class RouteController {
     @Operation(summary = "删除路线", description = "删除路线，请在前端做二次确认")
     @DeleteMapping("/{routeId}")
     public R<Boolean> deleteRoute(@PathVariable("routeId") Long routeId, @RequestHeader("userId") Long userId, @RequestHeader("Authorities") String authoritiesString) {
-        RouteDto route = routeService.getRoute(routeId, HiddenFlagEnum.getAllFlagList());
+        RouteDto route = routeService.listRouteById(Collections.singletonList(routeId), HiddenFlagEnum.getAllFlagList()).get(0);
         checkRole(route.getCreatorId(), userId, authoritiesString);
         return RUtils.create(
                 routeService.deleteRoute(routeId)
