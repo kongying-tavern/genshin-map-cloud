@@ -75,7 +75,7 @@ public class AreaServiceImpl implements AreaService {
      * @return 地区数据封装
      */
     @Override
-    @Cacheable(value = "area",key = "#areaId")
+    @Cacheable(value = "area",key = "#areaId+'*'+#hiddenFlagList")
     public AreaDto getArea(Long areaId, List<Integer> hiddenFlagList) {
         return new AreaDto(areaMapper.selectOne(Wrappers.<Area>lambdaQuery().in(!hiddenFlagList.isEmpty(),Area::getHiddenFlag,hiddenFlagList)
                 .eq(Area::getId, areaId)));
