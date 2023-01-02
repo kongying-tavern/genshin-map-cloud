@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.generator.config.TemplateType;
 import org.springframework.stereotype.Component;
 import site.yuanshen.data.base.BaseEntity;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -25,6 +26,7 @@ public class FastGenerator {
     private String serviceImplPackage;
     private String mapperPackage;
     private String xmlPackage;
+    private String otherPackage;
 
     /**
      * 在创建实体类属性的swagger注解时创建注释
@@ -53,6 +55,7 @@ public class FastGenerator {
                         .service(servicePackage)
                         .serviceImpl(serviceImplPackage)
                         .mapper(mapperPackage)
+                        .other(otherPackage)
                         .xml(xmlPackage))
                 .strategyConfig(builder -> builder
                         //entity配置
@@ -83,10 +86,13 @@ public class FastGenerator {
                         .mapper("/templates/mapper.java")
                         .mapperXml("/templates/mapper.xml"))
                 .injectionConfig(builder -> {
-                    Map<String, Object> customMap = new TreeMap<>();
-                    customMap.put("enableFieldCommentWithSwagger", enableFieldCommentWithSwagger);
-
-                    builder.customMap(customMap);
+                    Map<String, Object> customFieldMap = new TreeMap<>();
+                    customFieldMap.put("enableFieldCommentWithSwagger", enableFieldCommentWithSwagger);
+                    builder.customMap(customFieldMap);
+                    Map<String, String> customFileMap = new TreeMap<>();
+                    customFileMap.put("Dto.java", "/templates/dto.java.vm");
+                    customFileMap.put("Vo.java", "/templates/vo.java.vm");
+                    builder.customFile(customFileMap);
                 })
                 .execute();
     }
@@ -161,6 +167,11 @@ public class FastGenerator {
         if (apiPackageName == null) throw new Exception("serviceImplPackageAfterApi前必须设置apiPackageName");
         if (apiModuleName == null) throw new Exception("serviceImplPackageAfterApi前必须设置apiModuleName");
         this.serviceImplPackage = apiPackageName + "." + apiModuleName + "." + serviceImplPackageAfterApi;
+        return this;
+    }
+
+    public FastGenerator otherPackage(String otherPackage) {
+        this.otherPackage = otherPackage;
         return this;
     }
 }

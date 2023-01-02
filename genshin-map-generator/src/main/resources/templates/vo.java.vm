@@ -1,15 +1,7 @@
-package ${package.Entity};
+package site.yuanshen.data.vo;
 
-#foreach($pkg in ${table.importPackages})
-import ${pkg};
-#end
-#if(${swagger})
 import io.swagger.v3.oas.annotations.media.Schema;
-#end
-#if(${entityLombokModel})
 import lombok.*;
-import lombok.experimental.Accessors;
-#end
 
 /**
  * $!{table.comment}
@@ -22,35 +14,10 @@ import lombok.experimental.Accessors;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@With
-    #if(${superEntityClass})
-    @EqualsAndHashCode(callSuper = true)
-    #else
-    @EqualsAndHashCode(callSuper = false)
-    #end
-    #if(${chainModel})
-    @Accessors(chain = true)
-    #end
+@EqualsAndHashCode
 #end
-#if(${table.convert})
-@TableName("${schemaName}${table.name}")
-#end
-#if(${swagger})
-@Schema(name = "${entity}对象", description = "$!{table.comment}")
-#end
-#if(${superEntityClass})
-public class ${entity} extends ${superEntityClass}#if(${activeRecord})<${entity}>#end {
-#elseif(${activeRecord})
-public class ${entity} extends Model<${entity}> {
-#elseif(${entitySerialVersionUID})
-public class ${entity} implements Serializable{
-#else
-public class ${entity} {
-#end
-#if(${entitySerialVersionUID})
-
-private static final long serialVersionUID=1L;
-#end
+@Schema(name = "${entity}前端封装", description = "$!{table.comment}前端封装")
+public class ${entity}Vo {
 ## ----------  BEGIN 字段循环遍历  ----------
 #foreach($field in ${table.fields})
 
@@ -58,46 +25,10 @@ private static final long serialVersionUID=1L;
         #set($keyPropertyName=${field.propertyName})
     #end
     #if("$!field.comment" != "")
-        #if(${swagger} && !${enableFieldCommentWithSwagger})
-        @Schema(name = "${field.comment}")
-        #elseif(${swagger} && ${enableFieldCommentWithSwagger})
         /**
          * ${field.comment}
          */
         @Schema(name = "${field.comment}")
-        #else
-        /**
-         * ${field.comment}
-         */
-        #end
-    #end
-    #if(${field.keyFlag})
-        ## 主键
-        #if(${field.keyIdentityFlag})
-        @TableId(value = "${field.annotationColumnName}", type = IdType.AUTO)
-        #elseif(!$null.isNull(${idType}) && "$!idType" != "")
-        @TableId(value = "${field.annotationColumnName}", type = IdType.${idType})
-        #elseif(${field.convert})
-        @TableId("${field.annotationColumnName}")
-        #end
-        ## 普通字段
-    #elseif(${field.fill})
-        ## -----   存在字段填充设置   -----
-        #if(${field.convert})
-        @TableField(value = "${field.annotationColumnName}", fill = FieldFill.${field.fill})
-        #else
-        @TableField(fill = FieldFill.${field.fill})
-        #end
-    #elseif(${field.convert})
-    @TableField("${field.annotationColumnName}")
-    #end
-    ## 乐观锁注解
-    #if(${field.versionField})
-    @Version
-    #end
-    ## 逻辑删除注解
-    #if(${field.logicDeleteField})
-    @TableLogic
     #end
 private ${field.propertyType} ${field.propertyName};
 #end
