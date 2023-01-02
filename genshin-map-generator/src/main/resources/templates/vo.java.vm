@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 /**
- * $!{table.comment}
+ * $!{table.comment}前端封装
  *
  * @author ${author}
  * @since ${date}
