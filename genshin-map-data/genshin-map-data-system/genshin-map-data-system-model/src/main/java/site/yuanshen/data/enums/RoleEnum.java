@@ -48,6 +48,7 @@ public enum RoleEnum {
 
     public SysRole getRoleBean() {
         SysRole roleBean = new SysRole();
+        roleBean.setId(id);
         roleBean.setName(name);
         roleBean.setCode(code);
         roleBean.setSort(sort);
