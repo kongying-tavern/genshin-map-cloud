@@ -26,9 +26,9 @@ public class RouteVo {
     private Long version;
 
     /**
-     * ID
+     * 路线ID
      */
-    @Schema(name = "ID")
+    @Schema(name = "路线ID")
     private Long id;
 
     /**

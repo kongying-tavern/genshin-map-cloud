@@ -23,7 +23,7 @@ public class RouteSearchVo {
      * 路线名称模糊搜索字段
      */
     @Schema(name = "路线名称模糊搜索字段")
-    private String name;
+    private String namePart;
 
     /**
      * 创建人昵称模糊搜索字段，此字段不能与创建人id字段共存
