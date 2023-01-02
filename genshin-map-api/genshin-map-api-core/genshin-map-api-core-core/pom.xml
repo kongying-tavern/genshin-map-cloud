@@ -21,6 +21,11 @@
             <artifactId>genshin-map-data-core-mapper</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>site.yuanshen</groupId>
+            <artifactId>genshin-map-data-system-mapper</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
 </project>

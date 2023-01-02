@@ -1,11 +1,13 @@
 package site.yuanshen.data.enums;
 
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -43,6 +45,14 @@ public enum HiddenFlagEnum {
 
     public static List<Integer> getFlagList(String userDataLevel){
        return getFlagList(NumberUtils.toInt(userDataLevel,0));
+    }
+
+    public static List<Integer> getAllFlagList() {
+        List<Integer> list = new ArrayList<>();
+        for (HiddenFlagEnum value : HiddenFlagEnum.values()) {
+            list.add(value.getCode());
+        }
+        return list;
     }
 
 }
