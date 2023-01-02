@@ -9,7 +9,7 @@ import site.yuanshen.data.vo.${entity}Vo;
 
 
 /**
- * $!{table.comment}
+ * $!{table.comment}路数据封装
  *
  * @author ${author}
  * @since ${date}
