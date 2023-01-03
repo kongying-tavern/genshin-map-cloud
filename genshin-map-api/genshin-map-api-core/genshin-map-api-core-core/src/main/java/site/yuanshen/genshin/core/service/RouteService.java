@@ -1,8 +1,8 @@
 package site.yuanshen.genshin.core.service;
 
 import site.yuanshen.data.dto.RouteDto;
+import site.yuanshen.data.dto.RouteSearchDto;
 import site.yuanshen.data.dto.helper.PageSearchDto;
-import site.yuanshen.data.vo.RouteSearchVo;
 import site.yuanshen.data.vo.RouteVo;
 import site.yuanshen.data.vo.helper.PageListVo;
 
@@ -27,11 +27,11 @@ public interface RouteService {
     /**
      * 根据条件筛选分页查询路线信息
      *
-     * @param routeSearchVo  路线分页查询前端封装
+     * @param routeSearchDto 路线分页查询数据封装
      * @param hiddenFlagList 显隐等级List
      * @return 路线信息分页封装
      */
-    PageListVo<RouteVo> listRoutePageSearch(RouteSearchVo routeSearchVo, List<Integer> hiddenFlagList);
+    PageListVo<RouteVo> listRoutePageSearch(RouteSearchDto routeSearchDto, List<Integer> hiddenFlagList);
 
     /**
      * 根据id列表查询路线信息

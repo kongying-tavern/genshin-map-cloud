@@ -2,17 +2,17 @@ package site.yuanshen.genshin.core.service.impl;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.mysql.cj.protocol.x.ReusableOutputStream;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import site.yuanshen.data.base.BaseEntity;
 import site.yuanshen.data.dto.RouteDto;
+import site.yuanshen.data.dto.RouteSearchDto;
 import site.yuanshen.data.dto.helper.PageSearchDto;
 import site.yuanshen.data.entity.Route;
 import site.yuanshen.data.entity.SysUser;
 import site.yuanshen.data.mapper.RouteMapper;
 import site.yuanshen.data.mapper.SysUserMapper;
-import site.yuanshen.data.vo.RouteSearchVo;
 import site.yuanshen.data.vo.RouteVo;
 import site.yuanshen.data.vo.helper.PageListVo;
 import site.yuanshen.genshin.core.service.RouteService;
@@ -53,13 +53,29 @@ public class RouteServiceImpl implements RouteService {
     /**
      * 根据条件筛选分页查询路线信息
      *
-     * @param routeSearchVo  路线分页查询前端封装
+     * @param searchDto      路线分页查询数据封装
      * @param hiddenFlagList 显隐等级List
      * @return 路线信息分页封装
      */
     @Override
-    public PageListVo<RouteVo> listRoutePageSearch(RouteSearchVo routeSearchVo, List<Integer> hiddenFlagList) {
-        return null;
+    public PageListVo<RouteVo> listRoutePageSearch(RouteSearchDto searchDto, List<Integer> hiddenFlagList) {
+        String namePart = searchDto.getNamePart();
+        String nicknamePart = searchDto.getCreatorNicknamePart();
+        String creatorId = searchDto.getCreatorId();
+        Page<Route> routePage = routeMapper.selectPage(searchDto.getPage(),
+                Wrappers.<Route>lambdaQuery()
+                        .orderByAsc(Route::getId)
+                        .like(StringUtils.isNotBlank(namePart), Route::getName, namePart)
+                        .like(StringUtils.isNotBlank(nicknamePart), Route::getCreatorNickname, nicknamePart)
+                        .eq(StringUtils.isNotBlank(creatorId), BaseEntity::getCreatorId, creatorId));
+        return new PageListVo<RouteVo>()
+                .setRecord(routePage.getRecords().parallelStream()
+                        .filter(route -> hiddenFlagList.contains(route.getHiddenFlag()))
+                        .map(RouteDto::new)
+                        .map(RouteDto::getVo)
+                        .collect(Collectors.toList()))
+                .setSize(routePage.getSize())
+                .setTotal(routePage.getTotal());
     }
 
     /**

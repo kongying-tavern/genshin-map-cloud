@@ -4,10 +4,12 @@ import com.alibaba.fastjson.JSON;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import site.yuanshen.common.web.response.R;
 import site.yuanshen.common.web.response.RUtils;
 import site.yuanshen.data.dto.RouteDto;
+import site.yuanshen.data.dto.RouteSearchDto;
 import site.yuanshen.data.dto.helper.PageSearchDto;
 import site.yuanshen.data.enums.HiddenFlagEnum;
 import site.yuanshen.data.enums.RoleEnum;
@@ -46,8 +48,10 @@ public class RouteController {
     @Operation(summary = "根据条件筛选分页查询路线信息", description = "根据条件筛选分页查询路线信息，会根据当前角色决定不同的显隐等级")
     @PostMapping("/get/search")
     public R<PageListVo<RouteVo>> listRoutePageSearch(@RequestBody RouteSearchVo searchVo, @RequestHeader(value = "userDataLevel", required = false) String userDataLevel) {
+        RouteSearchDto searchDto = new RouteSearchDto(searchVo);
+        searchDto.checkParams();
         return RUtils.create(
-                routeService.listRoutePageSearch(searchVo, HiddenFlagEnum.getFlagList(userDataLevel))
+                routeService.listRoutePageSearch(searchDto, HiddenFlagEnum.getFlagList(userDataLevel))
         );
     }
 
