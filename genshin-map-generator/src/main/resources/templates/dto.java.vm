@@ -20,7 +20,7 @@ import site.yuanshen.data.vo.${entity}Vo;
 @AllArgsConstructor
 @With
 @EqualsAndHashCode
-@Schema(name = "${entity}数据封装", description = "$!{table.comment}数据封装")
+@Schema(title = "${entity}数据封装", description = "$!{table.comment}数据封装")
 public class ${entity}Dto {
 #if(${entitySerialVersionUID})
 
@@ -36,7 +36,7 @@ private static final long serialVersionUID=1L;
     /**
      * ${field.comment}
      */
-    @Schema(name = "${field.comment}")
+    @Schema(title = "${field.comment}")
     #end
 private ${field.propertyType} ${field.propertyName};
 #end

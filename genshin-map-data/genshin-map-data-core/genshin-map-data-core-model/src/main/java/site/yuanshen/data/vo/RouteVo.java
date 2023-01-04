@@ -16,7 +16,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-@Schema(name = "Route前端封装", description = "路线前端封装")
+@Schema(title = "Route前端封装", description = "路线前端封装")
 public class RouteVo {
 
     /**
@@ -28,43 +28,43 @@ public class RouteVo {
     /**
      * 路线ID
      */
-    @Schema(name = "路线ID")
+    @Schema(title = "路线ID")
     private Long id;
 
     /**
      * 路线名称
      */
-    @Schema(name = "路线名称")
+    @Schema(title = "路线名称")
     private String name;
 
     /**
      * 路线描述
      */
-    @Schema(name = "路线描述")
+    @Schema(title = "路线描述")
     private String content;
 
     /**
      * 点位顺序数组
      */
-    @Schema(name = "点位顺序数组")
+    @Schema(title = "点位顺序数组")
     private String markerList;
 
     /**
      * 显隐等级
      */
-    @Schema(name = "显隐等级")
+    @Schema(title = "显隐等级")
     private Integer hiddenFlag;
 
     /**
      * 视频地址
      */
-    @Schema(name = "视频地址")
+    @Schema(title = "视频地址")
     private String video;
 
     /**
      * 额外信息
      */
-    @Schema(name = "额外信息")
+    @Schema(title = "额外信息")
     private String extra;
 
     /**
@@ -76,7 +76,7 @@ public class RouteVo {
     /**
      * 创建人昵称
      */
-    @Schema(name = "创建人昵称")
+    @Schema(title = "创建人昵称")
     private String creatorNickname;
 
 

@@ -16,7 +16,7 @@ import lombok.*;
 @AllArgsConstructor
 @EqualsAndHashCode
 #end
-@Schema(name = "${entity}前端封装", description = "$!{table.comment}前端封装")
+@Schema(title = "${entity}前端封装", description = "$!{table.comment}前端封装")
 public class ${entity}Vo {
 ## ----------  BEGIN 字段循环遍历  ----------
 #foreach($field in ${table.fields})
@@ -28,7 +28,7 @@ public class ${entity}Vo {
         /**
          * ${field.comment}
          */
-        @Schema(name = "${field.comment}")
+        @Schema(title = "${field.comment}")
     #end
 private ${field.propertyType} ${field.propertyName};
 #end
