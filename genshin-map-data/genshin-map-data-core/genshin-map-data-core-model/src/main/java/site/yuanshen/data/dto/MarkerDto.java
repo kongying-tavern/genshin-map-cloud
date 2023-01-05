@@ -115,6 +115,7 @@ public class MarkerDto {
 
     public MarkerDto(MarkerVo markerVo) {
         BeanUtils.copyProperties(markerVo, this);
+        this.itemList = markerVo.getItemList().stream().map(MarkerItemLinkDto::new).collect(Collectors.toList());
     }
 
 
