@@ -41,7 +41,9 @@ genshin:
       - /api/tag/**
       - /api/tag_type/**
       - /api/icon/**
+      - /api/icon_type/**
       - /api/item/**
+      - /api/item_type/**
       - /api/item_common/**
       - /api/area/**
       - /api/history/**
