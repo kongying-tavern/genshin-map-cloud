@@ -1,14 +1,14 @@
 {
   "name": "v1.0.7",
-  "desc": "\n/* --------------- 创建表 --------------- */\nscore_stat[评分统计]\n/* --------------- 修改表 --------------- */\nmarker[点位主表]\n    修改字段：\n    \tcreator_id[创建人]\n\tupdater_id[更新人]\n\tcreate_time[创建时间]\n\tupdate_time[更新时间]\n\tmarker_stamp[点位签戳（用于兼容旧点位ID）]\n\tmarker_title[点位名称]\n\tvideo_path[点位视频]\n\trefresh_time[点位刷新时间]\n\thidden_flag[隐藏标志]\n\textra[额外特殊字段]\n\tsync_tag[同步标记]\nmarker_punctuate[点位提交表]\n    修改字段：\n    \tcreator_id[创建人]\n\tupdater_id[更新人]\n\tcreate_time[创建时间]\n\tupdate_time[更新时间]\n\toriginal_marker_id[原有点位ID]\n\tmarker_title[点位名称]\n\textra[额外特殊字段]\n\tvideo_path[点位视频]\n\trefresh_time[点位刷新时间]\n\thidden_flag[隐藏标志]\nmarker_item_link[点位-物品关联表]\n    修改字段：\n    \tcreator_id[创建人]\n\tupdater_id[更新人]\n\titem_id[物品ID]\n\tmarker_id[点位ID]\n\tcount[物品于该点位数量]\n\tsync_tag[同步标记]\nitem[物品表]\n    修改字段：\n    \tcreator_id[创建人]\n\tupdater_id[更新人]\n\tcreate_time[创建时间]\n\tupdate_time[更新时间]\n\tarea_id[地区ID（须确保是末端地区）]\n\tdefault_refresh_time[默认刷新时间]\n\tdefault_count[默认数量]\n\ticon_style_type[图标样式类型]\n\thidden_flag[隐藏标志]\n\tsort_index[物品排序]\n\tspecial_flag[特殊物品标记]\n\tsync_tag[同步标记]\nitem_type[物品类型表]\n    修改字段：\n    \tcreator_id[创建人]\n\tupdater_id[更新人]\n\tcreate_time[创建时间]\n\tupdate_time[更新时间]\n\thidden_flag[隐藏标记]\n\tsort_index[排序]\n\tsync_tag[同步标记]\nitem_type_link[物品-类型关联表]\n    修改字段：\n    \tcreator_id[创建人]\n\tupdater_id[更新人]\n\tcreate_time[创建时间]\n\tupdate_time[更新时间]\n\tsync_tag[同步标记]\nitem_area_public[地区公用物品记录表]\n    修改字段：\n    \tcreator_id[创建人]\n\tupdater_id[更新人]\n\tcreate_time[创建时间]\n\tupdate_time[更新时间]\ntag[图标标签主表]\n    修改字段：\n    \tcreator_id[创建人]\n\tupdater_id[更新人]\n\tcreate_time[创建时间]\n\tupdate_time[更新时间]\n\tsync_tag[同步标记]\ntag_type[图标标签分类表]\n    修改字段：\n    \tcreator_id[创建人]\n\tupdater_id[更新人]\n\tcreate_time[创建时间]\n\tupdate_time[更新时间]\n\tis_final[是否为末端类型]\ntag_type_link[图标标签分类关联表]\n    修改字段：\n    \tcreator_id[创建人]\n\tupdater_id[更新人]\n\tcreate_time[创建时间]\n\tupdate_time[更新时间]\nicon[图标主表]\n    修改字段：\n    \tcreator_id[创建人]\n\tupdater_id[更新人]\n\tcreate_time[创建时间]\n\tupdate_time[更新时间]\n\tsync_tag[同步标记]\nicon_type[图标分类表]\n    修改字段：\n    \tcreator_id[创建人]\n\tupdater_id[更新人]\n\tcreate_time[创建时间]\n\tupdate_time[更新时间]\n\tis_final[是否为末端类型]\nicon_type_link[图标分类关联表]\n    修改字段：\n    \tcreator_id[创建人]\n\tupdater_id[更新人]\n\tcreate_time[创建时间]\n\tupdate_time[更新时间]\n\tsync_tag[同步标记]\narea[地区主表]\n    修改字段：\n    \tcreator_id[创建人]\n\tupdater_id[更新人]\n\tcreate_time[创建时间]\n\tupdate_time[更新时间]\n\tcode[地区代码]\n\tis_final[是否为末端地区]\n\thidden_flag[隐藏标志]\n\tsort_index[排序]\n\tsync_tag[同步标记]\nsys_user[系统用户表]\n    修改字段：\n    \tcreator_id[创建人]\n\tupdater_id[更新人]\n\tusername[用户名]\n\tpassword[密码]\n\tnickname[昵称]\n\tqq[QQ]\n\tphone[手机号]\n\tlogo[头像链接]\nsys_user_role_link[系统用户角色关联表]\n    修改字段：\n    \tcreator_id[创建人]\n\tupdater_id[更新人]\n\tuser_id[用户ID]\n\trole_id[角色ID]\nsys_role[系统角色表]\n    修改字段：\n    \tcreator_id[创建人]\n\tupdater_id[更新人]\n\tname[角色名]\n\tcode[角色代码（英文大写）]\n\tsort[角色层级（越大级别越高）]\noauth_client_details[Spring默认Oauth2客户端表]\n    修改字段：\n    \tversion[乐观锁]\n\tid[ID]\n\tcreator_id[创建人]\n\tupdater_id[更新人]\n\tcreate_time[创建时间]\n\tupdate_time[更新时间]\n\tdel_flag[逻辑删除]\n\tclient_id[客户端ID]\n\tclient_secret[客户端密钥]\n\tscope[权限范围]\n\tauthorized_grant_types[鉴权类型]\n\tweb_server_redirect_uri[重定向地址]\n\tauthorities[权限]\n\taccess_token_validity[授权密钥过期时间]\n\trefresh_token_validity[刷新密钥过期时间]\n\tadditional_information[额外信息]\n\tauto_approve[自动同意]\nhistory[历史操作表]\n    修改字段：\n    \tid[ID]\n\tcontent[]\n\tmd5[]\n\tt_id[]\n\ttype[]\n\tipv4[]\n\tcreator_id[]\n\tcreate_time[]\n\tdel_flag[]\n\tversion[]\n\tupdater_id[]\n\tupdate_time[]\nsys_user_archive[系统用户存档表]\n    修改字段：\n    \tcreator_id[创建人]\n\tupdater_id[更新人]\n\tname[存档名称]\n\tslot_index[槽位顺序]\n\tuser_id[用户ID]\n\tdata[存档信息]\nroute[路线]\n    修改字段：\n    \tcreator_id[创建人]\n\tupdater_id[更新人]\n\tname[路线名称]\n\tcontent[路线描述]\n\tmarker_list[点位顺序数组]\n\thidden_flag[显隐等级]\n\tvideo[视频地址]\n\textra[额外信息]\n\tcreator_nickname[创建人昵称]\n",
-  "date": 1673041992146,
+  "desc": "\n/* --------------- 创建表 --------------- */\nscore_stat[评分统计]\n/* --------------- 修改表 --------------- */\nmarker[点位主表]\n    修改字段：\n    \tcreate_time[创建时间]\n\tupdate_time[更新时间]\nmarker_punctuate[点位提交表]\n    修改字段：\n    \tcreate_time[创建时间]\n\tupdate_time[更新时间]\nmarker_item_link[点位-物品关联表]\n    修改字段：\n    \tcreate_time[创建时间]\n\tupdate_time[更新时间]\nitem[物品表]\n    修改字段：\n    \tcreate_time[创建时间]\n\tupdate_time[更新时间]\nitem_type[物品类型表]\n    修改字段：\n    \tcreate_time[创建时间]\n\tupdate_time[更新时间]\nitem_type_link[物品-类型关联表]\n    修改字段：\n    \tcreate_time[创建时间]\n\tupdate_time[更新时间]\nitem_area_public[地区公用物品记录表]\n    修改字段：\n    \tcreate_time[创建时间]\n\tupdate_time[更新时间]\ntag[图标标签主表]\n    修改字段：\n    \tcreate_time[创建时间]\n\tupdate_time[更新时间]\ntag_type[图标标签分类表]\n    修改字段：\n    \tcreate_time[创建时间]\n\tupdate_time[更新时间]\ntag_type_link[图标标签分类关联表]\n    修改字段：\n    \tcreate_time[创建时间]\n\tupdate_time[更新时间]\nicon[图标主表]\n    修改字段：\n    \tcreate_time[创建时间]\n\tupdate_time[更新时间]\nicon_type[图标分类表]\n    修改字段：\n    \tcreate_time[创建时间]\n\tupdate_time[更新时间]\nicon_type_link[图标分类关联表]\n    修改字段：\n    \tcreate_time[创建时间]\n\tupdate_time[更新时间]\narea[地区主表]\n    修改字段：\n    \tcreate_time[创建时间]\n\tupdate_time[更新时间]\nsys_user[系统用户表]\n    修改字段：\n    \tcreate_time[创建时间]\n\tupdate_time[更新时间]\nsys_user_role_link[系统用户角色关联表]\n    修改字段：\n    \tcreate_time[创建时间]\n\tupdate_time[更新时间]\nsys_role[系统角色表]\n    修改字段：\n    \tcreate_time[创建时间]\n\tupdate_time[更新时间]\noauth_client_details[Spring默认Oauth2客户端表]\n    修改字段：\n    \tcreate_time[创建时间]\n\tupdate_time[更新时间]\nhistory[历史操作表]\n    修改字段：\n    \tt_id[]\n    添加字段：\n\tversion[乐观锁]\n\tid[ID]\n\tcreator_id[创建人]\n\tupdater_id[更新人]\n\tcreate_time[创建时间]\n\tupdate_time[更新时间]\n\tdel_flag[逻辑删除]\n    删除字段：\n\tid[ID]\n\tcreator_id[]\n\tcreate_time[]\n\tdel_flag[]\n\tversion[]\n\tupdater_id[]\n\tupdate_time[]\nsys_user_archive[系统用户存档表]\n    修改字段：\n    \tcreate_time[创建时间]\n\tupdate_time[更新时间]\nroute[路线]\n    修改字段：\n    \tcreate_time[创建时间]\n\tupdate_time[更新时间]\n\tmarker_list[点位顺序数组]\n",
+  "date": 1673049309474,
   "data": {
     "name": "空荧酒馆后厨",
     "describe": "空荧酒馆后厨",
     "avatar": "data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAACXBIWXMAAAsTAAALEwEAmpwYAAAJ82lUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNi4wLWMwMDIgNzkuMTY0MzUyLCAyMDIwLzAxLzMwLTE1OjUwOjM4ICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIgeG1sbnM6cGhvdG9zaG9wPSJodHRwOi8vbnMuYWRvYmUuY29tL3Bob3Rvc2hvcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RFdnQ9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZUV2ZW50IyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIDIxLjEgKFdpbmRvd3MpIiB4bXA6Q3JlYXRlRGF0ZT0iMjAyMi0xMS0yNFQxNDowMzo0OSswODowMCIgeG1wOk1vZGlmeURhdGU9IjIwMjItMTEtMjRUMTQ6MjM6NTkrMDg6MDAiIHhtcDpNZXRhZGF0YURhdGU9IjIwMjItMTEtMjRUMTQ6MjM6NTkrMDg6MDAiIGRjOmZvcm1hdD0iaW1hZ2UvcG5nIiBwaG90b3Nob3A6Q29sb3JNb2RlPSIzIiBwaG90b3Nob3A6SUNDUHJvZmlsZT0ic1JHQiBJRUM2MTk2Ni0yLjEiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6ZGJmZWY1NDUtOGMxMS0xMDQ4LTgxYjMtM2NiY2QyNmE4YTE0IiB4bXBNTTpEb2N1bWVudElEPSJhZG9iZTpkb2NpZDpwaG90b3Nob3A6NGQyMjliMDQtZjYxZS05ZDQxLTk3MmEtYWUxMWM3ZTQ2YjZjIiB4bXBNTTpPcmlnaW5hbERvY3VtZW50SUQ9InhtcC5kaWQ6ZDg5Y2E1ZTgtNTg4OC1mYTRiLWEwOTUtZjNhNmJkY2FhYTc4Ij4gPHhtcE1NOkhpc3Rvcnk+IDxyZGY6U2VxPiA8cmRmOmxpIHN0RXZ0OmFjdGlvbj0iY3JlYXRlZCIgc3RFdnQ6aW5zdGFuY2VJRD0ieG1wLmlpZDpkODljYTVlOC01ODg4LWZhNGItYTA5NS1mM2E2YmRjYWFhNzgiIHN0RXZ0OndoZW49IjIwMjItMTEtMjRUMTQ6MDM6NDkrMDg6MDAiIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFkb2JlIFBob3Rvc2hvcCAyMS4xIChXaW5kb3dzKSIvPiA8cmRmOmxpIHN0RXZ0OmFjdGlvbj0iY29udmVydGVkIiBzdEV2dDpwYXJhbWV0ZXJzPSJmcm9tIGltYWdlL3BuZyB0byBhcHBsaWNhdGlvbi92bmQuYWRvYmUucGhvdG9zaG9wIi8+IDxyZGY6bGkgc3RFdnQ6YWN0aW9uPSJzYXZlZCIgc3RFdnQ6aW5zdGFuY2VJRD0ieG1wLmlpZDo2ZmFhNGQyMi03ZWExLWFkNDAtOWU1NS0xMTcyMDY3ZWJkZjEiIHN0RXZ0OndoZW49IjIwMjItMTEtMjRUMTQ6MjA6NDIrMDg6MDAiIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFkb2JlIFBob3Rvc2hvcCAyMS4xIChXaW5kb3dzKSIgc3RFdnQ6Y2hhbmdlZD0iLyIvPiA8cmRmOmxpIHN0RXZ0OmFjdGlvbj0ic2F2ZWQiIHN0RXZ0Omluc3RhbmNlSUQ9InhtcC5paWQ6M2NiOTdmMzUtNTYwYi0wZjQ1LTljZjgtMDY1ODUwMzhlMzg5IiBzdEV2dDp3aGVuPSIyMDIyLTExLTI0VDE0OjIzOjU5KzA4OjAwIiBzdEV2dDpzb2Z0d2FyZUFnZW50PSJBZG9iZSBQaG90b3Nob3AgMjEuMSAoV2luZG93cykiIHN0RXZ0OmNoYW5nZWQ9Ii8iLz4gPHJkZjpsaSBzdEV2dDphY3Rpb249ImNvbnZlcnRlZCIgc3RFdnQ6cGFyYW1ldGVycz0iZnJvbSBhcHBsaWNhdGlvbi92bmQuYWRvYmUucGhvdG9zaG9wIHRvIGltYWdlL3BuZyIvPiA8cmRmOmxpIHN0RXZ0OmFjdGlvbj0iZGVyaXZlZCIgc3RFdnQ6cGFyYW1ldGVycz0iY29udmVydGVkIGZyb20gYXBwbGljYXRpb24vdm5kLmFkb2JlLnBob3Rvc2hvcCB0byBpbWFnZS9wbmciLz4gPHJkZjpsaSBzdEV2dDphY3Rpb249InNhdmVkIiBzdEV2dDppbnN0YW5jZUlEPSJ4bXAuaWlkOmRiZmVmNTQ1LThjMTEtMTA0OC04MWIzLTNjYmNkMjZhOGExNCIgc3RFdnQ6d2hlbj0iMjAyMi0xMS0yNFQxNDoyMzo1OSswODowMCIgc3RFdnQ6c29mdHdhcmVBZ2VudD0iQWRvYmUgUGhvdG9zaG9wIDIxLjEgKFdpbmRvd3MpIiBzdEV2dDpjaGFuZ2VkPSIvIi8+IDwvcmRmOlNlcT4gPC94bXBNTTpIaXN0b3J5PiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDozY2I5N2YzNS01NjBiLTBmNDUtOWNmOC0wNjU4NTAzOGUzODkiIHN0UmVmOmRvY3VtZW50SUQ9ImFkb2JlOmRvY2lkOnBob3Rvc2hvcDpiYjAwZmQwZi1jYTBmLTczNDEtYjY2Yy02OWJlMDViZWM4OWEiIHN0UmVmOm9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDpkODljYTVlOC01ODg4LWZhNGItYTA5NS1mM2E2YmRjYWFhNzgiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz7QjFA3AAA1a0lEQVR4nM2dd3xc1Zn3v7dPn5E00ox6b+4NG4xtDKamsQmBAJvy5g2BhBI2ZbNvstkQlk14NyGbEEJCAiFLyYYEAqEbg00xJca94Crbkmz1PkVT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",
-    "version": "4.1.1",
+    "version": "4.2.2",
     "createdTime": "2022-4-22 02:18:22",
-    "updatedTime": "2023-1-7 05:52:19",
+    "updatedTime": "2023-1-7 06:56:01",
     "dbConns": [],
     "profile": {
       "default": {
@@ -19,7 +19,6 @@
             "defKey": "version",
             "defName": "乐观锁",
             "comment": "",
-            "domain": "CE58D2F6-7F4B-4928-A0D1-9CD3BFF2D2B2",
             "type": "",
             "len": "",
             "scale": "",
@@ -28,9 +27,11 @@
             "autoIncrement": false,
             "defaultValue": "1",
             "hideInGraph": true,
+            "domain": "CE58D2F6-7F4B-4928-A0D1-9CD3BFF2D2B2",
             "refDict": "",
-            "uiHint": "",
-            "id": "92BF430E-01FA-4AEF-944F-25A142632654"
+            "extProps": {},
+            "notes": {},
+            "id": "EFC4E9D4-DB07-4438-B463-245D5653D140"
           },
           {
             "defKey": "id",
@@ -44,9 +45,11 @@
             "autoIncrement": true,
             "defaultValue": "",
             "hideInGraph": false,
-            "refDict": "",
             "domain": "16120F75-6AA7-4483-868D-F07F511BB081",
-            "id": "B5B42C92-2860-4DC8-9DDD-E8C68088069C"
+            "refDict": "",
+            "extProps": {},
+            "notes": {},
+            "id": "390CA2FC-DFB5-4BDF-8A20-0F3FB5B19239"
           },
           {
             "defKey": "creator_id",
@@ -56,14 +59,15 @@
             "len": "",
             "scale": "",
             "primaryKey": false,
-            "notNull": true,
+            "notNull": false,
             "autoIncrement": false,
             "defaultValue": "",
             "hideInGraph": true,
             "domain": "16120F75-6AA7-4483-868D-F07F511BB081",
             "refDict": "",
             "extProps": {},
-            "id": "089FCCBF-7988-4AC7-9C0C-5752E4E68A23"
+            "notes": {},
+            "id": "EF6B4CAB-7779-42F1-9106-4D86D05BC544"
           },
           {
             "defKey": "updater_id",
@@ -80,41 +84,44 @@
             "domain": "16120F75-6AA7-4483-868D-F07F511BB081",
             "refDict": "",
             "extProps": {},
-            "id": "81887257-3E2E-4307-9393-336AAB27B3EB"
+            "notes": {},
+            "id": "2B434A20-DFCA-44A0-ABEA-BBA7C9CD521B"
           },
           {
             "defKey": "create_time",
             "defName": "创建时间",
             "comment": "",
-            "domain": "7CFFA0D3-6A93-4DDC-BC10-DF21211064DC",
             "type": "",
             "len": "",
             "scale": "",
             "primaryKey": false,
             "notNull": true,
             "autoIncrement": false,
-            "defaultValue": "",
+            "defaultValue": "CURRENT_TIMESTAMP()",
             "hideInGraph": true,
+            "domain": "7CFFA0D3-6A93-4DDC-BC10-DF21211064DC",
             "refDict": "",
-            "uiHint": "",
-            "id": "4E471FD6-3E73-4A90-B660-51598A482409"
+            "extProps": {},
+            "notes": {},
+            "id": "0FCD9C98-F4FE-4833-8A92-DC5ADD0F7427"
           },
           {
             "defKey": "update_time",
             "defName": "更新时间",
             "comment": "",
-            "domain": "7CFFA0D3-6A93-4DDC-BC10-DF21211064DC",
             "type": "",
             "len": "",
             "scale": "",
             "primaryKey": false,
             "notNull": false,
             "autoIncrement": false,
-            "defaultValue": "",
+            "defaultValue": "CURRENT_TIMESTAMP()",
             "hideInGraph": true,
+            "domain": "7CFFA0D3-6A93-4DDC-BC10-DF21211064DC",
             "refDict": "",
-            "uiHint": "",
-            "id": "09F64AC4-4DEE-428F-AF64-4C103884E1AC"
+            "extProps": {},
+            "notes": {},
+            "id": "AA3CB4CA-38C5-4619-BBC0-AFFF7E35C817"
           },
           {
             "defKey": "del_flag",
@@ -128,9 +135,11 @@
             "autoIncrement": false,
             "defaultValue": "0",
             "hideInGraph": true,
-            "refDict": "",
             "domain": "6F7C1C5C-D159-41E6-BF9D-54DEEFA79AFF",
-            "id": "6CC13D02-7D86-4DD5-AC0C-7C2C94561035"
+            "refDict": "",
+            "extProps": {},
+            "notes": {},
+            "id": "E499A815-BF5C-4136-BD77-B0F88DFAFC61"
           }
         ],
         "entityInitProperties": {
@@ -409,12 +418,19 @@
         {
           "refKey": "defKey",
           "hideInGraph": false,
-          "value": "字段代码"
+          "value": "字段代码",
+          "freeze": true
         },
         {
           "refKey": "defName",
           "hideInGraph": false,
-          "value": "显示名称"
+          "value": "显示名称",
+          "freeze": true
+        },
+        {
+          "refKey": "defaultValue",
+          "hideInGraph": false,
+          "value": "默认值"
         },
         {
           "refKey": "primaryKey",
@@ -452,23 +468,18 @@
           "value": "小数位数"
         },
         {
-          "refKey": "comment",
-          "hideInGraph": false,
-          "value": "说明"
-        },
-        {
           "refKey": "refDict",
           "hideInGraph": true,
           "value": "数据字典"
         },
         {
-          "refKey": "defaultValue",
-          "hideInGraph": true,
-          "value": "默认值"
+          "refKey": "comment",
+          "hideInGraph": false,
+          "value": "说明"
         },
         {
           "refKey": "isStandard",
-          "hideInGraph": false,
+          "hideInGraph": true,
           "value": "标准字段"
         },
         {
@@ -507,7 +518,6 @@
         "nameTemplate": "{defKey}[{defName}]",
         "headers": [
           {
-            "freeze": true,
             "refKey": "hideInGraph",
             "hideInGraph": true,
             "code": "relationNoShow",
@@ -517,7 +527,7 @@
             "relationNoShow": true
           },
           {
-            "freeze": false,
+            "freeze": true,
             "refKey": "defKey",
             "hideInGraph": false,
             "code": "name",
@@ -527,7 +537,7 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
+            "freeze": true,
             "refKey": "defName",
             "hideInGraph": false,
             "code": "chnname",
@@ -537,7 +547,15 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
+            "refKey": "defaultValue",
+            "hideInGraph": false,
+            "code": "defaultValue",
+            "value": "默认值",
+            "newCode": "defaultValue",
+            "com": "Input",
+            "relationNoShow": true
+          },
+          {
             "refKey": "primaryKey",
             "hideInGraph": true,
             "code": "pk",
@@ -547,7 +565,6 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
             "refKey": "notNull",
             "hideInGraph": true,
             "code": "notNull",
@@ -557,7 +574,6 @@
             "relationNoShow": true
           },
           {
-            "freeze": false,
             "refKey": "autoIncrement",
             "hideInGraph": true,
             "code": "autoIncrement",
@@ -567,7 +583,6 @@
             "relationNoShow": true
           },
           {
-            "freeze": false,
             "refKey": "domain",
             "hideInGraph": true,
             "code": "type",
@@ -577,7 +592,6 @@
             "relationNoShow": true
           },
           {
-            "freeze": false,
             "refKey": "type",
             "hideInGraph": false,
             "code": "dataType",
@@ -587,7 +601,6 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
             "refKey": "len",
             "hideInGraph": true,
             "code": "len",
@@ -597,7 +610,6 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
             "refKey": "scale",
             "hideInGraph": true,
             "code": "scale",
@@ -607,17 +619,6 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
-            "refKey": "comment",
-            "hideInGraph": false,
-            "code": "remark",
-            "value": "说明",
-            "newCode": "comment",
-            "com": "Input",
-            "relationNoShow": true
-          },
-          {
-            "freeze": false,
             "refKey": "refDict",
             "hideInGraph": true,
             "code": "refDict",
@@ -627,19 +628,17 @@
             "relationNoShow": true
           },
           {
-            "freeze": false,
-            "refKey": "defaultValue",
-            "hideInGraph": true,
-            "code": "defaultValue",
-            "value": "默认值",
-            "newCode": "defaultValue",
+            "refKey": "comment",
+            "hideInGraph": false,
+            "code": "remark",
+            "value": "说明",
+            "newCode": "comment",
             "com": "Input",
             "relationNoShow": true
           },
           {
-            "freeze": false,
             "refKey": "isStandard",
-            "hideInGraph": false,
+            "hideInGraph": true,
             "code": "isStandard",
             "value": "标准字段",
             "newCode": "isStandard",
@@ -647,7 +646,6 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
             "refKey": "uiHint",
             "hideInGraph": true,
             "code": "uiHint",
@@ -659,7 +657,11 @@
           {
             "refKey": "extProps",
             "hideInGraph": true,
-            "freeze": false
+            "code": "extProps",
+            "value": "拓展属性",
+            "newCode": "extProps",
+            "com": "linkButton",
+            "relationNoShow": true
           }
         ],
         "fields": [
@@ -740,7 +742,7 @@
             "primaryKey": false,
             "notNull": true,
             "autoIncrement": false,
-            "defaultValue": "",
+            "defaultValue": "CURRENT_TIMESTAMP()",
             "hideInGraph": true,
             "domain": "7CFFA0D3-6A93-4DDC-BC10-DF21211064DC",
             "refDict": "",
@@ -757,7 +759,7 @@
             "primaryKey": false,
             "notNull": false,
             "autoIncrement": false,
-            "defaultValue": "",
+            "defaultValue": "CURRENT_TIMESTAMP()",
             "hideInGraph": true,
             "domain": "7CFFA0D3-6A93-4DDC-BC10-DF21211064DC",
             "refDict": "",
@@ -1020,7 +1022,6 @@
         "nameTemplate": "{defKey}[{defName}]",
         "headers": [
           {
-            "freeze": true,
             "refKey": "hideInGraph",
             "hideInGraph": true,
             "code": "relationNoShow",
@@ -1030,7 +1031,7 @@
             "relationNoShow": true
           },
           {
-            "freeze": false,
+            "freeze": true,
             "refKey": "defKey",
             "hideInGraph": false,
             "code": "name",
@@ -1040,7 +1041,7 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
+            "freeze": true,
             "refKey": "defName",
             "hideInGraph": false,
             "code": "chnname",
@@ -1050,7 +1051,15 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
+            "refKey": "defaultValue",
+            "hideInGraph": false,
+            "code": "defaultValue",
+            "value": "默认值",
+            "newCode": "defaultValue",
+            "com": "Input",
+            "relationNoShow": true
+          },
+          {
             "refKey": "primaryKey",
             "hideInGraph": true,
             "code": "pk",
@@ -1060,7 +1069,6 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
             "refKey": "notNull",
             "hideInGraph": true,
             "code": "notNull",
@@ -1070,7 +1078,6 @@
             "relationNoShow": true
           },
           {
-            "freeze": false,
             "refKey": "autoIncrement",
             "hideInGraph": true,
             "code": "autoIncrement",
@@ -1080,7 +1087,6 @@
             "relationNoShow": true
           },
           {
-            "freeze": false,
             "refKey": "domain",
             "hideInGraph": true,
             "code": "type",
@@ -1090,7 +1096,6 @@
             "relationNoShow": true
           },
           {
-            "freeze": false,
             "refKey": "type",
             "hideInGraph": false,
             "code": "dataType",
@@ -1100,7 +1105,6 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
             "refKey": "len",
             "hideInGraph": true,
             "code": "len",
@@ -1110,7 +1114,6 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
             "refKey": "scale",
             "hideInGraph": true,
             "code": "scale",
@@ -1120,17 +1123,6 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
-            "refKey": "comment",
-            "hideInGraph": false,
-            "code": "remark",
-            "value": "说明",
-            "newCode": "comment",
-            "com": "Input",
-            "relationNoShow": true
-          },
-          {
-            "freeze": false,
             "refKey": "refDict",
             "hideInGraph": true,
             "code": "refDict",
@@ -1140,19 +1132,17 @@
             "relationNoShow": true
           },
           {
-            "freeze": false,
-            "refKey": "defaultValue",
-            "hideInGraph": true,
-            "code": "defaultValue",
-            "value": "默认值",
-            "newCode": "defaultValue",
+            "refKey": "comment",
+            "hideInGraph": false,
+            "code": "remark",
+            "value": "说明",
+            "newCode": "comment",
             "com": "Input",
             "relationNoShow": true
           },
           {
-            "freeze": false,
             "refKey": "isStandard",
-            "hideInGraph": false,
+            "hideInGraph": true,
             "code": "isStandard",
             "value": "标准字段",
             "newCode": "isStandard",
@@ -1160,7 +1150,6 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
             "refKey": "uiHint",
             "hideInGraph": true,
             "code": "uiHint",
@@ -1172,7 +1161,11 @@
           {
             "refKey": "extProps",
             "hideInGraph": true,
-            "freeze": false
+            "code": "extProps",
+            "value": "拓展属性",
+            "newCode": "extProps",
+            "com": "linkButton",
+            "relationNoShow": true
           }
         ],
         "fields": [
@@ -1253,7 +1246,7 @@
             "primaryKey": false,
             "notNull": true,
             "autoIncrement": false,
-            "defaultValue": "",
+            "defaultValue": "CURRENT_TIMESTAMP()",
             "hideInGraph": true,
             "domain": "7CFFA0D3-6A93-4DDC-BC10-DF21211064DC",
             "refDict": "",
@@ -1270,7 +1263,7 @@
             "primaryKey": false,
             "notNull": false,
             "autoIncrement": false,
-            "defaultValue": "",
+            "defaultValue": "CURRENT_TIMESTAMP()",
             "hideInGraph": true,
             "domain": "7CFFA0D3-6A93-4DDC-BC10-DF21211064DC",
             "refDict": "",
@@ -1603,8 +1596,7 @@
             "value": "关系图",
             "newCode": "hideInGraph",
             "com": "Icon",
-            "relationNoShow": true,
-            "freeze": false
+            "relationNoShow": true
           },
           {
             "refKey": "defKey",
@@ -1614,7 +1606,7 @@
             "newCode": "defKey",
             "com": "Input",
             "relationNoShow": false,
-            "freeze": false
+            "freeze": true
           },
           {
             "refKey": "defName",
@@ -1624,7 +1616,16 @@
             "newCode": "defName",
             "com": "Input",
             "relationNoShow": false,
-            "freeze": false
+            "freeze": true
+          },
+          {
+            "refKey": "defaultValue",
+            "hideInGraph": false,
+            "code": "defaultValue",
+            "value": "默认值",
+            "newCode": "defaultValue",
+            "com": "Input",
+            "relationNoShow": true
           },
           {
             "refKey": "primaryKey",
@@ -1633,8 +1634,7 @@
             "value": "主键",
             "newCode": "primaryKey",
             "com": "Checkbox",
-            "relationNoShow": false,
-            "freeze": false
+            "relationNoShow": false
           },
           {
             "refKey": "notNull",
@@ -1691,15 +1691,6 @@
             "relationNoShow": false
           },
           {
-            "refKey": "comment",
-            "hideInGraph": false,
-            "code": "remark",
-            "value": "说明",
-            "newCode": "comment",
-            "com": "Input",
-            "relationNoShow": true
-          },
-          {
             "refKey": "refDict",
             "hideInGraph": true,
             "code": "refDict",
@@ -1709,17 +1700,17 @@
             "relationNoShow": true
           },
           {
-            "refKey": "defaultValue",
-            "hideInGraph": true,
-            "code": "defaultValue",
-            "value": "默认值",
-            "newCode": "defaultValue",
+            "refKey": "comment",
+            "hideInGraph": false,
+            "code": "remark",
+            "value": "说明",
+            "newCode": "comment",
             "com": "Input",
             "relationNoShow": true
           },
           {
             "refKey": "isStandard",
-            "hideInGraph": false,
+            "hideInGraph": true,
             "code": "isStandard",
             "value": "标准字段",
             "newCode": "isStandard",
@@ -1824,7 +1815,7 @@
             "primaryKey": false,
             "notNull": true,
             "autoIncrement": false,
-            "defaultValue": "",
+            "defaultValue": "CURRENT_TIMESTAMP()",
             "hideInGraph": true,
             "refDict": "",
             "uiHint": "",
@@ -1841,7 +1832,7 @@
             "primaryKey": false,
             "notNull": false,
             "autoIncrement": false,
-            "defaultValue": "",
+            "defaultValue": "CURRENT_TIMESTAMP()",
             "hideInGraph": true,
             "refDict": "",
             "uiHint": "",
@@ -2010,7 +2001,6 @@
         "nameTemplate": "{defKey}[{defName}]",
         "headers": [
           {
-            "freeze": true,
             "refKey": "hideInGraph",
             "hideInGraph": true,
             "code": "relationNoShow",
@@ -2020,7 +2010,7 @@
             "relationNoShow": true
           },
           {
-            "freeze": false,
+            "freeze": true,
             "refKey": "defKey",
             "hideInGraph": false,
             "code": "name",
@@ -2030,7 +2020,7 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
+            "freeze": true,
             "refKey": "defName",
             "hideInGraph": false,
             "code": "chnname",
@@ -2040,7 +2030,15 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
+            "refKey": "defaultValue",
+            "hideInGraph": false,
+            "code": "defaultValue",
+            "value": "默认值",
+            "newCode": "defaultValue",
+            "com": "Input",
+            "relationNoShow": true
+          },
+          {
             "refKey": "primaryKey",
             "hideInGraph": true,
             "code": "pk",
@@ -2050,7 +2048,6 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
             "refKey": "notNull",
             "hideInGraph": true,
             "code": "notNull",
@@ -2060,7 +2057,6 @@
             "relationNoShow": true
           },
           {
-            "freeze": false,
             "refKey": "autoIncrement",
             "hideInGraph": true,
             "code": "autoIncrement",
@@ -2070,7 +2066,6 @@
             "relationNoShow": true
           },
           {
-            "freeze": false,
             "refKey": "domain",
             "hideInGraph": true,
             "code": "type",
@@ -2080,7 +2075,6 @@
             "relationNoShow": true
           },
           {
-            "freeze": false,
             "refKey": "type",
             "hideInGraph": false,
             "code": "dataType",
@@ -2090,7 +2084,6 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
             "refKey": "len",
             "hideInGraph": true,
             "code": "len",
@@ -2100,7 +2093,6 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
             "refKey": "scale",
             "hideInGraph": true,
             "code": "scale",
@@ -2110,17 +2102,6 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
-            "refKey": "comment",
-            "hideInGraph": false,
-            "code": "remark",
-            "value": "说明",
-            "newCode": "comment",
-            "com": "Input",
-            "relationNoShow": true
-          },
-          {
-            "freeze": false,
             "refKey": "refDict",
             "hideInGraph": true,
             "code": "refDict",
@@ -2130,19 +2111,17 @@
             "relationNoShow": true
           },
           {
-            "freeze": false,
-            "refKey": "defaultValue",
-            "hideInGraph": true,
-            "code": "defaultValue",
-            "value": "默认值",
-            "newCode": "defaultValue",
+            "refKey": "comment",
+            "hideInGraph": false,
+            "code": "remark",
+            "value": "说明",
+            "newCode": "comment",
             "com": "Input",
             "relationNoShow": true
           },
           {
-            "freeze": false,
             "refKey": "isStandard",
-            "hideInGraph": false,
+            "hideInGraph": true,
             "code": "isStandard",
             "value": "标准字段",
             "newCode": "isStandard",
@@ -2150,7 +2129,6 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
             "refKey": "uiHint",
             "hideInGraph": true,
             "code": "uiHint",
@@ -2161,8 +2139,7 @@
           },
           {
             "refKey": "extProps",
-            "hideInGraph": true,
-            "freeze": false
+            "hideInGraph": true
           }
         ],
         "fields": [
@@ -2243,7 +2220,7 @@
             "primaryKey": false,
             "notNull": true,
             "autoIncrement": false,
-            "defaultValue": "",
+            "defaultValue": "CURRENT_TIMESTAMP()",
             "hideInGraph": true,
             "domain": "7CFFA0D3-6A93-4DDC-BC10-DF21211064DC",
             "refDict": "",
@@ -2260,7 +2237,7 @@
             "primaryKey": false,
             "notNull": false,
             "autoIncrement": false,
-            "defaultValue": "",
+            "defaultValue": "CURRENT_TIMESTAMP()",
             "hideInGraph": true,
             "domain": "7CFFA0D3-6A93-4DDC-BC10-DF21211064DC",
             "refDict": "",
@@ -2508,7 +2485,6 @@
         "nameTemplate": "{defKey}[{defName}]",
         "headers": [
           {
-            "freeze": true,
             "refKey": "hideInGraph",
             "hideInGraph": true,
             "code": "relationNoShow",
@@ -2518,7 +2494,7 @@
             "relationNoShow": true
           },
           {
-            "freeze": false,
+            "freeze": true,
             "refKey": "defKey",
             "hideInGraph": false,
             "code": "name",
@@ -2528,7 +2504,7 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
+            "freeze": true,
             "refKey": "defName",
             "hideInGraph": false,
             "code": "chnname",
@@ -2538,7 +2514,15 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
+            "refKey": "defaultValue",
+            "hideInGraph": false,
+            "code": "defaultValue",
+            "value": "默认值",
+            "newCode": "defaultValue",
+            "com": "Input",
+            "relationNoShow": true
+          },
+          {
             "refKey": "primaryKey",
             "hideInGraph": true,
             "code": "pk",
@@ -2548,7 +2532,6 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
             "refKey": "notNull",
             "hideInGraph": true,
             "code": "notNull",
@@ -2558,7 +2541,6 @@
             "relationNoShow": true
           },
           {
-            "freeze": false,
             "refKey": "autoIncrement",
             "hideInGraph": true,
             "code": "autoIncrement",
@@ -2568,7 +2550,6 @@
             "relationNoShow": true
           },
           {
-            "freeze": false,
             "refKey": "domain",
             "hideInGraph": true,
             "code": "type",
@@ -2578,7 +2559,6 @@
             "relationNoShow": true
           },
           {
-            "freeze": false,
             "refKey": "type",
             "hideInGraph": false,
             "code": "dataType",
@@ -2588,7 +2568,6 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
             "refKey": "len",
             "hideInGraph": true,
             "code": "len",
@@ -2598,7 +2577,6 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
             "refKey": "scale",
             "hideInGraph": true,
             "code": "scale",
@@ -2608,17 +2586,6 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
-            "refKey": "comment",
-            "hideInGraph": false,
-            "code": "remark",
-            "value": "说明",
-            "newCode": "comment",
-            "com": "Input",
-            "relationNoShow": true
-          },
-          {
-            "freeze": false,
             "refKey": "refDict",
             "hideInGraph": true,
             "code": "refDict",
@@ -2628,19 +2595,17 @@
             "relationNoShow": true
           },
           {
-            "freeze": false,
-            "refKey": "defaultValue",
-            "hideInGraph": true,
-            "code": "defaultValue",
-            "value": "默认值",
-            "newCode": "defaultValue",
+            "refKey": "comment",
+            "hideInGraph": false,
+            "code": "remark",
+            "value": "说明",
+            "newCode": "comment",
             "com": "Input",
             "relationNoShow": true
           },
           {
-            "freeze": false,
             "refKey": "isStandard",
-            "hideInGraph": false,
+            "hideInGraph": true,
             "code": "isStandard",
             "value": "标准字段",
             "newCode": "isStandard",
@@ -2648,7 +2613,6 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
             "refKey": "uiHint",
             "hideInGraph": true,
             "code": "uiHint",
@@ -2659,8 +2623,7 @@
           },
           {
             "refKey": "extProps",
-            "hideInGraph": true,
-            "freeze": false
+            "hideInGraph": true
           }
         ],
         "fields": [
@@ -2741,7 +2704,7 @@
             "primaryKey": false,
             "notNull": true,
             "autoIncrement": false,
-            "defaultValue": "",
+            "defaultValue": "CURRENT_TIMESTAMP()",
             "hideInGraph": true,
             "domain": "7CFFA0D3-6A93-4DDC-BC10-DF21211064DC",
             "refDict": "",
@@ -2758,7 +2721,7 @@
             "primaryKey": false,
             "notNull": false,
             "autoIncrement": false,
-            "defaultValue": "",
+            "defaultValue": "CURRENT_TIMESTAMP()",
             "hideInGraph": true,
             "domain": "7CFFA0D3-6A93-4DDC-BC10-DF21211064DC",
             "refDict": "",
@@ -2953,7 +2916,6 @@
         "nameTemplate": "{defKey}[{defName}]",
         "headers": [
           {
-            "freeze": true,
             "refKey": "hideInGraph",
             "hideInGraph": true,
             "code": "relationNoShow",
@@ -2963,7 +2925,7 @@
             "relationNoShow": true
           },
           {
-            "freeze": false,
+            "freeze": true,
             "refKey": "defKey",
             "hideInGraph": false,
             "code": "name",
@@ -2973,7 +2935,7 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
+            "freeze": true,
             "refKey": "defName",
             "hideInGraph": false,
             "code": "chnname",
@@ -2983,7 +2945,15 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
+            "refKey": "defaultValue",
+            "hideInGraph": false,
+            "code": "defaultValue",
+            "value": "默认值",
+            "newCode": "defaultValue",
+            "com": "Input",
+            "relationNoShow": true
+          },
+          {
             "refKey": "primaryKey",
             "hideInGraph": true,
             "code": "pk",
@@ -2993,7 +2963,6 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
             "refKey": "notNull",
             "hideInGraph": true,
             "code": "notNull",
@@ -3003,7 +2972,6 @@
             "relationNoShow": true
           },
           {
-            "freeze": false,
             "refKey": "autoIncrement",
             "hideInGraph": true,
             "code": "autoIncrement",
@@ -3013,7 +2981,6 @@
             "relationNoShow": true
           },
           {
-            "freeze": false,
             "refKey": "domain",
             "hideInGraph": true,
             "code": "type",
@@ -3023,7 +2990,6 @@
             "relationNoShow": true
           },
           {
-            "freeze": false,
             "refKey": "type",
             "hideInGraph": false,
             "code": "dataType",
@@ -3033,7 +2999,6 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
             "refKey": "len",
             "hideInGraph": true,
             "code": "len",
@@ -3043,7 +3008,6 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
             "refKey": "scale",
             "hideInGraph": true,
             "code": "scale",
@@ -3053,17 +3017,6 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
-            "refKey": "comment",
-            "hideInGraph": false,
-            "code": "remark",
-            "value": "说明",
-            "newCode": "comment",
-            "com": "Input",
-            "relationNoShow": true
-          },
-          {
-            "freeze": false,
             "refKey": "refDict",
             "hideInGraph": true,
             "code": "refDict",
@@ -3073,19 +3026,17 @@
             "relationNoShow": true
           },
           {
-            "freeze": false,
-            "refKey": "defaultValue",
-            "hideInGraph": true,
-            "code": "defaultValue",
-            "value": "默认值",
-            "newCode": "defaultValue",
+            "refKey": "comment",
+            "hideInGraph": false,
+            "code": "remark",
+            "value": "说明",
+            "newCode": "comment",
             "com": "Input",
             "relationNoShow": true
           },
           {
-            "freeze": false,
             "refKey": "isStandard",
-            "hideInGraph": false,
+            "hideInGraph": true,
             "code": "isStandard",
             "value": "标准字段",
             "newCode": "isStandard",
@@ -3093,7 +3044,6 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
             "refKey": "uiHint",
             "hideInGraph": true,
             "code": "uiHint",
@@ -3104,8 +3054,7 @@
           },
           {
             "refKey": "extProps",
-            "hideInGraph": true,
-            "freeze": false
+            "hideInGraph": true
           }
         ],
         "fields": [
@@ -3186,7 +3135,7 @@
             "primaryKey": false,
             "notNull": true,
             "autoIncrement": false,
-            "defaultValue": "",
+            "defaultValue": "CURRENT_TIMESTAMP()",
             "hideInGraph": true,
             "domain": "7CFFA0D3-6A93-4DDC-BC10-DF21211064DC",
             "refDict": "",
@@ -3203,7 +3152,7 @@
             "primaryKey": false,
             "notNull": false,
             "autoIncrement": false,
-            "defaultValue": "",
+            "defaultValue": "CURRENT_TIMESTAMP()",
             "hideInGraph": true,
             "domain": "7CFFA0D3-6A93-4DDC-BC10-DF21211064DC",
             "refDict": "",
@@ -3354,7 +3303,6 @@
         "nameTemplate": "{defKey}[{defName}]",
         "headers": [
           {
-            "freeze": true,
             "refKey": "hideInGraph",
             "hideInGraph": true,
             "code": "relationNoShow",
@@ -3364,7 +3312,7 @@
             "relationNoShow": true
           },
           {
-            "freeze": false,
+            "freeze": true,
             "refKey": "defKey",
             "hideInGraph": false,
             "code": "name",
@@ -3374,7 +3322,7 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
+            "freeze": true,
             "refKey": "defName",
             "hideInGraph": false,
             "code": "chnname",
@@ -3384,7 +3332,15 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
+            "refKey": "defaultValue",
+            "hideInGraph": false,
+            "code": "defaultValue",
+            "value": "默认值",
+            "newCode": "defaultValue",
+            "com": "Input",
+            "relationNoShow": true
+          },
+          {
             "refKey": "primaryKey",
             "hideInGraph": true,
             "code": "pk",
@@ -3394,7 +3350,6 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
             "refKey": "notNull",
             "hideInGraph": true,
             "code": "notNull",
@@ -3404,7 +3359,6 @@
             "relationNoShow": true
           },
           {
-            "freeze": false,
             "refKey": "autoIncrement",
             "hideInGraph": true,
             "code": "autoIncrement",
@@ -3414,7 +3368,6 @@
             "relationNoShow": true
           },
           {
-            "freeze": false,
             "refKey": "domain",
             "hideInGraph": true,
             "code": "type",
@@ -3424,7 +3377,6 @@
             "relationNoShow": true
           },
           {
-            "freeze": false,
             "refKey": "type",
             "hideInGraph": false,
             "code": "dataType",
@@ -3434,7 +3386,6 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
             "refKey": "len",
             "hideInGraph": true,
             "code": "len",
@@ -3444,7 +3395,6 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
             "refKey": "scale",
             "hideInGraph": true,
             "code": "scale",
@@ -3454,17 +3404,6 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
-            "refKey": "comment",
-            "hideInGraph": false,
-            "code": "remark",
-            "value": "说明",
-            "newCode": "comment",
-            "com": "Input",
-            "relationNoShow": true
-          },
-          {
-            "freeze": false,
             "refKey": "refDict",
             "hideInGraph": true,
             "code": "refDict",
@@ -3474,19 +3413,17 @@
             "relationNoShow": true
           },
           {
-            "freeze": false,
-            "refKey": "defaultValue",
-            "hideInGraph": true,
-            "code": "defaultValue",
-            "value": "默认值",
-            "newCode": "defaultValue",
+            "refKey": "comment",
+            "hideInGraph": false,
+            "code": "remark",
+            "value": "说明",
+            "newCode": "comment",
             "com": "Input",
             "relationNoShow": true
           },
           {
-            "freeze": false,
             "refKey": "isStandard",
-            "hideInGraph": false,
+            "hideInGraph": true,
             "code": "isStandard",
             "value": "标准字段",
             "newCode": "isStandard",
@@ -3494,7 +3431,6 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
             "refKey": "uiHint",
             "hideInGraph": true,
             "code": "uiHint",
@@ -3505,8 +3441,7 @@
           },
           {
             "refKey": "extProps",
-            "hideInGraph": true,
-            "freeze": false
+            "hideInGraph": true
           }
         ],
         "fields": [
@@ -3587,7 +3522,7 @@
             "primaryKey": false,
             "notNull": true,
             "autoIncrement": false,
-            "defaultValue": "",
+            "defaultValue": "CURRENT_TIMESTAMP()",
             "hideInGraph": true,
             "domain": "7CFFA0D3-6A93-4DDC-BC10-DF21211064DC",
             "refDict": "",
@@ -3604,7 +3539,7 @@
             "primaryKey": false,
             "notNull": false,
             "autoIncrement": false,
-            "defaultValue": "",
+            "defaultValue": "CURRENT_TIMESTAMP()",
             "hideInGraph": true,
             "domain": "7CFFA0D3-6A93-4DDC-BC10-DF21211064DC",
             "refDict": "",
@@ -3669,7 +3604,6 @@
         "nameTemplate": "{defKey}[{defName}]",
         "headers": [
           {
-            "freeze": true,
             "refKey": "hideInGraph",
             "hideInGraph": true,
             "code": "relationNoShow",
@@ -3679,7 +3613,7 @@
             "relationNoShow": true
           },
           {
-            "freeze": false,
+            "freeze": true,
             "refKey": "defKey",
             "hideInGraph": false,
             "code": "name",
@@ -3689,7 +3623,7 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
+            "freeze": true,
             "refKey": "defName",
             "hideInGraph": false,
             "code": "chnname",
@@ -3699,7 +3633,15 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
+            "refKey": "defaultValue",
+            "hideInGraph": false,
+            "code": "defaultValue",
+            "value": "默认值",
+            "newCode": "defaultValue",
+            "com": "Input",
+            "relationNoShow": true
+          },
+          {
             "refKey": "primaryKey",
             "hideInGraph": true,
             "code": "pk",
@@ -3709,7 +3651,6 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
             "refKey": "notNull",
             "hideInGraph": true,
             "code": "notNull",
@@ -3719,7 +3660,6 @@
             "relationNoShow": true
           },
           {
-            "freeze": false,
             "refKey": "autoIncrement",
             "hideInGraph": true,
             "code": "autoIncrement",
@@ -3729,7 +3669,6 @@
             "relationNoShow": true
           },
           {
-            "freeze": false,
             "refKey": "domain",
             "hideInGraph": true,
             "code": "type",
@@ -3739,7 +3678,6 @@
             "relationNoShow": true
           },
           {
-            "freeze": false,
             "refKey": "type",
             "hideInGraph": false,
             "code": "dataType",
@@ -3749,7 +3687,6 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
             "refKey": "len",
             "hideInGraph": true,
             "code": "len",
@@ -3759,7 +3696,6 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
             "refKey": "scale",
             "hideInGraph": true,
             "code": "scale",
@@ -3769,17 +3705,6 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
-            "refKey": "comment",
-            "hideInGraph": false,
-            "code": "remark",
-            "value": "说明",
-            "newCode": "comment",
-            "com": "Input",
-            "relationNoShow": true
-          },
-          {
-            "freeze": false,
             "refKey": "refDict",
             "hideInGraph": true,
             "code": "refDict",
@@ -3789,19 +3714,17 @@
             "relationNoShow": true
           },
           {
-            "freeze": false,
-            "refKey": "defaultValue",
-            "hideInGraph": true,
-            "code": "defaultValue",
-            "value": "默认值",
-            "newCode": "defaultValue",
+            "refKey": "comment",
+            "hideInGraph": false,
+            "code": "remark",
+            "value": "说明",
+            "newCode": "comment",
             "com": "Input",
             "relationNoShow": true
           },
           {
-            "freeze": false,
             "refKey": "isStandard",
-            "hideInGraph": false,
+            "hideInGraph": true,
             "code": "isStandard",
             "value": "标准字段",
             "newCode": "isStandard",
@@ -3809,7 +3732,6 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
             "refKey": "uiHint",
             "hideInGraph": true,
             "code": "uiHint",
@@ -3820,8 +3742,7 @@
           },
           {
             "refKey": "extProps",
-            "hideInGraph": true,
-            "freeze": false
+            "hideInGraph": true
           }
         ],
         "fields": [
@@ -3902,7 +3823,7 @@
             "primaryKey": false,
             "notNull": true,
             "autoIncrement": false,
-            "defaultValue": "",
+            "defaultValue": "CURRENT_TIMESTAMP()",
             "hideInGraph": true,
             "domain": "7CFFA0D3-6A93-4DDC-BC10-DF21211064DC",
             "refDict": "",
@@ -3919,7 +3840,7 @@
             "primaryKey": false,
             "notNull": false,
             "autoIncrement": false,
-            "defaultValue": "",
+            "defaultValue": "CURRENT_TIMESTAMP()",
             "hideInGraph": true,
             "domain": "7CFFA0D3-6A93-4DDC-BC10-DF21211064DC",
             "refDict": "",
@@ -4032,7 +3953,6 @@
         "nameTemplate": "{defKey}[{defName}]",
         "headers": [
           {
-            "freeze": true,
             "refKey": "hideInGraph",
             "hideInGraph": true,
             "code": "relationNoShow",
@@ -4042,7 +3962,7 @@
             "relationNoShow": true
           },
           {
-            "freeze": false,
+            "freeze": true,
             "refKey": "defKey",
             "hideInGraph": false,
             "code": "name",
@@ -4052,7 +3972,7 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
+            "freeze": true,
             "refKey": "defName",
             "hideInGraph": false,
             "code": "chnname",
@@ -4062,7 +3982,15 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
+            "refKey": "defaultValue",
+            "hideInGraph": false,
+            "code": "defaultValue",
+            "value": "默认值",
+            "newCode": "defaultValue",
+            "com": "Input",
+            "relationNoShow": true
+          },
+          {
             "refKey": "primaryKey",
             "hideInGraph": true,
             "code": "pk",
@@ -4072,7 +4000,6 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
             "refKey": "notNull",
             "hideInGraph": true,
             "code": "notNull",
@@ -4082,7 +4009,6 @@
             "relationNoShow": true
           },
           {
-            "freeze": false,
             "refKey": "autoIncrement",
             "hideInGraph": true,
             "code": "autoIncrement",
@@ -4092,7 +4018,6 @@
             "relationNoShow": true
           },
           {
-            "freeze": false,
             "refKey": "domain",
             "hideInGraph": true,
             "code": "type",
@@ -4102,7 +4027,6 @@
             "relationNoShow": true
           },
           {
-            "freeze": false,
             "refKey": "type",
             "hideInGraph": false,
             "code": "dataType",
@@ -4112,7 +4036,6 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
             "refKey": "len",
             "hideInGraph": true,
             "code": "len",
@@ -4122,7 +4045,6 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
             "refKey": "scale",
             "hideInGraph": true,
             "code": "scale",
@@ -4132,17 +4054,6 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
-            "refKey": "comment",
-            "hideInGraph": false,
-            "code": "remark",
-            "value": "说明",
-            "newCode": "comment",
-            "com": "Input",
-            "relationNoShow": true
-          },
-          {
-            "freeze": false,
             "refKey": "refDict",
             "hideInGraph": true,
             "code": "refDict",
@@ -4152,19 +4063,17 @@
             "relationNoShow": true
           },
           {
-            "freeze": false,
-            "refKey": "defaultValue",
-            "hideInGraph": true,
-            "code": "defaultValue",
-            "value": "默认值",
-            "newCode": "defaultValue",
+            "refKey": "comment",
+            "hideInGraph": false,
+            "code": "remark",
+            "value": "说明",
+            "newCode": "comment",
             "com": "Input",
             "relationNoShow": true
           },
           {
-            "freeze": false,
             "refKey": "isStandard",
-            "hideInGraph": false,
+            "hideInGraph": true,
             "code": "isStandard",
             "value": "标准字段",
             "newCode": "isStandard",
@@ -4172,7 +4081,6 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
             "refKey": "uiHint",
             "hideInGraph": true,
             "code": "uiHint",
@@ -4183,8 +4091,7 @@
           },
           {
             "refKey": "extProps",
-            "hideInGraph": true,
-            "freeze": false
+            "hideInGraph": true
           }
         ],
         "fields": [
@@ -4265,7 +4172,7 @@
             "primaryKey": false,
             "notNull": true,
             "autoIncrement": false,
-            "defaultValue": "",
+            "defaultValue": "CURRENT_TIMESTAMP()",
             "hideInGraph": true,
             "domain": "7CFFA0D3-6A93-4DDC-BC10-DF21211064DC",
             "refDict": "",
@@ -4282,7 +4189,7 @@
             "primaryKey": false,
             "notNull": false,
             "autoIncrement": false,
-            "defaultValue": "",
+            "defaultValue": "CURRENT_TIMESTAMP()",
             "hideInGraph": true,
             "domain": "7CFFA0D3-6A93-4DDC-BC10-DF21211064DC",
             "refDict": "",
@@ -4380,7 +4287,6 @@
         "nameTemplate": "{defKey}[{defName}]",
         "headers": [
           {
-            "freeze": true,
             "refKey": "hideInGraph",
             "hideInGraph": true,
             "code": "relationNoShow",
@@ -4390,7 +4296,7 @@
             "relationNoShow": true
           },
           {
-            "freeze": false,
+            "freeze": true,
             "refKey": "defKey",
             "hideInGraph": false,
             "code": "name",
@@ -4400,7 +4306,7 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
+            "freeze": true,
             "refKey": "defName",
             "hideInGraph": false,
             "code": "chnname",
@@ -4410,7 +4316,15 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
+            "refKey": "defaultValue",
+            "hideInGraph": false,
+            "code": "defaultValue",
+            "value": "默认值",
+            "newCode": "defaultValue",
+            "com": "Input",
+            "relationNoShow": true
+          },
+          {
             "refKey": "primaryKey",
             "hideInGraph": true,
             "code": "pk",
@@ -4420,7 +4334,6 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
             "refKey": "notNull",
             "hideInGraph": true,
             "code": "notNull",
@@ -4430,7 +4343,6 @@
             "relationNoShow": true
           },
           {
-            "freeze": false,
             "refKey": "autoIncrement",
             "hideInGraph": true,
             "code": "autoIncrement",
@@ -4440,7 +4352,6 @@
             "relationNoShow": true
           },
           {
-            "freeze": false,
             "refKey": "domain",
             "hideInGraph": true,
             "code": "type",
@@ -4450,7 +4361,6 @@
             "relationNoShow": true
           },
           {
-            "freeze": false,
             "refKey": "type",
             "hideInGraph": false,
             "code": "dataType",
@@ -4460,7 +4370,6 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
             "refKey": "len",
             "hideInGraph": true,
             "code": "len",
@@ -4470,7 +4379,6 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
             "refKey": "scale",
             "hideInGraph": true,
             "code": "scale",
@@ -4480,17 +4388,6 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
-            "refKey": "comment",
-            "hideInGraph": false,
-            "code": "remark",
-            "value": "说明",
-            "newCode": "comment",
-            "com": "Input",
-            "relationNoShow": true
-          },
-          {
-            "freeze": false,
             "refKey": "refDict",
             "hideInGraph": true,
             "code": "refDict",
@@ -4500,19 +4397,17 @@
             "relationNoShow": true
           },
           {
-            "freeze": false,
-            "refKey": "defaultValue",
-            "hideInGraph": true,
-            "code": "defaultValue",
-            "value": "默认值",
-            "newCode": "defaultValue",
+            "refKey": "comment",
+            "hideInGraph": false,
+            "code": "remark",
+            "value": "说明",
+            "newCode": "comment",
             "com": "Input",
             "relationNoShow": true
           },
           {
-            "freeze": false,
             "refKey": "isStandard",
-            "hideInGraph": false,
+            "hideInGraph": true,
             "code": "isStandard",
             "value": "标准字段",
             "newCode": "isStandard",
@@ -4520,7 +4415,6 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
             "refKey": "uiHint",
             "hideInGraph": true,
             "code": "uiHint",
@@ -4531,8 +4425,7 @@
           },
           {
             "refKey": "extProps",
-            "hideInGraph": true,
-            "freeze": false
+            "hideInGraph": true
           }
         ],
         "fields": [
@@ -4613,7 +4506,7 @@
             "primaryKey": false,
             "notNull": true,
             "autoIncrement": false,
-            "defaultValue": "",
+            "defaultValue": "CURRENT_TIMESTAMP()",
             "hideInGraph": true,
             "domain": "7CFFA0D3-6A93-4DDC-BC10-DF21211064DC",
             "refDict": "",
@@ -4630,7 +4523,7 @@
             "primaryKey": false,
             "notNull": false,
             "autoIncrement": false,
-            "defaultValue": "",
+            "defaultValue": "CURRENT_TIMESTAMP()",
             "hideInGraph": true,
             "domain": "7CFFA0D3-6A93-4DDC-BC10-DF21211064DC",
             "refDict": "",
@@ -4711,7 +4604,6 @@
         "nameTemplate": "{defKey}[{defName}]",
         "headers": [
           {
-            "freeze": true,
             "refKey": "hideInGraph",
             "hideInGraph": true,
             "code": "relationNoShow",
@@ -4721,7 +4613,7 @@
             "relationNoShow": true
           },
           {
-            "freeze": false,
+            "freeze": true,
             "refKey": "defKey",
             "hideInGraph": false,
             "code": "name",
@@ -4731,7 +4623,7 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
+            "freeze": true,
             "refKey": "defName",
             "hideInGraph": false,
             "code": "chnname",
@@ -4741,7 +4633,15 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
+            "refKey": "defaultValue",
+            "hideInGraph": false,
+            "code": "defaultValue",
+            "value": "默认值",
+            "newCode": "defaultValue",
+            "com": "Input",
+            "relationNoShow": true
+          },
+          {
             "refKey": "primaryKey",
             "hideInGraph": true,
             "code": "pk",
@@ -4751,7 +4651,6 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
             "refKey": "notNull",
             "hideInGraph": true,
             "code": "notNull",
@@ -4761,7 +4660,6 @@
             "relationNoShow": true
           },
           {
-            "freeze": false,
             "refKey": "autoIncrement",
             "hideInGraph": true,
             "code": "autoIncrement",
@@ -4771,7 +4669,6 @@
             "relationNoShow": true
           },
           {
-            "freeze": false,
             "refKey": "domain",
             "hideInGraph": true,
             "code": "type",
@@ -4781,7 +4678,6 @@
             "relationNoShow": true
           },
           {
-            "freeze": false,
             "refKey": "type",
             "hideInGraph": false,
             "code": "dataType",
@@ -4791,7 +4687,6 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
             "refKey": "len",
             "hideInGraph": true,
             "code": "len",
@@ -4801,7 +4696,6 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
             "refKey": "scale",
             "hideInGraph": true,
             "code": "scale",
@@ -4811,17 +4705,6 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
-            "refKey": "comment",
-            "hideInGraph": false,
-            "code": "remark",
-            "value": "说明",
-            "newCode": "comment",
-            "com": "Input",
-            "relationNoShow": true
-          },
-          {
-            "freeze": false,
             "refKey": "refDict",
             "hideInGraph": true,
             "code": "refDict",
@@ -4831,19 +4714,17 @@
             "relationNoShow": true
           },
           {
-            "freeze": false,
-            "refKey": "defaultValue",
-            "hideInGraph": true,
-            "code": "defaultValue",
-            "value": "默认值",
-            "newCode": "defaultValue",
+            "refKey": "comment",
+            "hideInGraph": false,
+            "code": "remark",
+            "value": "说明",
+            "newCode": "comment",
             "com": "Input",
             "relationNoShow": true
           },
           {
-            "freeze": false,
             "refKey": "isStandard",
-            "hideInGraph": false,
+            "hideInGraph": true,
             "code": "isStandard",
             "value": "标准字段",
             "newCode": "isStandard",
@@ -4851,7 +4732,6 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
             "refKey": "uiHint",
             "hideInGraph": true,
             "code": "uiHint",
@@ -4862,8 +4742,7 @@
           },
           {
             "refKey": "extProps",
-            "hideInGraph": true,
-            "freeze": false
+            "hideInGraph": true
           }
         ],
         "fields": [
@@ -4944,7 +4823,7 @@
             "primaryKey": false,
             "notNull": true,
             "autoIncrement": false,
-            "defaultValue": "",
+            "defaultValue": "CURRENT_TIMESTAMP()",
             "hideInGraph": true,
             "domain": "7CFFA0D3-6A93-4DDC-BC10-DF21211064DC",
             "refDict": "",
@@ -4961,7 +4840,7 @@
             "primaryKey": false,
             "notNull": false,
             "autoIncrement": false,
-            "defaultValue": "",
+            "defaultValue": "CURRENT_TIMESTAMP()",
             "hideInGraph": true,
             "domain": "7CFFA0D3-6A93-4DDC-BC10-DF21211064DC",
             "refDict": "",
@@ -5120,7 +4999,6 @@
         "nameTemplate": "{defKey}[{defName}]",
         "headers": [
           {
-            "freeze": true,
             "refKey": "hideInGraph",
             "hideInGraph": true,
             "code": "relationNoShow",
@@ -5130,7 +5008,7 @@
             "relationNoShow": true
           },
           {
-            "freeze": false,
+            "freeze": true,
             "refKey": "defKey",
             "hideInGraph": false,
             "code": "name",
@@ -5140,7 +5018,7 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
+            "freeze": true,
             "refKey": "defName",
             "hideInGraph": false,
             "code": "chnname",
@@ -5150,7 +5028,15 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
+            "refKey": "defaultValue",
+            "hideInGraph": false,
+            "code": "defaultValue",
+            "value": "默认值",
+            "newCode": "defaultValue",
+            "com": "Input",
+            "relationNoShow": true
+          },
+          {
             "refKey": "primaryKey",
             "hideInGraph": true,
             "code": "pk",
@@ -5160,7 +5046,6 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
             "refKey": "notNull",
             "hideInGraph": true,
             "code": "notNull",
@@ -5170,7 +5055,6 @@
             "relationNoShow": true
           },
           {
-            "freeze": false,
             "refKey": "autoIncrement",
             "hideInGraph": true,
             "code": "autoIncrement",
@@ -5180,7 +5064,6 @@
             "relationNoShow": true
           },
           {
-            "freeze": false,
             "refKey": "domain",
             "hideInGraph": true,
             "code": "type",
@@ -5190,7 +5073,6 @@
             "relationNoShow": true
           },
           {
-            "freeze": false,
             "refKey": "type",
             "hideInGraph": false,
             "code": "dataType",
@@ -5200,7 +5082,6 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
             "refKey": "len",
             "hideInGraph": true,
             "code": "len",
@@ -5210,7 +5091,6 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
             "refKey": "scale",
             "hideInGraph": true,
             "code": "scale",
@@ -5220,17 +5100,6 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
-            "refKey": "comment",
-            "hideInGraph": false,
-            "code": "remark",
-            "value": "说明",
-            "newCode": "comment",
-            "com": "Input",
-            "relationNoShow": true
-          },
-          {
-            "freeze": false,
             "refKey": "refDict",
             "hideInGraph": true,
             "code": "refDict",
@@ -5240,19 +5109,17 @@
             "relationNoShow": true
           },
           {
-            "freeze": false,
-            "refKey": "defaultValue",
-            "hideInGraph": true,
-            "code": "defaultValue",
-            "value": "默认值",
-            "newCode": "defaultValue",
+            "refKey": "comment",
+            "hideInGraph": false,
+            "code": "remark",
+            "value": "说明",
+            "newCode": "comment",
             "com": "Input",
             "relationNoShow": true
           },
           {
-            "freeze": false,
             "refKey": "isStandard",
-            "hideInGraph": false,
+            "hideInGraph": true,
             "code": "isStandard",
             "value": "标准字段",
             "newCode": "isStandard",
@@ -5260,7 +5127,6 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
             "refKey": "uiHint",
             "hideInGraph": true,
             "code": "uiHint",
@@ -5271,8 +5137,7 @@
           },
           {
             "refKey": "extProps",
-            "hideInGraph": true,
-            "freeze": false
+            "hideInGraph": true
           }
         ],
         "fields": [
@@ -5353,7 +5218,7 @@
             "primaryKey": false,
             "notNull": true,
             "autoIncrement": false,
-            "defaultValue": "",
+            "defaultValue": "CURRENT_TIMESTAMP()",
             "hideInGraph": true,
             "domain": "7CFFA0D3-6A93-4DDC-BC10-DF21211064DC",
             "refDict": "",
@@ -5370,7 +5235,7 @@
             "primaryKey": false,
             "notNull": false,
             "autoIncrement": false,
-            "defaultValue": "",
+            "defaultValue": "CURRENT_TIMESTAMP()",
             "hideInGraph": true,
             "domain": "7CFFA0D3-6A93-4DDC-BC10-DF21211064DC",
             "refDict": "",
@@ -5468,7 +5333,6 @@
         "nameTemplate": "{defKey}[{defName}]",
         "headers": [
           {
-            "freeze": true,
             "refKey": "hideInGraph",
             "hideInGraph": true,
             "code": "relationNoShow",
@@ -5478,7 +5342,7 @@
             "relationNoShow": true
           },
           {
-            "freeze": false,
+            "freeze": true,
             "refKey": "defKey",
             "hideInGraph": false,
             "code": "name",
@@ -5488,7 +5352,7 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
+            "freeze": true,
             "refKey": "defName",
             "hideInGraph": false,
             "code": "chnname",
@@ -5498,7 +5362,15 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
+            "refKey": "defaultValue",
+            "hideInGraph": false,
+            "code": "defaultValue",
+            "value": "默认值",
+            "newCode": "defaultValue",
+            "com": "Input",
+            "relationNoShow": true
+          },
+          {
             "refKey": "primaryKey",
             "hideInGraph": true,
             "code": "pk",
@@ -5508,7 +5380,6 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
             "refKey": "notNull",
             "hideInGraph": true,
             "code": "notNull",
@@ -5518,7 +5389,6 @@
             "relationNoShow": true
           },
           {
-            "freeze": false,
             "refKey": "autoIncrement",
             "hideInGraph": true,
             "code": "autoIncrement",
@@ -5528,7 +5398,6 @@
             "relationNoShow": true
           },
           {
-            "freeze": false,
             "refKey": "domain",
             "hideInGraph": true,
             "code": "type",
@@ -5538,7 +5407,6 @@
             "relationNoShow": true
           },
           {
-            "freeze": false,
             "refKey": "type",
             "hideInGraph": false,
             "code": "dataType",
@@ -5548,7 +5416,6 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
             "refKey": "len",
             "hideInGraph": true,
             "code": "len",
@@ -5558,7 +5425,6 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
             "refKey": "scale",
             "hideInGraph": true,
             "code": "scale",
@@ -5568,17 +5434,6 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
-            "refKey": "comment",
-            "hideInGraph": false,
-            "code": "remark",
-            "value": "说明",
-            "newCode": "comment",
-            "com": "Input",
-            "relationNoShow": true
-          },
-          {
-            "freeze": false,
             "refKey": "refDict",
             "hideInGraph": true,
             "code": "refDict",
@@ -5588,19 +5443,17 @@
             "relationNoShow": true
           },
           {
-            "freeze": false,
-            "refKey": "defaultValue",
-            "hideInGraph": true,
-            "code": "defaultValue",
-            "value": "默认值",
-            "newCode": "defaultValue",
+            "refKey": "comment",
+            "hideInGraph": false,
+            "code": "remark",
+            "value": "说明",
+            "newCode": "comment",
             "com": "Input",
             "relationNoShow": true
           },
           {
-            "freeze": false,
             "refKey": "isStandard",
-            "hideInGraph": false,
+            "hideInGraph": true,
             "code": "isStandard",
             "value": "标准字段",
             "newCode": "isStandard",
@@ -5608,7 +5461,6 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
             "refKey": "uiHint",
             "hideInGraph": true,
             "code": "uiHint",
@@ -5619,8 +5471,7 @@
           },
           {
             "refKey": "extProps",
-            "hideInGraph": true,
-            "freeze": false
+            "hideInGraph": true
           }
         ],
         "fields": [
@@ -5701,7 +5552,7 @@
             "primaryKey": false,
             "notNull": true,
             "autoIncrement": false,
-            "defaultValue": "",
+            "defaultValue": "CURRENT_TIMESTAMP()",
             "hideInGraph": true,
             "domain": "7CFFA0D3-6A93-4DDC-BC10-DF21211064DC",
             "refDict": "",
@@ -5718,7 +5569,7 @@
             "primaryKey": false,
             "notNull": false,
             "autoIncrement": false,
-            "defaultValue": "",
+            "defaultValue": "CURRENT_TIMESTAMP()",
             "hideInGraph": true,
             "domain": "7CFFA0D3-6A93-4DDC-BC10-DF21211064DC",
             "refDict": "",
@@ -5831,7 +5682,6 @@
         "nameTemplate": "{defKey}[{defName}]",
         "headers": [
           {
-            "freeze": true,
             "refKey": "hideInGraph",
             "hideInGraph": true,
             "code": "relationNoShow",
@@ -5841,7 +5691,7 @@
             "relationNoShow": true
           },
           {
-            "freeze": false,
+            "freeze": true,
             "refKey": "defKey",
             "hideInGraph": false,
             "code": "name",
@@ -5851,7 +5701,7 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
+            "freeze": true,
             "refKey": "defName",
             "hideInGraph": false,
             "code": "chnname",
@@ -5861,7 +5711,15 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
+            "refKey": "defaultValue",
+            "hideInGraph": false,
+            "code": "defaultValue",
+            "value": "默认值",
+            "newCode": "defaultValue",
+            "com": "Input",
+            "relationNoShow": true
+          },
+          {
             "refKey": "primaryKey",
             "hideInGraph": true,
             "code": "pk",
@@ -5871,7 +5729,6 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
             "refKey": "notNull",
             "hideInGraph": true,
             "code": "notNull",
@@ -5881,7 +5738,6 @@
             "relationNoShow": true
           },
           {
-            "freeze": false,
             "refKey": "autoIncrement",
             "hideInGraph": true,
             "code": "autoIncrement",
@@ -5891,7 +5747,6 @@
             "relationNoShow": true
           },
           {
-            "freeze": false,
             "refKey": "domain",
             "hideInGraph": true,
             "code": "type",
@@ -5901,7 +5756,6 @@
             "relationNoShow": true
           },
           {
-            "freeze": false,
             "refKey": "type",
             "hideInGraph": false,
             "code": "dataType",
@@ -5911,7 +5765,6 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
             "refKey": "len",
             "hideInGraph": true,
             "code": "len",
@@ -5921,7 +5774,6 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
             "refKey": "scale",
             "hideInGraph": true,
             "code": "scale",
@@ -5931,17 +5783,6 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
-            "refKey": "comment",
-            "hideInGraph": false,
-            "code": "remark",
-            "value": "说明",
-            "newCode": "comment",
-            "com": "Input",
-            "relationNoShow": true
-          },
-          {
-            "freeze": false,
             "refKey": "refDict",
             "hideInGraph": true,
             "code": "refDict",
@@ -5951,19 +5792,17 @@
             "relationNoShow": true
           },
           {
-            "freeze": false,
-            "refKey": "defaultValue",
-            "hideInGraph": true,
-            "code": "defaultValue",
-            "value": "默认值",
-            "newCode": "defaultValue",
+            "refKey": "comment",
+            "hideInGraph": false,
+            "code": "remark",
+            "value": "说明",
+            "newCode": "comment",
             "com": "Input",
             "relationNoShow": true
           },
           {
-            "freeze": false,
             "refKey": "isStandard",
-            "hideInGraph": false,
+            "hideInGraph": true,
             "code": "isStandard",
             "value": "标准字段",
             "newCode": "isStandard",
@@ -5971,7 +5810,6 @@
             "relationNoShow": false
           },
           {
-            "freeze": false,
             "refKey": "uiHint",
             "hideInGraph": true,
             "code": "uiHint",
@@ -5982,8 +5820,7 @@
           },
           {
             "refKey": "extProps",
-            "hideInGraph": true,
-            "freeze": false
+            "hideInGraph": true
           }
         ],
         "fields": [
@@ -6064,7 +5901,7 @@
             "primaryKey": false,
             "notNull": true,
             "autoIncrement": false,
-            "defaultValue": "",
+            "defaultValue": "CURRENT_TIMESTAMP()",
             "hideInGraph": true,
             "domain": "7CFFA0D3-6A93-4DDC-BC10-DF21211064DC",
             "refDict": "",
@@ -6081,7 +5918,7 @@
             "primaryKey": false,
             "notNull": false,
             "autoIncrement": false,
-            "defaultValue": "",
+            "defaultValue": "CURRENT_TIMESTAMP()",
             "hideInGraph": true,
             "domain": "7CFFA0D3-6A93-4DDC-BC10-DF21211064DC",
             "refDict": "",
@@ -6295,67 +6132,149 @@
         "headers": [
           {
             "refKey": "hideInGraph",
-            "hideInGraph": true
+            "hideInGraph": true,
+            "code": "relationNoShow",
+            "value": "关系图",
+            "newCode": "hideInGraph",
+            "com": "Icon",
+            "relationNoShow": true
           },
           {
             "refKey": "defKey",
-            "hideInGraph": false
+            "hideInGraph": false,
+            "code": "name",
+            "value": "字段代码",
+            "newCode": "defKey",
+            "com": "Input",
+            "relationNoShow": false,
+            "freeze": true
           },
           {
             "refKey": "defName",
-            "hideInGraph": false
-          },
-          {
-            "refKey": "primaryKey",
-            "hideInGraph": true
-          },
-          {
-            "refKey": "notNull",
-            "hideInGraph": true
-          },
-          {
-            "refKey": "autoIncrement",
-            "hideInGraph": true
-          },
-          {
-            "refKey": "domain",
-            "hideInGraph": true
-          },
-          {
-            "refKey": "type",
-            "hideInGraph": false
-          },
-          {
-            "refKey": "len",
-            "hideInGraph": true
-          },
-          {
-            "refKey": "scale",
-            "hideInGraph": true
-          },
-          {
-            "refKey": "comment",
-            "hideInGraph": false
-          },
-          {
-            "refKey": "refDict",
-            "hideInGraph": true
+            "hideInGraph": false,
+            "code": "chnname",
+            "value": "显示名称",
+            "newCode": "defName",
+            "com": "Input",
+            "relationNoShow": false,
+            "freeze": true
           },
           {
             "refKey": "defaultValue",
-            "hideInGraph": true
+            "hideInGraph": false,
+            "code": "defaultValue",
+            "value": "默认值",
+            "newCode": "defaultValue",
+            "com": "Input",
+            "relationNoShow": true
+          },
+          {
+            "refKey": "primaryKey",
+            "hideInGraph": true,
+            "code": "pk",
+            "value": "主键",
+            "newCode": "primaryKey",
+            "com": "Checkbox",
+            "relationNoShow": false
+          },
+          {
+            "refKey": "notNull",
+            "hideInGraph": true,
+            "code": "notNull",
+            "value": "不为空",
+            "newCode": "notNull",
+            "com": "Checkbox",
+            "relationNoShow": true
+          },
+          {
+            "refKey": "autoIncrement",
+            "hideInGraph": true,
+            "code": "autoIncrement",
+            "value": "自增",
+            "newCode": "autoIncrement",
+            "com": "Checkbox",
+            "relationNoShow": true
+          },
+          {
+            "refKey": "domain",
+            "hideInGraph": true,
+            "code": "type",
+            "value": "数据域",
+            "newCode": "domain",
+            "com": "Select",
+            "relationNoShow": true
+          },
+          {
+            "refKey": "type",
+            "hideInGraph": false,
+            "code": "dataType",
+            "value": "数据类型",
+            "newCode": "type",
+            "com": "Text",
+            "relationNoShow": false
+          },
+          {
+            "refKey": "len",
+            "hideInGraph": true,
+            "code": "len",
+            "value": "长度",
+            "newCode": "len",
+            "com": "Input",
+            "relationNoShow": false
+          },
+          {
+            "refKey": "scale",
+            "hideInGraph": true,
+            "code": "scale",
+            "value": "小数位数",
+            "newCode": "scale",
+            "com": "Input",
+            "relationNoShow": false
+          },
+          {
+            "refKey": "refDict",
+            "hideInGraph": true,
+            "code": "refDict",
+            "value": "数据字典",
+            "newCode": "refDict",
+            "com": "SearchSelect",
+            "relationNoShow": true
+          },
+          {
+            "refKey": "comment",
+            "hideInGraph": false,
+            "code": "remark",
+            "value": "说明",
+            "newCode": "comment",
+            "com": "Input",
+            "relationNoShow": true
           },
           {
             "refKey": "isStandard",
-            "hideInGraph": false
+            "hideInGraph": true,
+            "code": "isStandard",
+            "value": "标准字段",
+            "newCode": "isStandard",
+            "com": "label",
+            "relationNoShow": false
           },
           {
             "refKey": "uiHint",
-            "hideInGraph": true
+            "hideInGraph": true,
+            "code": "uiHint",
+            "value": "UI建议",
+            "newCode": "uiHint",
+            "com": "Select",
+            "relationNoShow": true
           },
           {
             "refKey": "extProps",
-            "hideInGraph": true
+            "hideInGraph": true,
+            "code": "extProps",
+            "value": "拓展属性",
+            "newCode": "extProps",
+            "com": "linkButton",
+            "relationNoShow": true
           }
         ],
         "fields": [
@@ -6437,7 +6356,7 @@
             "primaryKey": false,
             "notNull": true,
             "autoIncrement": false,
-            "defaultValue": "",
+            "defaultValue": "CURRENT_TIMESTAMP()",
             "hideInGraph": true,
             "refDict": "",
             "uiHint": "",
@@ -6454,7 +6373,7 @@
             "primaryKey": false,
             "notNull": false,
             "autoIncrement": false,
-            "defaultValue": "",
+            "defaultValue": "CURRENT_TIMESTAMP()",
             "hideInGraph": true,
             "refDict": "",
             "uiHint": "",
@@ -6605,67 +6524,149 @@
         "headers": [
           {
             "refKey": "hideInGraph",
-            "hideInGraph": true
+            "hideInGraph": true,
+            "code": "relationNoShow",
+            "value": "关系图",
+            "newCode": "hideInGraph",
+            "com": "Icon",
+            "relationNoShow": true
           },
           {
             "refKey": "defKey",
-            "hideInGraph": false
+            "hideInGraph": false,
+            "code": "name",
+            "value": "字段代码",
+            "newCode": "defKey",
+            "com": "Input",
+            "relationNoShow": false,
+            "freeze": true
           },
           {
             "refKey": "defName",
-            "hideInGraph": false
-          },
-          {
-            "refKey": "primaryKey",
-            "hideInGraph": true
-          },
-          {
-            "refKey": "notNull",
-            "hideInGraph": true
-          },
-          {
-            "refKey": "autoIncrement",
-            "hideInGraph": true
-          },
-          {
-            "refKey": "domain",
-            "hideInGraph": true
-          },
-          {
-            "refKey": "type",
-            "hideInGraph": false
-          },
-          {
-            "refKey": "len",
-            "hideInGraph": true
-          },
-          {
-            "refKey": "scale",
-            "hideInGraph": true
-          },
-          {
-            "refKey": "comment",
-            "hideInGraph": false
-          },
-          {
-            "refKey": "refDict",
-            "hideInGraph": true
+            "hideInGraph": false,
+            "code": "chnname",
+            "value": "显示名称",
+            "newCode": "defName",
+            "com": "Input",
+            "relationNoShow": false,
+            "freeze": true
           },
           {
             "refKey": "defaultValue",
-            "hideInGraph": true
+            "hideInGraph": false,
+            "code": "defaultValue",
+            "value": "默认值",
+            "newCode": "defaultValue",
+            "com": "Input",
+            "relationNoShow": true
+          },
+          {
+            "refKey": "primaryKey",
+            "hideInGraph": true,
+            "code": "pk",
+            "value": "主键",
+            "newCode": "primaryKey",
+            "com": "Checkbox",
+            "relationNoShow": false
+          },
+          {
+            "refKey": "notNull",
+            "hideInGraph": true,
+            "code": "notNull",
+            "value": "不为空",
+            "newCode": "notNull",
+            "com": "Checkbox",
+            "relationNoShow": true
+          },
+          {
+            "refKey": "autoIncrement",
+            "hideInGraph": true,
+            "code": "autoIncrement",
+            "value": "自增",
+            "newCode": "autoIncrement",
+            "com": "Checkbox",
+            "relationNoShow": true
+          },
+          {
+            "refKey": "domain",
+            "hideInGraph": true,
+            "code": "type",
+            "value": "数据域",
+            "newCode": "domain",
+            "com": "Select",
+            "relationNoShow": true
+          },
+          {
+            "refKey": "type",
+            "hideInGraph": false,
+            "code": "dataType",
+            "value": "数据类型",
+            "newCode": "type",
+            "com": "Text",
+            "relationNoShow": false
+          },
+          {
+            "refKey": "len",
+            "hideInGraph": true,
+            "code": "len",
+            "value": "长度",
+            "newCode": "len",
+            "com": "Input",
+            "relationNoShow": false
+          },
+          {
+            "refKey": "scale",
+            "hideInGraph": true,
+            "code": "scale",
+            "value": "小数位数",
+            "newCode": "scale",
+            "com": "Input",
+            "relationNoShow": false
+          },
+          {
+            "refKey": "refDict",
+            "hideInGraph": true,
+            "code": "refDict",
+            "value": "数据字典",
+            "newCode": "refDict",
+            "com": "SearchSelect",
+            "relationNoShow": true
+          },
+          {
+            "refKey": "comment",
+            "hideInGraph": false,
+            "code": "remark",
+            "value": "说明",
+            "newCode": "comment",
+            "com": "Input",
+            "relationNoShow": true
           },
           {
             "refKey": "isStandard",
-            "hideInGraph": false
+            "hideInGraph": true,
+            "code": "isStandard",
+            "value": "标准字段",
+            "newCode": "isStandard",
+            "com": "label",
+            "relationNoShow": false
           },
           {
             "refKey": "uiHint",
-            "hideInGraph": true
+            "hideInGraph": true,
+            "code": "uiHint",
+            "value": "UI建议",
+            "newCode": "uiHint",
+            "com": "Select",
+            "relationNoShow": true
           },
           {
             "refKey": "extProps",
-            "hideInGraph": true
+            "hideInGraph": true,
+            "code": "extProps",
+            "value": "拓展属性",
+            "newCode": "extProps",
+            "com": "linkButton",
+            "relationNoShow": true
           }
         ],
         "fields": [
@@ -6747,7 +6748,7 @@
             "primaryKey": false,
             "notNull": true,
             "autoIncrement": false,
-            "defaultValue": "",
+            "defaultValue": "CURRENT_TIMESTAMP()",
             "hideInGraph": true,
             "refDict": "",
             "uiHint": "",
@@ -6764,7 +6765,7 @@
             "primaryKey": false,
             "notNull": false,
             "autoIncrement": false,
-            "defaultValue": "",
+            "defaultValue": "CURRENT_TIMESTAMP()",
             "hideInGraph": true,
             "refDict": "",
             "uiHint": "",
@@ -6851,10 +6852,16 @@
           },
           {
             "refKey": "defKey",
-            "hideInGraph": false
+            "hideInGraph": false,
+            "freeze": true
           },
           {
             "refKey": "defName",
+            "hideInGraph": false,
+            "freeze": true
+          },
+          {
+            "refKey": "defaultValue",
             "hideInGraph": false
           },
           {
@@ -6886,20 +6893,16 @@
             "hideInGraph": true
           },
           {
-            "refKey": "comment",
-            "hideInGraph": false
-          },
-          {
             "refKey": "refDict",
             "hideInGraph": true
           },
           {
-            "refKey": "defaultValue",
-            "hideInGraph": true
+            "refKey": "comment",
+            "hideInGraph": false
           },
           {
             "refKey": "isStandard",
-            "hideInGraph": false
+            "hideInGraph": true
           },
           {
             "refKey": "uiHint",
@@ -6989,7 +6992,7 @@
             "primaryKey": false,
             "notNull": true,
             "autoIncrement": false,
-            "defaultValue": "",
+            "defaultValue": "CURRENT_TIMESTAMP()",
             "hideInGraph": true,
             "refDict": "",
             "uiHint": "",
@@ -7006,7 +7009,7 @@
             "primaryKey": false,
             "notNull": false,
             "autoIncrement": false,
-            "defaultValue": "",
+            "defaultValue": "CURRENT_TIMESTAMP()",
             "hideInGraph": true,
             "refDict": "",
             "uiHint": "",
@@ -7168,7 +7171,7 @@
             "primaryKey": false,
             "notNull": true,
             "autoIncrement": false,
-            "defaultValue": "",
+            "defaultValue": "CURRENT_TIMESTAMP()",
             "hideInGraph": true,
             "domain": "7CFFA0D3-6A93-4DDC-BC10-DF21211064DC",
             "refDict": "",
@@ -7185,7 +7188,7 @@
             "primaryKey": false,
             "notNull": false,
             "autoIncrement": false,
-            "defaultValue": "",
+            "defaultValue": "CURRENT_TIMESTAMP()",
             "hideInGraph": true,
             "domain": "7CFFA0D3-6A93-4DDC-BC10-DF21211064DC",
             "refDict": "",
@@ -7384,7 +7387,6 @@
         "nameTemplate": "{defKey}[{defName}]",
         "headers": [
           {
-            "freeze": false,
             "refKey": "hideInGraph",
             "hideInGraph": true
           },
@@ -7399,67 +7401,54 @@
             "hideInGraph": false
           },
           {
-            "freeze": false,
-            "refKey": "primaryKey",
+            "refKey": "defaultValue",
             "hideInGraph": false
           },
           {
-            "freeze": false,
+            "refKey": "primaryKey",
+            "hideInGraph": true
+          },
+          {
             "refKey": "notNull",
             "hideInGraph": true
           },
           {
-            "freeze": false,
             "refKey": "autoIncrement",
             "hideInGraph": true
           },
           {
-            "freeze": false,
             "refKey": "domain",
             "hideInGraph": true
           },
           {
-            "freeze": false,
             "refKey": "type",
             "hideInGraph": false
           },
           {
-            "freeze": false,
             "refKey": "len",
-            "hideInGraph": false
-          },
-          {
-            "freeze": false,
-            "refKey": "scale",
-            "hideInGraph": false
-          },
-          {
-            "freeze": false,
-            "refKey": "comment",
             "hideInGraph": true
           },
           {
-            "freeze": false,
+            "refKey": "scale",
+            "hideInGraph": true
+          },
+          {
             "refKey": "refDict",
             "hideInGraph": true
           },
           {
-            "freeze": false,
-            "refKey": "defaultValue",
-            "hideInGraph": true
-          },
-          {
-            "freeze": false,
-            "refKey": "isStandard",
+            "refKey": "comment",
             "hideInGraph": false
           },
           {
-            "freeze": false,
+            "refKey": "isStandard",
+            "hideInGraph": true
+          },
+          {
             "refKey": "uiHint",
             "hideInGraph": true
           },
           {
-            "freeze": false,
             "refKey": "extProps",
             "hideInGraph": true
           }
@@ -7474,21 +7463,130 @@
         "properties": {},
         "fields": [
           {
+            "defKey": "version",
+            "defName": "乐观锁",
+            "comment": "",
+            "type": "",
+            "len": "",
+            "scale": "",
+            "primaryKey": false,
+            "notNull": true,
+            "autoIncrement": false,
+            "defaultValue": "1",
+            "hideInGraph": true,
+            "domain": "CE58D2F6-7F4B-4928-A0D1-9CD3BFF2D2B2",
+            "refDict": "",
+            "extProps": {},
+            "id": "7E999B29-821E-416B-B147-DFB7F4B82D0F",
+            "isStandard": true
+          },
+          {
             "defKey": "id",
             "defName": "ID",
             "comment": "",
-            "domain": "",
-            "type": "BIGINT",
-            "len": 20,
+            "type": "",
+            "len": "",
             "scale": "",
             "primaryKey": true,
             "notNull": true,
             "autoIncrement": true,
             "defaultValue": "",
             "hideInGraph": false,
+            "domain": "16120F75-6AA7-4483-868D-F07F511BB081",
             "refDict": "",
-            "id": "02C8861D-D44E-4BE7-8B1D-4EA64BE2FF71",
-            "extProps": {}
+            "extProps": {},
+            "id": "D3560309-55F4-413E-9FB3-16E35CFD3F6A",
+            "isStandard": true
+          },
+          {
+            "defKey": "creator_id",
+            "defName": "创建人",
+            "comment": "",
+            "type": "",
+            "len": "",
+            "scale": "",
+            "primaryKey": false,
+            "notNull": true,
+            "autoIncrement": false,
+            "defaultValue": "",
+            "hideInGraph": true,
+            "domain": "16120F75-6AA7-4483-868D-F07F511BB081",
+            "refDict": "",
+            "extProps": {},
+            "id": "AE433252-A5D9-4FF2-BE7D-DD6994809997",
+            "isStandard": true
+          },
+          {
+            "defKey": "updater_id",
+            "defName": "更新人",
+            "comment": "",
+            "type": "",
+            "len": "",
+            "scale": "",
+            "primaryKey": false,
+            "notNull": false,
+            "autoIncrement": false,
+            "defaultValue": "",
+            "hideInGraph": true,
+            "domain": "16120F75-6AA7-4483-868D-F07F511BB081",
+            "refDict": "",
+            "extProps": {},
+            "id": "34A38F82-7F3C-4DEE-B586-491A9E3CB464",
+            "isStandard": true
+          },
+          {
+            "defKey": "create_time",
+            "defName": "创建时间",
+            "comment": "",
+            "type": "",
+            "len": "",
+            "scale": "",
+            "primaryKey": false,
+            "notNull": true,
+            "autoIncrement": false,
+            "defaultValue": "CURRENT_TIMESTAMP()",
+            "hideInGraph": true,
+            "domain": "7CFFA0D3-6A93-4DDC-BC10-DF21211064DC",
+            "refDict": "",
+            "extProps": {},
+            "id": "E8D1EE39-976B-4710-A21D-988500CC0A3E",
+            "isStandard": true
+          },
+          {
+            "defKey": "update_time",
+            "defName": "更新时间",
+            "comment": "",
+            "type": "",
+            "len": "",
+            "scale": "",
+            "primaryKey": false,
+            "notNull": false,
+            "autoIncrement": false,
+            "defaultValue": "CURRENT_TIMESTAMP()",
+            "hideInGraph": true,
+            "domain": "7CFFA0D3-6A93-4DDC-BC10-DF21211064DC",
+            "refDict": "",
+            "extProps": {},
+            "id": "D26DE815-5597-430F-A32E-691BA9C5D16F",
+            "isStandard": true
+          },
+          {
+            "defKey": "del_flag",
+            "defName": "逻辑删除",
+            "comment": "",
+            "type": "",
+            "len": "",
+            "scale": "",
+            "primaryKey": false,
+            "notNull": true,
+            "autoIncrement": false,
+            "defaultValue": "0",
+            "hideInGraph": true,
+            "domain": "6F7C1C5C-D159-41E6-BF9D-54DEEFA79AFF",
+            "refDict": "",
+            "extProps": {},
+            "id": "3BB71EB7-E1C5-4331-B5EB-EF5832CC4AD8",
+            "isStandard": true
           },
           {
             "defKey": "content",
@@ -7528,9 +7626,9 @@
             "defKey": "t_id",
             "defName": "",
             "comment": null,
-            "domain": "",
-            "type": "BIGINT",
-            "len": 20,
+            "domain": "CE58D2F6-7F4B-4928-A0D1-9CD3BFF2D2B2",
+            "type": "",
+            "len": "",
             "scale": "",
             "primaryKey": false,
             "notNull": true,
@@ -7574,115 +7672,12 @@
             "refDict": "",
             "id": "4392E7BA-8CBD-4B68-B817-0A4815C5E6BF",
             "extProps": {}
-          },
-          {
-            "defKey": "creator_id",
-            "defName": "",
-            "comment": null,
-            "domain": "",
-            "type": "BIGINT",
-            "len": 20,
-            "scale": "",
-            "primaryKey": false,
-            "notNull": false,
-            "autoIncrement": false,
-            "defaultValue": "",
-            "hideInGraph": false,
-            "refDict": "",
-            "id": "2AF23A35-BA27-47ED-B0B9-F709BD935F5F",
-            "extProps": {}
-          },
-          {
-            "defKey": "create_time",
-            "defName": "",
-            "comment": null,
-            "domain": "7CFFA0D3-6A93-4DDC-BC10-DF21211064DC",
-            "type": "DATETIME",
-            "len": "",
-            "scale": "",
-            "primaryKey": false,
-            "notNull": false,
-            "autoIncrement": false,
-            "defaultValue": "",
-            "hideInGraph": false,
-            "refDict": "",
-            "id": "918EA3C0-7F2A-4BA3-BAE5-D1E0F38CB634",
-            "extProps": {}
-          },
-          {
-            "defKey": "del_flag",
-            "defName": "",
-            "comment": null,
-            "domain": "6F7C1C5C-D159-41E6-BF9D-54DEEFA79AFF",
-            "type": "CHAR",
-            "len": "",
-            "scale": "",
-            "primaryKey": false,
-            "notNull": false,
-            "autoIncrement": false,
-            "defaultValue": "'0'",
-            "hideInGraph": false,
-            "refDict": "",
-            "id": "8419BAEA-D50A-47F8-A928-2C926E601FC5",
-            "extProps": {}
-          },
-          {
-            "defKey": "version",
-            "defName": "",
-            "comment": null,
-            "domain": "",
-            "type": "BIGINT",
-            "len": 20,
-            "scale": "",
-            "primaryKey": false,
-            "notNull": false,
-            "autoIncrement": false,
-            "defaultValue": "",
-            "hideInGraph": false,
-            "refDict": "",
-            "id": "CC74C8BB-D2FF-4A69-80E5-D5A7558174D4",
-            "extProps": {}
-          },
-          {
-            "defKey": "updater_id",
-            "defName": "",
-            "comment": null,
-            "domain": "",
-            "type": "BIGINT",
-            "len": 20,
-            "scale": "",
-            "primaryKey": false,
-            "notNull": false,
-            "autoIncrement": false,
-            "defaultValue": "",
-            "hideInGraph": false,
-            "refDict": "",
-            "id": "4A2DD886-601C-4D0B-8E25-D6C3CE13F3E8",
-            "extProps": {}
-          },
-          {
-            "defKey": "update_time",
-            "defName": "",
-            "comment": null,
-            "domain": "7CFFA0D3-6A93-4DDC-BC10-DF21211064DC",
-            "type": "DATETIME",
-            "len": "",
-            "scale": "",
-            "primaryKey": false,
-            "notNull": false,
-            "autoIncrement": false,
-            "defaultValue": "",
-            "hideInGraph": false,
-            "refDict": "",
-            "id": "E722D3CA-071E-4CF8-9557-EA70309739EC",
-            "extProps": {}
           }
         ],
         "indexes": [],
         "nameTemplate": "{defKey}[{defName}]",
         "headers": [
           {
-            "freeze": false,
             "refKey": "hideInGraph",
             "hideInGraph": true
           },
@@ -7697,67 +7692,54 @@
             "hideInGraph": false
           },
           {
-            "freeze": false,
-            "refKey": "primaryKey",
+            "refKey": "defaultValue",
             "hideInGraph": false
           },
           {
-            "freeze": false,
+            "refKey": "primaryKey",
+            "hideInGraph": true
+          },
+          {
             "refKey": "notNull",
             "hideInGraph": true
           },
           {
-            "freeze": false,
             "refKey": "autoIncrement",
             "hideInGraph": true
           },
           {
-            "freeze": false,
             "refKey": "domain",
             "hideInGraph": true
           },
           {
-            "freeze": false,
             "refKey": "type",
             "hideInGraph": false
           },
           {
-            "freeze": false,
             "refKey": "len",
-            "hideInGraph": false
-          },
-          {
-            "freeze": false,
-            "refKey": "scale",
-            "hideInGraph": false
-          },
-          {
-            "freeze": false,
-            "refKey": "comment",
             "hideInGraph": true
           },
           {
-            "freeze": false,
+            "refKey": "scale",
+            "hideInGraph": true
+          },
+          {
             "refKey": "refDict",
             "hideInGraph": true
           },
           {
-            "freeze": false,
-            "refKey": "defaultValue",
-            "hideInGraph": true
-          },
-          {
-            "freeze": false,
-            "refKey": "isStandard",
+            "refKey": "comment",
             "hideInGraph": false
           },
           {
-            "freeze": false,
+            "refKey": "isStandard",
+            "hideInGraph": true
+          },
+          {
             "refKey": "uiHint",
             "hideInGraph": true
           },
           {
-            "freeze": false,
             "refKey": "extProps",
             "hideInGraph": true
           }
@@ -7792,10 +7774,16 @@
           },
           {
             "refKey": "defKey",
-            "hideInGraph": false
+            "hideInGraph": false,
+            "freeze": true
           },
           {
             "refKey": "defName",
+            "hideInGraph": false,
+            "freeze": true
+          },
+          {
+            "refKey": "defaultValue",
             "hideInGraph": false
           },
           {
@@ -7827,20 +7815,16 @@
             "hideInGraph": true
           },
           {
-            "refKey": "comment",
-            "hideInGraph": false
-          },
-          {
             "refKey": "refDict",
             "hideInGraph": true
           },
           {
-            "refKey": "defaultValue",
-            "hideInGraph": true
+            "refKey": "comment",
+            "hideInGraph": false
           },
           {
             "refKey": "isStandard",
-            "hideInGraph": false
+            "hideInGraph": true
           },
           {
             "refKey": "uiHint",
@@ -7930,7 +7914,7 @@
             "primaryKey": false,
             "notNull": true,
             "autoIncrement": false,
-            "defaultValue": "",
+            "defaultValue": "CURRENT_TIMESTAMP()",
             "hideInGraph": true,
             "refDict": "",
             "uiHint": "",
@@ -7947,7 +7931,7 @@
             "primaryKey": false,
             "notNull": false,
             "autoIncrement": false,
-            "defaultValue": "",
+            "defaultValue": "CURRENT_TIMESTAMP()",
             "hideInGraph": true,
             "refDict": "",
             "uiHint": "",
@@ -8068,10 +8052,16 @@
           },
           {
             "refKey": "defKey",
-            "hideInGraph": false
+            "hideInGraph": false,
+            "freeze": true
           },
           {
             "refKey": "defName",
+            "hideInGraph": false,
+            "freeze": true
+          },
+          {
+            "refKey": "defaultValue",
             "hideInGraph": false
           },
           {
@@ -8103,20 +8093,16 @@
             "hideInGraph": true
           },
           {
-            "refKey": "comment",
-            "hideInGraph": false
-          },
-          {
             "refKey": "refDict",
             "hideInGraph": true
           },
           {
-            "refKey": "defaultValue",
-            "hideInGraph": true
+            "refKey": "comment",
+            "hideInGraph": false
           },
           {
             "refKey": "isStandard",
-            "hideInGraph": false
+            "hideInGraph": true
           },
           {
             "refKey": "uiHint",
@@ -8206,7 +8192,7 @@
             "primaryKey": false,
             "notNull": true,
             "autoIncrement": false,
-            "defaultValue": "",
+            "defaultValue": "CURRENT_TIMESTAMP()",
             "hideInGraph": true,
             "refDict": "",
             "uiHint": "",
@@ -8223,7 +8209,7 @@
             "primaryKey": false,
             "notNull": false,
             "autoIncrement": false,
-            "defaultValue": "",
+            "defaultValue": "CURRENT_TIMESTAMP()",
             "hideInGraph": true,
             "refDict": "",
             "uiHint": "",
@@ -8404,10 +8390,16 @@
           },
           {
             "refKey": "defKey",
-            "hideInGraph": false
+            "hideInGraph": false,
+            "freeze": true
           },
           {
             "refKey": "defName",
+            "hideInGraph": false,
+            "freeze": true
+          },
+          {
+            "refKey": "defaultValue",
             "hideInGraph": false
           },
           {
@@ -8439,20 +8431,16 @@
             "hideInGraph": true
           },
           {
-            "refKey": "comment",
-            "hideInGraph": false
-          },
-          {
             "refKey": "refDict",
             "hideInGraph": true
           },
           {
-            "refKey": "defaultValue",
-            "hideInGraph": true
+            "refKey": "comment",
+            "hideInGraph": false
           },
           {
             "refKey": "isStandard",
-            "hideInGraph": false
+            "hideInGraph": true
           },
           {
             "refKey": "uiHint",
@@ -8541,7 +8529,7 @@
             "primaryKey": false,
             "notNull": true,
             "autoIncrement": false,
-            "defaultValue": "",
+            "defaultValue": "CURRENT_TIMESTAMP()",
             "hideInGraph": true,
             "domain": "7CFFA0D3-6A93-4DDC-BC10-DF21211064DC",
             "refDict": "",
@@ -8559,7 +8547,7 @@
             "primaryKey": false,
             "notNull": false,
             "autoIncrement": false,
-            "defaultValue": "",
+            "defaultValue": "CURRENT_TIMESTAMP()",
             "hideInGraph": true,
             "refDict": "",
             "uiHint": "",
@@ -9487,6 +9475,23 @@
             "id": "48C62101-58A7-46E6-B980-CAAEEF969966"
           },
           {
+            "defKey": "create_time",
+            "defName": "创建时间",
+            "comment": "",
+            "type": "",
+            "len": "",
+            "scale": "",
+            "primaryKey": false,
+            "notNull": true,
+            "autoIncrement": false,
+            "defaultValue": "CURRENT_TIMESTAMP()",
+            "hideInGraph": true,
+            "domain": "7CFFA0D3-6A93-4DDC-BC10-DF21211064DC",
+            "refDict": "",
+            "extProps": {},
+            "id": "BDB69534-81C1-4492-9A4D-86A3810E4B42"
+          },
+          {
             "defKey": "update_time",
             "defName": "更新时间",
             "comment": "",
@@ -9496,7 +9501,7 @@
             "primaryKey": false,
             "notNull": false,
             "autoIncrement": false,
-            "defaultValue": "",
+            "defaultValue": "CURRENT_TIMESTAMP()",
             "hideInGraph": true,
             "domain": "7CFFA0D3-6A93-4DDC-BC10-DF21211064DC",
             "refDict": "",
