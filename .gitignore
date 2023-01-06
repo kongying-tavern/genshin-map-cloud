@@ -37,9 +37,10 @@ logs/
 
 target/
 /generator/
-.back_原神空荧地图后端数据库
 *backup*.chnr.json
 sql
+
+database/**/.back_*
 
 .flattened-pom.xml
 application-datasource-dev.yml
