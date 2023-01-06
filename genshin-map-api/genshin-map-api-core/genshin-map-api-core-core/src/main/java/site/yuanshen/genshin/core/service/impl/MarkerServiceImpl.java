@@ -7,6 +7,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import site.yuanshen.common.core.utils.JsonUtils;
 import site.yuanshen.data.dto.MarkerDto;
 import site.yuanshen.data.dto.helper.PageSearchDto;
 import site.yuanshen.data.entity.*;
@@ -197,11 +198,14 @@ public class MarkerServiceImpl implements MarkerService {
     @Override
     @Transactional
     public Boolean updateMarker(MarkerDto markerDto) {
+        MarkerDto markerRecord = buildMarkerDto(markerDto.getId());
         //保存历史记录
-        saveHistoryMarker(buildMarkerDto(markerDto.getId()));
+        saveHistoryMarker(markerRecord);
 
+        String mergeResult = JsonUtils.merge(markerRecord.getExtra(), markerDto.getExtra());
+        markerRecord.setExtra(mergeResult);
 
-        Boolean updated = markerMapper.update(markerDto.getEntity(), Wrappers.<Marker>lambdaUpdate()
+        Boolean updated = markerMapper.update(markerRecord.getEntity(), Wrappers.<Marker>lambdaUpdate()
                 .eq(Marker::getId, markerDto.getId())) == 1;
         if (!updated) {
             throw new OptimisticLockingFailureException("该点位已更新，请重新提交");
