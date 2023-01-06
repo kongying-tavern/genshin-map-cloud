@@ -203,9 +203,9 @@ public class MarkerServiceImpl implements MarkerService {
         saveHistoryMarker(markerRecord);
 
         String mergeResult = JsonUtils.merge(markerRecord.getExtra(), markerDto.getExtra());
-        markerRecord.setExtra(mergeResult);
+        markerDto.setExtra(mergeResult);
 
-        Boolean updated = markerMapper.update(markerRecord.getEntity(), Wrappers.<Marker>lambdaUpdate()
+        Boolean updated = markerMapper.update(markerDto.getEntity(), Wrappers.<Marker>lambdaUpdate()
                 .eq(Marker::getId, markerDto.getId())) == 1;
         if (!updated) {
             throw new OptimisticLockingFailureException("该点位已更新，请重新提交");
