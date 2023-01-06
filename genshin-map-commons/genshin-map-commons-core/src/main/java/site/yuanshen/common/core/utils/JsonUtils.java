@@ -1,4 +1,4 @@
-package site.yuanshen.common.web.utils;
+package site.yuanshen.common.core.utils;
 
 import com.alibaba.fastjson.JSON;
 import org.apache.commons.lang.StringUtils;
