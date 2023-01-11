@@ -12,9 +12,8 @@ import site.yuanshen.data.dto.AreaDto;
 import site.yuanshen.data.entity.Area;
 import site.yuanshen.data.entity.Item;
 import site.yuanshen.data.entity.ItemAreaPublic;
-import site.yuanshen.data.mapper.AreaMapper;
-import site.yuanshen.data.mapper.ItemAreaPublicMapper;
-import site.yuanshen.data.mapper.ItemMapper;
+import site.yuanshen.data.entity.MarkerItemLink;
+import site.yuanshen.data.mapper.*;
 import site.yuanshen.data.vo.AreaSearchVo;
 import site.yuanshen.genshin.core.service.AreaService;
 import site.yuanshen.genshin.core.service.mbp.AreaMBPService;
@@ -37,6 +36,8 @@ public class AreaServiceImpl implements AreaService {
     private final ItemAreaPublicMapper itemAreaPublicMapper;
     private final ItemMapper itemMapper;
     private final ItemMBPService itemMBPService;
+    private final MarkerItemLinkMapper markerItemLinkMapper;
+    private final MarkerMapper markerMapper;
 
     /**
      * 列出地区
@@ -104,19 +105,11 @@ public class AreaServiceImpl implements AreaService {
                 .parallelStream().map(ItemAreaPublic::getItemId).collect(Collectors.toList());
         if (commonItemIdList.size() != 0) {
             List<Item> commonItemList = itemMapper.selectList(Wrappers.<Item>lambdaQuery().in(Item::getId, commonItemIdList));
-            //临时id
-            long tempId = -1L;
             for (Item item : commonItemList) {
                 item.setId(null);
-//				item.setItemId(tempId--);
                 item.setAreaId(area.getId());
             }
-            //TODO 异常处理，第一次出错隔10+random(5)值重试
             itemMBPService.saveBatch(commonItemList);
-            //正式更新id
-//			for (Item item : commonItemList) {
-//				item.setItemId(item.getId());
-//			}
             itemMBPService.updateBatchById(commonItemList);
         }
         return area.getId();
@@ -183,13 +176,36 @@ public class AreaServiceImpl implements AreaService {
     public Boolean deleteArea(Long areaId) {
         //用于递归遍历删除的地区ID列表
         List<Long> nowAreaIdList = Collections.singletonList(areaId);
-        //todo 删除绑定的物品和点位
-        //todo 检测地区共有物品是否有物品在此地区
         while (!nowAreaIdList.isEmpty()) {
             areaMapper.delete(Wrappers.<Area>lambdaQuery().in(Area::getId, nowAreaIdList));
+            deleteMarkerAndItemInArea(nowAreaIdList);
             nowAreaIdList = areaMapper.selectList(Wrappers.<Area>lambdaQuery().in(Area::getParentId, nowAreaIdList))
                     .parallelStream().map(Area::getId).collect(Collectors.toList());
         }
         return true;
+    }
+
+    private void deleteMarkerAndItemInArea(List<Long> areaIdList) {
+        //选取对应的物品id
+        List<Long> itemIdList = itemMapper.selectObjs(Wrappers.<Item>lambdaQuery()
+                        .select(Item::getId)
+                        .in(Item::getAreaId, areaIdList))
+                .parallelStream().map(o -> (Long) o).collect(Collectors.toList());
+        if (itemIdList.isEmpty())
+            return;
+        //删除物品
+        itemMapper.deleteBatchIds(areaIdList);
+        //选取对应点位id
+        List<Long> markerIdList = markerItemLinkMapper.selectObjs(Wrappers.<MarkerItemLink>lambdaQuery().select(MarkerItemLink::getMarkerId).in(MarkerItemLink::getItemId, itemIdList)).parallelStream().map(o -> (Long) o).collect(Collectors.toList());
+        if (markerIdList.isEmpty())
+            return;
+        //先删除点位-物品关联
+        markerItemLinkMapper.delete(Wrappers.<MarkerItemLink>lambdaQuery().in(MarkerItemLink::getItemId, itemIdList));
+        //筛选出关联其他地区物品的点位，其他的删除
+        markerItemLinkMapper.selectObjs(Wrappers.<MarkerItemLink>lambdaQuery()
+                        .select(MarkerItemLink::getMarkerId)
+                        .in(MarkerItemLink::getMarkerId, markerIdList))
+                .parallelStream().map(o -> (Long) o).forEach(markerIdList::remove);
+        markerMapper.deleteBatchIds(markerIdList);
     }
 }
