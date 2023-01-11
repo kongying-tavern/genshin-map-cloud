@@ -4,8 +4,6 @@ package site.yuanshen.data.enums;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.util.Arrays;
-
 @AllArgsConstructor
 public enum HistoryType {
 
@@ -17,10 +15,12 @@ public enum HistoryType {
     ;
 
     @Getter
-    private final Integer code;
+    private final int code;
 
-    public static HistoryType from(Integer code) {
-        return Arrays.stream(values()).filter(type -> type.getCode().equals(code)).findAny().orElseThrow(() -> new RuntimeException("类型[ " + code + " ]不在可选范围内"));
+    public static HistoryType from(int code) {
+        for (HistoryType value : values())
+            if (value.code == code) return value;
+        throw new RuntimeException("类型[ " + code + " ]不在可选范围内");
     }
 
 }

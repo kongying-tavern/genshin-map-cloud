@@ -13,6 +13,8 @@ import site.yuanshen.data.dto.MarkerPunctuateDto;
 import site.yuanshen.data.dto.helper.PageSearchDto;
 import site.yuanshen.data.entity.Marker;
 import site.yuanshen.data.entity.MarkerPunctuate;
+import site.yuanshen.data.enums.PunctuateMethodEnum;
+import site.yuanshen.data.enums.PunctuateStatusEnum;
 import site.yuanshen.data.mapper.MarkerMapper;
 import site.yuanshen.data.mapper.MarkerPunctuateMapper;
 import site.yuanshen.data.vo.MarkerPunctuateVo;
@@ -20,6 +22,7 @@ import site.yuanshen.data.vo.helper.PageListVo;
 import site.yuanshen.genshin.core.service.PunctuateService;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,8 +49,9 @@ public class PunctuateServiceImpl implements PunctuateService {
     @Override
     @Cacheable("listPunctuatePage")
     public PageListVo<MarkerPunctuateVo> listPunctuatePage(PageSearchDto pageSearchDto) {
-        //TODO 将status做成常量
-        Page<MarkerPunctuate> punctuatePage = markerPunctuateMapper.selectPage(pageSearchDto.getPageEntity(), Wrappers.<MarkerPunctuate>lambdaQuery().ne(MarkerPunctuate::getStatus, 0));
+        Page<MarkerPunctuate> punctuatePage = markerPunctuateMapper.selectPage(pageSearchDto.getPageEntity(),
+                Wrappers.<MarkerPunctuate>lambdaQuery()
+                        .eq(MarkerPunctuate::getStatus, PunctuateStatusEnum.COMMIT));
         List<Long> punctuateIdList = punctuatePage.getRecords().stream().map(MarkerPunctuate::getPunctuateId).collect(Collectors.toList());
         if (punctuateIdList.isEmpty()) {
             return new PageListVo<MarkerPunctuateVo>().setRecord(new ArrayList<>())
@@ -96,7 +100,6 @@ public class PunctuateServiceImpl implements PunctuateService {
     @Caching(
             evict = {
                     @CacheEvict(value = "listAllPunctuatePage", allEntries = true),
-                    @CacheEvict(value = "listPunctuatePage", allEntries = true),
             }
     )
     public Long addPunctuate(MarkerPunctuateDto punctuateDto) {
@@ -108,7 +111,9 @@ public class PunctuateServiceImpl implements PunctuateService {
         MarkerPunctuate markerPunctuate = punctuateDto.getEntity()
                 //临时id
                 .setPunctuateId(-1L)
-                .setStatus(0);
+                .setStatus(0)
+                //校验并设置打点操作类型
+                .setMethodType(PunctuateMethodEnum.from(punctuateDto.getMethodType()).getTypeCode());
         markerPunctuateMapper.insert(markerPunctuate);
         //正式更新id
         markerPunctuateMapper.updateById(
@@ -136,15 +141,15 @@ public class PunctuateServiceImpl implements PunctuateService {
         markerPunctuateMapper.update(null, Wrappers.<MarkerPunctuate>lambdaUpdate()
                 .eq(MarkerPunctuate::getAuthor, authorId)
                 //TODO 将status做成常量
-                .eq(MarkerPunctuate::getStatus, 0)
-                .set(MarkerPunctuate::getStatus, 1));
+                .eq(MarkerPunctuate::getStatus, PunctuateStatusEnum.STAGE)
+                .set(MarkerPunctuate::getStatus, PunctuateStatusEnum.STAGE));
         return true;
     }
 
     /**
      * 修改自身未提交的暂存点位
      *
-     * @param singlePunctuateDto 打点无额外字段的数据封装
+     * @param punctuateDto 打点无额外字段的数据封装
      * @return 是否成功
      */
     @Override
@@ -154,24 +159,23 @@ public class PunctuateServiceImpl implements PunctuateService {
                     @CacheEvict(value = "searchPunctuateId", allEntries = true),
                     @CacheEvict(value = "listPunctuateById", allEntries = true),
                     @CacheEvict(value = "listAllPunctuatePage", allEntries = true),
-                    @CacheEvict(value = "listPunctuatePage", allEntries = true),
             }
     )
-    public Boolean updateSelfPunctuate(MarkerPunctuateDto singlePunctuateDto) {
-        Long punctuateId = singlePunctuateDto.getPunctuateId();
+    public Boolean updateSelfPunctuate(MarkerPunctuateDto punctuateDto) {
+        Long punctuateId = punctuateDto.getPunctuateId();
         //旧打点信息
         MarkerPunctuate punctuate = markerPunctuateMapper.selectOne(Wrappers.<MarkerPunctuate>lambdaQuery()
                 .eq(MarkerPunctuate::getPunctuateId, punctuateId)
                 .and(wrapper -> wrapper
-                        .eq(MarkerPunctuate::getStatus, 0)
-                        .or()
-                        .eq(MarkerPunctuate::getStatus, 2)));
+                        .in(MarkerPunctuate::getStatus, Arrays.asList(PunctuateStatusEnum.STAGE, PunctuateStatusEnum.REJECT))));
         //赋予新信息对应的固有字段
-        MarkerPunctuate newPunctuate = singlePunctuateDto.getEntity()
+        MarkerPunctuate newPunctuate = punctuateDto.getEntity()
                 .setMarkerCreatorId(punctuate.getOriginalMarkerId())
                 .setStatus(0)
                 .setAuditRemark(punctuate.getAuditRemark())
-                .setId(punctuate.getId());
+                .setId(punctuate.getId())
+                //校验并设置打点操作类型
+                .setMethodType(PunctuateMethodEnum.from(punctuateDto.getMethodType()).getTypeCode());
         return markerPunctuateMapper.updateById(newPunctuate) == 1;
     }
 
@@ -189,13 +193,13 @@ public class PunctuateServiceImpl implements PunctuateService {
                     @CacheEvict(value = "searchPunctuateId", allEntries = true),
                     @CacheEvict(value = "listPunctuateById", allEntries = true),
                     @CacheEvict(value = "listAllPunctuatePage", allEntries = true),
-                    @CacheEvict(value = "listPunctuatePage", allEntries = true),
             }
     )
     public Boolean deleteSelfPunctuate(Long punctuateId, Long authorId) {
         markerPunctuateMapper.delete(Wrappers.<MarkerPunctuate>lambdaQuery()
                 .eq(MarkerPunctuate::getAuthor, authorId)
-                .eq(MarkerPunctuate::getPunctuateId, punctuateId));
+                .eq(MarkerPunctuate::getPunctuateId, punctuateId)
+                .in(MarkerPunctuate::getStatus, Arrays.asList(PunctuateStatusEnum.STAGE, PunctuateStatusEnum.REJECT)));
         return true;
     }
 

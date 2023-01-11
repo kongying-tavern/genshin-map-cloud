@@ -16,6 +16,7 @@ import site.yuanshen.data.entity.Item;
 import site.yuanshen.data.entity.ItemTypeLink;
 import site.yuanshen.data.entity.Marker;
 import site.yuanshen.data.entity.MarkerPunctuate;
+import site.yuanshen.data.enums.PunctuateMethodEnum;
 import site.yuanshen.data.mapper.ItemMapper;
 import site.yuanshen.data.mapper.ItemTypeLinkMapper;
 import site.yuanshen.data.mapper.MarkerMapper;
@@ -182,47 +183,45 @@ public class PunctuateAuditServiceImpl implements PunctuateAuditService {
         MarkerPunctuate markerPunctuate = Optional.ofNullable(
                         markerPunctuateMapper.selectOne(Wrappers.<MarkerPunctuate>lambdaQuery().eq(MarkerPunctuate::getPunctuateId, punctuateId)))
                 .orElseThrow(() -> new RuntimeException("无打点相关信息，请联系管理员"));
-        Integer methodType = markerPunctuate.getMethodType();
-        if (methodType == null) {
-            throw new RuntimeException("无打点操作类型，请联系管理员");
+        PunctuateMethodEnum methodType = PunctuateMethodEnum.from(markerPunctuate.getMethodType());
+        switch (methodType) {
+            case ADD: {
+                //插入自身
+                Marker marker = BeanUtils.copyProperties(markerPunctuate, Marker.class)
+                        //ID应为空
+                        .setId(null);
+                markerMapper.insert(marker);
+                //清除提交信息
+                markerPunctuateMapper.delete(Wrappers.<MarkerPunctuate>lambdaQuery().eq(MarkerPunctuate::getPunctuateId, punctuateId));
+                return marker.getId();
+            }
+            case UPDATE: {
+                //获取原有点位id
+                Long originalMarkerId = Optional.ofNullable(markerPunctuate.getOriginalMarkerId())
+                        .orElseThrow(() -> new RuntimeException("无法找到修改点位的原始id，请联系管理员"));
+                //根据ID查询原有点位
+                Marker oldMarker = Optional.ofNullable(markerMapper.selectOne(Wrappers.<Marker>lambdaQuery().eq(Marker::getId, originalMarkerId)))
+                        .orElseThrow(() -> new RuntimeException("无法找到原始id对应的原始点位，无法做出更改，请联系管理员"));
+                //原有点位拷贝一份作为新点位
+                Marker newMarker = BeanUtils.copyProperties(oldMarker, Marker.class);
+                //打点的更改信息复制到新点位中（使用了hutool的copy，忽略null值）
+                BeanUtils.copyNotNull(markerPunctuate, newMarker);
+                markerMapper.updateById(newMarker);
+                return newMarker.getId();
+            }
+            case DELETE: {
+                //获取原有点位id
+                Long originalMarkerId = Optional.ofNullable(markerPunctuate.getOriginalMarkerId())
+                        .orElseThrow(() -> new RuntimeException("无法找到修改点位的原始id，请联系管理员"));
+                //删除
+                markerMapper.deleteById(originalMarkerId);
+                //清除提交信息
+                markerPunctuateMapper.delete(Wrappers.<MarkerPunctuate>lambdaQuery().eq(MarkerPunctuate::getPunctuateId, punctuateId));
+                return originalMarkerId;
+            }
+            default:
+                throw new RuntimeException("这是一条不可能的报错，如果你看到了这条报错，请立刻联系开发者");
         }
-        //删除操作
-        if (methodType.equals(3)) {
-            //获取原有点位id
-            Long originalMarkerId = Optional.ofNullable(markerPunctuate.getOriginalMarkerId())
-                    .orElseThrow(() -> new RuntimeException("无法找到修改点位的原始id，请联系管理员"));
-            //删除
-            markerMapper.deleteById(originalMarkerId);
-            //清除提交信息
-            markerPunctuateMapper.delete(Wrappers.<MarkerPunctuate>lambdaQuery().eq(MarkerPunctuate::getPunctuateId, punctuateId));
-        }
-        //修改操作，只对自身和各个打点表内存在的信息做更新
-        if (methodType.equals(2)) {
-            //获取原有点位id
-            Long originalMarkerId = Optional.ofNullable(markerPunctuate.getOriginalMarkerId())
-                    .orElseThrow(() -> new RuntimeException("无法找到修改点位的原始id，请联系管理员"));
-            //根据ID查询原有点位
-            Marker oldMarker = Optional.ofNullable(markerMapper.selectOne(Wrappers.<Marker>lambdaQuery().eq(Marker::getId, originalMarkerId)))
-                    .orElseThrow(() -> new RuntimeException("无法找到原始id对应的原始点位，无法做出更改，请联系管理员"));
-            //原有点位拷贝一份作为新点位
-            Marker newMarker = BeanUtils.copyProperties(oldMarker, Marker.class);
-            //打点的更改信息复制到新点位中（使用了hutool的copy，忽略null值）
-            BeanUtils.copyNotNull(markerPunctuate, newMarker);
-            markerMapper.updateById(newMarker);
-            return newMarker.getId();
-        }
-        //新增操作
-        if (methodType.equals(1)) {
-            //插入自身
-            Marker marker = BeanUtils.copyProperties(markerPunctuate, Marker.class)
-                    //ID应为空
-                    .setId(null);
-            markerMapper.insert(marker);
-            //清除提交信息
-            markerPunctuateMapper.delete(Wrappers.<MarkerPunctuate>lambdaQuery().eq(MarkerPunctuate::getPunctuateId, punctuateId));
-            return marker.getId();
-        }
-        throw new RuntimeException("无效操作类型，请联系管理员");
     }
 
     /**
