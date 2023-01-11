@@ -12,6 +12,4 @@ public interface HistoryService extends IService<History> {
 
     PageListVo<HistoryVo> listPage(HistorySearchDto historySearchDto);
 
-
-    //TODO 此处移至mbp包下，且更名
 }

@@ -31,7 +31,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * TODO
+ * 图标标签的数据查询层实现
  *
  * @author Moment
  */

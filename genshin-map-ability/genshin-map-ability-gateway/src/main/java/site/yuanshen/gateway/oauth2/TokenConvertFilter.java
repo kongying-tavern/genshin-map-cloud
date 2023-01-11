@@ -22,7 +22,7 @@ import site.yuanshen.gateway.config.GenshinGatewayProperties;
 import java.util.List;
 
 /**
- * TODO
+ * token信息提取转换到header的处理filter
  *
  * @author Moment
  */

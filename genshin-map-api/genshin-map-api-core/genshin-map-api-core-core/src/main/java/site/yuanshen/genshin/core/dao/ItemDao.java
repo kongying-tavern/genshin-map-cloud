@@ -5,7 +5,7 @@ import site.yuanshen.data.vo.ItemVo;
 import java.util.List;
 
 /**
- * TODO
+ * 物品信息的数据查询层
  *
  * @author Moment
  */

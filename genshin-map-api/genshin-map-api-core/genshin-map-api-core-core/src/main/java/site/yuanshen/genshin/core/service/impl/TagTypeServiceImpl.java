@@ -29,7 +29,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
- * TODO
+ * 图标标签分类接口实现
  *
  * @author Alex Fang
  */

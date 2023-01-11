@@ -140,7 +140,6 @@ public class PunctuateServiceImpl implements PunctuateService {
     public Boolean pushPunctuate(Long authorId) {
         markerPunctuateMapper.update(null, Wrappers.<MarkerPunctuate>lambdaUpdate()
                 .eq(MarkerPunctuate::getAuthor, authorId)
-                //TODO 将status做成常量
                 .eq(MarkerPunctuate::getStatus, PunctuateStatusEnum.STAGE)
                 .set(MarkerPunctuate::getStatus, PunctuateStatusEnum.STAGE));
         return true;

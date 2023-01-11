@@ -6,7 +6,7 @@ import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream
 import java.io.*;
 
 /**
- * TODO
+ * 压缩工具类
  *
  * @author Moment
  */

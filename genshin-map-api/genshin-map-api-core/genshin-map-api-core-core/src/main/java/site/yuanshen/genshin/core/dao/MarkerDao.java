@@ -6,6 +6,11 @@ import site.yuanshen.data.vo.helper.PageListVo;
 
 import java.util.List;
 
+/**
+ * 点位信息的数据查询层
+ *
+ * @author Moment
+ */
 public interface MarkerDao {
 
     /**

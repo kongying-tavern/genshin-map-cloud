@@ -10,7 +10,7 @@ import site.yuanshen.data.mapper.SysUserMapper;
 import java.util.Optional;
 
 /**
- * TODO
+ * 部分内部用的公共用户、角色服务（规避循环依赖）
  *
  * @author Moment
  */

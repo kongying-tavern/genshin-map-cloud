@@ -38,9 +38,6 @@ public class HistoryServiceImpl extends ServiceImpl<HistoryMapper, History> impl
                 .setTotal(historyPage.getTotal())
                 .setSize(historyPage.getSize());
     }
-
-
-//TODO 此处移至mbp包下，且更名
 }
 
 

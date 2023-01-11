@@ -272,21 +272,14 @@ public class ItemServiceImpl implements ItemService {
     @Transactional
     public List<Long> copyItemToArea(List<Long> itemIdList, Long areaId) {
         //TODO 判断是否是末端地区，检查所有涉及地区的代码
-        //TODO ID冲突问题
         List<Item> items = itemMapper.selectList(Wrappers.<Item>lambdaQuery()
                 .in(Item::getId, itemIdList));
-//		long id = itemMapper.selectOne(Wrappers.<Item>query().select("max(item_id) as itemId"))
-//				.getId() + 1;
         for (Item item : items) {
-
             //先根据id找到typeLink中的数据
             List<ItemTypeLink> itemTypeLinks = itemTypeLinkMapper.selectList(Wrappers.<ItemTypeLink>lambdaQuery().eq(ItemTypeLink::getItemId, item.getId()));
 
-            //2022.07.07 清空主键id
             item.setId(null);
-//			item.setItemId(id);
             item.setAreaId(areaId);
-//			id++;
 
             //新增记录
             itemMBPService.save(item);
@@ -295,9 +288,7 @@ public class ItemServiceImpl implements ItemService {
                     itemTypeLink.setItemId(item.getId()).setId(null)
             ).collect(Collectors.toList());
             itemTypeLinkMBPService.saveBatch(itemTypeLinks);
-
         }
-//        itemMBPService.saveBatch(items);
 
         return items.parallelStream().map(Item::getId).collect(Collectors.toList());
     }

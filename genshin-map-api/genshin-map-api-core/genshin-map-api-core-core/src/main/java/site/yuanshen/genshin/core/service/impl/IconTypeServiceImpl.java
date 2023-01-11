@@ -83,8 +83,6 @@ public class IconTypeServiceImpl implements IconTypeService {
                     .set(IconType::getIsFinal, false)
             );
         }
-        //TODO 异常处理
-//        iconTypeMapper.insert(iconType);
         return iconType.getId();
     }
 

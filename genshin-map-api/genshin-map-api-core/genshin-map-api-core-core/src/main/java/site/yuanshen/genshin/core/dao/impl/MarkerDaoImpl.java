@@ -32,7 +32,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
- * TODO
+ * 点位信息的数据查询层实现
  *
  * @author Moment
  */

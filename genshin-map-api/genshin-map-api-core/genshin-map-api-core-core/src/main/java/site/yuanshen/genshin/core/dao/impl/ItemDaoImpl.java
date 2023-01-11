@@ -28,7 +28,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * TODO
+ * 物品信息的数据查询层实现
  *
  * @author Moment
  */

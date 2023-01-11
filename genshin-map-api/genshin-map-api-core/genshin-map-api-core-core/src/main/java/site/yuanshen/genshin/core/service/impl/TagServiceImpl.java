@@ -31,7 +31,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * TODO
+ * 图标标签服务接口实现
  *
  * @author Moment
  */
@@ -148,7 +148,6 @@ public class TagServiceImpl implements TagService {
         //检验并插入新类型
         List<Long> typeIdList = tagDto.getTypeIdList();
         if (typeIdList.size() != tagTypeMapper.selectList(Wrappers.<TagType>lambdaQuery().in(TagType::getId, typeIdList)).size())
-            //TODO 异常处理
             throw new RuntimeException("类型ID错误");
         tagTypeLinkMBPService.saveBatch(
                 typeIdList.stream()

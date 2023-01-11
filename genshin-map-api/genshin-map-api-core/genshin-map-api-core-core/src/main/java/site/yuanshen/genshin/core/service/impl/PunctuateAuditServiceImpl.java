@@ -96,7 +96,7 @@ public class PunctuateAuditServiceImpl implements PunctuateAuditService {
         itemIdList.parallelStream().forEach(itemId ->
                 result.addAll(markerPunctuateMapper.selectList(Wrappers.<MarkerPunctuate>lambdaQuery()
                                 .in(isAuthor, MarkerPunctuate::getAuthor, searchVo.getAuthorList())
-                                //TODO:需要注意库中究竟存了什么
+                                //需要注意库中究竟存了什么
                                 .apply("json_contains(item_list,{0})", "{\"itemId\": " + itemId + "}")
                                 .select(MarkerPunctuate::getPunctuateId))
                         .stream()
