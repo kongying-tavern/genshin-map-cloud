@@ -61,9 +61,10 @@ public interface PunctuateAuditService {
      * 驳回点位审核
      *
      * @param punctuateId 打点ID
+     * @param auditRemark 审核备注
      * @return 是否成功
      */
-    Boolean rejectPunctuate(Long punctuateId);
+    Boolean rejectPunctuate(Long punctuateId, String auditRemark);
 
     /**
      * 删除提交点位

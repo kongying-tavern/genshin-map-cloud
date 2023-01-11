@@ -82,9 +82,9 @@ public class PunctuateAuditController {
 
     @Operation(summary = "驳回点位审核", description = "驳回的点位和通过额外字段关联的点位会回到暂存区")
     @PostMapping("/reject/{punctuateId}")
-    public R<Boolean> rejectPunctuate(@PathVariable("punctuateId") Long punctuateId) {
+    public R<Boolean> rejectPunctuate(@PathVariable("punctuateId") Long punctuateId, @RequestBody String auditRemark) {
         return RUtils.create(
-                punctuateAuditService.rejectPunctuate(punctuateId)
+                punctuateAuditService.rejectPunctuate(punctuateId,auditRemark)
         );
     }
 

@@ -228,6 +228,7 @@ public class PunctuateAuditServiceImpl implements PunctuateAuditService {
      * 驳回点位审核
      *
      * @param punctuateId 打点ID
+     * @param auditRemark 审核备注
      * @return 是否成功
      */
     @Override
@@ -240,9 +241,9 @@ public class PunctuateAuditServiceImpl implements PunctuateAuditService {
                     @CacheEvict(value = "listPunctuatePage", allEntries = true),
             }
     )
-    public Boolean rejectPunctuate(Long punctuateId) {
+    public Boolean rejectPunctuate(Long punctuateId, String auditRemark) {
         MarkerPunctuate markerPunctuate = markerPunctuateMapper.selectOne(Wrappers.<MarkerPunctuate>lambdaQuery().eq(MarkerPunctuate::getPunctuateId, punctuateId));
-        markerPunctuateMapper.updateById(markerPunctuate.setStatus(0));
+        markerPunctuateMapper.updateById(markerPunctuate.setStatus(0).setAuditRemark(auditRemark));
         return true;
     }
 
