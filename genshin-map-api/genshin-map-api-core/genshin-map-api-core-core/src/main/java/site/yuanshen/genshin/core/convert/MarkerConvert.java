@@ -19,8 +19,7 @@ public class MarkerConvert extends DefaultConvert{
     @Override
     @SneakyThrows
     public Object reConvert(History history) {
-        //TODO
-        return JSONObject.parseObject(history.getContent(), ItemDto.class).getVo();
+        return JSONObject.parseObject(history.getContent(), MarkerDto.class).getVo();
     }
 
     @Override
