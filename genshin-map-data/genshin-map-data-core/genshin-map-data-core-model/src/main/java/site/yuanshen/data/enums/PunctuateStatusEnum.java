@@ -1,11 +1,13 @@
 package site.yuanshen.data.enums;
 
+import com.baomidou.mybatisplus.annotation.IEnum;
+
 /**
  * 打点状态枚举
  *
  * @author Moment
  */
-public enum PunctuateStatusEnum {
+public enum PunctuateStatusEnum implements IEnum<Integer> {
 
     /**
      * 暂存
@@ -20,11 +22,12 @@ public enum PunctuateStatusEnum {
      */
     REJECT;
 
-    public static PunctuateStatusEnum from(int typeCode) {
-        try {
-            return values()[typeCode];
-        } catch (Exception e) {
-            throw new RuntimeException("无效的打点状态，请联系管理员");
-        }
+    @Override
+    public Integer getValue() {
+        return this.ordinal();
+    }
+
+    public static PunctuateStatusEnum from(Integer code) {
+        return values()[code];
     }
 }

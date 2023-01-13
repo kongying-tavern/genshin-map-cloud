@@ -12,6 +12,8 @@ import lombok.experimental.Accessors;
 import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.entity.MarkerItemLink;
 import site.yuanshen.data.entity.MarkerPunctuate;
+import site.yuanshen.data.enums.PunctuateMethodEnum;
+import site.yuanshen.data.enums.PunctuateStatusEnum;
 import site.yuanshen.data.vo.MarkerPunctuateVo;
 
 import java.util.List;
@@ -113,7 +115,7 @@ public class MarkerPunctuateDto {
      * 状态;0:暂存 1:审核中 2:不通过
      */
     @Schema(title = "状态;0:暂存 1:审核中 2:不通过")
-    private Integer status;
+    private PunctuateStatusEnum status;
 
     /**
      * 审核备注
@@ -126,7 +128,7 @@ public class MarkerPunctuateDto {
      * 操作类型;1: 新增 2: 修改 3: 删除
      */
     @Schema(title = "操作类型;1: 新增 2: 修改 3: 删除")
-    private Integer methodType;
+    private PunctuateMethodEnum methodType;
 
     /**
      * 刷新时间
@@ -141,8 +143,10 @@ public class MarkerPunctuateDto {
     private Integer hiddenFlag;
 
 
-    public MarkerPunctuateDto(MarkerPunctuateVo punctuateVo) {
-        BeanUtils.copyProperties(punctuateVo, this);
+    public MarkerPunctuateDto(MarkerPunctuateVo vo) {
+        BeanUtils.copyProperties(vo, this);
+        methodType = PunctuateMethodEnum.from(vo.getMethodType());
+        status = PunctuateStatusEnum.from(vo.getStatus());
     }
 
     public MarkerPunctuateDto(MarkerPunctuate punctuate) {
@@ -164,9 +168,10 @@ public class MarkerPunctuateDto {
 
     @JSONField(serialize = false)
     public MarkerPunctuateVo getVo() {
-        MarkerPunctuateVo punctuateVo = BeanUtils.copyProperties(this, MarkerPunctuateVo.class);
-        punctuateVo.setItemList(this.itemList.stream().map(MarkerItemLinkDto::getVo).collect(Collectors.toList()));
-        return punctuateVo;
+        return BeanUtils.copyProperties(this, MarkerPunctuateVo.class)
+                .withItemList(itemList.stream().map(MarkerItemLinkDto::getVo).collect(Collectors.toList()))
+                .withMethodType(methodType.getTypeCode())
+                .withStatus(status.getValue());
     }
 
 }

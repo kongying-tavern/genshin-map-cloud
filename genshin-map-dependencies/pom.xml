@@ -9,7 +9,7 @@
     <version>1.0</version>
 
     <properties>
-        <mybatis-plus.version>3.5.1</mybatis-plus.version>
+        <mybatis-plus.version>3.5.2</mybatis-plus.version>
         <druid.version>1.2.13</druid.version>
         <fastjson.version>1.2.83</fastjson.version>
         <springdoc.version>1.6.11</springdoc.version>

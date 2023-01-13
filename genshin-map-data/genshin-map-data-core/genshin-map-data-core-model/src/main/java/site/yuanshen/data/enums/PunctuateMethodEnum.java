@@ -1,5 +1,6 @@
 package site.yuanshen.data.enums;
 
+import com.baomidou.mybatisplus.annotation.EnumValue;
 import lombok.Getter;
 
 /**
@@ -13,6 +14,8 @@ public enum PunctuateMethodEnum {
     UPDATE(2),
     DELETE(3);
 
+
+    @EnumValue
     @Getter
     private final int typeCode;
 

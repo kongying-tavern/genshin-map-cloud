@@ -24,6 +24,7 @@ import site.yuanshen.genshin.core.service.PunctuateService;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -52,12 +53,6 @@ public class PunctuateServiceImpl implements PunctuateService {
         Page<MarkerPunctuate> punctuatePage = markerPunctuateMapper.selectPage(pageSearchDto.getPageEntity(),
                 Wrappers.<MarkerPunctuate>lambdaQuery()
                         .eq(MarkerPunctuate::getStatus, PunctuateStatusEnum.COMMIT));
-        List<Long> punctuateIdList = punctuatePage.getRecords().stream().map(MarkerPunctuate::getPunctuateId).collect(Collectors.toList());
-        if (punctuateIdList.isEmpty()) {
-            return new PageListVo<MarkerPunctuateVo>().setRecord(new ArrayList<>())
-                    .setSize(punctuatePage.getSize())
-                    .setTotal(punctuatePage.getTotal());
-        }
         return new PageListVo<MarkerPunctuateVo>()
                 .setRecord(punctuatePage.getRecords()
                         .parallelStream()
@@ -69,7 +64,7 @@ public class PunctuateServiceImpl implements PunctuateService {
     }
 
     /**
-     * 分页查询自己提交的未通过的打点信息
+     * 分页查询自己提交的提交的打点信息
      *
      * @param pageSearchDto 分页查询数据封装
      * @param authorId      打点员ID
@@ -78,7 +73,8 @@ public class PunctuateServiceImpl implements PunctuateService {
     @Override
     public PageListVo<MarkerPunctuateVo> listSelfPunctuatePage(PageSearchDto pageSearchDto, Long authorId) {
         Page<MarkerPunctuate> markerPunctuatePage = markerPunctuateMapper.selectPage(pageSearchDto.getPageEntity(), Wrappers.<MarkerPunctuate>lambdaQuery()
-                .eq(MarkerPunctuate::getAuthor, authorId));
+                        .eq(MarkerPunctuate::getAuthor, authorId)
+                .in(MarkerPunctuate::getStatus,Arrays.asList(PunctuateStatusEnum.STAGE, PunctuateStatusEnum.REJECT)));
         return new PageListVo<MarkerPunctuateVo>()
                 .setRecord(markerPunctuatePage.getRecords()
                         .parallelStream()
@@ -97,11 +93,6 @@ public class PunctuateServiceImpl implements PunctuateService {
      */
     @Override
     @Transactional
-    @Caching(
-            evict = {
-                    @CacheEvict(value = "listAllPunctuatePage", allEntries = true),
-            }
-    )
     public Long addPunctuate(MarkerPunctuateDto punctuateDto) {
         //保留原点位的初始标记者
         if (punctuateDto.getOriginalMarkerId() != null) {
@@ -111,9 +102,7 @@ public class PunctuateServiceImpl implements PunctuateService {
         MarkerPunctuate markerPunctuate = punctuateDto.getEntity()
                 //临时id
                 .setPunctuateId(-1L)
-                .setStatus(0)
-                //校验并设置打点操作类型
-                .setMethodType(PunctuateMethodEnum.from(punctuateDto.getMethodType()).getTypeCode());
+                .setStatus(PunctuateStatusEnum.STAGE);
         markerPunctuateMapper.insert(markerPunctuate);
         //正式更新id
         markerPunctuateMapper.updateById(
@@ -129,19 +118,17 @@ public class PunctuateServiceImpl implements PunctuateService {
      */
     @Override
     @Transactional
-    @Caching(
-            evict = {
-                    @CacheEvict(value = "searchPunctuateId", allEntries = true),
-                    @CacheEvict(value = "listPunctuateById", allEntries = true),
-                    @CacheEvict(value = "listAllPunctuatePage", allEntries = true),
-                    @CacheEvict(value = "listPunctuatePage", allEntries = true),
-            }
-    )
+    @CacheEvict(value = "listPunctuatePage", allEntries = true)
     public Boolean pushPunctuate(Long authorId) {
+        if (markerPunctuateMapper.selectCount(Wrappers.<MarkerPunctuate>lambdaQuery()
+                .eq(MarkerPunctuate::getAuthor, authorId)
+                .in(MarkerPunctuate::getStatus, Arrays.asList(PunctuateStatusEnum.STAGE, PunctuateStatusEnum.REJECT)))
+                <= 0)
+            throw new RuntimeException("无可提交点位");
         markerPunctuateMapper.update(null, Wrappers.<MarkerPunctuate>lambdaUpdate()
                 .eq(MarkerPunctuate::getAuthor, authorId)
-                .eq(MarkerPunctuate::getStatus, PunctuateStatusEnum.STAGE)
-                .set(MarkerPunctuate::getStatus, PunctuateStatusEnum.STAGE));
+                .in(MarkerPunctuate::getStatus, Arrays.asList(PunctuateStatusEnum.STAGE, PunctuateStatusEnum.REJECT))
+                .set(MarkerPunctuate::getStatus, PunctuateStatusEnum.COMMIT));
         return true;
     }
 
@@ -153,33 +140,25 @@ public class PunctuateServiceImpl implements PunctuateService {
      */
     @Override
     @Transactional
-    @Caching(
-            evict = {
-                    @CacheEvict(value = "searchPunctuateId", allEntries = true),
-                    @CacheEvict(value = "listPunctuateById", allEntries = true),
-                    @CacheEvict(value = "listAllPunctuatePage", allEntries = true),
-            }
-    )
     public Boolean updateSelfPunctuate(MarkerPunctuateDto punctuateDto) {
-        Long punctuateId = punctuateDto.getPunctuateId();
-        //旧打点信息
-        MarkerPunctuate punctuate = markerPunctuateMapper.selectOne(Wrappers.<MarkerPunctuate>lambdaQuery()
-                .eq(MarkerPunctuate::getPunctuateId, punctuateId)
-                .and(wrapper -> wrapper
-                        .in(MarkerPunctuate::getStatus, Arrays.asList(PunctuateStatusEnum.STAGE, PunctuateStatusEnum.REJECT))));
+        //打点信息
+        MarkerPunctuate punctuate = Optional.ofNullable(
+                        markerPunctuateMapper.selectOne(Wrappers.<MarkerPunctuate>lambdaQuery()
+                                .eq(MarkerPunctuate::getPunctuateId, punctuateDto.getPunctuateId())
+                                .eq(MarkerPunctuate::getAuthor, punctuateDto.getAuthor())
+                                .in(MarkerPunctuate::getStatus, Arrays.asList(PunctuateStatusEnum.STAGE, PunctuateStatusEnum.REJECT))))
+                .orElseThrow(() -> new RuntimeException("无该打点信息，请联系管理员"));
         //赋予新信息对应的固有字段
         MarkerPunctuate newPunctuate = punctuateDto.getEntity()
                 .setMarkerCreatorId(punctuate.getOriginalMarkerId())
-                .setStatus(0)
+                .setStatus(PunctuateStatusEnum.STAGE)
                 .setAuditRemark(punctuate.getAuditRemark())
-                .setId(punctuate.getId())
-                //校验并设置打点操作类型
-                .setMethodType(PunctuateMethodEnum.from(punctuateDto.getMethodType()).getTypeCode());
+                .setId(punctuate.getId());
         return markerPunctuateMapper.updateById(newPunctuate) == 1;
     }
 
     /**
-     * 删除自己未通过的提交点位
+     * 删除自己未提交的提交点位
      *
      * @param punctuateId 打点ID
      * @param authorId    打点员ID
@@ -187,17 +166,16 @@ public class PunctuateServiceImpl implements PunctuateService {
      */
     @Override
     @Transactional
-    @Caching(
-            evict = {
-                    @CacheEvict(value = "searchPunctuateId", allEntries = true),
-                    @CacheEvict(value = "listPunctuateById", allEntries = true),
-                    @CacheEvict(value = "listAllPunctuatePage", allEntries = true),
-            }
-    )
     public Boolean deleteSelfPunctuate(Long punctuateId, Long authorId) {
+        //打点信息
+        MarkerPunctuate punctuate = Optional.ofNullable(
+                        markerPunctuateMapper.selectOne(Wrappers.<MarkerPunctuate>lambdaQuery()
+                                .eq(MarkerPunctuate::getAuthor, authorId)
+                                .eq(MarkerPunctuate::getPunctuateId, punctuateId)
+                                .in(MarkerPunctuate::getStatus, Arrays.asList(PunctuateStatusEnum.STAGE, PunctuateStatusEnum.REJECT))))
+                .orElseThrow(() -> new RuntimeException("无该打点信息，请联系管理员"));
         markerPunctuateMapper.delete(Wrappers.<MarkerPunctuate>lambdaQuery()
-                .eq(MarkerPunctuate::getAuthor, authorId)
-                .eq(MarkerPunctuate::getPunctuateId, punctuateId)
+                .eq(MarkerPunctuate::getPunctuateId, punctuate.getPunctuateId())
                 .in(MarkerPunctuate::getStatus, Arrays.asList(PunctuateStatusEnum.STAGE, PunctuateStatusEnum.REJECT)));
         return true;
     }

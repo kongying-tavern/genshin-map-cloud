@@ -18,7 +18,7 @@ public class ItemConvert extends DefaultConvert{
 
     @Override
     @SneakyThrows
-    public Object reConvert(History history) {=
+    public Object reConvert(History history) {
         return JSONObject.parseObject(history.getContent(), ItemDto.class).getVo();
     }
 

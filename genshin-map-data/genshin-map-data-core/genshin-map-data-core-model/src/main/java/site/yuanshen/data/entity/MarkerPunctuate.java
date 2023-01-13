@@ -11,6 +11,8 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import site.yuanshen.data.base.BaseEntity;
+import site.yuanshen.data.enums.PunctuateMethodEnum;
+import site.yuanshen.data.enums.PunctuateStatusEnum;
 
 /**
  * 点位提交表
@@ -116,7 +118,7 @@ public class MarkerPunctuate extends BaseEntity {
      */
     @Schema(title = "状态;0:暂存 1:审核中 2:不通过")
     @TableField("status")
-    private Integer status;
+    private PunctuateStatusEnum status;
 
     /**
      * 审核备注
@@ -130,7 +132,7 @@ public class MarkerPunctuate extends BaseEntity {
      */
     @Schema(title = "操作类型;1: 新增 2: 修改 3: 删除")
     @TableField("method_type")
-    private Integer methodType;
+    private PunctuateMethodEnum methodType;
 
     /**
      * 刷新时间

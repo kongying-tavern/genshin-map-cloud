@@ -2,10 +2,7 @@ package site.yuanshen.data.vo;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
@@ -18,6 +15,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@With
 @EqualsAndHashCode(callSuper = false)
 @Schema(title = "MarkerPunctuate完整信息的前端封装", description = "打点完整信息的前端封装")
 public class MarkerPunctuateVo {
