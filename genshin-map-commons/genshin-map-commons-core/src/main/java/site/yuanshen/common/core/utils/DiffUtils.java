@@ -35,7 +35,7 @@ public class DiffUtils {
         }
 
         // 需要忽略的字段
-        private List<String> ignore = new ArrayList();
+        private List<String> ignore = new ArrayList<>();
 
         public FieldDiffConfig setIgnore(List<String> ignore) {
             this.ignore = ignore == null ? new ArrayList<>() : ignore;
@@ -46,7 +46,7 @@ public class DiffUtils {
         private Boolean ignoreBeforeNull = true;
 
         public FieldDiffConfig setIgnoreBeforeNull(Boolean ignoreBeforeNull) {
-            this.ignoreBeforeNull = ignoreBeforeNull == null ? true : ignoreBeforeNull;
+            this.ignoreBeforeNull = ignoreBeforeNull == null || ignoreBeforeNull;
             return this;
         }
 
@@ -54,14 +54,14 @@ public class DiffUtils {
         private Boolean ignoreAfterNull = true;
 
         public FieldDiffConfig setIgnoreAfterNull(Boolean ignoreAfterNull) {
-            this.ignoreAfterNull = ignoreAfterNull == null ? true : ignoreAfterNull;
+            this.ignoreAfterNull = ignoreAfterNull == null || ignoreAfterNull;
             return this;
         }
 
         // 自定义比较器，默认比较器为 Objects.deepEqual
-        private Map<String, BiPredicate> comparators = new HashMap<>();
+        private Map<String, BiPredicate<Object, Object>> comparators = new HashMap<>();
 
-        public FieldDiffConfig setComparators(String key, BiPredicate comparator) {
+        public FieldDiffConfig setComparators(String key, BiPredicate<Object, Object> comparator) {
             if(this.comparators == null) {
                 this.comparators = new HashMap<>();
             }
@@ -70,9 +70,9 @@ public class DiffUtils {
         }
 
         // 比对之前对数据的处理
-        private Map<String, Function> actionsPre = new HashMap<>();
+        private Map<String, Function<Object, Object>> actionsPre = new HashMap<>();
 
-        public FieldDiffConfig setActionsPre(String key, Function action) {
+        public FieldDiffConfig setActionsPre(String key, Function<Object, Object> action) {
             if(this.actionsPre == null) {
                 this.actionsPre = new HashMap<>();
             }
@@ -81,9 +81,9 @@ public class DiffUtils {
         }
 
         // 比对之后对数据的处理
-        private Map<String, Function> actionsPost = new HashMap<>();
+        private Map<String, Function<Object, Object>> actionsPost = new HashMap<>();
 
-        public FieldDiffConfig setActionsPost(String key, Function action) {
+        public FieldDiffConfig setActionsPost(String key, Function<Object, Object> action) {
             if(this.actionsPost == null) {
                 this.actionsPost = new HashMap<>();
             }
@@ -106,9 +106,9 @@ public class DiffUtils {
         List<String> cfDiffFields = config.getFields();
         if(CollectionUtils.isEmpty(cfDiffFields)) {
             List<Field> dtBeforeFields = ClassUtils.getFields(before.getClass());
-            List<String> dtBeforeFieldNames = dtBeforeFields.stream().filter(v -> v != null).map(v -> v.getName()).collect(Collectors.toList());
+            List<String> dtBeforeFieldNames = dtBeforeFields.stream().filter(Objects::nonNull).map(Field::getName).collect(Collectors.toList());
             List<Field> dtAfterFields = ClassUtils.getFields(after.getClass());
-            List<String> dtAfterFieldNames = dtAfterFields.stream().filter(v -> v != null).map(v -> v.getName()).collect(Collectors.toList());
+            List<String> dtAfterFieldNames = dtAfterFields.stream().filter(Objects::nonNull).map(Field::getName).collect(Collectors.toList());
             cfDiffFields = CollectionUtils.union(dtBeforeFieldNames, dtAfterFieldNames).stream().filter(v -> v != null).distinct().collect(Collectors.toList());
         }
 
@@ -119,8 +119,8 @@ public class DiffUtils {
         }
 
         // 3. 比较字段值
-        final Map<String, Function> cfActionsPre = config.getActionsPre();
-        final Map<String, Function> cfActionsPost = config.getActionsPost();
+        final Map<String, Function<Object, Object>> cfActionsPre = config.getActionsPre();
+        final Map<String, Function<Object, Object>> cfActionsPost = config.getActionsPost();
         final Boolean cfIgnoreNullForBefore = config.getIgnoreBeforeNull();
         final Boolean cfIgnoreNullForAfter = config.getIgnoreAfterNull();
         for(String cfDiffField : cfDiffFields) {
@@ -128,7 +128,7 @@ public class DiffUtils {
             Object dtAfterVal = ClassUtils.getValue(after, cfDiffField);
 
             // 3.1 预处理数据
-            Function cfActionPre = cfActionsPre.get(cfDiffField);
+            Function<Object, Object> cfActionPre = cfActionsPre.get(cfDiffField);
             if(cfActionPre != null) {
                 dtBeforeVal = cfActionPre.apply(dtBeforeVal);
                 dtAfterVal = cfActionPre.apply(dtAfterVal);
@@ -136,9 +136,9 @@ public class DiffUtils {
 
             // 3.2 比对数据
             // 3.2.1 自定义比较逻辑
-            boolean cpIsEqual = false;
-            Map<String, BiPredicate> cfComparators = config.getComparators();
-            BiPredicate cfComparator = cfComparators.get(cfDiffField);
+            boolean cpIsEqual;
+            Map<String, BiPredicate<Object, Object>> cfComparators = config.getComparators();
+            BiPredicate<Object, Object> cfComparator = cfComparators.get(cfDiffField);
             if(cfComparator != null) {
                 cpIsEqual = cfComparator.test(dtBeforeVal, dtAfterVal);
             } else {
@@ -155,7 +155,7 @@ public class DiffUtils {
                 }
 
                 // 3.2.2 后处理数据
-                Function cfActionPost = cfActionsPost.get(cfDiffField);
+                Function<Object, Object> cfActionPost = cfActionsPost.get(cfDiffField);
                 if(cfActionPost != null) {
                     dtBeforeVal = cfActionPost.apply(dtBeforeVal);
                     dtAfterVal = cfActionPost.apply(dtAfterVal);
