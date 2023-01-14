@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.generator.config.TemplateType;
 import org.springframework.stereotype.Component;
 import site.yuanshen.data.base.BaseEntity;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -84,7 +83,7 @@ public class FastGenerator {
                         .service("/templates/service.java")
                         .serviceImpl("/templates/serviceImpl.java")
                         .mapper("/templates/mapper.java")
-                        .mapperXml("/templates/mapper.xml"))
+                        .xml("/templates/mapper.xml"))
                 .injectionConfig(builder -> {
                     Map<String, Object> customFieldMap = new TreeMap<>();
                     customFieldMap.put("enableFieldCommentWithSwagger", enableFieldCommentWithSwagger);
