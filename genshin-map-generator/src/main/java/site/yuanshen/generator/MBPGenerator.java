@@ -8,13 +8,21 @@ import site.yuanshen.generator.utils.FastGenerator;
  * @author Moment
  */
 public class MBPGenerator {
+    private static String url = System.getenv("GSAPI_DB_URL");
+
+    private static String username = System.getenv("GSAPI_DB_USER");
+
+    private static String password = System.getenv("GSAPI_DB_PASS");
+
+    private static String author = System.getenv("GSAPI_AUTHOR");
 
     public static void main(String[] args) throws Exception {
+        System.out.println(url);
         FastGenerator generator = FastGenerator.getFastGenerator()
-                .url("jdbc:mysql://localhost:3306/genshin_map?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai")
-                .userName("root")
-                .password("momincong")
-                .author("Moment")
+                .url(url)
+                .userName(username)
+                .password(password)
+                .author(author)
                 .outputDir("/generator")
                 .commentDateFormat("yyyy-MM-dd hh:mm:ss");
 
