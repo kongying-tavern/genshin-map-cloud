@@ -17,7 +17,6 @@ public class MBPGenerator {
     private static String author = System.getenv("GSAPI_AUTHOR");
 
     public static void main(String[] args) throws Exception {
-        System.out.println(url);
         FastGenerator generator = FastGenerator.getFastGenerator()
                 .url(url)
                 .userName(username)
