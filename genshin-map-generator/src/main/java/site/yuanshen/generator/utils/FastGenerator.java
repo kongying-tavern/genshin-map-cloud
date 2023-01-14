@@ -42,8 +42,6 @@ public class FastGenerator {
                         .outputDir(System.getProperty("user.dir") + outputDir)
                         //启用swagger
                         //.enableSwagger()
-                        //文件生成覆盖
-                        .fileOverride()
                         //关闭生成后自动打开文件夹
                         .disableOpenDir()
                         .commentDate(commentDateFormat))
@@ -67,7 +65,7 @@ public class FastGenerator {
                         .disableSerialVersionUID()
                         //entity公共父类设置
                         .superClass(BaseEntity.class)
-                        .addSuperEntityColumns("revision", "create_time", "update_time", "creator_id", "updater_id", "del_flag")
+                        .addSuperEntityColumns("version", "create_time", "update_time", "creator_id", "updater_id", "del_flag")
 
                         //service配置
                         .serviceBuilder()
