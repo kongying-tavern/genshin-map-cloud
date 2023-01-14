@@ -16,6 +16,7 @@
         <nimbus-jose-jwt.version>9.21</nimbus-jose-jwt.version>
         <springboot.version>2.3.12.RELEASE</springboot.version>
         <hutool.version>5.8.11</hutool.version>
+        <apache-commons.version>4.4</apache-commons.version>
         <cglib.version>3.3.0</cglib.version>
     </properties>
 
@@ -89,6 +90,12 @@
                 <groupId>cn.hutool</groupId>
                 <artifactId>hutool-extra</artifactId>
                 <version>${hutool.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-collections4</artifactId>
+                <version>${apache-commons.version}</version>
             </dependency>
 
             <dependency>

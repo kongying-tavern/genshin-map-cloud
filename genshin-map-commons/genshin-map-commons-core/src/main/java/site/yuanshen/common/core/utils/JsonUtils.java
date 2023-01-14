@@ -9,7 +9,7 @@ import java.util.Map;
 public class JsonUtils {
 
     /**
-     *
+     * 修补合并 JSON，新数据中为 null 的键会被删除，其余值会被替换
      * @param oldJsonStr 旧Json数据，需要填补的原始数据
      * @param newJsonStr 新Json数据，填补的数据
      * @return 填补完成的Json
