@@ -55,6 +55,8 @@ public class FastGenerator {
                         .other(otherPackage)
                         .xml(xmlPackage))
                 .strategyConfig(builder -> builder
+                        // 跳过视图
+                        .enableSkipView()
                         //entity配置
                         .entityBuilder()
                         //启用lombok
