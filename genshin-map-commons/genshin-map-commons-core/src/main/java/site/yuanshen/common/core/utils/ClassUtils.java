@@ -23,7 +23,7 @@ public class ClassUtils {
             if(field != null) {
                 final String propNameCap = StringUtils.capitalize(propName);
                 final String getMethodName = "get" + propNameCap;
-                final Method getMethod = clazz.getDeclaredMethod(getMethodName);
+                final Method getMethod = clazz.getDeclaredMethod(getMethodName, new Class[]{});
                 final String setMethodName = "set" + propNameCap;
                 final Method setMethod = clazz.getDeclaredMethod(setMethodName, new Class[]{field.getType()});
                 pd = new PropertyDescriptor(propName, getMethod, setMethod);
@@ -60,10 +60,10 @@ public class ClassUtils {
     public static Object getProperty(Object obj, String propName) {
         final Class clazz = obj.getClass();
         final PropertyDescriptor pd = getPropertyDescriptor(clazz, propName);
-        final Method method = pd.getWriteMethod();
+        final Method method = pd.getReadMethod();
         Object value = null;
         try {
-            value = method.invoke(obj);
+            value = method.invoke(obj, new Class[]{});
         } catch (Exception e) {
             e.printStackTrace();
         }

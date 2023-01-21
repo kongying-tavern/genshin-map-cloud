@@ -117,7 +117,7 @@ public class DiffUtils {
         // 2. 删除忽略字段
         List<String> cfIgnoreFields = config.getIgnore();
         if(CollectionUtils.isNotEmpty(cfIgnoreFields)) {
-            cfDiffFields = CollectionUtils.subtract(cfDiffFields, cfDiffFields).stream().collect(Collectors.toList());
+            cfDiffFields = CollectionUtils.subtract(cfDiffFields, cfIgnoreFields).stream().collect(Collectors.toList());
         }
 
         // 3. 比较字段值
