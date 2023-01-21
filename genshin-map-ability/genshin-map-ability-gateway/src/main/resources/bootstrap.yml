@@ -51,6 +51,7 @@ genshin:
       - /system/user/info/userList
     ADMIN:
       - /system/**
+      - /api/score/**
 
 ribbon:
   ServerListRefreshInterval: 1000

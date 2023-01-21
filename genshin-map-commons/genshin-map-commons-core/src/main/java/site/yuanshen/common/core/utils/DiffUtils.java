@@ -72,9 +72,9 @@ public class DiffUtils {
         }
 
         // 比对之前对数据的处理
-        private Map<String, Function<Object, Object>> actionsPre = new HashMap<>();
+        private Map<String, Function> actionsPre = new HashMap<>();
 
-        public FieldDiffConfig setActionsPre(String key, Function<Object, Object> action) {
+        public FieldDiffConfig setActionsPre(String key, Function action) {
             if(this.actionsPre == null) {
                 this.actionsPre = new HashMap<>();
             }
@@ -83,9 +83,9 @@ public class DiffUtils {
         }
 
         // 比对之后对数据的处理
-        private Map<String, Function<Object, Object>> actionsPost = new HashMap<>();
+        private Map<String, Function> actionsPost = new HashMap<>();
 
-        public FieldDiffConfig setActionsPost(String key, Function<Object, Object> action) {
+        public FieldDiffConfig setActionsPost(String key, Function action) {
             if(this.actionsPost == null) {
                 this.actionsPost = new HashMap<>();
             }
@@ -121,8 +121,8 @@ public class DiffUtils {
         }
 
         // 3. 比较字段值
-        final Map<String, Function<Object, Object>> cfActionsPre = config.getActionsPre();
-        final Map<String, Function<Object, Object>> cfActionsPost = config.getActionsPost();
+        final Map<String, Function> cfActionsPre = config.getActionsPre();
+        final Map<String, Function> cfActionsPost = config.getActionsPost();
         final Boolean cfIgnoreNullForBefore = config.getIgnoreBeforeNull();
         final Boolean cfIgnoreNullForAfter = config.getIgnoreAfterNull();
         for(String cfDiffField : cfDiffFields) {
@@ -130,7 +130,7 @@ public class DiffUtils {
             Object dtAfterVal = ClassUtils.getValue(after, cfDiffField);
 
             // 3.1 预处理数据
-            Function<Object, Object> cfActionPre = cfActionsPre.get(cfDiffField);
+            Function cfActionPre = cfActionsPre.get(cfDiffField);
             if(cfActionPre != null) {
                 dtBeforeVal = cfActionPre.apply(dtBeforeVal);
                 dtAfterVal = cfActionPre.apply(dtAfterVal);
@@ -157,7 +157,7 @@ public class DiffUtils {
                 }
 
                 // 3.2.2 后处理数据
-                Function<Object, Object> cfActionPost = cfActionsPost.get(cfDiffField);
+                Function cfActionPost = cfActionsPost.get(cfDiffField);
                 if(cfActionPost != null) {
                     dtBeforeVal = cfActionPost.apply(dtBeforeVal);
                     dtAfterVal = cfActionPost.apply(dtAfterVal);

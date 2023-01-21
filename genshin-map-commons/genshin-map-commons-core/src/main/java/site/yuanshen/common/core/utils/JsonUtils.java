@@ -50,4 +50,12 @@ public class JsonUtils {
 
         return jsonObj;
     }
+
+    public static <T> T jsonToObject(String jsonString, Class<T> clazz) {
+        try {
+            return (T) JSON.parseObject(jsonString, clazz);
+        } catch (Exception e) {
+            return null;
+        }
+    }
 }
