@@ -19,7 +19,7 @@ import lombok.experimental.Accessors;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@With
+@Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
 @TableName("score_stat")
 public class ScoreStat extends BaseEntity {
