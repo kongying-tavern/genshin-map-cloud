@@ -2,6 +2,7 @@ package site.yuanshen.common.core.utils;
 
 import lombok.Data;
 import lombok.Getter;
+import lombok.experimental.Accessors;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 
@@ -176,8 +177,9 @@ public class DiffUtils {
     }
 
     @Data
+    @Accessors(chain = true )
     public static class Levenshtein {
-        Levenshtein(String s1, String s2) {
+        public Levenshtein(String s1, String s2) {
             this.setText(s1, s2);
         }
 
@@ -188,124 +190,80 @@ public class DiffUtils {
         // 文本
         private String text1;
 
-        public void setText1(String text1) {
+        public Levenshtein setText1(String text1) {
             this.text1 = StringUtils.defaultIfEmpty(text1, "");
+            return this;
         }
 
         private String text2;
 
-        public void setText2(String text2) {
+        public Levenshtein setText2(String text2) {
             this.text2 = StringUtils.defaultIfEmpty(text2, "");
+            return this;
         }
 
-        public void setText(String s1, String s2) {
+        public Levenshtein setText(String s1, String s2) {
             this.setText1(s1);
             this.setText2(s2);
-        }
-    }
-
-    /**
-     * 获取 Levenshtein 距离
-     * @param s1 第一个文本
-     * @param s2 第二个文本
-     * @return 文本距离
-     */
-    public static int getLevenshteinDistance(String s1, String s2) {
-        final Levenshtein levenshtein = new Levenshtein(s1, s2);
-        final int distance = getLevenshteinDistance(levenshtein);
-        return distance;
-    }
-
-    /**
-     * 获取 Levenshtein 距离
-     * @param levenshtein Levenshtein 属性
-     * @return 文本距离
-     */
-    public static int getLevenshteinDistance(Levenshtein levenshtein) {
-        int distance[][];
-        final String s1 = levenshtein.getText1();
-        final int s1Len = s1.length();
-        final String s2 = levenshtein.getText2();
-        final int s2Len = s2.length();
-
-        if(s1Len == 0) {
-            return s2Len;
-        }
-        if(s2Len == 0) {
-            return s1Len;
-        }
-        distance = new int[s1Len + 1][s2Len + 1];
-
-        // 二维数组初始化
-        for(int i = 0; i <= s1Len; i++) {
-            distance[i][0] = i;
-        }
-        for(int j = 0; j <= s2Len; j++) {
-            distance[0][j] = j;
+            return this;
         }
 
-        for(int i = 1; i <= s1Len; i++) {
-            final String s1Char = s1.substring(i - 1, i);
-            for(int j = 1; j <= s2Len; j++) {
-                final String s2Char = s2.substring(j - 1, j);
+        public Levenshtein calculateDistance() {
+            int distance[][];
+            final String s1 = this.text1;
+            final int s1Len = s1.length();
+            final String s2 = this.text2;
+            final int s2Len = s2.length();
 
-                if(s1Char.equals(s2Char)) {
-                    // 若相等，则代价为0，取左上方值
-                    distance[i][j] = distance[i - 1][j - 1];
-                } else {
-                    // 若不等，则代价为1，取左、上、左上角最小值 + 代价
-                    distance[i][j] = Math.min(Math.min(distance[i - 1][j], distance[i][j - 1]), distance[i - 1][j - 1]) + 1;
+            if(s1Len == 0) {
+                this.distance = s2Len;
+                return this;
+            }
+            if(s2Len == 0) {
+                this.distance = s1Len;
+                return this;
+            }
+            distance = new int[s1Len + 1][s2Len + 1];
+
+            // 二维数组初始化
+            for(int i = 0; i <= s1Len; i++) {
+                distance[i][0] = i;
+            }
+            for(int j = 0; j <= s2Len; j++) {
+                distance[0][j] = j;
+            }
+
+            for(int i = 1; i <= s1Len; i++) {
+                final String s1Char = s1.substring(i - 1, i);
+                for(int j = 1; j <= s2Len; j++) {
+                    final String s2Char = s2.substring(j - 1, j);
+
+                    if(s1Char.equals(s2Char)) {
+                        // 若相等，则代价为0，取左上方值
+                        distance[i][j] = distance[i - 1][j - 1];
+                    } else {
+                        // 若不等，则代价为1，取左、上、左上角最小值 + 代价
+                        distance[i][j] = Math.min(Math.min(distance[i - 1][j], distance[i][j - 1]), distance[i - 1][j - 1]) + 1;
+                    }
                 }
             }
+            this.distance = distance[s1Len][s2Len];
+
+            return this;
         }
-        return distance[s1Len][s2Len];
-    }
 
-    /**
-     * 获取 Levenshtein 相似度
-     * @param s1 第一个文本
-     * @param s2 第二个文本
-     * @return 文本相似度
-     */
-    public static BigDecimal getLevenshteinSimilarity(String s1, String s2) {
-        final Levenshtein levenshtein = new Levenshtein(s1, s2);
-        final BigDecimal similarity = getLevenshteinSimilarity(levenshtein);
-        return similarity;
-    }
+        public Levenshtein calculateSimilarity() {
+            if(this.distance == null) {
+                this.calculateDistance();
+            }
+            final int s1Len = this.text1.length();
+            final int s2Len = this.text2.length();
+            final BigDecimal similarity = BigDecimal.ONE.subtract(
+                    BigDecimal.valueOf(distance).divide(BigDecimal.valueOf(Math.max(s1Len, s2Len)))
+            );
+            this.similarity = similarity;
 
-    /**
-     * 获取 Levenshtein 相似度
-     * @param levenshtein Levenshtein 属性
-     * @return
-     */
-    public static BigDecimal getLevenshteinSimilarity(Levenshtein levenshtein) {
-        Integer distance = levenshtein.getDistance();
-        if(distance == null) {
-            distance = getLevenshteinDistance(levenshtein);
+            return this;
         }
-        final int s1Len = levenshtein.getText1().length();
-        final int s2Len = levenshtein.getText2().length();
-        final BigDecimal similarity = BigDecimal.ONE.subtract(
-                BigDecimal.valueOf(distance).divide(BigDecimal.valueOf(Math.max(s1Len, s2Len)))
-        );
-        return similarity;
-    }
-
-    /**
-     * 获取 Levenshtein 计算结果
-     * @param s1 第一个文本
-     * @param s2 第二个文本
-     * @return Levenshtein 计算结果
-     */
-    public static Levenshtein getLevenshtein(String s1, String s2) {
-        Levenshtein levenshtein = new Levenshtein(s1, s2);
-        // 获取差异距离
-        final int distance = getLevenshteinDistance(levenshtein);
-        levenshtein.setDistance(distance);
-        // 获取相似度
-        final BigDecimal similarity = getLevenshteinSimilarity(levenshtein);
-        levenshtein.setSimilarity(similarity);
-
-        return levenshtein;
     }
 }

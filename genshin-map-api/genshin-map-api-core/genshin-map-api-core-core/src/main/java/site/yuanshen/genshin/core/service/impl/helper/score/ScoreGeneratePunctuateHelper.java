@@ -182,15 +182,20 @@ public class ScoreGeneratePunctuateHelper {
                     final MarkerDto historyAfterData = JsonUtils.jsonToObject(historyAfter.getContent(), MarkerDto.class);
 
                     ScoreGenerateHelper.ScoreKey mapKey = ScoreGenerateHelper.getScoreKey(span, historyBefore.getCreatorId(), historyBefore.getCreateTime());
-                    // 生成字段差异数据
-                    List<DiffUtils.FieldDiff> historyDiffs = DiffUtils.getFieldsDiff(historyBeforeData, historyAfterData, this.getDiffConfig());
                     if(!diff.containsKey(mapKey)) {
                         diff.put(mapKey, new R());
                     }
+
+                    // 1) 生成字段差异数据
+                    List<DiffUtils.FieldDiff> historyDiffs = DiffUtils.getFieldsDiff(historyBeforeData, historyAfterData, this.getDiffConfig());
                     for(DiffUtils.FieldDiff historyDiff : historyDiffs) {
                         final String diffKey = historyDiff.getKey();
                         diff.get(mapKey).getFields().compute(diffKey, (k, v) -> v == null ? 1 : v + 1);
                     }
+
+                    // 生成文本差异数据
+                    diff.get(mapKey).getChars().compute("markerTitle", (k, v) -> (v == null ? 0 : v) + (new DiffUtils.Levenshtein(historyBeforeData.getMarkerTitle(), historyAfterData.getMarkerTitle())).calculateDistance().getDistance());
+                    diff.get(mapKey).getChars().compute("content", (k, v) -> (v == null ? 0 : v) + (new DiffUtils.Levenshtein(historyBeforeData.getContent(), historyAfterData.getContent())).calculateDistance().getDistance());
                 }
             }
         }
