@@ -243,7 +243,7 @@ public class SysUserServiceImpl implements SysUserService {
                 .setRecord(sysUserPage.getRecords().parallelStream()
                         .map(SysUserDto::new)
                         .map(dto -> dto.setRoleList(
-                                roleLinkMap.get(dto.getId())
+                                roleLinkMap.getOrDefault(dto.getId(), new ArrayList<>())
                                         .stream()
                                         .map(roleMap::get)
                                         .map(SysRoleDto::new)
