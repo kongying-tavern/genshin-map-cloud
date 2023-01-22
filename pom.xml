@@ -111,6 +111,13 @@
                 <runtime-profile>prod</runtime-profile>
             </properties>
         </profile>
+        <!-- 演练发布 -->
+        <profile>
+            <id>uat</id>
+            <properties>
+                <runtime-profile>uat</runtime-profile>
+            </properties>
+        </profile>
         <!-- docker -->
         <profile>
             <id>docker</id>
