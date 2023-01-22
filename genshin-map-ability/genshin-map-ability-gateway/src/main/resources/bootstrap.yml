@@ -14,9 +14,9 @@ genshin:
     - /oauth/**
     - /api/v3/api-docs
     - /system/v3/api-docs
+    - /system/user/register/qq
   authorities-filter:
     VISITOR:
-      - /system/user/register/qq
       - /api/tag/get/**
       - /api/tag_type/get/**
       - /api/tag_doc/**
