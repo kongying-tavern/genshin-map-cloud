@@ -43,10 +43,14 @@ public class ScoreGenerateServiceImpl implements ScoreGenerateService {
 
         final List<History> historyList = punctuateHelper.getHistoryList(span);
         final List<Marker> markerList = punctuateHelper.getHistoryMarkers(historyList);
+        final List<Marker> markerCreateList = punctuateHelper.getMarkerCreateList(span);
+        final List<Marker> markerFullList = new ArrayList<>();
+        markerFullList.addAll(markerList);
+        markerFullList.addAll(markerCreateList);
 
         // 生成首次与末次记录
-        final List<History> initializeHistory = punctuateHelper.getInitializeHistory(span, markerList);
-        final List<History> finalizeHistory = punctuateHelper.getFinalizeHistory(span, markerList);
+        final List<History> initializeHistory = punctuateHelper.getInitializeHistory(span, markerFullList);
+        final List<History> finalizeHistory = punctuateHelper.getFinalizeHistory(span, markerFullList);
 
         // 合并日志
         final List<History> fullHistory = new ArrayList<>();

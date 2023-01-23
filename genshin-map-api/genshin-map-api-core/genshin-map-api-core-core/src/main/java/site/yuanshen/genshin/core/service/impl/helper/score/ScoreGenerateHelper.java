@@ -23,7 +23,7 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class ScoreGenerateHelper {
     private final ScoreStatMapper scoreStatMapper;
-    private final static String tz = "Asia/Shanghai";
+    public final static String tz = "Asia/Shanghai";
 
     @Data
     @Accessors(chain = true)

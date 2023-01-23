@@ -5,8 +5,10 @@ import lombok.experimental.Accessors;
 import site.yuanshen.common.core.utils.TimeUtils;
 import site.yuanshen.common.core.utils.TimeWrapper;
 import site.yuanshen.data.enums.ScoreSpanEnum;
+import site.yuanshen.data.vo.adapter.score.ScoreGenerateVo;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Data
 @Accessors(chain = true)
@@ -68,7 +70,7 @@ public class ScoreSpanConfigDto {
         this.validateData();
 
         TimeWrapper timeStart = TimeWrapper.create().setTime(this.startTime);
-        TimeWrapper timeEnd = TimeWrapper.create().setTime(this.startTime);
+        TimeWrapper timeEnd = TimeWrapper.create().setTime(this.endTime);
 
         if(!this.startTimeInclude)
             timeStart.offsetSecond(TimeUtils.ONE_DAY_SECOND);
@@ -84,6 +86,10 @@ public class ScoreSpanConfigDto {
         this.spanEndTime = timeEnd.getTime();
 
         return this;
+    }
+
+    public boolean isTimeMatch(Timestamp ts) {
+        return !this.spanStartTime.after(ts) && !this.spanEndTime.before(ts);
     }
 
     public static ScoreSpanConfigDto calibrateSpan(ScoreSpanEnum span, Timestamp ts) {
