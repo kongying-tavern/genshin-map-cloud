@@ -6,8 +6,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import site.yuanshen.common.web.response.R;
 import site.yuanshen.common.web.response.RUtils;
-import site.yuanshen.data.vo.adapter.score.ScoreGenerateVo;
+import site.yuanshen.data.vo.adapter.score.ScoreDataPackVo;
+import site.yuanshen.data.vo.adapter.score.ScoreParamsVo;
+import site.yuanshen.genshin.core.service.ScoreDataService;
 import site.yuanshen.genshin.core.service.ScoreGenerateService;
+
+import java.util.List;
 
 /**
  * 评分统计 Controller 层
@@ -21,12 +25,20 @@ import site.yuanshen.genshin.core.service.ScoreGenerateService;
 @Tag(name = "score", description = "评分统计API")
 public class ScoreController {
     private final ScoreGenerateService scoreGenerateService;
+    private final ScoreDataService scoreDataService;
 
     @Operation(summary = "生成评分", description = "生成评分数据")
     @PostMapping("/generate")
-    public R<Object> generate(@RequestBody ScoreGenerateVo scoreGenerateVo, @RequestHeader("userId") Long userId) {
-        scoreGenerateVo.setGeneratorId(userId);
-        scoreGenerateService.generateScore(scoreGenerateVo);
+    public R<Object> generate(@RequestBody ScoreParamsVo scoreParamsVo, @RequestHeader("userId") Long userId) {
+        scoreParamsVo.setGeneratorId(userId);
+        scoreGenerateService.generateScore(scoreParamsVo);
         return RUtils.create("ok");
+    }
+
+    @Operation(summary = "获取评分", description = "获取评分数据")
+    @PostMapping("/data")
+    public R<Object> getData(@RequestBody ScoreParamsVo scoreParamsVo) {
+        List<? extends ScoreDataPackVo> data = scoreDataService.getData(scoreParamsVo);
+        return RUtils.create(data);
     }
 }

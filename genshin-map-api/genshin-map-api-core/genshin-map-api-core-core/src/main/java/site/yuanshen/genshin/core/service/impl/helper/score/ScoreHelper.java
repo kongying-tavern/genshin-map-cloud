@@ -8,6 +8,7 @@ import lombok.experimental.Accessors;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Component;
 import site.yuanshen.common.core.utils.TimeUtils;
+import site.yuanshen.data.base.BaseEntity;
 import site.yuanshen.data.dto.adapter.score.ScoreSpanConfigDto;
 import site.yuanshen.data.entity.ScoreStat;
 import site.yuanshen.data.mapper.ScoreStatMapper;
@@ -21,7 +22,7 @@ import java.util.stream.Stream;
 
 @Component
 @RequiredArgsConstructor
-public class ScoreGenerateHelper {
+public class ScoreHelper {
     private final ScoreStatMapper scoreStatMapper;
     public final static String tz = "Asia/Shanghai";
 
@@ -76,5 +77,18 @@ public class ScoreGenerateHelper {
         stream.forEach(i -> {
             scoreStatMapper.insert(i);
         });
+    }
+
+    public List<ScoreStat> getData(String scope, ScoreSpanConfigDto span) {
+        scope = StringUtils.defaultIfEmpty(scope, "");
+        final List<ScoreStat> scoreList = scoreStatMapper.selectList(
+                Wrappers.<ScoreStat>lambdaQuery()
+                        .eq(BaseEntity::getDelFlag, 0)
+                        .eq(ScoreStat::getScope, scope)
+                        .eq(ScoreStat::getSpan, span.getSpan())
+                        .ge(ScoreStat::getSpanStartTime, span.getSpanStartTime())
+                        .le(ScoreStat::getSpanEndTime, span.getSpanEndTime())
+        );
+        return scoreList;
     }
 }

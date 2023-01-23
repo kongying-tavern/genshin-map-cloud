@@ -19,7 +19,7 @@ import site.yuanshen.data.mapper.HistoryMapper;
 import site.yuanshen.data.mapper.ItemMapper;
 import site.yuanshen.data.mapper.MarkerItemLinkMapper;
 import site.yuanshen.data.mapper.MarkerMapper;
-import site.yuanshen.data.vo.adapter.score.ScoreDataVo;
+import site.yuanshen.data.vo.adapter.score.ScoreDataPunctuateVo;
 import site.yuanshen.genshin.core.convert.HistoryConvert;
 
 import java.sql.Timestamp;
@@ -192,7 +192,7 @@ public class ScoreGeneratePunctuateHelper {
         final List<History> initializeHistory = markerList
                 .stream()
                 .map(marker -> {
-                    Timestamp createTime = TimeUtils.toTimestamp(marker.getCreateTime(), ScoreGenerateHelper.tz);
+                    Timestamp createTime = TimeUtils.toTimestamp(marker.getCreateTime(), ScoreHelper.tz);
                     if(span.isTimeMatch(createTime)) {
                         final Long markerId = marker.getId();
                         final Item markerItem = markerItemMap.getOrDefault(markerId, new Item());
@@ -329,9 +329,9 @@ public class ScoreGeneratePunctuateHelper {
      * @param historyGroup
      * @return
      */
-    public Map<ScoreGenerateHelper.ScoreKey, ScoreDataVo> getHistoryFieldDiff(
+    public Map<ScoreHelper.ScoreKey, ScoreDataPunctuateVo> getHistoryFieldDiff(
             ScoreSpanConfigDto span,
-            Map<ScoreGenerateHelper.ScoreKey, ScoreDataVo> diff,
+            Map<ScoreHelper.ScoreKey, ScoreDataPunctuateVo> diff,
             Map<Long, List<History>> historyGroup
     ) {
         if(diff == null) {
@@ -349,9 +349,9 @@ public class ScoreGeneratePunctuateHelper {
                     final MarkerDto historyAfterData = JsonUtils.jsonToObject(historyAfter.getContent(), MarkerDto.class);
 
                     // todo
-                    final ScoreGenerateHelper.ScoreKey mapKey = ScoreGenerateHelper.getScoreKey(span, historyBefore.getCreatorId(), historyBefore.getCreateTime());
+                    final ScoreHelper.ScoreKey mapKey = ScoreHelper.getScoreKey(span, historyBefore.getCreatorId(), historyBefore.getCreateTime());
                     if(!diff.containsKey(mapKey)) {
-                        diff.put(mapKey, new ScoreDataVo());
+                        diff.put(mapKey, new ScoreDataPunctuateVo());
                     }
 
                     // 1) 生成字段差异数据
@@ -374,7 +374,7 @@ public class ScoreGeneratePunctuateHelper {
     public List<ScoreStat> getScoreData(
             Long operatorId,
             ScoreSpanConfigDto span,
-            Map<ScoreGenerateHelper.ScoreKey, ScoreDataVo> stat
+            Map<ScoreHelper.ScoreKey, ScoreDataPunctuateVo> stat
     ) {
         final String spanName = span.getSpan().name();
         final List<ScoreStat> scoreList = new ArrayList<>();

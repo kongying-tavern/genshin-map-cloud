@@ -5,10 +5,8 @@ import lombok.experimental.Accessors;
 import site.yuanshen.common.core.utils.TimeUtils;
 import site.yuanshen.common.core.utils.TimeWrapper;
 import site.yuanshen.data.enums.ScoreSpanEnum;
-import site.yuanshen.data.vo.adapter.score.ScoreGenerateVo;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 
 @Data
 @Accessors(chain = true)

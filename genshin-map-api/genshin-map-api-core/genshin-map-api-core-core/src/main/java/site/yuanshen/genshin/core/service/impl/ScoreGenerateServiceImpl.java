@@ -7,11 +7,11 @@ import site.yuanshen.data.entity.History;
 import site.yuanshen.data.entity.Marker;
 import site.yuanshen.data.entity.ScoreStat;
 import site.yuanshen.data.enums.ScoreScopeEnum;
-import site.yuanshen.data.vo.adapter.score.ScoreDataVo;
-import site.yuanshen.data.vo.adapter.score.ScoreGenerateVo;
+import site.yuanshen.data.vo.adapter.score.ScoreDataPunctuateVo;
+import site.yuanshen.data.vo.adapter.score.ScoreParamsVo;
 import site.yuanshen.genshin.core.service.ScoreGenerateService;
-import site.yuanshen.genshin.core.service.impl.helper.score.ScoreGenerateHelper;
 import site.yuanshen.genshin.core.service.impl.helper.score.ScoreGeneratePunctuateHelper;
+import site.yuanshen.genshin.core.service.impl.helper.score.ScoreHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,11 +25,11 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class ScoreGenerateServiceImpl implements ScoreGenerateService {
-    private final ScoreGenerateHelper commonHelper;
+    private final ScoreHelper commonHelper;
     private final ScoreGeneratePunctuateHelper punctuateHelper;
 
     @Override
-    public void generateScore(ScoreGenerateVo config) {
+    public void generateScore(ScoreParamsVo config) {
         final String scope = config.getScope();
         final ScoreSpanConfigDto span = config.calculateSpan();
         final Long generatorId = config.getGeneratorId();
@@ -61,7 +61,7 @@ public class ScoreGenerateServiceImpl implements ScoreGenerateService {
         // 日志分组
         Map<Long, List<History>> historyGroup = punctuateHelper.getHistoryGroup(fullHistory);
         // 生成模块化日志
-        Map<ScoreGenerateHelper.ScoreKey, ScoreDataVo> fieldsDiff = punctuateHelper.getHistoryFieldDiff(span, null, historyGroup);
+        Map<ScoreHelper.ScoreKey, ScoreDataPunctuateVo> fieldsDiff = punctuateHelper.getHistoryFieldDiff(span, null, historyGroup);
 
         // 保存日志
         final List<ScoreStat> scoreData = punctuateHelper.getScoreData(generatorId, span, fieldsDiff);

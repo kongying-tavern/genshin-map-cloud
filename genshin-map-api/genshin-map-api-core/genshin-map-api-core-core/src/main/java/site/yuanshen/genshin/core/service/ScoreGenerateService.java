@@ -1,6 +1,6 @@
 package site.yuanshen.genshin.core.service;
 
-import site.yuanshen.data.vo.adapter.score.ScoreGenerateVo;
+import site.yuanshen.data.vo.adapter.score.ScoreParamsVo;
 
 /**
  * 评分服务接口
@@ -8,5 +8,5 @@ import site.yuanshen.data.vo.adapter.score.ScoreGenerateVo;
  * @author Alex Fang
  */
 public interface ScoreGenerateService {
-    void generateScore(ScoreGenerateVo config);
+    void generateScore(ScoreParamsVo config);
 }
