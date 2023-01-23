@@ -1,8 +1,11 @@
 package site.yuanshen.genshin.core.service.impl.helper.score;
 
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Component;
 import site.yuanshen.common.core.utils.TimeUtils;
 import site.yuanshen.data.dto.adapter.score.ScoreSpanConfigDto;
@@ -13,6 +16,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Component
@@ -45,6 +49,21 @@ public class ScoreGenerateHelper {
     public static ScoreKey getScoreKey(ScoreSpanConfigDto span, Long operatorId, LocalDateTime dt) {
         final Timestamp ts = TimeUtils.toTimestamp(dt, tz);
         return getScoreKey(span, operatorId, ts);
+    }
+
+    public void clearData(String scope, ScoreSpanConfigDto span) {
+        scope = StringUtils.defaultIfEmpty(scope, "");
+        final List<ScoreStat> scoreList = scoreStatMapper.selectList(
+                Wrappers.<ScoreStat>lambdaQuery()
+                        .eq(ScoreStat::getScope, scope)
+                        .eq(ScoreStat::getSpan, span.getSpan())
+                        .ge(ScoreStat::getSpanStartTime, span.getSpanStartTime())
+                        .le(ScoreStat::getSpanEndTime, span.getSpanEndTime())
+        );
+        final List<Long> scoreId = scoreList.stream().map(ScoreStat::getId).collect(Collectors.toList());
+
+        if(CollectionUtils.isNotEmpty(scoreId))
+            scoreStatMapper.deleteBatchIds(scoreId);
     }
 
     public void saveData(List<ScoreStat> dataList, boolean parallel) {

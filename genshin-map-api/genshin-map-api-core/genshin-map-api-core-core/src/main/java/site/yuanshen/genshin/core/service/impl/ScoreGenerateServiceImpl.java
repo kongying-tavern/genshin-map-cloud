@@ -39,6 +39,8 @@ public class ScoreGenerateServiceImpl implements ScoreGenerateService {
     }
 
     private void generateScorePunctuate(ScoreSpanConfigDto span, Long generatorId) {
+        commonHelper.clearData(ScoreScopeEnum.PUNCTUATE.name(), span);
+
         final List<History> historyList = punctuateHelper.getHistoryList(span);
         final List<Marker> markerList = punctuateHelper.getHistoryMarkers(historyList);
 
