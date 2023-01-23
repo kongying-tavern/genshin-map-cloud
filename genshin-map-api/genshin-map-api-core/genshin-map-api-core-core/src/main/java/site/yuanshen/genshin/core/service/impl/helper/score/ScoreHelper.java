@@ -54,17 +54,13 @@ public class ScoreHelper {
 
     public void clearData(String scope, ScoreSpanConfigDto span) {
         scope = StringUtils.defaultIfEmpty(scope, "");
-        final List<ScoreStat> scoreList = scoreStatMapper.selectList(
+        scoreStatMapper.delete(
                 Wrappers.<ScoreStat>lambdaQuery()
                         .eq(ScoreStat::getScope, scope)
                         .eq(ScoreStat::getSpan, span.getSpan())
                         .ge(ScoreStat::getSpanStartTime, span.getSpanStartTime())
                         .le(ScoreStat::getSpanEndTime, span.getSpanEndTime())
         );
-        final List<Long> scoreId = scoreList.stream().map(ScoreStat::getId).collect(Collectors.toList());
-
-        if(CollectionUtils.isNotEmpty(scoreId))
-            scoreStatMapper.deleteBatchIds(scoreId);
     }
 
     public void saveData(List<ScoreStat> dataList, boolean parallel) {
