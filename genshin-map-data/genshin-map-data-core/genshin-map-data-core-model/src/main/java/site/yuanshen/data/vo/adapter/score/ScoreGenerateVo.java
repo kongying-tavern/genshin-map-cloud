@@ -1,19 +1,14 @@
 package site.yuanshen.data.vo.adapter.score;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import site.yuanshen.common.core.utils.BeanUtils;
-import site.yuanshen.common.core.utils.TimeUtils;
 import site.yuanshen.data.dto.adapter.score.ScoreSpanConfigDto;
-import site.yuanshen.data.enums.ScoreScopeEnum;
 import site.yuanshen.data.enums.ScoreSpanEnum;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 
 /**
  * 评分生成参数

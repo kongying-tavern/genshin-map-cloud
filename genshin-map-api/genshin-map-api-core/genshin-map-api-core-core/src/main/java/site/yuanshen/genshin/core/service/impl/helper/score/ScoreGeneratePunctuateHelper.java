@@ -2,7 +2,6 @@ package site.yuanshen.genshin.core.service.impl.helper.score;
 
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -13,12 +12,13 @@ import site.yuanshen.common.core.utils.JsonUtils;
 import site.yuanshen.data.base.BaseEntity;
 import site.yuanshen.data.dto.MarkerDto;
 import site.yuanshen.data.dto.adapter.score.ScoreSpanConfigDto;
-import site.yuanshen.data.entity.History;
-import site.yuanshen.data.entity.Marker;
-import site.yuanshen.data.entity.ScoreStat;
+import site.yuanshen.data.entity.*;
 import site.yuanshen.data.enums.ScoreScopeEnum;
 import site.yuanshen.data.mapper.HistoryMapper;
+import site.yuanshen.data.mapper.ItemMapper;
+import site.yuanshen.data.mapper.MarkerItemLinkMapper;
 import site.yuanshen.data.mapper.MarkerMapper;
+import site.yuanshen.data.vo.adapter.score.ScoreDataVo;
 import site.yuanshen.genshin.core.convert.HistoryConvert;
 
 import java.time.LocalDateTime;
@@ -31,16 +31,12 @@ import java.util.stream.Collectors;
 public class ScoreGeneratePunctuateHelper {
     private final HistoryMapper historyMapper;
     private final MarkerMapper markerMapper;
+    private final MarkerItemLinkMapper markerItemLinkMapper;
+    private final ItemMapper itemMapper;
 
     private final static Function<String, String> strHandler = v -> StringUtils.defaultIfEmpty(v, "");
     private final static Function<Integer, Integer> intHandler = v -> v == null ? 0 : v;
     private final static Function<Long, Long> longHandler = v -> v == null ? 0 : v;
-
-    @Data
-    public static class R {
-        private Map<String, Integer> fields = new HashMap<>();
-        private Map<String, Integer> chars = new HashMap<>();
-    }
 
     /**
      * 获取打点的历史记录
@@ -76,22 +72,128 @@ public class ScoreGeneratePunctuateHelper {
     }
 
     /**
-     * 生成点位的首次记录
+     * 获取点位初始化的物品
+     * @param span
      * @param markerList
      * @return
      */
-    public List<History> getInitializeHistory(List<Marker> markerList) {
+    public Map<Long, Item> getInitializeMarkerItemMap(ScoreSpanConfigDto span, List<Marker> markerList) {
+        if(CollectionUtils.isEmpty(markerList)) {
+            return new HashMap<>();
+        }
+
+        final List<Long> markerIds = markerList.stream()
+                .map(Marker::getId)
+                .collect(Collectors.toList());
+        if(CollectionUtils.isEmpty(markerIds)) {
+            return new HashMap<>();
+        }
+        final List<MarkerItemLink> markerItemLinkList = markerItemLinkMapper.selectList(
+                Wrappers.<MarkerItemLink>lambdaQuery()
+                        .in(MarkerItemLink::getMarkerId, markerIds)
+                        .orderByAsc(MarkerItemLink::getCreateTime)
+                        .orderByAsc(MarkerItemLink::getId)
+        );
+        final Map<Long, Long> markerItemLinkMap = markerItemLinkList.stream()
+                .collect(Collectors.toMap(
+                        MarkerItemLink::getMarkerId,
+                        MarkerItemLink::getItemId,
+                        (o, n) -> o
+                ));
+        final List<Long> itemIds = markerItemLinkMap
+                .values()
+                .stream().collect(Collectors.toList());
+        if(CollectionUtils.isEmpty(itemIds)) {
+            return new HashMap<>();
+        }
+        final List<Item> itemList = itemMapper.selectList(
+                Wrappers.<Item>lambdaQuery()
+                        .in(Item::getId, itemIds)
+        );
+        final Map<Long, Item> itemMap = itemList.stream()
+                .collect(Collectors.toMap(
+                        Item::getId,
+                        v -> v,
+                        (o, n) -> n
+                ));
+        Map<Long, Item> markerItemMap = markerIds.stream()
+                .collect(Collectors.toMap(
+                        markerId -> markerId,
+                        markerId -> {
+                            final Long itemId = markerItemLinkMap.getOrDefault(markerId, 0L);
+                            final Item item = itemMap.getOrDefault(itemId, new Item());
+                            return item;
+                        },
+                        (o, n) -> n
+                ));
+        return markerItemMap;
+    }
+
+    public Map<Long, History> getInitializeMarkerHistoryMap(ScoreSpanConfigDto span, List<Marker> markerList) {
+        if(CollectionUtils.isEmpty(markerList)) {
+            return new HashMap<>();
+        }
+
+        final List<Long> markerIds = markerList.stream().map(Marker::getId).collect(Collectors.toList());
+        if(CollectionUtils.isEmpty(markerIds)) {
+            return new HashMap<>();
+        }
+
+        final List<History> historyList = historyMapper.selectList(
+                Wrappers.<History>lambdaQuery()
+                        .in(History::getTId, markerIds)
+                        .eq(History::getType, 4)
+                        .eq(BaseEntity::getDelFlag, 0)
+                        .lt(BaseEntity::getCreateTime, span.getSpanStartTime())
+                        .orderByDesc(History::getCreateTime)
+        );
+        final Map<Long, History> historyMap = historyList.stream()
+                .collect(Collectors.toMap(
+                        History::getTId,
+                        v -> v,
+                        (o, n) -> o
+                ));
+        return historyMap;
+    }
+
+    /**
+     * 生成点位在区间外的最后一次记录
+     * 注：此过程分为两种情况
+     * 1. 若此区间外有记录，则使用最后一条记录
+     * 2. 若此区间外无记录，则使用物品信息创建记录
+     * @param span
+     * @param markerList
+     * @return
+     */
+    public List<History> getInitializeHistory(ScoreSpanConfigDto span, List<Marker> markerList) {
+        final Map<Long, History> historyMap = this.getInitializeMarkerHistoryMap(span, markerList);
+        final Map<Long, Item> markerItemMap = this.getInitializeMarkerItemMap(span, markerList);
+
         final List<History> initializeHistory = markerList
                 .stream()
                 .map(marker -> {
-                    MarkerDto o = new MarkerDto();
-                    o.setId(marker.getId());
-                    History history = HistoryConvert.convert(o);
-                    history.setCreatorId(marker.getCreatorId());
-                    history.setCreateTime(marker.getCreateTime());
-                    history.setUpdaterId(marker.getCreatorId());
-                    history.setUpdateTime(marker.getCreateTime());
-                    return history;
+                    final Long markerId = marker.getId();
+                    final History markerHistory = historyMap.get(markerId);
+
+                    if(markerHistory == null) {
+                        final Item markerItem = markerItemMap.getOrDefault(markerId, new Item());
+                        final String markerItemTitle = StringUtils.defaultIfEmpty(markerItem.getName(), "");
+                        final String markerItemContent = StringUtils.defaultIfEmpty(markerItem.getDefaultContent(), "");
+                        // 生成点位DTO
+                        MarkerDto o = new MarkerDto();
+                        o.setId(markerId);
+                        o.setMarkerTitle(markerItemTitle);
+                        o.setContent(markerItemContent);
+                        // 生成历史数据
+                        History history = HistoryConvert.convert(o);
+                        history.setCreatorId(marker.getCreatorId());
+                        history.setCreateTime(marker.getCreateTime());
+                        history.setUpdaterId(marker.getCreatorId());
+                        history.setUpdateTime(marker.getCreateTime());
+                        return history;
+                    } else {
+                        return markerHistory;
+                    }
                 })
                 .collect(Collectors.toList());
         return initializeHistory;
@@ -99,10 +201,11 @@ public class ScoreGeneratePunctuateHelper {
 
     /**
      * 生成点位的末次记录
+     * @param span
      * @param markerList
      * @return
      */
-    public List<History> getFinalizeHistory(List<Marker> markerList) {
+    public List<History> getFinalizeHistory(ScoreSpanConfigDto span, List<Marker> markerList) {
         final List<History> finalizeHistory = markerList
                 .stream()
                 .map(marker -> {
@@ -162,9 +265,9 @@ public class ScoreGeneratePunctuateHelper {
      * @param historyGroup
      * @return
      */
-    public Map<ScoreGenerateHelper.ScoreKey, R> getHistoryFieldDiff(
+    public Map<ScoreGenerateHelper.ScoreKey, ScoreDataVo> getHistoryFieldDiff(
             ScoreSpanConfigDto span,
-            Map<ScoreGenerateHelper.ScoreKey, R> diff,
+            Map<ScoreGenerateHelper.ScoreKey, ScoreDataVo> diff,
             Map<Long, List<History>> historyGroup
     ) {
         if(diff == null) {
@@ -183,7 +286,7 @@ public class ScoreGeneratePunctuateHelper {
 
                     ScoreGenerateHelper.ScoreKey mapKey = ScoreGenerateHelper.getScoreKey(span, historyBefore.getCreatorId(), historyBefore.getCreateTime());
                     if(!diff.containsKey(mapKey)) {
-                        diff.put(mapKey, new R());
+                        diff.put(mapKey, new ScoreDataVo());
                     }
 
                     // 1) 生成字段差异数据
@@ -206,7 +309,7 @@ public class ScoreGeneratePunctuateHelper {
     public List<ScoreStat> getScoreData(
             Long operatorId,
             ScoreSpanConfigDto span,
-            Map<ScoreGenerateHelper.ScoreKey, R> stat
+            Map<ScoreGenerateHelper.ScoreKey, ScoreDataVo> stat
     ) {
         final String spanName = span.getSpan().name();
         final List<ScoreStat> scoreList = new ArrayList<>();
