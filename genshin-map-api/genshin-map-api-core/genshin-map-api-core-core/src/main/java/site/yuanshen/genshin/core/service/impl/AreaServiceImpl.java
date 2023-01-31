@@ -53,7 +53,9 @@ public class AreaServiceImpl implements AreaService {
             //如果不为测试打点员,则搜索时hiddenFlag!=2
             return areaMapper.selectList(Wrappers.<Area>lambdaQuery().in(!areaSearchVo.getHiddenFlagList().isEmpty(),Area::getHiddenFlag,areaSearchVo.getHiddenFlagList())
                             .eq(Area::getParentId, Optional.ofNullable(areaSearchVo.getParentId()).orElse(-1L)))
-                    .stream().map(AreaDto::new).collect(Collectors.toList());
+                    .stream().map(AreaDto::new)
+                    .sorted(Comparator.comparing(AreaDto::getSortIndex).reversed())
+                    .collect(Collectors.toList());
         }
         //递归用的临时ID列表
         List<Long> nowAreaIdList = Collections.singletonList(Optional.ofNullable(areaSearchVo.getParentId()).orElse(-1L));
