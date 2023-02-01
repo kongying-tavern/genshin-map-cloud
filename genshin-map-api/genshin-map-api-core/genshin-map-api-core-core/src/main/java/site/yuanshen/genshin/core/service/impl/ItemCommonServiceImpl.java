@@ -67,10 +67,24 @@ public class ItemCommonServiceImpl implements ItemCommonService {
      * @return 是否成功
      */
     @Override
-    @CacheEvict(value = "listCommonItem",allEntries = true)
+    @CacheEvict(value = "listCommonItem", allEntries = true)
     @Transactional
     public Boolean addCommonItem(List<Long> itemIdList) {
-        return itemAreaPublicMBPService.saveBatch(itemIdList.parallelStream()
+        //获取存在的全部名字
+        List<Long> itemAreaList = itemAreaPublicMBPService.list().stream().map(ItemAreaPublic::getItemId).collect(Collectors.toList());
+        List<String> itemNameList = itemAreaList.isEmpty() ? new ArrayList<>() : itemMapper.selectList(Wrappers.<Item>lambdaQuery()
+                        .in(Item::getId, itemAreaList))
+                .stream().map(Item::getName).collect(Collectors.toList());
+        //查询出新增列表全部的名字 并根据名字分组 过滤出不存在的名字 并取第一个物品id
+        List<Long> itemList = itemMapper.selectList(Wrappers.<Item>lambdaQuery()
+                        .in(Item::getId, itemIdList))
+                .stream().filter(item -> !itemNameList.contains(item.getName()))
+                .collect(Collectors.groupingBy(Item::getName))
+                .values()
+                .stream().map(items -> items.get(0).getId()).collect(Collectors.toList());
+
+
+        return itemAreaPublicMBPService.saveBatch(itemList.parallelStream()
                 .map(id -> new ItemAreaPublic()
                         .setItemId(id))
                 .collect(Collectors.toList()));
@@ -83,7 +97,7 @@ public class ItemCommonServiceImpl implements ItemCommonService {
      * @return 是否成功
      */
     @Override
-    @CacheEvict(value = "listCommonItem",allEntries = true)
+    @CacheEvict(value = "listCommonItem", allEntries = true)
     @Transactional
     public Boolean deleteCommonItem(Long itemId) {
         return itemAreaPublicMapper.delete(Wrappers.<ItemAreaPublic>lambdaQuery()

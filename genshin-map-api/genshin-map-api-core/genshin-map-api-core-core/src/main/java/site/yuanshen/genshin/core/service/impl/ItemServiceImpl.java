@@ -1,5 +1,6 @@
 package site.yuanshen.genshin.core.service.impl;
 
+import cn.hutool.core.util.ObjUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +37,7 @@ public class ItemServiceImpl implements ItemService {
     private final ItemTypeLinkMapper itemTypeLinkMapper;
     private final ItemTypeLinkMBPService itemTypeLinkMBPService;
     private final MarkerItemLinkMapper markerItemLinkMapper;
+    private final ItemAreaPublicMapper itemAreaPublicMapper;
     private final MarkerMapper markerMapper;
 
     private final HistoryMapper historyMapper;
@@ -302,6 +304,14 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional
     public Boolean deleteItem(Long itemId) {
+        //增加公共物品拦截逻辑
+        ItemAreaPublic itemAreaPublic = itemAreaPublicMapper.selectOne(Wrappers.<ItemAreaPublic>lambdaQuery()
+                .eq(ItemAreaPublic::getItemId, itemId));
+        if (ObjUtil.isNotNull(itemAreaPublic)){
+            throw new RuntimeException("不允许删除公共物品");
+        }
+
+
         itemTypeLinkMapper.delete(Wrappers.<ItemTypeLink>lambdaQuery()
                 .eq(ItemTypeLink::getItemId, itemId));
         markerItemLinkMapper.delete(Wrappers.<MarkerItemLink>lambdaQuery()
