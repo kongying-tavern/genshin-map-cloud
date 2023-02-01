@@ -90,4 +90,12 @@ public class Area extends BaseEntity {
     @TableField("sort_index")
     private Integer sortIndex;
 
+    /**
+     * 特殊物品标记，二进制表示<br>
+     * 低位第一位：是否为显示物品
+     */
+    @Schema(title = "特殊物品标记")
+    @TableField("special_flag")
+    private Integer specialFlag;
+
 }

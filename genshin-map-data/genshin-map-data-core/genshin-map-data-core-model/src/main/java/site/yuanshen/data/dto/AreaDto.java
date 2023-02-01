@@ -87,6 +87,13 @@ public class AreaDto {
     @Schema(title = "地区排序")
     private Integer sortIndex;
 
+    /**
+     * 特殊物品标记，二进制表示<br>
+     * 低位第一位：是否为显示物品
+     */
+    @Schema(title = "特殊物品标记")
+    private Integer specialFlag;
+
     public AreaDto(AreaVo areaVo) {
         BeanUtils.copyProperties(areaVo, this);
     }
