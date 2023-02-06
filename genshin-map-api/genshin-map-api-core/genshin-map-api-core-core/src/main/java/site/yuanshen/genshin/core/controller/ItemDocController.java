@@ -18,7 +18,7 @@ import site.yuanshen.genshin.core.dao.ItemDao;
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/item_doc")
+@RequestMapping("/api/item_doc")
 @Tag(name = "item_doc", description = "物品档案API")
 public class ItemDocController {
 

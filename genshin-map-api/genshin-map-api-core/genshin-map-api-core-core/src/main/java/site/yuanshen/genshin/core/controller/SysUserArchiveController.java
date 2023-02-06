@@ -21,7 +21,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/archive")
+@RequestMapping("/system/archive")
 @Tag(name = "archive", description = "用户存档管理API")
 public class SysUserArchiveController {
 

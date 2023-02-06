@@ -22,7 +22,7 @@ import java.util.List;
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/item_common")
+@RequestMapping("/api/item_common")
 @Tag(name = "item_common", description = "公用物品API")
 public class ItemCommonController {
 

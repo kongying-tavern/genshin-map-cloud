@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/user")
+@RequestMapping("/system/user")
 public class SysUserController {
 
     private final SysUserService userService;

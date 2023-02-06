@@ -21,7 +21,7 @@ import site.yuanshen.genshin.core.service.PunctuateService;
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/punctuate")
+@RequestMapping("/api/punctuate")
 @Tag(name = "punctuate", description = "打点API")
 public class PunctuateController {
 

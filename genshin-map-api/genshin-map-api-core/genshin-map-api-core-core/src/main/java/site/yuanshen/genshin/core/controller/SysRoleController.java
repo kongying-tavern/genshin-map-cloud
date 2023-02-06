@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/role")
+@RequestMapping("/system/role")
 @Tag(name = "role", description = "角色管理API")
 public class SysRoleController {
 

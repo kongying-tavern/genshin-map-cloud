@@ -28,7 +28,7 @@ import site.yuanshen.genshin.core.service.HistoryService;
  */
 @RestController
 @AllArgsConstructor
-@RequestMapping("/history")
+@RequestMapping("/api/history")
 @Tag(name = "history", description = "历史记录API")
 public class HistoryController {
     private final HistoryService historyService;

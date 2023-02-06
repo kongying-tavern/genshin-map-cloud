@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/route")
+@RequestMapping("/api/route")
 @Tag(name = "route", description = "路线API")
 public class RouteController {
 

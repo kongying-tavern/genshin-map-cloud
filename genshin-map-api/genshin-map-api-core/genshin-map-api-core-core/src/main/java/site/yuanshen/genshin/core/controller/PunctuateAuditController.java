@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/punctuate_audit")
+@RequestMapping("/api/punctuate_audit")
 @Tag(name = "punctuate_audit", description = "打点审核API")
 public class PunctuateAuditController {
 

@@ -18,7 +18,7 @@ import site.yuanshen.genshin.core.dao.IconTagDao;
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/tag_doc")
+@RequestMapping("/api/tag_doc")
 @Tag(name = "tag_doc", description = "图标标签档案API")
 public class TagDocController {
 

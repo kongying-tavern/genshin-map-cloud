@@ -59,10 +59,8 @@ ribbon:
 springdoc:
   swagger-ui:
     urls:
-      - name: 核心API服务（需手动加前缀/api）
+      - name: API服务
         url: /api/v3/api-docs
-      - name: 系统管理服务（需手动加前缀/system）
-        url: /system/v3/api-docs
   api-docs:
     groups:
       enabled: true
@@ -76,7 +74,7 @@ spring:
       resourceserver:
         jwt:
           # jwk URL 获取公钥，填写auth模块的端口
-          jwk-set-uri: http://localhost:8100/.well-known/jwks.json
+          jwk-set-uri: http://localhost:8092/.well-known/jwks.json
 
   cloud:
     nacos:

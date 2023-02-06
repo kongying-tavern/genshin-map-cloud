@@ -21,7 +21,7 @@ import java.util.List;
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/score")
+@RequestMapping("/api/score")
 @Tag(name = "score", description = "评分统计API")
 public class ScoreController {
     private final ScoreGenerateService scoreGenerateService;

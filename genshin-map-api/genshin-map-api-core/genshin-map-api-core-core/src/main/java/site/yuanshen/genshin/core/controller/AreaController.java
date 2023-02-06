@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/area")
+@RequestMapping("/api/area")
 @Tag(name = "area", description = "地区API")
 public class AreaController {
 
