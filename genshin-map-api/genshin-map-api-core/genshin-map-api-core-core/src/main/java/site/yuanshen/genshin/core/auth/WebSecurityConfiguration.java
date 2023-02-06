@@ -40,7 +40,9 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests().antMatchers(
                         "/test/**",
                         "/login",
-                        "/.well-known/jwks.json"
+                        "/.well-known/jwks.json",
+                        "/api/**",
+                        "/system/**"
                 ).permitAll()
                 .anyRequest().authenticated()
                 .and()
