@@ -163,7 +163,7 @@ public class CacheServiceImpl implements CacheService {
             } catch (RejectedExecutionException e) {
                 log.error("线程池拒绝：{}",keyEnum.name());
             }
-        }, 10, TimeUnit.SECONDS);
+        }, 60, TimeUnit.SECONDS);
     }
 
 
