@@ -55,10 +55,8 @@ ribbon:
 springdoc:
   swagger-ui:
     urls:
-      - name: 核心API服务（需手动加前缀/api）
+      - name: API服务
         url: /api/v3/api-docs
-      - name: 系统管理服务（需手动加前缀/system）
-        url: /system/v3/api-docs
   api-docs:
     groups:
       enabled: true
@@ -72,7 +70,7 @@ spring:
       resourceserver:
         jwt:
           # jwk URL 获取公钥，填写auth模块的端口
-          jwk-set-uri: http://localhost:8100/.well-known/jwks.json
+          jwk-set-uri: http://localhost:8092/.well-known/jwks.json
 
   cloud:
     nacos:
@@ -86,39 +84,35 @@ spring:
           lower-case-service-id: true # 将服务名称转换为小写
       routes:
         - id: oauth2-auth-login
-          uri: lb://oauth2-auth
+          uri: lb://api-core
           predicates:
             - Path=/login
           filters:
             - PreserveHostHeader
         - id: oauth2-auth-token
-          uri: lb://oauth2-auth
+          uri: lb://api-core
           predicates:
             - Path=/oauth/token
           filters:
             - PreserveHostHeader
         - id: oauth2-auth-authorize
-          uri: lb://oauth2-auth
+          uri: lb://api-core
           predicates:
             - Path=/oauth/authorize
           filters:
             - PreserveHostHeader
         - id: oauth2-auth-check-token
-          uri: lb://oauth2-auth
+          uri: lb://api-core
           predicates:
             - Path=/oauth/check_token
           filters:
             - PreserveHostHeader
         - id: system
-          uri: lb://api-system
+          uri: lb://api-core
           predicates:
             - Path=/system/**
-          filters:
-            - StripPrefix=1
         - id: core
           uri: lb://api-core
           predicates:
             - Path=/api/**
-          filters:
-            - StripPrefix=1
 

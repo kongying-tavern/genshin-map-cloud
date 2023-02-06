@@ -13,7 +13,6 @@
     <artifactId>genshin-map-api</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>genshin-map-api-system</module>
         <module>genshin-map-api-core</module>
     </modules>
 
@@ -49,6 +48,7 @@
             <artifactId>genshin-map-config</artifactId>
             <version>${project.version}</version>
         </dependency>
+
 
 
     </dependencies>

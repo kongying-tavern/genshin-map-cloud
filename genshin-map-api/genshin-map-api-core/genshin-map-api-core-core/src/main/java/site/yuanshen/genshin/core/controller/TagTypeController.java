@@ -22,7 +22,7 @@ import site.yuanshen.genshin.core.service.TagTypeService;
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/tag_type")
+@RequestMapping("/api/tag_type")
 @Tag(name = "tag_type", description = "图标标签分类API")
 public class TagTypeController {
 

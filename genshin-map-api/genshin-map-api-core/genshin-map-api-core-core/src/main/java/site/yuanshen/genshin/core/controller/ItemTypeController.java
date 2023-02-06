@@ -26,7 +26,7 @@ import java.util.List;
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/item_type")
+@RequestMapping("/api/item_type")
 @Tag(name = "item_type", description = "物品分类API")
 public class ItemTypeController {
 

@@ -20,7 +20,7 @@ import java.util.List;
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/marker_doc")
+@RequestMapping("/api/marker_doc")
 @Tag(name = "marker_doc", description = "点位档案API")
 public class MarkerDocController {
 

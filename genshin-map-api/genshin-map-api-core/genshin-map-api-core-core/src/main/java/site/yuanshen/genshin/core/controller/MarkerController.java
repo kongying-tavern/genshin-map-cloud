@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/marker")
+@RequestMapping("/api/marker")
 @Tag(name = "marker", description = "点位API")
 public class MarkerController {
 

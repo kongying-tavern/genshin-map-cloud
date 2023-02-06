@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/item")
+@RequestMapping("/api/item")
 @Tag(name = "item", description = "物品API")
 public class ItemController {
 

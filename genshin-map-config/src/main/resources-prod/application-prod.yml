@@ -16,14 +16,14 @@ spring:
         test-on-borrow: false
         test-on-return: false
         test-while-idle: true
-        max-active: 20
-        max-pool-prepared-statement-per-connection-size: 20
-        initial-size: 2
+        max-active: 100
+        max-pool-prepared-statement-per-connection-size: 100
+        initial-size: 50
         max-wait: 6000
-        min-idle: 2
+        min-idle: 50
         pool-prepared-statements: true
         max-open-prepared-statements: 20
-        async-init: true
+        async-init: false
 
 springdoc:
   api-docs:

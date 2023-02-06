@@ -18,6 +18,10 @@
             <artifactId>genshin-map-data-base</artifactId>
             <version>${gsapi.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-core</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

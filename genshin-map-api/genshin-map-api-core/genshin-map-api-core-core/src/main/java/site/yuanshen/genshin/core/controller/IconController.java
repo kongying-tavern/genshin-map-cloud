@@ -21,7 +21,7 @@ import site.yuanshen.genshin.core.service.IconService;
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/icon")
+@RequestMapping("/api/icon")
 @Tag(name = "icon", description = "图标API")
 public class IconController {
 
