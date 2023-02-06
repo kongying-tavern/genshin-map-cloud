@@ -14,7 +14,6 @@
     <packaging>pom</packaging>
     <modules>
         <module>genshin-map-ability-gateway</module>
-        <module>genshin-map-ability-auth</module>
     </modules>
 
     <dependencies>

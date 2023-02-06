@@ -90,31 +90,31 @@ spring:
           lower-case-service-id: true # 将服务名称转换为小写
       routes:
         - id: oauth2-auth-login
-          uri: lb://oauth2-auth
+          uri: lb://api-core
           predicates:
             - Path=/login
           filters:
             - PreserveHostHeader
         - id: oauth2-auth-token
-          uri: lb://oauth2-auth
+          uri: lb://api-core
           predicates:
             - Path=/oauth/token
           filters:
             - PreserveHostHeader
         - id: oauth2-auth-authorize
-          uri: lb://oauth2-auth
+          uri: lb://api-core
           predicates:
             - Path=/oauth/authorize
           filters:
             - PreserveHostHeader
         - id: oauth2-auth-check-token
-          uri: lb://oauth2-auth
+          uri: lb://api-core
           predicates:
             - Path=/oauth/check_token
           filters:
             - PreserveHostHeader
         - id: system
-          uri: lb://api-system
+          uri: lb://api-core
           predicates:
             - Path=/system/**
           filters:

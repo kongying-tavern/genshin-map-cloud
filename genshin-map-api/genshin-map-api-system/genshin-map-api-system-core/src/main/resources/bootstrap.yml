@@ -1,7 +1,0 @@
-spring:
-  application:
-    name: api-system
-  profiles:
-    active: "@runtime-profile@"
-server:
-  port: 8091

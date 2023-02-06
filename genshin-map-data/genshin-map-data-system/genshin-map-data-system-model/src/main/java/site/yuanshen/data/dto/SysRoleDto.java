@@ -1,6 +1,7 @@
 package site.yuanshen.data.dto;
 
 import lombok.Data;
+import org.springframework.security.core.GrantedAuthority;
 import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.entity.SysRole;
 import site.yuanshen.data.enums.RoleEnum;
@@ -12,7 +13,7 @@ import site.yuanshen.data.vo.SysRoleVo;
  * @author Moment
  */
 @Data
-public class SysRoleDto {
+public class SysRoleDto implements GrantedAuthority {
 
     /**
      * 角色ID
@@ -38,6 +39,10 @@ public class SysRoleDto {
         BeanUtils.copyProperties(sysRole, this);
     }
 
+    public SysRoleDto(String code) {
+        this(RoleEnum.valueOf(code));
+    }
+
     public SysRoleDto(RoleEnum roleEnum) {
         this.id = roleEnum.getId();
         this.name = roleEnum.getName();
@@ -55,6 +60,11 @@ public class SysRoleDto {
 
     public SysRoleVo getVo() {
         return BeanUtils.copyProperties(this, SysRoleVo.class);
+    }
+
+    @Override
+    public String getAuthority() {
+        return code;
     }
 
 }
