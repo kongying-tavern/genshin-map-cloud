@@ -8,21 +8,29 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource
     datasource:
       druid:
-        time-between-eviction-runs-millis: 10000
-        min-evictable-idle-time-millis: 30000
-        max-evictable-idle-time-millis: 7200000
-        validation-query-timeout: 3
+        # 池中某个连接的空闲时长达到 N 毫秒后, 连接池在下次检查空闲连接时，将回收该连接
+        min-evictable-idle-time-millis: 300000
+        # 检测超时
+        validation-query-timeout: 1
         validation-query: SELECT 1
+        # 申请连接时检测有效，影响性能
         test-on-borrow: false
+        # 归还连接时检测有效，影响性能
         test-on-return: false
+        # 循环检测有效，不影响性能
         test-while-idle: true
-        max-active: 100
-        max-pool-prepared-statement-per-connection-size: 100
+        # 检查空闲连接的频率，单位毫秒
+        time-between-eviction-runs-millis: 10000
+        # 是否缓存preparedStatement, mysql下关闭，支持游标的数据库开启
+        pool-prepared-statements: false
+        # 缓存preparedStatement大小，开启后建议100，-1关闭
+        max-pool-prepared-statement-per-connection-size: -1
+        # 初始连接数
         initial-size: 50
-        max-wait: 6000
+        #最大连接数
+        max-active: 100
+        # 最小保持连接数
         min-idle: 50
-        pool-prepared-statements: true
-        max-open-prepared-statements: 20
         async-init: false
 
 springdoc:
