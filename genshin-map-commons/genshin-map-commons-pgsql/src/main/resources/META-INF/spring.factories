@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  site.yuanshen.common.pgsql.config.PgsqlAutoConfiguration,\
+  site.yuanshen.common.pgsql.handler.MybatisPlusMetaObjectHandler

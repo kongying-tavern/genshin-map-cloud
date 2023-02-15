@@ -2,3 +2,9 @@ spring:
   profiles:
     include:
       - nacos-docker
+
+mybatis-plus:
+  global-config:
+    db-config:
+      logic-delete-value: '1::char'
+      logic-not-delete-value: '0::char'

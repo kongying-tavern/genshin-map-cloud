@@ -4,7 +4,7 @@ spring:
       - nacos-prod
       - datasource-prod
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    driver-class-name: org.postgresql.Driver
     type: com.alibaba.druid.pool.DruidDataSource
     datasource:
       druid:
@@ -32,6 +32,12 @@ spring:
         # 最小保持连接数
         min-idle: 50
         async-init: false
+
+mybatis-plus:
+  global-config:
+    db-config:
+      logic-delete-value: '1::char'
+      logic-not-delete-value: '0::char'
 
 springdoc:
   api-docs:
