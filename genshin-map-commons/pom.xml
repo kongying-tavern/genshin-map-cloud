@@ -16,7 +16,7 @@
     <modules>
         <module>genshin-map-commons-core</module>
         <module>genshin-map-commons-web</module>
-        <module>genshin-map-commons-mysql</module>
+        <module>genshin-map-commons-pgsql</module>
     </modules>
 
     <build>

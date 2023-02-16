@@ -15,7 +15,7 @@
     <dependencies>
         <dependency>
             <groupId>site.yuanshen</groupId>
-            <artifactId>genshin-map-commons-mysql</artifactId>
+            <artifactId>genshin-map-commons-pgsql</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

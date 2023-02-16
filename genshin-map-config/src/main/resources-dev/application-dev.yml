@@ -4,7 +4,7 @@ spring:
       - nacos-dev
       - datasource-dev
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    driver-class-name: org.postgresql.Driver
     type: com.alibaba.druid.pool.DruidDataSource
 
 logging:
