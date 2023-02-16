@@ -22,9 +22,9 @@ spring:
         # 检查空闲连接的频率，单位毫秒
         time-between-eviction-runs-millis: 10000
         # 是否缓存preparedStatement, mysql下关闭，支持游标的数据库开启
-        pool-prepared-statements: false
+        pool-prepared-statements: true
         # 缓存preparedStatement大小，开启后建议100，-1关闭
-        max-pool-prepared-statement-per-connection-size: -1
+        max-pool-prepared-statement-per-connection-size: 100
         # 初始连接数
         initial-size: 50
         #最大连接数
@@ -33,12 +33,7 @@ spring:
         min-idle: 50
         async-init: false
 
-mybatis-plus:
-  global-config:
-    db-config:
-      logic-delete-value: '1::char'
-      logic-not-delete-value: '0::char'
-
 springdoc:
   api-docs:
     enabled: false
+

@@ -25,7 +25,7 @@ public class BaseEntity implements Serializable {
     @TableLogic
     @JsonIgnore
     @Schema(title = "逻辑删除:0:未删除，1:删除")
-    private String delFlag;
+    private Short delFlag;
 
     /**
      * 乐观锁：修改次数

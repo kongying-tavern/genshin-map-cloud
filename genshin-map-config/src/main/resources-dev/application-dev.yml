@@ -4,14 +4,8 @@ spring:
       - nacos-dev
       - datasource-dev
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    driver-class-name: org.postgresql.Driver
     type: com.alibaba.druid.pool.DruidDataSource
-
-mybatis-plus:
-  global-config:
-    db-config:
-      logic-delete-value: '1::char'
-      logic-not-delete-value: '0::char'
 
 #logging:
 #  level:
@@ -25,3 +19,6 @@ logging:
       yuanshen:
         genshin:
           core: debug
+        data:
+          mapper: debug
+
