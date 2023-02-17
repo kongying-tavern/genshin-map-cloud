@@ -56,8 +56,9 @@ public class MarkerController {
     @PostMapping("/get/list_byinfo")
     public R<List<MarkerVo>> searchMarker(@RequestHeader(value = "userDataLevel", required = false) String userDataLevel, @RequestBody MarkerSearchVo markerSearchVo) {
         markerSearchVo.setHiddenFlagList(HiddenFlagEnum.getFlagList(userDataLevel));
+        List<Long> markerIdList = markerService.searchMarkerId(markerSearchVo);
         return RUtils.create(
-                markerService.searchMarker(markerSearchVo).parallelStream()
+                markerService.listMarkerById(markerIdList, markerSearchVo.getHiddenFlagList()).parallelStream()
                         .map(MarkerDto::getVo).collect(Collectors.toList())
         );
     }

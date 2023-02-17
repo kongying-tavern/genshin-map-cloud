@@ -46,7 +46,7 @@ public class History extends BaseEntity {
     /**
      * 记录类型
      */
-    @TableField(value = "`type`")
+    @TableField(value = "\"type\"")
     @Schema(title = "记录类型")
     private Integer type;
 

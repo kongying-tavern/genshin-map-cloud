@@ -90,7 +90,7 @@ public class MarkerServiceImpl implements MarkerService {
 
 
         if (!searchVo.getGetBeta()) {
-            log.info("获取正式点位:{}", itemIdList);
+            log.info("获取正式点位:{}", itemIdList.subList(0, itemIdList.size()>50?50:itemIdList.size()));
             if (itemIdList.isEmpty()) return new ArrayList<>();
             return markerItemLinkMapper.selectList(Wrappers.<MarkerItemLink>lambdaQuery()
                             .in(MarkerItemLink::getItemId, itemIdList)
@@ -112,19 +112,6 @@ public class MarkerServiceImpl implements MarkerService {
         }
     }
 
-    /**
-     * 根据各种条件查询所有点位信息
-     *
-     * @param markerSearchVo 点位查询前端封装
-     * @return 点位完整信息的数据封装列表
-     */
-    @Override
-    //此处是两个方法的缝合，不需要加缓存
-    public List<MarkerDto> searchMarker(MarkerSearchVo markerSearchVo) {
-        List<Long> markerIdList = searchMarkerId(markerSearchVo);
-        return listMarkerById(markerIdList, markerSearchVo.getHiddenFlagList());
-    }
-
 
     /**
      * 通过ID列表查询点位信息
@@ -138,12 +125,16 @@ public class MarkerServiceImpl implements MarkerService {
         //为空直接返回
         if (markerIdList.isEmpty()) return new ArrayList<>();
         //获取所有的额外字段
-        Map<Long, MarkerExtra> markerExtraMap = markerExtraMapper.selectList(Wrappers.<MarkerExtra>lambdaQuery().in(MarkerExtra::getMarkerId, markerIdList))
-                .stream().collect(Collectors.toMap(MarkerExtra::getMarkerId, markerExtra -> markerExtra));
+        List<Long> list = new ArrayList<>();
+        for (Long aLong : markerIdList) {
+            list.add(aLong);
+        }
+        Map<Long, MarkerExtra> markerExtraMap = markerExtraMapper.selectList(Wrappers.<MarkerExtra>lambdaQuery().apply("marker_id = any({0}::bigint[])",  markerIdList.toString().replace('[','{').replace(']','}')))
+                    .stream().collect(Collectors.toMap(MarkerExtra::getMarkerId, markerExtra -> markerExtra));
         //获取关联的物品Id
         Map<Long, List<MarkerItemLink>> itemLinkMap = new ConcurrentHashMap<>();
 
-        List<MarkerItemLink> markerItemLinks = markerItemLinkMapper.selectList(Wrappers.<MarkerItemLink>lambdaQuery().in(MarkerItemLink::getMarkerId, markerIdList));
+        List<MarkerItemLink> markerItemLinks = markerItemLinkMapper.selectList(Wrappers.<MarkerItemLink>lambdaQuery().apply("marker_id = any({0}::bigint[])", markerIdList.toString().replace('[','{').replace(']','}')));
         //获取item_id,得到item合集
         Map<Long, Item> itemMap = itemMapper.selectList(Wrappers.<Item>lambdaQuery()
                         .in(!markerItemLinks.isEmpty(),Item::getId, markerItemLinks.stream().map(MarkerItemLink::getItemId).collect(Collectors.toSet())))
@@ -158,7 +149,7 @@ public class MarkerServiceImpl implements MarkerService {
                         })
         );
         //构建返回
-        return markerMapper.selectList(Wrappers.<Marker>lambdaQuery().in(Marker::getId, markerIdList).in(!hiddenFlagList.isEmpty(), Marker::getHiddenFlag, hiddenFlagList))
+        return markerMapper.selectList(Wrappers.<Marker>lambdaQuery().apply("id = any({0}::bigint[])", markerIdList.toString().replace('[','{').replace(']','}')).in(!hiddenFlagList.isEmpty(), Marker::getHiddenFlag, hiddenFlagList))
                 .parallelStream().map(marker ->
                         new MarkerDto(marker,
                                 markerExtraMap.get(marker.getId()),

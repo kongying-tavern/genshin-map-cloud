@@ -28,14 +28,6 @@ public interface MarkerService {
     List<Long> searchMarkerId(MarkerSearchVo markerSearchVo);
 
     /**
-     * 根据各种条件查询所有点位信息
-     *
-     * @param markerSearchVo 点位查询前端封装
-     * @return 点位完整信息的数据封装列表
-     */
-    List<MarkerDto> searchMarker(MarkerSearchVo markerSearchVo);
-
-    /**
      * 通过ID列表查询点位信息
      *
      * @param markerIdList 点位ID列表
