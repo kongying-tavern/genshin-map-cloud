@@ -111,6 +111,18 @@ spring:
             - Path=/oauth/check_token
           filters:
             - PreserveHostHeader
+        - id: system-openapi
+          uri: lb://api-core
+          predicates:
+            - Path=/system/v3/api-docs
+          filters:
+            - StripPrefix=1
+        - id: core-openapi
+          uri: lb://api-core
+          predicates:
+            - Path=/api/v3/api-docs
+          filters:
+            - StripPrefix=1
         - id: system
           uri: lb://api-core
           predicates:
