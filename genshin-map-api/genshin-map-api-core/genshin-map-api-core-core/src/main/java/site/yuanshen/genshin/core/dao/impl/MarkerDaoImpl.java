@@ -181,7 +181,7 @@ public class MarkerDaoImpl implements MarkerDao {
                     return result;
                 }).collect(Collectors.toList());
             } catch (Exception e) {
-                throw new RuntimeException("打包MD5缓存创建失败");
+                throw new RuntimeException("打包MD5缓存创建失败", e);
             }
         } else {
             markerBz2MD5List = indexList.parallelStream().map(i -> DigestUtils.md5DigestAsHex(listPageMarkerByBz2(i))).collect(Collectors.toList());
