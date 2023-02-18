@@ -60,7 +60,7 @@ springdoc:
   swagger-ui:
     urls:
       - name: API服务
-        url: /api/v3/api-docs
+        url: /v3/api-docs
   api-docs:
     groups:
       enabled: true
@@ -111,18 +111,10 @@ spring:
             - Path=/oauth/check_token
           filters:
             - PreserveHostHeader
-        - id: system-openapi
+        - id: openapi
           uri: lb://api-core
           predicates:
-            - Path=/system/v3/api-docs
-          filters:
-            - StripPrefix=1
-        - id: core-openapi
-          uri: lb://api-core
-          predicates:
-            - Path=/api/v3/api-docs
-          filters:
-            - StripPrefix=1
+            - Path=/v3/api-docs
         - id: system
           uri: lb://api-core
           predicates:
