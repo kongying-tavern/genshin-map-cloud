@@ -115,12 +115,8 @@ spring:
           uri: lb://api-core
           predicates:
             - Path=/system/**
-          filters:
-            - StripPrefix=1
         - id: core
           uri: lb://api-core
           predicates:
             - Path=/api/**
-          filters:
-            - StripPrefix=1
 
