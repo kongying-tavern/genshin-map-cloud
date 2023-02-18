@@ -102,7 +102,7 @@ public class SysUserServiceImpl implements SysUserService {
             JSONArray infoArray = qqInfoJson.getJSONArray(qq);
             qqName = infoArray.getString(6);
         } catch (Exception e) {
-            throw new RuntimeException("qq信息解析失败，错误内容:" + response.getBody());
+            throw new RuntimeException("QQ号有误，请使用真实的QQ号进行注册");
         }
         String qqLogo = "https://q1.qlogo.cn/g?b=qq&nk="+qq+"&s=640";
         SysUser user = new SysUser();
