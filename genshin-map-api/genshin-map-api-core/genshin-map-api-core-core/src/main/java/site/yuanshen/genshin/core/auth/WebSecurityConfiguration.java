@@ -42,7 +42,9 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                         "/login",
                         "/.well-known/jwks.json",
                         "/api/**",
-                        "/system/**"
+                        "/system/**",
+                        "/v3/**",
+                        "/swagger-ui/**"
                 ).permitAll()
                 .anyRequest().authenticated()
                 .and()

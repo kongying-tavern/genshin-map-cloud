@@ -12,8 +12,8 @@ server:
 genshin:
   pass-filter:
     - /oauth/**
-    - /api/v3/api-docs
-    - /system/v3/api-docs
+    - /v3/**
+    - /swagger-ui/**
     - /system/user/register/qq
   authorities-filter:
     VISITOR:
@@ -114,7 +114,11 @@ spring:
         - id: openapi
           uri: lb://api-core
           predicates:
-            - Path=/v3/api-docs
+            - Path=/v3/**
+        - id: swagger
+          uri: lb://api-core
+          predicates:
+            - Path=/swagger-ui/**
         - id: system
           uri: lb://api-core
           predicates:
