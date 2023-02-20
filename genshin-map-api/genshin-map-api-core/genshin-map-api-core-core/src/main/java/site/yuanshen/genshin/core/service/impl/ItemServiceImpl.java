@@ -105,10 +105,13 @@ public class ItemServiceImpl implements ItemService {
                                 .map(Item::getId).collect(Collectors.toList())));
         //获取其中的正常点位 hidden_flag=0 若为内鬼用户,则增加hidden_flag=2
 
-        List<Long> normalMarkerList = markerMapper.selectList(Wrappers.<Marker>lambdaQuery()
-                        .in(!itemSearchDto.getHiddenFlagList().isEmpty(),Marker::getHiddenFlag,itemSearchDto.getHiddenFlagList())
-                        .in(Marker::getId, markerItemLinkList.stream().map(MarkerItemLink::getMarkerId).collect(Collectors.toList())))
-                .stream().map(Marker::getId).collect(Collectors.toList());
+        List<Long> normalMarkerList = new ArrayList<>();
+        if(!markerItemLinkList.isEmpty()) {
+            markerMapper.selectList(Wrappers.<Marker>lambdaQuery()
+                            .in(!itemSearchDto.getHiddenFlagList().isEmpty(),Marker::getHiddenFlag,itemSearchDto.getHiddenFlagList())
+                            .in(Marker::getId, markerItemLinkList.stream().map(MarkerItemLink::getMarkerId).collect(Collectors.toList())))
+                    .stream().map(Marker::getId).collect(Collectors.toList());
+        }
 
         //先过滤出正常点位
         //计算各个物品在点位中的数量合计
