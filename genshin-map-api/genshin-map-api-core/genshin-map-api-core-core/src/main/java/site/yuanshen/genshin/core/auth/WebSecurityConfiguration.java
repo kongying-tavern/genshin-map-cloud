@@ -42,7 +42,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                         "/login",
                         "/.well-known/jwks.json",
                         "/api/**",
-                        "/system/**"
+                        "/system/**",
+                        "/druid/**"
                 ).permitAll()
                 .anyRequest().authenticated()
                 .and()
