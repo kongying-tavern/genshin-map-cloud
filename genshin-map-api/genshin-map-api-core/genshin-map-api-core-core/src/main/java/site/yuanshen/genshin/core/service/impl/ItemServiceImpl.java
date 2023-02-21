@@ -107,7 +107,7 @@ public class ItemServiceImpl implements ItemService {
 
         List<Long> normalMarkerList = new ArrayList<>();
         if(!markerItemLinkList.isEmpty()) {
-            markerMapper.selectList(Wrappers.<Marker>lambdaQuery()
+            normalMarkerList = markerMapper.selectList(Wrappers.<Marker>lambdaQuery()
                             .in(!itemSearchDto.getHiddenFlagList().isEmpty(),Marker::getHiddenFlag,itemSearchDto.getHiddenFlagList())
                             .in(Marker::getId, markerItemLinkList.stream().map(MarkerItemLink::getMarkerId).collect(Collectors.toList())))
                     .stream().map(Marker::getId).collect(Collectors.toList());
@@ -115,8 +115,9 @@ public class ItemServiceImpl implements ItemService {
 
         //先过滤出正常点位
         //计算各个物品在点位中的数量合计
+        List<Long> normalMarkerListFinal = normalMarkerList;
         Map<Long, Integer> markerItemLinkCount = new HashMap<>();
-        markerItemLinkList.stream().filter(markerItemLink -> normalMarkerList.contains(markerItemLink.getMarkerId()))
+        markerItemLinkList.stream().filter(markerItemLink -> normalMarkerListFinal.contains(markerItemLink.getMarkerId()))
                 .collect(Collectors.groupingBy(MarkerItemLink::getItemId)).forEach(
                         (itemId, list) -> markerItemLinkCount.put(itemId, list.stream().mapToInt(MarkerItemLink::getCount).sum())
                 );
