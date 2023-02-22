@@ -3,6 +3,7 @@ package site.yuanshen.genshin.core.auth;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Primary;
 import org.springframework.security.oauth2.provider.ClientDetails;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
@@ -32,6 +33,7 @@ public class ClientDetailsServiceImpl implements ClientDetailsService {
      * @throws ClientRegistrationException 客户端不可用
      */
     @Override
+    @Cacheable("loadClientByClientId")
     public ClientDetails loadClientByClientId(String clientId) throws ClientRegistrationException {
         OauthClientDetails oauthClientDetails = clientDetailsMapper.selectOne(Wrappers.<OauthClientDetails>lambdaQuery().eq(OauthClientDetails::getClientId, clientId));
         if (oauthClientDetails == null) {
