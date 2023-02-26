@@ -14,6 +14,7 @@ import site.yuanshen.genshin.core.dao.IconTagDao;
 import site.yuanshen.genshin.core.dao.ItemDao;
 import site.yuanshen.genshin.core.dao.MarkerDao;
 import site.yuanshen.genshin.core.service.CacheService;
+import site.yuanshen.genshin.core.service.MarkerDocService;
 
 import java.util.Objects;
 import java.util.concurrent.*;
@@ -28,7 +29,7 @@ import java.util.concurrent.*;
 @RequiredArgsConstructor
 public class CacheServiceImpl implements CacheService {
 
-    private final MarkerDao markerDao;
+    private final MarkerDocService markerDocService;
     private final ItemDao itemDao;
     private final IconTagDao iconTagDao;
     private final CacheManager cacheManager;
@@ -101,13 +102,11 @@ public class CacheServiceImpl implements CacheService {
                     @CacheEvict(value = "listMarkerPage", allEntries = true, beforeInvocation = true),
                     @CacheEvict(value = "getMarkerCount", allEntries = true, beforeInvocation = true),
                     @CacheEvict(value = "listMarkerIdRange", allEntries = true, beforeInvocation = true),
-                    @CacheEvict(value = "listPageMarkerByBz2", allEntries = true, beforeInvocation = true),
-                    @CacheEvict(value = "listMarkerBz2MD5", allEntries = true, beforeInvocation = true),
             }
     )
     public void cleanMarkerCache() {
         log.info("cleanMarkerCache");
-        runAfterTransactionDebounceByKey(this::refreshMarkerBz2,
+        runAfterTransactionDebounceByKey(markerDocService::refreshMarkerBz2MD5,
                 FunctionKeyEnum.refreshMarkerBz2);
     }
 
@@ -134,17 +133,6 @@ public class CacheServiceImpl implements CacheService {
     }
 
 
-    @Caching(
-            evict = {
-                    @CacheEvict(value = "listPageMarkerByBz2", allEntries = true, beforeInvocation = true),
-                    @CacheEvict(value = "listMarkerBz2MD5", allEntries = true, beforeInvocation = true),
-            }
-    )
-    public void refreshMarkerBz2() {
-        log.info("refreshMarkerBz2");
-        markerDao.listMarkerBz2MD5();
-    }
-
     enum FunctionKeyEnum {
         refreshIconTagBz2,
         refreshItemBz2,
@@ -163,7 +151,7 @@ public class CacheServiceImpl implements CacheService {
             } catch (RejectedExecutionException e) {
                 log.error("线程池拒绝：{}",keyEnum.name());
             }
-        }, 60, TimeUnit.SECONDS);
+        }, 3, TimeUnit.SECONDS);
     }
 
 

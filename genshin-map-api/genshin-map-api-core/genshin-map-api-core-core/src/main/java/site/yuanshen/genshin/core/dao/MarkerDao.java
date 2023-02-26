@@ -1,10 +1,15 @@
 package site.yuanshen.genshin.core.dao;
 
 import site.yuanshen.data.dto.helper.PageSearchDto;
+import site.yuanshen.data.entity.Item;
+import site.yuanshen.data.entity.MarkerExtra;
+import site.yuanshen.data.entity.MarkerItemLink;
 import site.yuanshen.data.vo.MarkerVo;
 import site.yuanshen.data.vo.helper.PageListVo;
 
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public interface MarkerDao {
 
@@ -23,14 +28,7 @@ public interface MarkerDao {
      */
     PageListVo<MarkerVo> listMarkerPage(PageSearchDto pageSearchDto, List<Integer> hiddenFlagList);
 
-    /**
-     * 按点位ID区间查询所有点位信息
-     *
-     * @param closeLeft  左闭下标
-     * @param openRight  右开下标
-     * @return 点位完整信息的前端封装的分页记录
-     */
-    List<MarkerVo> listMarkerIdRange(Long closeLeft, Long openRight);
+    void getAllRelateInfoById(List<Long> markerIdList, Map<Long, MarkerExtra> extraMap, ConcurrentHashMap<Long, List<MarkerItemLink>> itemLinkMap, Map<Long, Item> itemMap);
 
     /**
      * 通过bz2返回点位分页
@@ -41,9 +39,9 @@ public interface MarkerDao {
     byte[] listPageMarkerByBz2(Integer index);
 
     /**
-     * 返回点位分页bz2的md5数组
-     *
-     * @return 分页字节数组的md5
+     * 刷新bz2返回点位分页
+     * @return 刷新后的各个分页
      */
-    List<String> listMarkerBz2MD5();
+    List<byte[]> refreshPageMarkerByBz2();
+
 }

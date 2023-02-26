@@ -1,5 +1,6 @@
 package site.yuanshen.genshin.core.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -125,31 +126,14 @@ public class MarkerServiceImpl implements MarkerService {
         //为空直接返回
         if (markerIdList.isEmpty()) return new ArrayList<>();
         //获取所有的额外字段
-        List<Long> list = new ArrayList<>();
-        for (Long aLong : markerIdList) {
-            list.add(aLong);
-        }
-        Map<Long, MarkerExtra> markerExtraMap = markerExtraMapper.selectList(Wrappers.<MarkerExtra>lambdaQuery().apply("marker_id = any({0}::bigint[])",  markerIdList.toString().replace('[','{').replace(']','}')))
-                    .stream().collect(Collectors.toMap(MarkerExtra::getMarkerId, markerExtra -> markerExtra));
-        //获取关联的物品Id
-        Map<Long, List<MarkerItemLink>> itemLinkMap = new ConcurrentHashMap<>();
-
-        List<MarkerItemLink> markerItemLinks = markerItemLinkMapper.selectList(Wrappers.<MarkerItemLink>lambdaQuery().apply("marker_id = any({0}::bigint[])", markerIdList.toString().replace('[','{').replace(']','}')));
-        //获取item_id,得到item合集
-        Map<Long, Item> itemMap = itemMapper.selectList(Wrappers.<Item>lambdaQuery()
-                        .in(!markerItemLinks.isEmpty(),Item::getId, markerItemLinks.stream().map(MarkerItemLink::getItemId).collect(Collectors.toSet())))
-                .stream().collect(Collectors.toMap(Item::getId, Item -> Item));
-
-        markerItemLinks.parallelStream().forEach(markerItemLink ->
-                itemLinkMap.compute(markerItemLink.getMarkerId(),
-                        (markerId, linkList) -> {
-                            if (linkList == null) return new ArrayList<>(Collections.singletonList(markerItemLink));
-                            linkList.add(markerItemLink);
-                            return linkList;
-                        })
-        );
+        Map<Long, MarkerExtra> markerExtraMap = new HashMap<>();
+        ConcurrentHashMap<Long, List<MarkerItemLink>> itemLinkMap = new ConcurrentHashMap<>();
+        Map<Long, Item> itemMap = new HashMap<>();
+        markerDao.getAllRelateInfoById(markerIdList,markerExtraMap,itemLinkMap,itemMap);
         //构建返回
-        return markerMapper.selectList(Wrappers.<Marker>lambdaQuery().apply("id = any({0}::bigint[])", markerIdList.toString().replace('[','{').replace(']','}')).in(!hiddenFlagList.isEmpty(), Marker::getHiddenFlag, hiddenFlagList))
+        return markerMapper.selectList(Wrappers.<Marker>lambdaQuery()
+                        .apply("id = any({0}::bigint[])", JSON.toJSONString(markerIdList))
+                        .in(!hiddenFlagList.isEmpty(), Marker::getHiddenFlag, hiddenFlagList))
                 .parallelStream().map(marker ->
                         new MarkerDto(marker,
                                 markerExtraMap.get(marker.getId()),
