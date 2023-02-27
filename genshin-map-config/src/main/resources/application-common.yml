@@ -29,7 +29,6 @@ spring:
           log-slow-sql: true
           slow-sql-millis: 1000
           connection-stack-trace-enable: true
-          merge-sql: true
       ########## 配置WebStatFilter，用于采集web关联监控的数据 ##########
       web-stat-filter:
         enabled: true                   # 启动 StatFilter
