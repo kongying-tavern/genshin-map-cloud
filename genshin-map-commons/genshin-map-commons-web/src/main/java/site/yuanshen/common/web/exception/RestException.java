@@ -1,6 +1,8 @@
 package site.yuanshen.common.web.exception;
 
 import lombok.extern.slf4j.Slf4j;
+import org.postgresql.util.PSQLException;
+import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -12,10 +14,11 @@ import site.yuanshen.common.web.response.R;
 import site.yuanshen.common.web.response.RUtils;
 import site.yuanshen.common.web.utils.RequestUtils;
 
-import javax.naming.AuthenticationException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
+import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -81,4 +84,20 @@ public class RestException {
                         .collect(Collectors.toSet()));
     }
 
+    @ExceptionHandler({PSQLException.class, DataAccessResourceFailureException.class})
+    public R databaseExceptionHandler(Throwable t) {
+        //获取当前请求
+        HttpServletRequest request = null;
+        try {
+            request = RequestUtils.getHttpServletRequest();
+            log.error("[Database-Exception]-[{}]-message: {}", request.getRequestURL(), t);
+            log.debug("[Database-Exception]-[{}]-debug error message: {} - cause:", request.getRequestURL(), t);
+        } catch (Exception e) {
+            log.error("[Database-Exception]-message: {}", t.getMessage());
+            log.debug("[Database-Exception]-debug error message:: {} - cause {}", t.getMessage(), t.getStackTrace());
+        }
+        return RUtils.create(Codes.FAIL, "数据库异常，可能因为当前服务压力过大，5分钟内得不到恢复，请携带报错信息，联系开发组；" +
+                "报错时间:" + LocalDateTime.now() +
+                (request == null ? "" : "; 报错接口：" + Objects.requireNonNull(request).getRequestURL()), null);
+    }
 }
