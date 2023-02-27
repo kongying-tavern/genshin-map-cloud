@@ -1,19 +1,33 @@
 spring:
   profiles:
     include:
+      - common
       - nacos-dev
       - datasource-dev
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    type: com.alibaba.druid.pool.DruidDataSource
+    datasource:
+      druid:
+        # 初始连接数
+        initial-size: 8
+        #最大连接数
+        max-active: 20
+        # 最小保持连接数
+        min-idle: 8
+        async-init: false
+        ########## 配置StatViewServlet（监控页面），用于展示Druid的统计信息 ##########
+        stat-view-servlet:
+          login-username: root            # 配置监控页面访问密码
+          login-password: 123
+          reset-enable: false              # 不允许清空统计数据,重新计算
 
 logging:
   level:
     site:
-      yuanshen:
-        genshin:
+	@@ -21,4 +28,8 @@ logging:
           core: debug
-    site.yuanshen.data.mapper: debug
-#    org.springframework:
+        data:
+          mapper: debug
+    org:
+      springframework:
 #        security: debug
-#        cache: debug
+        cache: debug

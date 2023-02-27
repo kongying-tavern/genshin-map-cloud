@@ -1,29 +1,21 @@
 spring:
   profiles:
     include:
+      - common
       - nacos-prod
       - datasource-prod
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    type: com.alibaba.druid.pool.DruidDataSource
-    datasource:
-      druid:
-        time-between-eviction-runs-millis: 10000
-        min-evictable-idle-time-millis: 30000
-        max-evictable-idle-time-millis: 7200000
-        validation-query-timeout: 3
-        validation-query: SELECT 1
-        test-on-borrow: false
-        test-on-return: false
-        test-while-idle: true
-        max-active: 20
-        max-pool-prepared-statement-per-connection-size: 20
-        initial-size: 2
-        max-wait: 6000
-        min-idle: 2
-        pool-prepared-statements: true
-        max-open-prepared-statements: 20
-        async-init: true
+    druid:
+      # 初始连接数
+      initial-size: 50
+      #最大连接数
+      max-active: 100
+      # 最小保持连接数
+      min-idle: 50
+      ########## 配置StatViewServlet（监控页面），用于展示Druid的统计信息 ##########
+      stat-view-servlet:
+        enabled: true                   # 启用StatViewServlet
+        reset-enable: false             # 清空统计数据
 
 springdoc:
   api-docs:
