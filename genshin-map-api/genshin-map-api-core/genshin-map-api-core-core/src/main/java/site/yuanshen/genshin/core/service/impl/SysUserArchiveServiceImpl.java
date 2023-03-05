@@ -88,7 +88,7 @@ public class SysUserArchiveServiceImpl implements SysUserArchiveService {
      */
     @Override
     public Boolean createArchive(int slotIndex, String archive, Long userId, String name) {
-        if (this.removeArchive(slotIndex, userId) != null) throw new RuntimeException("槽位下标冲突，请重新选择下标");
+        if (this.getArchive(slotIndex, userId) != null) throw new RuntimeException("槽位下标冲突，请重新选择下标");
         return sysUserArchiveMapper.insert(
                 new SysUserArchive()
                         .setSlotIndex(slotIndex)
