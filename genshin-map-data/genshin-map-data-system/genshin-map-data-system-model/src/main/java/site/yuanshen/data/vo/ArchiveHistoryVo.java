@@ -30,7 +30,7 @@ public class ArchiveHistoryVo {
      * 槽位顺序
      */
     @Schema(title = "槽位顺序")
-    private long slotIndex;
+    private Long slotIndex;
 
     /**
      * 创建时间
@@ -54,6 +54,6 @@ public class ArchiveHistoryVo {
      * 存档历史下标
      */
     @Schema(title = "存档历史下标")
-    private long historyIndex;
+    private Long historyIndex;
 
 }
