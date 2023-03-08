@@ -5,13 +5,15 @@ import com.alibaba.fastjson2.JSONWriter;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import site.yuanshen.data.dto.SysUserArchiveDto;
+import site.yuanshen.data.dto.ArchiveDto;
+import site.yuanshen.data.dto.SysUserArchiveSlotDto;
 import site.yuanshen.data.entity.SysUserArchive;
 import site.yuanshen.data.mapper.SysUserArchiveMapper;
-import site.yuanshen.data.vo.ArchiveHistoryVo;
+import site.yuanshen.data.vo.ArchiveSlotVo;
 import site.yuanshen.data.vo.ArchiveVo;
 import site.yuanshen.genshin.core.service.SysUserArchiveService;
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,7 +29,7 @@ public class SysUserArchiveServiceImpl implements SysUserArchiveService {
 
     private final SysUserArchiveMapper sysUserArchiveMapper;
 
-    private SysUserArchive getArchive(int slotIndex, Long userId) {
+    private SysUserArchive getSlotEntity(int slotIndex, Long userId) {
         return sysUserArchiveMapper.selectOne(
                 Wrappers.<SysUserArchive>lambdaQuery()
                         .eq(SysUserArchive::getSlotIndex, slotIndex)
@@ -41,8 +43,8 @@ public class SysUserArchiveServiceImpl implements SysUserArchiveService {
      */
     @Override
     public ArchiveVo getLastArchive(int slotIndex, Long userId) {
-        return new SysUserArchiveDto(getArchive(slotIndex, userId))
-                .getVo(1);
+        return new SysUserArchiveSlotDto(getSlotEntity(slotIndex, userId))
+                .getArchiveVo(1);
     }
 
     /**
@@ -51,31 +53,20 @@ public class SysUserArchiveServiceImpl implements SysUserArchiveService {
      * @return 指定槽位的所有历史存档
      */
     @Override
-    public ArchiveHistoryVo getHistoryArchive(int slotIndex, Long userId) {
-        return new SysUserArchiveDto(getArchive(slotIndex, userId)).getHistoryVo();
+    public ArchiveSlotVo getSlot(int slotIndex, Long userId) {
+        return new SysUserArchiveSlotDto(getSlotEntity(slotIndex, userId)).getSlotVo();
     }
 
-    /**
-     * @param userId 用户id
-     * @return 所有槽位的最新存档
-     */
-    @Override
-    public List<ArchiveVo> getAllArchive(Long userId) {
-        return sysUserArchiveMapper.selectList(Wrappers.<SysUserArchive>lambdaQuery().eq(SysUserArchive::getUserId, userId))
-                .stream().sorted(Comparator.comparingLong(SysUserArchive::getSlotIndex))
-                .map(archive -> new SysUserArchiveDto(archive).getVo(1))
-                .collect(Collectors.toList());
-    }
 
     /**
      * @param userId 用户id
      * @return 所有槽位的历史存档
      */
     @Override
-    public List<ArchiveHistoryVo> getAllHistoryArchive(Long userId) {
+    public List<ArchiveSlotVo> getAllSlot(Long userId) {
         return sysUserArchiveMapper.selectList(Wrappers.<SysUserArchive>lambdaQuery().eq(SysUserArchive::getUserId, userId))
                 .stream().sorted(Comparator.comparingLong(SysUserArchive::getSlotIndex))
-                .map(archive -> new SysUserArchiveDto(archive).getHistoryVo())
+                .map(archive -> new SysUserArchiveSlotDto(archive).getSlotVo())
                 .collect(Collectors.toList());
     }
 
@@ -89,14 +80,14 @@ public class SysUserArchiveServiceImpl implements SysUserArchiveService {
      * @return 是否成功
      */
     @Override
-    public Boolean createArchive(int slotIndex, String archive, Long userId, String name) {
-        if (this.getArchive(slotIndex, userId) != null) throw new RuntimeException("槽位下标冲突，请重新选择下标");
+    public Boolean createSlotAndSaveArchive(int slotIndex, String archive, Long userId, String name) {
+        if (this.getSlotEntity(slotIndex, userId) != null) throw new RuntimeException("槽位下标冲突，请重新选择下标");
         return sysUserArchiveMapper.insert(
                 new SysUserArchive()
                         .setSlotIndex(slotIndex)
                         .setUserId(userId)
                         .setName(name)
-                        .setData("[" + archive + "]"))
+                        .setData((JSON.toJSONString(Collections.singletonList(new ArchiveDto(archive)), JSONWriter.Feature.PrettyFormat))))
                 == 1;
     }
 
@@ -111,12 +102,27 @@ public class SysUserArchiveServiceImpl implements SysUserArchiveService {
      */
     @Override
     public Boolean saveArchive(int slotIndex, String archive, Long userId) {
-        SysUserArchiveDto archiveDto = new SysUserArchiveDto(getArchive(slotIndex, userId));
-        if (archiveDto.saveArchive(archive)) {
-            sysUserArchiveMapper.insert(archiveDto.getEntity());
+        SysUserArchiveSlotDto slotDto = new SysUserArchiveSlotDto(getSlotEntity(slotIndex, userId));
+        if (slotDto.saveArchive(archive)) {
+            sysUserArchiveMapper.insert(slotDto.getEntity());
             return true;
         }
         return false;
+    }
+
+    /**
+     * 重命名指定槽位
+     *
+     * @param slotIndex 槽位下标
+     * @param userId    用户id
+     * @param newName   存档新名称
+     * @return 是否成功
+     */
+    @Override
+    public boolean renameSlot(int slotIndex, Long userId, String newName) {
+        SysUserArchive archive = getSlotEntity(slotIndex, userId);
+        if (archive == null) throw new RuntimeException("槽位不存在");
+        return sysUserArchiveMapper.updateById(archive.setName(newName)) == 1;
     }
 
     /**
@@ -129,9 +135,9 @@ public class SysUserArchiveServiceImpl implements SysUserArchiveService {
      */
     @Override
     public ArchiveVo restoreArchive(int slotIndex, Long userId) {
-        SysUserArchiveDto archiveDto = new SysUserArchiveDto(getArchive(slotIndex, userId));
-        ArchiveVo archiveVo = archiveDto.restoreHistory();
-        sysUserArchiveMapper.updateById(archiveDto.getEntity());
+        SysUserArchiveSlotDto slotDto = new SysUserArchiveSlotDto(getSlotEntity(slotIndex, userId));
+        ArchiveVo archiveVo = slotDto.restoreHistory();
+        sysUserArchiveMapper.updateById(slotDto.getEntity());
         return archiveVo;
     }
 
@@ -144,6 +150,7 @@ public class SysUserArchiveServiceImpl implements SysUserArchiveService {
      */
     @Override
     public Boolean removeArchive(int slotIndex, Long userId) {
+        if (this.getSlotEntity(slotIndex, userId) == null) throw new RuntimeException("槽位不存在");
         return sysUserArchiveMapper.delete(
                 Wrappers.<SysUserArchive>lambdaQuery()
                         .eq(SysUserArchive::getUserId, userId)

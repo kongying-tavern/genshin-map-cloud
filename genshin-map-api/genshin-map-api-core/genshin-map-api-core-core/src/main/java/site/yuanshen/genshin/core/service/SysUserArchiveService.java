@@ -1,6 +1,6 @@
 package site.yuanshen.genshin.core.service;
 
-import site.yuanshen.data.vo.ArchiveHistoryVo;
+import site.yuanshen.data.vo.ArchiveSlotVo;
 import site.yuanshen.data.vo.ArchiveVo;
 
 import java.util.List;
@@ -24,19 +24,13 @@ public interface SysUserArchiveService {
      * @param userId    用户id
      * @return 指定槽位的所有历史存档
      */
-    ArchiveHistoryVo getHistoryArchive(int slotIndex, Long userId);
-
-    /**
-     * @param userId 用户id
-     * @return 所有槽位的最新存档
-     */
-    List<ArchiveVo> getAllArchive(Long userId);
+    ArchiveSlotVo getSlot(int slotIndex, Long userId);
 
     /**
      * @param userId 用户id
      * @return 所有槽位的历史存档
      */
-    List<ArchiveHistoryVo> getAllHistoryArchive(Long userId);
+    List<ArchiveSlotVo> getAllSlot(Long userId);
 
     /**
      * 新建存档槽位并将存档存入<br>
@@ -48,7 +42,7 @@ public interface SysUserArchiveService {
      * @param name      存档名称
      * @return 是否成功
      */
-    Boolean createArchive(int slotIndex, String archive, Long userId, String name);
+    Boolean createSlotAndSaveArchive(int slotIndex, String archive, Long userId, String name);
 
     /**
      * 存档入指定槽位<br>
@@ -60,6 +54,16 @@ public interface SysUserArchiveService {
      * @return 是否成功
      */
     Boolean saveArchive(int slotIndex, String archive, Long userId);
+
+    /**
+     * 重命名指定槽位
+     *
+     * @param slotIndex 槽位下标
+     * @param userId    用户id
+     * @param newName   存档新名称
+     * @return 是否成功
+     */
+    boolean renameSlot(int slotIndex, Long userId, String newName);
 
     /**
      * 删除最近一次存档（恢复为上次存档）<br>

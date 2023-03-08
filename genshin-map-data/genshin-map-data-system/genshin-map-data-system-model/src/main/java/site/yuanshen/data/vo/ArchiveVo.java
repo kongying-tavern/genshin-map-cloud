@@ -1,7 +1,10 @@
 package site.yuanshen.data.vo;
 
+import com.alibaba.fastjson2.annotation.JSONField;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.With;
+import lombok.experimental.WithBy;
 
 import java.time.LocalDateTime;
 
@@ -15,34 +18,11 @@ import java.time.LocalDateTime;
 public class ArchiveVo {
 
     /**
-     * 存档ID
+     * 存档时间
      */
-    @Schema(title = "存档ID")
-    private Long id;
-
-    /**
-     * 存档名称
-     */
-    @Schema(title = "存档名称")
-    private String name;
-
-    /**
-     * 槽位顺序
-     */
-    @Schema(title = "槽位顺序")
-    private long slotIndex;
-
-    /**
-     * 创建时间
-     */
-    @Schema(title = "创建时间")
-    private LocalDateTime createTime;
-
-    /**
-     * 更新时间
-     */
-    @Schema(title = "更新时间")
-    private LocalDateTime updateTime;
+    @Schema(title = "存档时间")
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime time;
 
     /**
      * 存档
@@ -54,6 +34,6 @@ public class ArchiveVo {
      * 存档历史下标
      */
     @Schema(title = "存档历史下标")
-    private long historyIndex;
+    private int historyIndex;
 
 }

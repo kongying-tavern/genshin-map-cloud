@@ -2,15 +2,16 @@ package site.yuanshen.data.dto;
 
 import com.alibaba.fastjson2.JSON;
 import site.yuanshen.common.core.utils.BeanUtils;
-import site.yuanshen.data.base.BaseEntity;
 import lombok.*;
 import lombok.experimental.Accessors;
 import site.yuanshen.data.entity.SysUserArchive;
-import site.yuanshen.data.vo.ArchiveHistoryVo;
+import site.yuanshen.data.vo.ArchiveSlotVo;
 import site.yuanshen.data.vo.ArchiveVo;
 
 import java.time.LocalDateTime;
 import java.util.LinkedList;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 /**
  * 系统用户存档Dto
@@ -24,7 +25,12 @@ import java.util.LinkedList;
 @AllArgsConstructor
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = false)
-public class SysUserArchiveDto {
+public class SysUserArchiveSlotDto {
+
+    /**
+     * 乐观锁：修改次数
+     */
+    private Long version;
 
     /**
      * 存档ID
@@ -39,7 +45,7 @@ public class SysUserArchiveDto {
     /**
      * 槽位顺序
      */
-    private Long slotIndex;
+    private Integer slotIndex;
 
     /**
      * 创建时间
@@ -64,11 +70,11 @@ public class SysUserArchiveDto {
     /**
      * 存档历史
      */
-    private LinkedList<String> archiveHistory;
+    private LinkedList<ArchiveDto> archiveHistory;
 
-    public SysUserArchiveDto(SysUserArchive sysUserArchive) {
+    public SysUserArchiveSlotDto(SysUserArchive sysUserArchive) {
         BeanUtils.copyProperties(sysUserArchive, this);
-        archiveHistory = new LinkedList<>(JSON.parseArray(data).toJavaList(String.class));
+        archiveHistory = new LinkedList<>(JSON.parseArray(sysUserArchive.getData()).toJavaList(ArchiveDto.class));
     }
 
     public SysUserArchive getEntity() {
@@ -80,18 +86,19 @@ public class SysUserArchiveDto {
      * @param index 存档历史下标
      * @return 指定历史下标的存档
      */
-    public ArchiveVo getVo(int index) {
-        ArchiveVo vo = BeanUtils.copyProperties(this, ArchiveVo.class);
-        vo.setArchive(archiveHistory.get(index - 1));
-        return vo;
+    public ArchiveVo getArchiveVo(int index) {;
+        return archiveHistory.get(index - 1).getVo(index);
     }
 
     /**
      * @return 历史存档列表
      */
-    public ArchiveHistoryVo getHistoryVo() {
-        ArchiveHistoryVo vo = BeanUtils.copyProperties(this, ArchiveHistoryVo.class);
-        vo.setArchive(archiveHistory.toArray(new String[0]));
+    public ArchiveSlotVo getSlotVo() {
+        ArchiveSlotVo vo = BeanUtils.copyProperties(this, ArchiveSlotVo.class);
+        AtomicInteger index = new AtomicInteger(1);
+        vo.setArchive(archiveHistory.stream()
+                .map(dto->dto.getVo(index.getAndAdd(1)))
+                .collect(Collectors.toList()));
         return vo;
     }
 
@@ -102,8 +109,8 @@ public class SysUserArchiveDto {
      * @return 存档是否已更改
      */
     public boolean saveArchive(String newArchive) {
-        if (archiveHistory.getFirst().equals(newArchive)) return false;
-        archiveHistory.add(0, newArchive);
+        if (archiveHistory.getFirst().getArchive().equals(newArchive)) return false;
+        archiveHistory.add(0, new ArchiveDto(newArchive));
         while (archiveHistory.size() > 5) {
             archiveHistory.removeLast();
         }
@@ -114,14 +121,7 @@ public class SysUserArchiveDto {
      * 恢复上次存档（删除最近一次存档）
      */
     public ArchiveVo restoreHistory() {
-        try {
-            ArchiveVo vo = BeanUtils.copyProperties(this, ArchiveVo.class);
-            archiveHistory.removeFirst();
-            vo.setArchive(archiveHistory.getFirst());
-            return vo;
-        }
-        catch (Exception ignore) {
-            throw new RuntimeException("存档为空，无历史存档");
-        }
+        if (archiveHistory.isEmpty()) throw new RuntimeException("存档为空，无历史存档");
+        return archiveHistory.removeFirst().getVo(1);
     }
 }
