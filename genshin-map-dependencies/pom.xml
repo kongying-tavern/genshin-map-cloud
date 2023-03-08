@@ -11,7 +11,7 @@
     <properties>
         <mybatis-plus.version>3.5.2</mybatis-plus.version>
         <druid.version>1.2.13</druid.version>
-        <fastjson.version>1.2.83</fastjson.version>
+        <fastjson2.version>2.0.24</fastjson2.version>
         <springdoc.version>1.6.11</springdoc.version>
         <nimbus-jose-jwt.version>9.21</nimbus-jose-jwt.version>
         <springboot.version>2.3.12.RELEASE</springboot.version>
@@ -58,7 +58,18 @@
             <dependency>
                 <groupId>com.alibaba</groupId>
                 <artifactId>fastjson</artifactId>
-                <version>${fastjson.version}</version>
+                <version>${fastjson2.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.fastjson2</groupId>
+                <artifactId>fastjson2</artifactId>
+                <version>${fastjson2.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.alibaba.fastjson2</groupId>
+                <artifactId>fastjson2-extension-spring5</artifactId>
+                <version>${fastjson2.version}</version>
             </dependency>
 
             <!--springdoc-->

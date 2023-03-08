@@ -2,7 +2,7 @@ package site.yuanshen.data.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
-import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson2.annotation.JSONField;
 import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.entity.ScoreStat;
 import site.yuanshen.data.vo.ScoreStatVo;
