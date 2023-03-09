@@ -104,7 +104,8 @@ public class SysUserArchiveServiceImpl implements SysUserArchiveService {
     public Boolean saveArchive(int slotIndex, String archive, Long userId) {
         SysUserArchiveSlotDto slotDto = new SysUserArchiveSlotDto(getSlotEntity(slotIndex, userId));
         if (slotDto.saveArchive(archive)) {
-            sysUserArchiveMapper.insert(slotDto.getEntity());
+            sysUserArchiveMapper.update(slotDto.getEntity(), Wrappers.<SysUserArchive>lambdaUpdate()
+                    .eq(SysUserArchive::getId, slotDto.getEntity().getId()));
             return true;
         }
         return false;

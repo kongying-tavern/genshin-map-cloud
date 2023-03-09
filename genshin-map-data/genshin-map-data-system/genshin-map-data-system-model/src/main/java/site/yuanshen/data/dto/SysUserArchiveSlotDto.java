@@ -1,6 +1,7 @@
 package site.yuanshen.data.dto;
 
 import com.alibaba.fastjson2.JSON;
+import org.apache.commons.lang.StringUtils;
 import site.yuanshen.common.core.utils.BeanUtils;
 import lombok.*;
 import lombok.experimental.Accessors;
@@ -109,7 +110,7 @@ public class SysUserArchiveSlotDto {
      * @return 存档是否已更改
      */
     public boolean saveArchive(String newArchive) {
-        if (archiveHistory.getFirst().getArchive().equals(newArchive)) return false;
+        if (StringUtils.equals(archiveHistory.getFirst().getArchive(), newArchive)) return false;
         archiveHistory.add(0, new ArchiveDto(newArchive));
         while (archiveHistory.size() > 5) {
             archiveHistory.removeLast();
