@@ -1,7 +1,6 @@
 package site.yuanshen.genshin.core.service.impl;
 
 import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.JSONWriter;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -87,7 +86,7 @@ public class SysUserArchiveServiceImpl implements SysUserArchiveService {
                         .setSlotIndex(slotIndex)
                         .setUserId(userId)
                         .setName(name)
-                        .setData((JSON.toJSONString(Collections.singletonList(new ArchiveDto(archive)), JSONWriter.Feature.PrettyFormat))))
+                        .setData((JSON.toJSONString(Collections.singletonList(new ArchiveDto(archive))))))
                 == 1;
     }
 
@@ -104,8 +103,7 @@ public class SysUserArchiveServiceImpl implements SysUserArchiveService {
     public Boolean saveArchive(int slotIndex, String archive, Long userId) {
         SysUserArchiveSlotDto slotDto = new SysUserArchiveSlotDto(getSlotEntity(slotIndex, userId));
         if (slotDto.saveArchive(archive)) {
-            sysUserArchiveMapper.update(slotDto.getEntity(), Wrappers.<SysUserArchive>lambdaUpdate()
-                    .eq(SysUserArchive::getId, slotDto.getEntity().getId()));
+            sysUserArchiveMapper.updateById(slotDto.getEntity());
             return true;
         }
         return false;
