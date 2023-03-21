@@ -11,9 +11,8 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 import org.springframework.util.StringUtils;
 import site.yuanshen.common.core.utils.DebounceExecutor;
 import site.yuanshen.genshin.core.dao.IconTagDao;
-import site.yuanshen.genshin.core.dao.ItemDao;
-import site.yuanshen.genshin.core.dao.MarkerDao;
 import site.yuanshen.genshin.core.service.CacheService;
+import site.yuanshen.genshin.core.service.ItemDocService;
 import site.yuanshen.genshin.core.service.MarkerDocService;
 
 import java.util.Objects;
@@ -30,7 +29,7 @@ import java.util.concurrent.*;
 public class CacheServiceImpl implements CacheService {
 
     private final MarkerDocService markerDocService;
-    private final ItemDao itemDao;
+    private final ItemDocService itemDocService;
     private final IconTagDao iconTagDao;
     private final CacheManager cacheManager;
 
@@ -82,7 +81,7 @@ public class CacheServiceImpl implements CacheService {
             }
     )
     public void cleanItemCache() {
-        runAfterTransactionDebounceByKey(this::refreshItemBz2, FunctionKeyEnum.refreshItemBz2);
+        runAfterTransactionDebounceByKey(itemDocService::refreshItemBz2MD5, FunctionKeyEnum.refreshItemBz2);
     }
 
     @Override
@@ -121,18 +120,6 @@ public class CacheServiceImpl implements CacheService {
         iconTagDao.listAllTagBz2Md5();
     }
 
-    @Caching(
-            evict = {
-                    @CacheEvict(value = "listAllItemBz2", allEntries = true, beforeInvocation = true),
-                    @CacheEvict(value = "listAllItemBz2Md5", allEntries = true, beforeInvocation = true),
-            }
-    )
-    public void refreshItemBz2() {
-        log.info("refreshMarkerBz2");
-        itemDao.listAllItemBz2Md5();
-    }
-
-
     enum FunctionKeyEnum {
         refreshIconTagBz2,
         refreshItemBz2,
@@ -145,7 +132,7 @@ public class CacheServiceImpl implements CacheService {
 
     private void runAfterTransactionDebounceByKey(Runnable r, FunctionKeyEnum keyEnum) {
         DebounceExecutor.debounce(keyEnum.name(), () -> {
-            log.info("Debounce Funtion Run: {}", keyEnum.name());
+            log.info("Debounce Function Run: {}", keyEnum.name());
             try {
                 executor.execute(r);
             } catch (RejectedExecutionException e) {

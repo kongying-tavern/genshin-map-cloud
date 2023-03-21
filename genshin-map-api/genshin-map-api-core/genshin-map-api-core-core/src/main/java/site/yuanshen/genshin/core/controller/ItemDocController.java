@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import site.yuanshen.common.web.response.R;
 import site.yuanshen.common.web.response.RUtils;
 import site.yuanshen.genshin.core.dao.ItemDao;
+import site.yuanshen.genshin.core.service.ItemDocService;
 
 /**
  * 物品档案 Controller 层
@@ -24,6 +25,8 @@ public class ItemDocController {
 
     private final ItemDao itemDao;
 
+    private final ItemDocService itemDocService;
+
     @Operation(summary = "通过bz2返回所有物品信息", description = "查询所有物品信息，返回bz2压缩格式的byte数组")
     @GetMapping("/all_bz2")
     public byte[] listAllItemBz2() {
@@ -33,6 +36,6 @@ public class ItemDocController {
     @Operation(summary = "返回所有物品信息bz2的md5", description = "返回所有物品信息bz2的md5")
     @GetMapping("/all_bz2_md5")
     public R<String> listAllItemBz2Md5() {
-        return RUtils.create(itemDao.listAllItemBz2Md5());
+        return RUtils.create(itemDocService.listItemBz2MD5());
     }
 }

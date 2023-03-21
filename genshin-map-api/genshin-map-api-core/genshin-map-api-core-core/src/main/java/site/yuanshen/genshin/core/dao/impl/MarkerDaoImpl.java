@@ -9,7 +9,6 @@ import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-import site.yuanshen.data.base.BaseEntity;
 import site.yuanshen.data.dto.MarkerDto;
 import site.yuanshen.data.dto.helper.PageSearchDto;
 import site.yuanshen.data.entity.Item;
@@ -22,7 +21,6 @@ import site.yuanshen.data.mapper.MarkerItemLinkMapper;
 import site.yuanshen.data.mapper.MarkerMapper;
 import site.yuanshen.data.vo.MarkerVo;
 import site.yuanshen.data.vo.helper.PageListVo;
-import site.yuanshen.genshin.core.dao.ItemDao;
 import site.yuanshen.genshin.core.dao.MarkerDao;
 
 import java.nio.charset.StandardCharsets;
@@ -44,8 +42,6 @@ public class MarkerDaoImpl implements MarkerDao {
     private final MarkerExtraMapper markerExtraMapper;
     private final MarkerItemLinkMapper markerItemLinkMapper;
     private final ItemMapper itemMapper;
-
-    private final ItemDao itemDao;
     private final CacheManager cacheManager;
 
 
@@ -114,7 +110,7 @@ public class MarkerDaoImpl implements MarkerDao {
     @Override
     @Cacheable(value = "listPageMarkerByBz2")
     public byte[] listPageMarkerByBz2(Integer index) {
-        return null;
+        throw new RuntimeException("缓存未创建");
     }
 
     /**

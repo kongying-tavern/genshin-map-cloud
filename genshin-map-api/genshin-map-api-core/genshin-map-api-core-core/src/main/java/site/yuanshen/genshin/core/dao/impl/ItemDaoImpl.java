@@ -3,12 +3,10 @@ package site.yuanshen.genshin.core.dao.impl;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.caffeine.CaffeineCache;
 import org.springframework.stereotype.Service;
-import org.springframework.util.DigestUtils;
-import site.yuanshen.common.core.utils.CompressUtils;
 import site.yuanshen.data.dto.ItemDto;
 import site.yuanshen.data.entity.Item;
 import site.yuanshen.data.entity.ItemTypeLink;
@@ -17,11 +15,6 @@ import site.yuanshen.data.entity.MarkerItemLink;
 import site.yuanshen.data.mapper.*;
 import site.yuanshen.data.vo.ItemVo;
 import site.yuanshen.genshin.core.dao.ItemDao;
-import site.yuanshen.genshin.core.service.CacheService;
-import site.yuanshen.genshin.core.service.mbp.ItemAreaPublicMBPService;
-import site.yuanshen.genshin.core.service.mbp.ItemMBPService;
-import site.yuanshen.genshin.core.service.mbp.ItemTypeLinkMBPService;
-import site.yuanshen.genshin.core.service.mbp.ItemTypeMBPService;
 
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -95,39 +88,28 @@ public class ItemDaoImpl implements ItemDao {
      * @return 所有的物品信息的Bz2压缩
      */
     @Override
-    @Cacheable(value = "listAllItemBz2", key = "'allItemBz2'")
+    @Cacheable(value = "listAllItemBz2")
     public byte[] listAllItemBz2() {
-        try {
-            return CompressUtils.compress(JSON.toJSONString(
-                            listAllItem())
-                    .getBytes(StandardCharsets.UTF_8));
-        } catch (Exception e) {
-            throw new RuntimeException("创建压缩失败" + e);
-        }
+        throw new RuntimeException("缓存未创建");
     }
 
     /**
-     * @return 所有的物品信息的Bz2压缩的md5
+     * 刷新物品压缩缓存并返回压缩文档
+     *
+     * @return 物品压缩文档
      */
     @Override
-    @Cacheable("listAllItemBz2Md5")
-    public String listAllItemBz2Md5() {
-        CaffeineCache itemBz2Cache = (CaffeineCache) cacheManager.getCache("listAllItemBz2");
-        byte[] allItemBz2;
-        if (itemBz2Cache != null) {
-            if (!itemBz2Cache.getNativeCache().asMap().isEmpty()) {
-                allItemBz2 = (byte[]) itemBz2Cache.getNativeCache().getIfPresent("allItemBz2");
-                if (allItemBz2 == null) {
-                    itemBz2Cache.evict("allItemBz2");
-                    allItemBz2 = listAllItemBz2();
-                }
-            } else {
-                itemBz2Cache.evict("allItemBz2");
-                allItemBz2 = listAllItemBz2();
-            }
-        } else {
-            allItemBz2 = listAllItemBz2();
+    public String refreshAllItemBz2() {
+        try {
+            List<ItemVo> itemList = listAllItem();
+            itemList.sort(Comparator.comparingLong(ItemVo::getItemId));
+            Cache bz2Cache = cacheManager.getCache("listAllItemBz2Md5");
+            if (bz2Cache == null) throw new RuntimeException("缓存未初始化");
+            String result = JSON.toJSONString(itemList);
+            bz2Cache.put(0, result.getBytes(StandardCharsets.UTF_8));
+            return result;
+        } catch (Exception e) {
+            throw new RuntimeException("创建压缩失败",e);
         }
-        return DigestUtils.md5DigestAsHex(allItemBz2);
     }
 }

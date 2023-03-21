@@ -6,8 +6,7 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 import site.yuanshen.genshin.core.dao.IconTagDao;
-import site.yuanshen.genshin.core.dao.ItemDao;
-import site.yuanshen.genshin.core.dao.MarkerDao;
+import site.yuanshen.genshin.core.service.ItemDocService;
 import site.yuanshen.genshin.core.service.MarkerDocService;
 
 /**
@@ -21,7 +20,7 @@ import site.yuanshen.genshin.core.service.MarkerDocService;
 public class CacheInitListener implements ApplicationListener<ApplicationReadyEvent> {
 
     private final MarkerDocService markerDocService;
-    private final ItemDao itemDao;
+    private final ItemDocService itemDocService;
     private final IconTagDao iconTagDao;
 
     /**
@@ -34,7 +33,8 @@ public class CacheInitListener implements ApplicationListener<ApplicationReadyEv
         long startTime = System.currentTimeMillis();
         markerDocService.refreshMarkerBz2MD5();
         markerDocService.listMarkerBz2MD5();
-        itemDao.listAllItemBz2Md5();
+        itemDocService.refreshItemBz2MD5();
+        itemDocService.listItemBz2MD5();
         iconTagDao.listAllTagBz2Md5();
         log.info("完成缓存初始化，花费{}", System.currentTimeMillis() - startTime);
     }
