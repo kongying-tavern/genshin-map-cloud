@@ -7,6 +7,9 @@ import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.DigestUtils;
+import site.yuanshen.common.core.utils.CompressUtils;
+import site.yuanshen.common.core.utils.PgsqlUtils;
 import site.yuanshen.data.dto.ItemDto;
 import site.yuanshen.data.entity.Item;
 import site.yuanshen.data.entity.ItemTypeLink;
@@ -48,10 +51,12 @@ public class ItemDaoImpl implements ItemDao {
         if (itemList.size() == 0)
             return new ArrayList<>();
         //获取分类数据
-        List<ItemTypeLink> typeLinkList = itemTypeLinkMapper.selectList(Wrappers.<ItemTypeLink>lambdaQuery()
-                .in(ItemTypeLink::getItemId,
-                        itemList.stream()
-                                .map(Item::getId).distinct().collect(Collectors.toList())));
+//        List<ItemTypeLink> typeLinkList = itemTypeLinkMapper.selectList(Wrappers.<ItemTypeLink>lambdaQuery()
+//                .in(ItemTypeLink::getItemId,
+//                        itemList.stream()
+//                                .map(Item::getId).distinct().collect(Collectors.toList())));
+        List<ItemTypeLink> typeLinkList = itemTypeLinkMapper.selectWithLargeCustomIn("item_id", PgsqlUtils.unnestStr(itemList.stream()
+                                .map(Item::getId).distinct().collect(Collectors.toList())),Wrappers.lambdaQuery());
         Map<Long, List<Long>> itemToTypeMap = new HashMap<>();
         for (ItemTypeLink typeLink : typeLinkList) {
             Long itemId = typeLink.getItemId();
@@ -61,10 +66,14 @@ public class ItemDaoImpl implements ItemDao {
         }
 
         //获取点位数据
-        List<MarkerItemLink> markerItemLinkList = markerItemLinkMapper.selectList(Wrappers.<MarkerItemLink>lambdaQuery()
-                .in(MarkerItemLink::getItemId,
-                        itemList.stream()
-                                .map(Item::getId).distinct().collect(Collectors.toList())));
+//        List<MarkerItemLink> markerItemLinkList = markerItemLinkMapper.selectList(Wrappers.<MarkerItemLink>lambdaQuery()
+//                .in(MarkerItemLink::getItemId,
+//                        itemList.stream()
+//                                .map(Item::getId).distinct().collect(Collectors.toList())));
+
+        List<MarkerItemLink> markerItemLinkList = markerItemLinkMapper.selectWithLargeCustomIn("item_id", PgsqlUtils.unnestStr(itemList.stream()
+                                .map(Item::getId).distinct().collect(Collectors.toList())),Wrappers.<MarkerItemLink>lambdaQuery());
+
         List<Long> markerIdList = markerMapper.selectList(Wrappers.<Marker>lambdaQuery()
                         .eq(Marker::getHiddenFlag, 0)
                         .select(Marker::getId))

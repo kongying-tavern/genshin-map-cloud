@@ -21,6 +21,8 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
+import static site.yuanshen.common.core.utils.PgsqlUtils.unnestStr;
+
 /**
  * 物品服务接口实现
  *
@@ -51,19 +53,23 @@ public class ItemServiceImpl implements ItemService {
     public List<ItemDto> listItemById(List<Long> itemIdList, List<Integer> hiddenFlagList) {
         //收集分类信息
         Map<Long, List<Long>> typeMap = new ConcurrentHashMap<>();
-        itemTypeLinkMapper.selectList(Wrappers.<ItemTypeLink>lambdaQuery()
-                        .in(ItemTypeLink::getItemId, itemIdList))
+//        itemTypeLinkMapper.selectList(Wrappers.<ItemTypeLink>lambdaQuery()
+//                        .in(ItemTypeLink::getItemId, itemIdList))
+        itemTypeLinkMapper.selectWithLargeCustomIn("item_id", unnestStr(itemIdList), Wrappers.<ItemTypeLink>lambdaQuery())
                 .parallelStream()
                 .forEach(typeLink ->
                         typeMap.compute(typeLink.getItemId(), (itemId, typeList) -> {
-                            if (typeList == null) return new ArrayList<>(Collections.singletonList(typeLink.getTypeId()));
+                            if (typeList == null)
+                                return new ArrayList<>(Collections.singletonList(typeLink.getTypeId()));
                             typeList.add(typeLink.getTypeId());
                             return typeList;
                         }));
         //取得实体类并转化为DTO，过程之中写入分类信息
-        return itemMapper.selectList(Wrappers.<Item>lambdaQuery()
-                        .in(!hiddenFlagList.isEmpty(), Item::getHiddenFlag, hiddenFlagList)
-                        .in(Item::getId, itemIdList))
+//        return itemMapper.selectList(Wrappers.<Item>lambdaQuery()
+//                        .in(!hiddenFlagList.isEmpty(), Item::getHiddenFlag, hiddenFlagList)
+//                        .in(Item::getId, itemIdList))
+        return itemMapper.selectListWithLargeIn(unnestStr(itemIdList), Wrappers.<Item>lambdaQuery()
+                        .in(!hiddenFlagList.isEmpty(), Item::getHiddenFlag, hiddenFlagList))
                 .parallelStream()
                 .map(item ->
                         new ItemDto(item)
@@ -86,10 +92,15 @@ public class ItemServiceImpl implements ItemService {
         if (itemPage.getTotal() == 0L)
             return new PageListVo<ItemVo>().setRecord(new ArrayList<>()).setSize(itemPage.getSize()).setTotal(0L);
         //获取分类数据
-        List<ItemTypeLink> typeLinkList = itemTypeLinkMapper.selectList(Wrappers.<ItemTypeLink>lambdaQuery()
-                .in(ItemTypeLink::getItemId,
-                        itemPage.getRecords().stream()
-                                .map(Item::getId).collect(Collectors.toList())));
+
+//        List<ItemTypeLink> typeLinkList_bak = itemTypeLinkMapper.selectList(Wrappers.<ItemTypeLink>lambdaQuery()
+//                .in(ItemTypeLink::getItemId,
+//                        itemPage.getRecords().stream()
+//                                .map(Item::getId).collect(Collectors.toList())));
+        List<ItemTypeLink> typeLinkList = itemTypeLinkMapper.selectWithLargeCustomIn("item_id",
+                unnestStr(itemPage.getRecords().stream().map(Item::getId).collect(Collectors.toList())),
+                Wrappers.<ItemTypeLink>lambdaQuery());
+
         Map<Long, List<Long>> itemToTypeMap = new HashMap<>();
         for (ItemTypeLink typeLink : typeLinkList) {
             Long itemId = typeLink.getItemId();
@@ -98,18 +109,27 @@ public class ItemServiceImpl implements ItemService {
             itemToTypeMap.put(itemId, typeList);
         }
 
+
+
         //获取点位数据
-        List<MarkerItemLink> markerItemLinkList = markerItemLinkMapper.selectList(Wrappers.<MarkerItemLink>lambdaQuery()
-                .in(MarkerItemLink::getItemId,
-                        itemPage.getRecords().stream()
-                                .map(Item::getId).collect(Collectors.toList())));
+//        List<MarkerItemLink> markerItemLinkList_bak = markerItemLinkMapper.selectList(Wrappers.<MarkerItemLink>lambdaQuery()
+//                .in(MarkerItemLink::getItemId,
+//                        itemPage.getRecords().stream()
+//                                .map(Item::getId).collect(Collectors.toList())));
+        List<MarkerItemLink> markerItemLinkList = markerItemLinkMapper.selectWithLargeCustomIn("item_id",
+                unnestStr(itemPage.getRecords().stream()
+                        .map(Item::getId).collect(Collectors.toList())), Wrappers.<MarkerItemLink>lambdaQuery());
+
         //获取其中的正常点位 hidden_flag=0 若为内鬼用户,则增加hidden_flag=2
 
         List<Long> normalMarkerList = new ArrayList<>();
-        if(!markerItemLinkList.isEmpty()) {
-            normalMarkerList = markerMapper.selectList(Wrappers.<Marker>lambdaQuery()
-                            .in(!itemSearchDto.getHiddenFlagList().isEmpty(),Marker::getHiddenFlag,itemSearchDto.getHiddenFlagList())
-                            .in(Marker::getId, markerItemLinkList.stream().map(MarkerItemLink::getMarkerId).collect(Collectors.toList())))
+        if (!markerItemLinkList.isEmpty()) {
+//            normalMarkerList = markerMapper.selectList(Wrappers.<Marker>lambdaQuery()
+//                            .in(!itemSearchDto.getHiddenFlagList().isEmpty(),Marker::getHiddenFlag,itemSearchDto.getHiddenFlagList())
+//                            .in(Marker::getId, markerItemLinkList.stream().map(MarkerItemLink::getMarkerId).collect(Collectors.toList())))
+            normalMarkerList = markerMapper.selectListWithLargeIn(
+                            unnestStr(markerItemLinkList.stream().map(MarkerItemLink::getMarkerId).collect(Collectors.toList())),
+                            Wrappers.<Marker>lambdaQuery().in(!itemSearchDto.getHiddenFlagList().isEmpty(),Marker::getHiddenFlag,itemSearchDto.getHiddenFlagList()))
                     .stream().map(Marker::getId).collect(Collectors.toList());
         }
 
@@ -154,7 +174,6 @@ public class ItemServiceImpl implements ItemService {
 //
 //        Wrappers.<Marker>lambdaQuery().eq((userDataLevel&1<<normal)>0,Marker::getHiddenFlag,normal);
 //    }
-
 
 
     /**

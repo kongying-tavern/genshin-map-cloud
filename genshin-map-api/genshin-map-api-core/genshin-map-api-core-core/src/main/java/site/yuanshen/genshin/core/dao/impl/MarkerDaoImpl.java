@@ -9,6 +9,7 @@ import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import site.yuanshen.common.core.utils.PgsqlUtils;
 import site.yuanshen.data.dto.MarkerDto;
 import site.yuanshen.data.dto.helper.PageSearchDto;
 import site.yuanshen.data.entity.Item;
@@ -54,8 +55,8 @@ public class MarkerDaoImpl implements MarkerDao {
     /**
      * 分页查询所有点位信息
      *
-     * @param pageSearchDto 分页查询数据封装
-     * @param hiddenFlagList    hidden_flag范围
+     * @param pageSearchDto  分页查询数据封装
+     * @param hiddenFlagList hidden_flag范围
      * @return 点位完整信息的前端封装的分页记录
      */
     @Override
@@ -68,7 +69,7 @@ public class MarkerDaoImpl implements MarkerDao {
         Map<Long, MarkerExtra> extraMap = new HashMap<>();
         ConcurrentHashMap<Long, List<MarkerItemLink>> itemLinkMap = new ConcurrentHashMap<>();
         Map<Long, Item> itemMap = new HashMap<>();
-        getAllRelateInfoById(markerIdList,extraMap,itemLinkMap,itemMap);
+        getAllRelateInfoById(markerIdList, extraMap, itemLinkMap, itemMap);
 
         return new PageListVo<MarkerVo>()
                 .setRecord(markerPage.getRecords().parallelStream()
@@ -78,13 +79,18 @@ public class MarkerDaoImpl implements MarkerDao {
                 .setSize(markerPage.getSize());
     }
 
-    public void getAllRelateInfoById(List<Long> markerIdList , Map<Long, MarkerExtra> extraMap, ConcurrentHashMap<Long, List<MarkerItemLink>> itemLinkMap, Map<Long, Item> itemMap) {
-        String s = markerIdList.toString().replace('[','{').replace(']','}');
-        extraMap.putAll(markerExtraMapper.selectList(Wrappers.<MarkerExtra>lambdaQuery()
-                        .apply("marker_id = any({0}::bigint[])", s))
+    public void getAllRelateInfoById(List<Long> markerIdList, Map<Long, MarkerExtra> extraMap, ConcurrentHashMap<Long, List<MarkerItemLink>> itemLinkMap, Map<Long, Item> itemMap) {
+        String s = markerIdList.toString().replace('[', '{').replace(']', '}');
+//        extraMap.putAll(markerExtraMapper.selectList(Wrappers.<MarkerExtra>lambdaQuery()
+//                        .apply("marker_id = any({0}::bigint[])", s))
+//                .stream().collect(Collectors.toMap(MarkerExtra::getMarkerId, markerExtra -> markerExtra)));
+        extraMap.putAll(markerExtraMapper.selectWithLargeCustomIn("marker_id", PgsqlUtils.unnestStr(markerIdList), Wrappers.<MarkerExtra>lambdaQuery())
                 .stream().collect(Collectors.toMap(MarkerExtra::getMarkerId, markerExtra -> markerExtra)));
-        List<Long> itemIdList = markerItemLinkMapper.selectList(Wrappers.<MarkerItemLink>lambdaQuery()
-                        .apply("marker_id = any({0}::bigint[])", s))
+
+
+//        List<Long> itemIdList = markerItemLinkMapper.selectList(Wrappers.<MarkerItemLink>lambdaQuery()
+//                        .apply("marker_id = any({0}::bigint[])", s))
+        List<Long> itemIdList = markerItemLinkMapper.selectWithLargeCustomIn("marker_id", PgsqlUtils.unnestStr(markerIdList), Wrappers.<MarkerItemLink>lambdaQuery())
                 .parallelStream().map(markerItemLink -> {
                     itemLinkMap.compute(markerItemLink.getMarkerId(),
                             (markerId, linkList) -> {
@@ -97,7 +103,7 @@ public class MarkerDaoImpl implements MarkerDao {
                 .distinct().collect(Collectors.toList());
         //获取item_id,得到item合集
         itemMap.putAll(itemMapper.selectList(Wrappers.<Item>lambdaQuery()
-                        .apply("id = any({0}::bigint[])", itemIdList.toString().replace('[','{').replace(']','}')))
+                        .apply("id = any({0}::bigint[])", itemIdList.toString().replace('[', '{').replace(']', '}')))
                 .stream().collect(Collectors.toMap(Item::getId, Item -> Item)));
     }
 
@@ -115,6 +121,7 @@ public class MarkerDaoImpl implements MarkerDao {
 
     /**
      * 刷新bz2返回点位分页
+     *
      * @return 刷新后的各个分页
      */
     public List<byte[]> refreshPageMarkerByBz2() {
@@ -138,7 +145,7 @@ public class MarkerDaoImpl implements MarkerDao {
             }
             return result;
         } catch (Exception e) {
-            throw new RuntimeException("创建压缩失败",e);
+            throw new RuntimeException("创建压缩失败", e);
         }
     }
 
@@ -171,11 +178,11 @@ public class MarkerDaoImpl implements MarkerDao {
                         }
                 );
 
-        log.info("拥有点位的隐藏物品:{}",hideItemSet);
+        log.info("拥有点位的隐藏物品:{}", hideItemSet);
 
         return markerList.parallelStream()
-                        .map(marker -> new MarkerDto(marker, extraMap.get(marker.getId()), itemLinkMap.get(marker.getId()), itemMap).getVo())
-                        .collect(Collectors.toList());
+                .map(marker -> new MarkerDto(marker, extraMap.get(marker.getId()), itemLinkMap.get(marker.getId()), itemMap).getVo())
+                .collect(Collectors.toList());
     }
 
 }
