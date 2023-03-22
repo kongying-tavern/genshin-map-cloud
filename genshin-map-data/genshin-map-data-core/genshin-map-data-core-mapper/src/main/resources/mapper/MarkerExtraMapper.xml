@@ -27,5 +27,34 @@
         del_flag,
      id, marker_id, marker_extra_content, parent_id, is_related
     </sql>
+    <select id="selectListWithLargeIn" resultType="site.yuanshen.data.entity.MarkerExtra">
+        with id_list as ( select unnest(${unnest}::bigint[]) "id")
+        select
+        <if test="ew.SqlSelect ==null or ew.SqlSelect == ''">
+            <include refid="Base_Column_List"/>
+        </if>
+        ${ew.SqlSelect}
+        from
+        marker_extra, id_list
+        <if test="ew.customSqlSegment ==null or ew.customSqlSegment == ''">
+            where del_flag = 0
+        </if>
+        ${ew.customSqlSegment} and del_flag = 0 and marker_extra.id=id_list.id
+
+    </select>
+    <select id="selectWithLargeCustomIn" resultType="site.yuanshen.data.entity.MarkerExtra">
+        with id_list as ( select unnest(${unnest}::bigint[]) "${column}2")
+        select
+        <if test="ew.SqlSelect ==null or ew.SqlSelect == ''">
+            <include refid="Base_Column_List"/>
+        </if>
+        ${ew.SqlSelect}
+        from
+        marker_extra, id_list
+        <if test="ew.customSqlSegment ==null or ew.customSqlSegment == ''">
+            where del_flag = 0
+        </if>
+        ${ew.customSqlSegment}  and del_flag = 0 and marker_extra.${column} = id_list."${column}2"
+    </select>
 
 </mapper>

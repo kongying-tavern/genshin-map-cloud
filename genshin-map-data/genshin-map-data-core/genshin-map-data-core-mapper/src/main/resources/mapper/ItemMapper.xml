@@ -25,7 +25,8 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        version,
+        version
+        ,
         creator_id,
         updater_id,
         create_time,
@@ -70,5 +71,36 @@
         order by i.id)
         order by id
     </select>
+
+    <select id="selectListWithLargeIn" resultType="site.yuanshen.data.entity.Item">
+        with id_list as ( select unnest(${unnest}::bigint[]) "id")
+        select
+        <if test="ew.SqlSelect ==null or ew.SqlSelect == ''">
+            <include refid="Base_Column_List"/>
+        </if>
+        ${ew.SqlSelect}
+        from
+        item, id_list
+        <if test="ew.customSqlSegment ==null or ew.customSqlSegment == ''">
+            where del_flag = 0
+        </if>
+        ${ew.customSqlSegment} and del_flag = 0 and item.id=id_list.id
+
+    </select>
+    <select id="selectWithLargeCustomIn" resultType="site.yuanshen.data.entity.Item">
+        with id_list as ( select unnest(${unnest}::bigint[]) "${column}2")
+        select
+        <if test="ew.SqlSelect ==null or ew.SqlSelect == ''">
+            <include refid="Base_Column_List"/>
+        </if>
+        ${ew.SqlSelect}
+        from
+        item, id_list
+        <if test="ew.customSqlSegment ==null or ew.customSqlSegment == ''">
+            where del_flag = 0
+        </if>
+        ${ew.customSqlSegment}  and del_flag = 0 and item.${column} = id_list."${column}2"
+    </select>
+
 
 </mapper>

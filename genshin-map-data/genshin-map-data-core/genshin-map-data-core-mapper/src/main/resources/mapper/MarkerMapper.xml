@@ -4,14 +4,13 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="site.yuanshen.data.entity.Marker">
-        <id column="id" property="id"/>
+        <id column="id"  property="id"/>
         <result column="version" property="version"/>
         <result column="creator_id" property="creatorId"/>
         <result column="updater_id" property="updaterId"/>
         <result column="create_time" property="createTime"/>
         <result column="update_time" property="updateTime"/>
         <result column="del_flag" property="delFlag"/>
-        <result column="marker_id" property="markerId"/>
         <result column="marker_title" property="markerTitle"/>
         <result column="position" property="position"/>
         <result column="content" property="content"/>
@@ -33,5 +32,41 @@
         del_flag,
      id, marker_id, marker_title, position, content, picture, marker_creator_id, picture_creator_id, video_path,refresh_time,hidden_flag
     </sql>
+    <select id="selectListWithLargeIn" resultType="site.yuanshen.data.entity.Marker">
+        with id_list as (
+            select unnest(${unnest}::bigint[]) "id")
+        select *
+        from
+            marker, id_list
+            <if test="ew.customSqlSegment ==null or ew.customSqlSegment == ''">
+                where  del_flag = 0
+            </if>
+             ${ew.customSqlSegment} and del_flag = 0 and marker.id=id_list.id
+
+    </select>
+    <select id="selectWithLargeCustomIn" resultType="site.yuanshen.data.entity.Marker">
+        with id_list as (
+        select unnest(${unnest}::bigint[]) "${column}2")
+        select *
+        from
+        marker, id_list
+        <if test="ew.customSqlSegment ==null or ew.customSqlSegment == ''">
+            where  del_flag = 0
+        </if>
+        ${ew.customSqlSegment} and del_flag = 0 and marker.${column}=id_list."${column}2"
+    </select>
+    <select id="selectListByMarkerItemLink" resultType="site.yuanshen.data.entity.Marker">
+        with
+        id_list as (select unnest(${unnest}::bigint[]) "${column}2")
+        select
+        <include refid="Base_Column_List"/>
+        from
+        marker inner join ( select distinct marker_id from marker_item_link, id_list
+        <if test="ew.customSqlSegment ==null or ew.customSqlSegment == ''">
+            where del_flag = 0
+        </if>
+        ${ew.customSqlSegment} and marker_item_link.${column}=id_list."${column}2" ) marker_id_list
+        on marker.id=marker_id_list.marker_id
+    </select>
 
 </mapper>
