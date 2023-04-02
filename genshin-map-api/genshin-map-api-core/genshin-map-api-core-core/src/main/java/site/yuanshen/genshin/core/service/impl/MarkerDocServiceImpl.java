@@ -32,12 +32,12 @@ public class MarkerDocServiceImpl implements MarkerDocService {
      * @return 分页字节数组的md5
      */
     @Override
-    @Cacheable(value = "listMarkerBz2MD5")
+    @Cacheable(value = "listMarkerBz2MD5", cacheManager = "neverRefreshCacheManager")
     public List<String> listMarkerBz2MD5() {
         return new ArrayList<>();
     }
 
-    @CachePut(value = "listMarkerBz2MD5")
+    @CachePut(value = "listMarkerBz2MD5", cacheManager = "neverRefreshCacheManager")
     public List<String> refreshMarkerBz2MD5() {
         long startTime = System.currentTimeMillis();
         List<String> result = markerDao.refreshPageMarkerByBz2().stream()

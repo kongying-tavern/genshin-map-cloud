@@ -2,12 +2,13 @@ package site.yuanshen.genshin.core.dao.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-import org.springframework.util.DigestUtils;
 import site.yuanshen.common.core.utils.CompressUtils;
 import site.yuanshen.common.core.utils.PgsqlUtils;
 import site.yuanshen.data.dto.ItemDto;
@@ -29,14 +30,30 @@ import java.util.stream.Collectors;
  * @author Moment
  */
 @Service
-@RequiredArgsConstructor
 public class ItemDaoImpl implements ItemDao {
 
     private final CacheManager cacheManager;
+    private final CacheManager neverRefreshCacheManager;
     private final ItemMapper itemMapper;
     private final ItemTypeLinkMapper itemTypeLinkMapper;
     private final MarkerItemLinkMapper markerItemLinkMapper;
     private final MarkerMapper markerMapper;
+
+    @Autowired
+    public ItemDaoImpl(CacheManager cacheManager,
+                       @Qualifier("neverRefreshCacheManager")
+                       CacheManager neverRefreshCacheManager,
+                       ItemMapper itemMapper,
+                       ItemTypeLinkMapper itemTypeLinkMapper,
+                       MarkerItemLinkMapper markerItemLinkMapper,
+                       MarkerMapper markerMapper) {
+        this.cacheManager = cacheManager;
+        this.neverRefreshCacheManager = neverRefreshCacheManager;
+        this.itemMapper = itemMapper;
+        this.itemTypeLinkMapper = itemTypeLinkMapper;
+        this.markerItemLinkMapper = markerItemLinkMapper;
+        this.markerMapper = markerMapper;
+    }
 
     /**
      * @return 所有的物品信息
@@ -97,8 +114,9 @@ public class ItemDaoImpl implements ItemDao {
      * @return 所有的物品信息的Bz2压缩
      */
     @Override
-    @Cacheable(value = "listAllItemBz2")
+    @Cacheable(value = "listAllItemBz2", cacheManager = "neverRefreshCacheManager")
     public byte[] listAllItemBz2() {
+        //通过refreshAllItemBz2()刷新失败
         throw new RuntimeException("缓存未创建");
     }
 
@@ -108,15 +126,13 @@ public class ItemDaoImpl implements ItemDao {
      * @return 物品压缩文档
      */
     @Override
-    public String refreshAllItemBz2() {
+    @CachePut(value = "listAllItemBz2", cacheManager = "neverRefreshCacheManager")
+    public byte[] refreshAllItemBz2() {
         try {
             List<ItemVo> itemList = listAllItem();
             itemList.sort(Comparator.comparingLong(ItemVo::getItemId));
-            Cache bz2Cache = cacheManager.getCache("listAllItemBz2Md5");
-            if (bz2Cache == null) throw new RuntimeException("缓存未初始化");
-            String result = JSON.toJSONString(itemList);
-            bz2Cache.put(0, result.getBytes(StandardCharsets.UTF_8));
-            return result;
+            byte[] result = JSON.toJSONString(itemList).getBytes(StandardCharsets.UTF_8);
+            return CompressUtils.compress(result);
         } catch (Exception e) {
             throw new RuntimeException("创建压缩失败",e);
         }

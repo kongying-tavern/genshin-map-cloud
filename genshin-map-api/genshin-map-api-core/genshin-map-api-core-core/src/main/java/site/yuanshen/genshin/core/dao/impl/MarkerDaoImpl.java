@@ -5,10 +5,15 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
+import site.yuanshen.common.core.utils.CompressUtils;
 import site.yuanshen.common.core.utils.PgsqlUtils;
 import site.yuanshen.data.dto.MarkerDto;
 import site.yuanshen.data.dto.helper.PageSearchDto;
@@ -36,7 +41,6 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class MarkerDaoImpl implements MarkerDao {
 
     private final MarkerMapper markerMapper;
@@ -44,7 +48,23 @@ public class MarkerDaoImpl implements MarkerDao {
     private final MarkerItemLinkMapper markerItemLinkMapper;
     private final ItemMapper itemMapper;
     private final CacheManager cacheManager;
+    private final CacheManager neverRefreshCacheManager;
 
+    @Autowired
+    public MarkerDaoImpl(MarkerMapper markerMapper,
+                         MarkerExtraMapper markerExtraMapper,
+                         MarkerItemLinkMapper markerItemLinkMapper,
+                         ItemMapper itemMapper,
+                         CacheManager cacheManager,
+                         @Qualifier("neverRefreshCacheManager")
+                         CacheManager neverRefreshCacheManager) {
+        this.markerMapper = markerMapper;
+        this.markerExtraMapper = markerExtraMapper;
+        this.markerItemLinkMapper = markerItemLinkMapper;
+        this.itemMapper = itemMapper;
+        this.cacheManager = cacheManager;
+        this.neverRefreshCacheManager = neverRefreshCacheManager;
+    }
 
     @Override
     @Cacheable(value = "getMarkerCount")
@@ -114,8 +134,10 @@ public class MarkerDaoImpl implements MarkerDao {
      * @return 压缩后的字节数组
      */
     @Override
-    @Cacheable(value = "listPageMarkerByBz2")
+    @Cacheable(value = "listPageMarkerByBz2", cacheManager = "neverRefreshCacheManager")
     public byte[] listPageMarkerByBz2(Integer index) {
+        Cache bz2Cache = cacheManager.getCache("listPageMarkerByBz2");
+        Cache neverBz2Cache = neverRefreshCacheManager.getCache("listPageMarkerByBz2");
         throw new RuntimeException("缓存未创建");
     }
 
@@ -131,7 +153,7 @@ public class MarkerDaoImpl implements MarkerDao {
             Long lastId = markerList.get(markerList.size() - 1).getId();
             int totalPages = (int) ((lastId + 3000 - 1) / 3000);
             List<byte[]> result = new ArrayList<>();
-            Cache bz2Cache = cacheManager.getCache("listPageMarkerByBz2");
+            Cache bz2Cache = neverRefreshCacheManager.getCache("listPageMarkerByBz2");
             if (bz2Cache == null) throw new RuntimeException("缓存未初始化");
             for (int i = 0; i < totalPages; i++) {
                 int finalI = i;
@@ -140,8 +162,9 @@ public class MarkerDaoImpl implements MarkerDao {
                                         .filter(markerVo -> markerVo.getId() >= (finalI * 3000L) && markerVo.getId() < ((finalI + 1) * 3000L))
                                         .sorted(Comparator.comparingLong(MarkerVo::getId)).collect(Collectors.toList()))
                         .getBytes(StandardCharsets.UTF_8);
-                result.add(page);
-                bz2Cache.put(i, page);
+                byte[] compress = CompressUtils.compress(page);
+                result.add(compress);
+                bz2Cache.put(i, compress);
             }
             return result;
         } catch (Exception e) {

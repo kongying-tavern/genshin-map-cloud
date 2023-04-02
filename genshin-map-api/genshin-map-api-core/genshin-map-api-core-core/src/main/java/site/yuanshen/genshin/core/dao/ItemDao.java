@@ -26,6 +26,6 @@ public interface ItemDao {
      *
      * @return 物品压缩文档
      */
-    String refreshAllItemBz2();
+    byte[] refreshAllItemBz2();
 
 }

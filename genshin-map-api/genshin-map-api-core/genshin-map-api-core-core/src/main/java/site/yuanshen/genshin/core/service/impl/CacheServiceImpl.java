@@ -63,7 +63,7 @@ public class CacheServiceImpl implements CacheService {
         runAfterTransactionByFuture(futureTask);
         try {
             if (futureTask.get() == Status.OK)
-                runAfterTransactionDebounceByKey(this::refreshIconTagBz2, FunctionKeyEnum.refreshIconTagBz2);
+                runAfterTransactionDebounceByKey(this::refreshIconTagBz2, FunctionKeyEnum.refreshIconTagBz2,3);
             else
                 log.error("cleanIconTagCache执行失败,未知原因");
         } catch (Exception e) {
@@ -81,7 +81,7 @@ public class CacheServiceImpl implements CacheService {
             }
     )
     public void cleanItemCache() {
-        runAfterTransactionDebounceByKey(itemDocService::refreshItemBz2MD5, FunctionKeyEnum.refreshItemBz2);
+        runAfterTransactionDebounceByKey(itemDocService::refreshItemBz2MD5, FunctionKeyEnum.refreshItemBz2,3);
     }
 
     @Override
@@ -106,7 +106,7 @@ public class CacheServiceImpl implements CacheService {
     public void cleanMarkerCache() {
         log.info("cleanMarkerCache");
         runAfterTransactionDebounceByKey(markerDocService::refreshMarkerBz2MD5,
-                FunctionKeyEnum.refreshMarkerBz2);
+                FunctionKeyEnum.refreshMarkerBz2, 5);
     }
 
     @Caching(
@@ -130,7 +130,7 @@ public class CacheServiceImpl implements CacheService {
         OK, FAIL
     }
 
-    private void runAfterTransactionDebounceByKey(Runnable r, FunctionKeyEnum keyEnum) {
+    private void runAfterTransactionDebounceByKey(Runnable r, FunctionKeyEnum keyEnum, int second) {
         DebounceExecutor.debounce(keyEnum.name(), () -> {
             log.info("Debounce Function Run: {}", keyEnum.name());
             try {
@@ -138,7 +138,7 @@ public class CacheServiceImpl implements CacheService {
             } catch (RejectedExecutionException e) {
                 log.error("线程池拒绝：{}",keyEnum.name());
             }
-        }, 3, TimeUnit.SECONDS);
+        }, second, TimeUnit.SECONDS);
     }
 
 

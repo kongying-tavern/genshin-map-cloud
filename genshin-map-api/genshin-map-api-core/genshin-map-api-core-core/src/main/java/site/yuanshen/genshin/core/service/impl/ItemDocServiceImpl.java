@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.DigestUtils;
 import site.yuanshen.genshin.core.dao.ItemDao;
 import site.yuanshen.genshin.core.service.ItemDocService;
 
@@ -27,7 +28,7 @@ public class ItemDocServiceImpl implements ItemDocService {
      * @return 字节数组的md5
      */
     @Override
-    @Cacheable("listItemBz2MD5")
+    @Cacheable(value = "listItemBz2MD5", cacheManager = "neverRefreshCacheManager")
     public String listItemBz2MD5() {
         return "缓存未生成或生成失败";
     }
@@ -38,11 +39,11 @@ public class ItemDocServiceImpl implements ItemDocService {
      * @return 字节数组的md5
      */
     @Override
-    @CachePut("listItemBz2MD5")
+    @CachePut(value = "listItemBz2MD5", cacheManager = "neverRefreshCacheManager")
     public String refreshItemBz2MD5() {
         long startTime = System.currentTimeMillis();
-        String result = itemDao.refreshAllItemBz2();
-        log.info("点位MD5生成, cost:{}, result: {}", System.currentTimeMillis() - startTime, JSON.toJSONString(result));
+        String result = DigestUtils.md5DigestAsHex(itemDao.refreshAllItemBz2());
+        log.info("物品MD5生成, cost:{}, result: {}", System.currentTimeMillis() - startTime, JSON.toJSONString(result));
         return result;
     }
 }
