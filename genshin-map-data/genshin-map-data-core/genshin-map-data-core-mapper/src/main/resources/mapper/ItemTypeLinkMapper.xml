@@ -26,7 +26,7 @@
      id, type_id, item_id
     </sql>
     <select id="selectListWithLargeIn" resultType="site.yuanshen.data.entity.ItemTypeLink">
-        with id_list as ( select unnest(${unnest}::bigint[]) "id")
+        with id_list as ( select unnest(${unnest}::bigint[]) "id2")
         select
         <if test="ew.SqlSelect ==null or ew.SqlSelect == ''">
             <include refid="Base_Column_List"/>
@@ -37,7 +37,7 @@
         <if test="ew.customSqlSegment ==null or ew.customSqlSegment == ''">
             where del_flag = 0
         </if>
-        ${ew.customSqlSegment} and del_flag = 0 and item_type_link.id=id_list.id
+        ${ew.customSqlSegment} and del_flag = 0 and item_type_link.id=id_list.id2
     </select>
     <select id="selectWithLargeCustomIn" resultType="site.yuanshen.data.entity.ItemTypeLink">
         with id_list as ( select unnest(${unnest}::bigint[]) "${column}2")

@@ -28,14 +28,14 @@
     </sql>
     <select id="selectListWithLargeIn" resultType="site.yuanshen.data.entity.MarkerItemLink">
         with id_list as (
-        select unnest(${unnest}::bigint[]) "id")
+        select unnest(${unnest}::bigint[]) "id2")
         select *
         from
         marker_item_link, id_list
         <if test="ew.customSqlSegment ==null or ew.customSqlSegment == ''">
             where  del_flag = 0
         </if>
-        ${ew.customSqlSegment} and del_flag = 0 and marker_item_link.id=id_list.id
+        ${ew.customSqlSegment} and del_flag = 0 and marker_item_link.id=id_list.id2
 
 
     </select>
