@@ -25,14 +25,13 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        version
-        ,
+        version,
         creator_id,
         updater_id,
         create_time,
         update_time,
         del_flag,
-     id, item_id, name, area_id, default_content, icon_tag,icon_style_type,hidden_flag,default_refresh_time,sort_index,default_count
+        id, name, area_id, default_content, icon_tag,icon_style_type,hidden_flag,default_refresh_time,sort_index,default_count
     </sql>
 
     <select id="selectPageItem"
