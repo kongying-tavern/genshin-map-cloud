@@ -199,16 +199,16 @@ public class MarkerServiceImpl implements MarkerService {
     @Override
     @Transactional
     public Boolean updateMarker(MarkerSingleDto markerSingleDto) {
-        //保存历史记录
         MarkerExtra markerExtra = markerExtraMapper.selectOne(Wrappers.<MarkerExtra>lambdaQuery().eq(MarkerExtra::getMarkerId, markerSingleDto.getId()));
-        saveHistoryMarker(buildMarkerDto(markerSingleDto.getId(), markerExtra));
-
 
         Boolean updated = markerMapper.update(markerSingleDto.getEntity(), Wrappers.<Marker>lambdaUpdate()
                 .eq(Marker::getId, markerSingleDto.getId())) == 1;
         if (!updated) {
             throw new OptimisticLockingFailureException("该点位已更新，请重新提交");
         }
+
+        //保存历史记录
+        saveHistoryMarker(buildMarkerDto(markerSingleDto.getId(), markerExtra));
 
         if (markerSingleDto.getItemList() != null && !markerSingleDto.getItemList().isEmpty()) {
             markerItemLinkMapper.delete(Wrappers.<MarkerItemLink>lambdaQuery().eq(MarkerItemLink::getMarkerId, markerSingleDto.getId()));
@@ -234,7 +234,6 @@ public class MarkerServiceImpl implements MarkerService {
         //2.情况2-两人一起到达搜索,此时都找不到,1号先完成了添加,2号再完成了添加,此时会有两条一模一样数据,但是搜索出来的时候只会使用一条,影响不大.
         MarkerExtra markerExtra = markerExtraMapper.selectOne(Wrappers.<MarkerExtra>lambdaQuery().eq(MarkerExtra::getMarkerId, markerExtraDto.getMarkerId()));
 
-        saveHistoryMarker(buildMarkerDto(markerExtraDto.getMarkerId(), markerExtra));
         if (markerExtra == null) {
             return addMarkerExtra(markerExtraDto);
         }
@@ -244,6 +243,12 @@ public class MarkerServiceImpl implements MarkerService {
 
         boolean updated = markerExtraMapper.update(markerExtraDto.getEntity(), Wrappers.<MarkerExtra>lambdaUpdate()
                 .eq(MarkerExtra::getMarkerId, markerExtraDto.getMarkerId())) == 1;
+
+        if (!updated) {
+            throw new OptimisticLockingFailureException("该点位已更新，请重新提交");
+        }
+
+        saveHistoryMarker(buildMarkerDto(markerExtraDto.getMarkerId(), markerExtra));
 
         return updated;
     }
