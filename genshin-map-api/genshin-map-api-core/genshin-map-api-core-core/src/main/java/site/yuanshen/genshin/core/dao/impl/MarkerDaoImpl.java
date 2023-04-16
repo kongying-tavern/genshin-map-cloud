@@ -66,12 +66,6 @@ public class MarkerDaoImpl implements MarkerDao {
         this.neverRefreshCacheManager = neverRefreshCacheManager;
     }
 
-    @Override
-    @Cacheable(value = "getMarkerCount")
-    public Long getMarkerCount(List<Integer> hiddenFlagList) {
-        return markerMapper.selectCount(Wrappers.<Marker>lambdaQuery().in(!hiddenFlagList.isEmpty(), Marker::getHiddenFlag, hiddenFlagList));
-    }
-
     /**
      * 分页查询所有点位信息
      *

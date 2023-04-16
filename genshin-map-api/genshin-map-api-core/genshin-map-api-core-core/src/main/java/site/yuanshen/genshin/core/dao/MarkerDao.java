@@ -14,12 +14,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public interface MarkerDao {
 
     /**
-     * @param hiddenFlagList hidden_flag范围
-     * @return 点位总数
-     */
-    Long getMarkerCount(List<Integer> hiddenFlagList);
-
-    /**
      * 分页查询所有点位信息
      *
      * @param pageSearchDto 分页查询数据封装
