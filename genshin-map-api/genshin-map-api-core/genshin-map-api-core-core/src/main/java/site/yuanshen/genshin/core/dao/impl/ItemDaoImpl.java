@@ -98,7 +98,7 @@ public class ItemDaoImpl implements ItemDao {
                 .map(itemDto -> itemDto.setCount(Optional.ofNullable(markerItemLinkCount.get(itemDto.getItemId())).orElse(0)))
                 .map(itemDto -> itemDto.setTypeIdList(itemToTypeMap.get(itemDto.getItemId())))
                 .map(ItemDto::getVo)
-                .sorted(Comparator.comparing(ItemVo::getSortIndex).reversed()).collect(Collectors.toList());
+                .sorted(Comparator.comparingInt(ItemVo::getSortIndex).reversed()).collect(Collectors.toList());
     }
 
     /**
@@ -121,7 +121,6 @@ public class ItemDaoImpl implements ItemDao {
     public byte[] refreshAllItemBz2() {
         try {
             List<ItemVo> itemList = listAllItem();
-            itemList.sort(Comparator.comparingLong(ItemVo::getItemId));
             byte[] result = JSON.toJSONString(itemList).getBytes(StandardCharsets.UTF_8);
             return CompressUtils.compress(result);
         } catch (Exception e) {
