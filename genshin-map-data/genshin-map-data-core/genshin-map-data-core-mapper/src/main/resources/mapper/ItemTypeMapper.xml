@@ -11,7 +11,6 @@
         <result column="create_time" property="createTime"/>
         <result column="update_time" property="updateTime"/>
         <result column="del_flag" property="delFlag"/>
-        <result column="type_id" property="typeId"/>
         <result column="icon_tag" property="iconTag"/>
         <result column="name" property="name"/>
         <result column="content" property="content"/>
@@ -29,7 +28,40 @@
         create_time,
         update_time,
         del_flag,
-     id, type_id, icon_tag, name, content, parent_id, is_final,hidden_flag,sort_index
+        id, icon_tag, name, content, parent_id, is_final,hidden_flag,sort_index
     </sql>
+
+
+    <select id="selectListWithLargeIn" resultType="site.yuanshen.data.entity.Item">
+        with id_list as ( select unnest(${unnest}::bigint[]) "id2")
+        select
+        <if test="ew.SqlSelect ==null or ew.SqlSelect == ''">
+            <include refid="Base_Column_List"/>
+        </if>
+        ${ew.SqlSelect}
+        from
+        item_type, id_list
+        <if test="ew.customSqlSegment ==null or ew.customSqlSegment == ''">
+            where del_flag = 0
+        </if>
+        ${ew.customSqlSegment} and del_flag = 0 and item_type.id=id_list.id2
+    </select>
+
+    <select id="selectWithLargeCustomIn" resultType="site.yuanshen.data.entity.Item">
+        with id_list as ( select unnest(${unnest}::bigint[]) "${column}2")
+        select
+        <if test="ew.SqlSelect ==null or ew.SqlSelect == ''">
+            <include refid="Base_Column_List"/>
+        </if>
+        ${ew.SqlSelect}
+        from
+        item_type, id_list
+        <if test="ew.customSqlSegment ==null or ew.customSqlSegment == ''">
+            where del_flag = 0
+        </if>
+        ${ew.customSqlSegment}  and del_flag = 0 and item_type.${column} = id_list."${column}2"
+    </select>
+
+
 
 </mapper>

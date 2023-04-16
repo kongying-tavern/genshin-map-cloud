@@ -48,7 +48,7 @@ public class MarkerServiceImpl implements MarkerService {
     private final MarkerPunctuateMapper markerPunctuateMapper;
     private final ItemMapper itemMapper;
     private final ItemTypeLinkMapper itemTypeLinkMapper;
-
+    private final ItemTypeMapper itemTypeMapper;
     private final HistoryMapper historyMapper;
 
     /**
@@ -67,31 +67,34 @@ public class MarkerServiceImpl implements MarkerService {
             throw new RuntimeException("条件冲突");
         List<Long> itemIdList = new ArrayList<>();
         if (isArea) {
-            itemIdList = itemMapper.selectWithLargeCustomIn("area_id", unnestStr(searchVo.getAreaIdList()), Wrappers.<Item>lambdaQuery()
-                            .in(!searchVo.getHiddenFlagList().isEmpty(), Item::getHiddenFlag, searchVo.getHiddenFlagList())
-                            .select(Item::getId))
+            itemIdList = itemMapper.selectWithLargeCustomIn("area_id", unnestStr(searchVo.getAreaIdList()),
+                            Wrappers.<Item>lambdaQuery()
+                                    .in(!searchVo.getHiddenFlagList().isEmpty(), Item::getHiddenFlag, searchVo.getHiddenFlagList())
+                                    .select(Item::getId))
                     .stream()
                     .map(Item::getId).distinct().collect(Collectors.toList());
         }
+
         if (isItem) {
-            itemIdList = searchVo.getItemIdList();
+            itemIdList = itemMapper.selectListWithLargeIn(unnestStr(searchVo.getItemIdList()),
+                            Wrappers.<Item>lambdaQuery()
+                                    .in(!searchVo.getHiddenFlagList().isEmpty(), Item::getHiddenFlag, searchVo.getHiddenFlagList())
+                                    .select(Item::getId))
+                    .stream()
+                    .map(Item::getId).distinct().collect(Collectors.toList());
         }
+
         if (isType) {
-            itemIdList = itemTypeLinkMapper.selectWithLargeCustomIn("type_id", unnestStr(searchVo.getTypeIdList()),
+            List<Long> itemTypeIdList = itemTypeMapper.selectListWithLargeIn(unnestStr(searchVo.getTypeIdList()),
+                            Wrappers.<ItemType>lambdaQuery()
+                                    .select(ItemType::getId)
+                                    .in(!searchVo.getHiddenFlagList().isEmpty(), ItemType::getHiddenFlag, searchVo.getHiddenFlagList()))
+                    .stream().map(ItemType::getId).collect(Collectors.toList());
+            itemIdList = itemTypeLinkMapper.selectWithLargeCustomIn("type_id", unnestStr(itemTypeIdList),
                             Wrappers.<ItemTypeLink>lambdaQuery().select(ItemTypeLink::getItemId))
                     .stream()
                     .map(ItemTypeLink::getItemId).distinct().collect(Collectors.toList());
         }
-
-        //如果不是按地区筛选,也就是说没经过筛选内鬼这一步,则再筛一遍 TODO:感觉繁琐了
-        if (!isArea) {
-            itemIdList = itemMapper.selectListWithLargeIn(unnestStr(searchVo.getTypeIdList()), Wrappers.<Item>lambdaQuery()
-                            .in(!searchVo.getHiddenFlagList().isEmpty(), Item::getHiddenFlag, searchVo.getHiddenFlagList())
-                            .select(Item::getId))
-                    .stream()
-                    .map(Item::getId).distinct().collect(Collectors.toList());
-        }
-
 
         if (!searchVo.getGetBeta()) {
             log.info("获取正式点位:{}", itemIdList.subList(0, itemIdList.size() > 50 ? 50 : itemIdList.size()));
