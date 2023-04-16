@@ -53,8 +53,6 @@ public class ItemServiceImpl implements ItemService {
     public List<ItemDto> listItemById(List<Long> itemIdList, List<Integer> hiddenFlagList) {
         //收集分类信息
         Map<Long, List<Long>> typeMap = new ConcurrentHashMap<>();
-//        itemTypeLinkMapper.selectList(Wrappers.<ItemTypeLink>lambdaQuery()
-//                        .in(ItemTypeLink::getItemId, itemIdList))
         itemTypeLinkMapper.selectWithLargeCustomIn("item_id", unnestStr(itemIdList), Wrappers.<ItemTypeLink>lambdaQuery())
                 .parallelStream()
                 .forEach(typeLink ->
@@ -65,9 +63,6 @@ public class ItemServiceImpl implements ItemService {
                             return typeList;
                         }));
         //取得实体类并转化为DTO，过程之中写入分类信息
-//        return itemMapper.selectList(Wrappers.<Item>lambdaQuery()
-//                        .in(!hiddenFlagList.isEmpty(), Item::getHiddenFlag, hiddenFlagList)
-//                        .in(Item::getId, itemIdList))
         return itemMapper.selectListWithLargeIn(unnestStr(itemIdList), Wrappers.<Item>lambdaQuery()
                         .in(!hiddenFlagList.isEmpty(), Item::getHiddenFlag, hiddenFlagList))
                 .parallelStream()
@@ -86,17 +81,11 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Cacheable("listItem")
     public PageListVo<ItemVo> listItem(ItemSearchDto itemSearchDto) {
-//        itemSearchDto.setIsTestUser(Boolean.TRUE);
         Page<Item> itemPage = itemMapper.selectPageItem(itemSearchDto.getPageEntity(), itemSearchDto);
         itemPage.setRecords(itemPage.getRecords().parallelStream().distinct().collect(Collectors.toList()));
         if (itemPage.getTotal() == 0L)
             return new PageListVo<ItemVo>().setRecord(new ArrayList<>()).setSize(itemPage.getSize()).setTotal(0L);
         //获取分类数据
-
-//        List<ItemTypeLink> typeLinkList_bak = itemTypeLinkMapper.selectList(Wrappers.<ItemTypeLink>lambdaQuery()
-//                .in(ItemTypeLink::getItemId,
-//                        itemPage.getRecords().stream()
-//                                .map(Item::getId).collect(Collectors.toList())));
         List<ItemTypeLink> typeLinkList = itemTypeLinkMapper.selectWithLargeCustomIn("item_id",
                 unnestStr(itemPage.getRecords().stream().map(Item::getId).collect(Collectors.toList())),
                 Wrappers.<ItemTypeLink>lambdaQuery());
@@ -112,10 +101,6 @@ public class ItemServiceImpl implements ItemService {
 
 
         //获取点位数据
-//        List<MarkerItemLink> markerItemLinkList_bak = markerItemLinkMapper.selectList(Wrappers.<MarkerItemLink>lambdaQuery()
-//                .in(MarkerItemLink::getItemId,
-//                        itemPage.getRecords().stream()
-//                                .map(Item::getId).collect(Collectors.toList())));
         List<MarkerItemLink> markerItemLinkList = markerItemLinkMapper.selectWithLargeCustomIn("item_id",
                 unnestStr(itemPage.getRecords().stream()
                         .map(Item::getId).collect(Collectors.toList())), Wrappers.<MarkerItemLink>lambdaQuery());
@@ -124,9 +109,6 @@ public class ItemServiceImpl implements ItemService {
 
         List<Long> normalMarkerList = new ArrayList<>();
         if (!markerItemLinkList.isEmpty()) {
-//            normalMarkerList = markerMapper.selectList(Wrappers.<Marker>lambdaQuery()
-//                            .in(!itemSearchDto.getHiddenFlagList().isEmpty(),Marker::getHiddenFlag,itemSearchDto.getHiddenFlagList())
-//                            .in(Marker::getId, markerItemLinkList.stream().map(MarkerItemLink::getMarkerId).collect(Collectors.toList())))
             normalMarkerList = markerMapper.selectListWithLargeIn(
                             unnestStr(markerItemLinkList.stream().map(MarkerItemLink::getMarkerId).collect(Collectors.toList())),
                             Wrappers.<Marker>lambdaQuery().in(!itemSearchDto.getHiddenFlagList().isEmpty(),Marker::getHiddenFlag,itemSearchDto.getHiddenFlagList()))
@@ -153,28 +135,6 @@ public class ItemServiceImpl implements ItemService {
                 .setTotal(itemPage.getTotal())
                 .setSize(itemPage.getSize());
     }
-
-
-//    public static void main(String[] args) {
-//
-//
-//        //用户权限
-//        int user = 1+4;
-//        test(user);
-//
-//
-//    }
-//
-//    public static void test(int userDataLevel){
-//        int normal = 0;
-//        int invisible = 1;
-//        int test = 2;
-//
-//        System.out.println((userDataLevel&1<<invisible));
-//
-//        Wrappers.<Marker>lambdaQuery().eq((userDataLevel&1<<normal)>0,Marker::getHiddenFlag,normal);
-//    }
-
 
     /**
      * 修改物品

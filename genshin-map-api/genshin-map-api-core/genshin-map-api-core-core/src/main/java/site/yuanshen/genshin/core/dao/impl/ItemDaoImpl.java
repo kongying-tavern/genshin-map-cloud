@@ -68,10 +68,6 @@ public class ItemDaoImpl implements ItemDao {
         if (itemList.size() == 0)
             return new ArrayList<>();
         //获取分类数据
-//        List<ItemTypeLink> typeLinkList = itemTypeLinkMapper.selectList(Wrappers.<ItemTypeLink>lambdaQuery()
-//                .in(ItemTypeLink::getItemId,
-//                        itemList.stream()
-//                                .map(Item::getId).distinct().collect(Collectors.toList())));
         List<ItemTypeLink> typeLinkList = itemTypeLinkMapper.selectWithLargeCustomIn("item_id", PgsqlUtils.unnestStr(itemList.stream()
                                 .map(Item::getId).distinct().collect(Collectors.toList())),Wrappers.lambdaQuery());
         Map<Long, List<Long>> itemToTypeMap = new HashMap<>();
@@ -83,11 +79,6 @@ public class ItemDaoImpl implements ItemDao {
         }
 
         //获取点位数据
-//        List<MarkerItemLink> markerItemLinkList = markerItemLinkMapper.selectList(Wrappers.<MarkerItemLink>lambdaQuery()
-//                .in(MarkerItemLink::getItemId,
-//                        itemList.stream()
-//                                .map(Item::getId).distinct().collect(Collectors.toList())));
-
         List<MarkerItemLink> markerItemLinkList = markerItemLinkMapper.selectWithLargeCustomIn("item_id", PgsqlUtils.unnestStr(itemList.stream()
                                 .map(Item::getId).distinct().collect(Collectors.toList())),Wrappers.<MarkerItemLink>lambdaQuery());
 

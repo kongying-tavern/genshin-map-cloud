@@ -67,9 +67,6 @@ public class MarkerServiceImpl implements MarkerService {
             throw new RuntimeException("条件冲突");
         List<Long> itemIdList = new ArrayList<>();
         if (isArea) {
-//            itemIdList = itemMapper.selectList(Wrappers.<Item>lambdaQuery()
-//                            .in(Item::getAreaId, searchVo.getAreaIdList()).in(!searchVo.getHiddenFlagList().isEmpty(), Item::getHiddenFlag, searchVo.getHiddenFlagList())
-//                            .select(Item::getId))
             itemIdList = itemMapper.selectWithLargeCustomIn("area_id", unnestStr(searchVo.getAreaIdList()), Wrappers.<Item>lambdaQuery()
                             .in(!searchVo.getHiddenFlagList().isEmpty(), Item::getHiddenFlag, searchVo.getHiddenFlagList())
                             .select(Item::getId))
@@ -80,9 +77,6 @@ public class MarkerServiceImpl implements MarkerService {
             itemIdList = searchVo.getItemIdList();
         }
         if (isType) {
-//            itemIdList = itemTypeLinkMapper.selectList(Wrappers.<ItemTypeLink>lambdaQuery()
-//                            .in(ItemTypeLink::getTypeId, searchVo.getTypeIdList())
-//                            .select(ItemTypeLink::getItemId))
             itemIdList = itemTypeLinkMapper.selectWithLargeCustomIn("type_id", unnestStr(searchVo.getTypeIdList()),
                             Wrappers.<ItemTypeLink>lambdaQuery().select(ItemTypeLink::getItemId))
                     .stream()
@@ -91,9 +85,6 @@ public class MarkerServiceImpl implements MarkerService {
 
         //如果不是按地区筛选,也就是说没经过筛选内鬼这一步,则再筛一遍 TODO:感觉繁琐了
         if (!isArea) {
-//            itemIdList = itemMapper.selectList(Wrappers.<Item>lambdaQuery()
-//                            .in(!itemIdList.isEmpty(), Item::getId, itemIdList).in(!searchVo.getHiddenFlagList().isEmpty(), Item::getHiddenFlag, searchVo.getHiddenFlagList())
-//                            .select(Item::getId))
             itemIdList = itemMapper.selectListWithLargeIn(unnestStr(searchVo.getTypeIdList()), Wrappers.<Item>lambdaQuery()
                             .in(!searchVo.getHiddenFlagList().isEmpty(), Item::getHiddenFlag, searchVo.getHiddenFlagList())
                             .select(Item::getId))
@@ -105,9 +96,6 @@ public class MarkerServiceImpl implements MarkerService {
         if (!searchVo.getGetBeta()) {
             log.info("获取正式点位:{}", itemIdList.subList(0, itemIdList.size() > 50 ? 50 : itemIdList.size()));
             if (itemIdList.isEmpty()) return new ArrayList<>();
-//            return markerItemLinkMapper.selectList(Wrappers.<MarkerItemLink>lambdaQuery()
-//                            .in(MarkerItemLink::getItemId, itemIdList)
-//                            .select(MarkerItemLink::getMarkerId))
             return markerItemLinkMapper.selectWithLargeCustomIn("item_id",unnestStr(itemIdList),Wrappers.<MarkerItemLink>lambdaQuery().select(MarkerItemLink::getMarkerId))
                     .stream()
                     .map(MarkerItemLink::getMarkerId)
@@ -144,11 +132,6 @@ public class MarkerServiceImpl implements MarkerService {
         Map<Long, Item> itemMap = new HashMap<>();
         markerDao.getAllRelateInfoById(markerIdList, markerExtraMap, itemLinkMap, itemMap);
         //构建返回
-
-//        return markerMapper.selectList(Wrappers.<Marker>lambdaQuery()
-//                        .apply("id = any({0}::bigint[])", JSON.toJSONString(markerIdList))
-//                        .in(!hiddenFlagList.isEmpty(), Marker::getHiddenFlag, hiddenFlagList))
-//         return markerMapper.selectListWithLargeIn(unnestStr(markerIdList),Wrappers.<Marker>lambdaQuery().in(!hiddenFlagList.isEmpty(), Marker::getHiddenFlag, hiddenFlagList))
         return markerMapper.selectListWithLargeIn(unnestStr(markerIdList), Wrappers.<Marker>lambdaQuery())
                 .parallelStream().map(marker ->
                         new MarkerDto(marker,

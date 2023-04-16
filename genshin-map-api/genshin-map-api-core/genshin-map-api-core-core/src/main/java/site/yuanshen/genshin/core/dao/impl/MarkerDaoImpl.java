@@ -100,16 +100,9 @@ public class MarkerDaoImpl implements MarkerDao {
     }
 
     public void getAllRelateInfoById(List<Long> markerIdList, Map<Long, MarkerExtra> extraMap, ConcurrentHashMap<Long, List<MarkerItemLink>> itemLinkMap, Map<Long, Item> itemMap) {
-        String s = markerIdList.toString().replace('[', '{').replace(']', '}');
-//        extraMap.putAll(markerExtraMapper.selectList(Wrappers.<MarkerExtra>lambdaQuery()
-//                        .apply("marker_id = any({0}::bigint[])", s))
-//                .stream().collect(Collectors.toMap(MarkerExtra::getMarkerId, markerExtra -> markerExtra)));
-        extraMap.putAll(markerExtraMapper.selectWithLargeCustomIn("marker_id", PgsqlUtils.unnestStr(markerIdList), Wrappers.<MarkerExtra>lambdaQuery())
+        extraMap.putAll(markerExtraMapper.selectWithLargeCustomIn("marker_id", PgsqlUtils.unnestStr(markerIdList), Wrappers.lambdaQuery())
                 .stream().collect(Collectors.toMap(MarkerExtra::getMarkerId, markerExtra -> markerExtra)));
 
-
-//        List<Long> itemIdList = markerItemLinkMapper.selectList(Wrappers.<MarkerItemLink>lambdaQuery()
-//                        .apply("marker_id = any({0}::bigint[])", s))
         List<Long> itemIdList = markerItemLinkMapper.selectWithLargeCustomIn("marker_id", PgsqlUtils.unnestStr(markerIdList), Wrappers.<MarkerItemLink>lambdaQuery())
                 .parallelStream().map(markerItemLink -> {
                     itemLinkMap.compute(markerItemLink.getMarkerId(),
@@ -136,9 +129,7 @@ public class MarkerDaoImpl implements MarkerDao {
     @Override
     @Cacheable(value = "listPageMarkerByBz2", cacheManager = "neverRefreshCacheManager")
     public byte[] listPageMarkerByBz2(Integer index) {
-        Cache bz2Cache = cacheManager.getCache("listPageMarkerByBz2");
-        Cache neverBz2Cache = neverRefreshCacheManager.getCache("listPageMarkerByBz2");
-        throw new RuntimeException("缓存未创建");
+        throw new RuntimeException("缓存未创建或超出索引范围");
     }
 
     /**
