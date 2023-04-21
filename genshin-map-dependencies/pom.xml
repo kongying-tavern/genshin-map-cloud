@@ -9,7 +9,7 @@
     <version>1.0</version>
 
     <properties>
-        <postgresql.version>42.2.27</postgresql.version>
+        <postgresql.version>42.3.8</postgresql.version>
         <mybatis-plus.version>3.5.3.1</mybatis-plus.version>
         <druid.version>1.2.13</druid.version>
         <fastjson2.version>2.0.24</fastjson2.version>
