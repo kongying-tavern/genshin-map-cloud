@@ -24,11 +24,11 @@ public class MBPGenerator {
                 .author(author)
                 .outputDir("/generator")
                 .commentDateFormat("yyyy-MM-dd hh:mm:ss");
-
         generator.entityPackage("site.yuanshen.data.entity")
                 .mapperPackage("site.yuanshen.data.mapper")
                 .xmlPackage("mapper")
-                .otherPackage("dto&vo")
+                .voPackage("site.yuanshen.data.vo")
+                .dtoPackage("site.yuanshen.data.dto")
                 .apiPackageName("site.yuanshen.api")
                 .apiModuleName("core")
                 .servicePackageAfterApi("service.mbp")

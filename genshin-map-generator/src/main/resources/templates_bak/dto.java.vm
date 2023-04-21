@@ -1,0 +1,57 @@
+package site.yuanshen.data.dto;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.*;
+import com.alibaba.fastjson2.annotation.JSONField;
+import site.yuanshen.common.core.utils.BeanUtils;
+import site.yuanshen.data.entity.${entity};
+import site.yuanshen.data.vo.${entity}Vo;
+
+
+/**
+ * $!{table.comment}路数据封装
+ *
+ * @author ${author}
+ * @since ${date}
+ */
+@Data
+@With
+@NoArgsConstructor
+@AllArgsConstructor
+@Schema(title = "${entity}数据封装", description = "$!{table.comment}数据封装")
+public class ${entity}Dto {
+## ----------  BEGIN 字段循环遍历  ----------
+#foreach($field in ${table.fields})
+
+#if(${field.keyFlag})
+    #set($keyPropertyName=${field.propertyName})
+#end
+#if("$!field.comment" != "")
+    /**
+     * ${field.comment}
+     */
+#end
+    private ${field.propertyType} ${field.propertyName};
+#end
+## ----------  END 字段循环遍历  ----------
+
+    public ${entity}Dto(${entity} ${entity.substring(0,1).toLowerCase()}${entity.substring(1)}) {
+        BeanUtils.copyProperties(${entity.substring(0,1).toLowerCase()}${entity.substring(1)}, this);
+    }
+
+    public ${entity}Dto(${entity}Vo ${entity.substring(0,1).toLowerCase()}${entity.substring(1)}Vo) {
+        BeanUtils.copyProperties(${entity.substring(0,1).toLowerCase()}${entity.substring(1)}Vo, this);
+    }
+
+    @JSONField(serialize = false)
+    public ${entity} getEntity() {
+        return BeanUtils.copyProperties(this, ${entity}.class);
+    }
+
+    @JSONField(serialize = false)
+    public ${entity}Vo getVo() {
+        return BeanUtils.copyProperties(this, ${entity}Vo.class);
+    }
+
+
+}

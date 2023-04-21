@@ -2,11 +2,15 @@ package site.yuanshen.generator.utils;
 
 import com.baomidou.mybatisplus.generator.FastAutoGenerator;
 import com.baomidou.mybatisplus.generator.config.TemplateType;
+import com.baomidou.mybatisplus.generator.config.builder.CustomFile;
+import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
+import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Component;
 import site.yuanshen.data.base.BaseEntity;
 
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 @Component
 
@@ -25,7 +29,8 @@ public class FastGenerator {
     private String serviceImplPackage;
     private String mapperPackage;
     private String xmlPackage;
-    private String otherPackage;
+    private String dtoPackage;
+    private String voPackage;
 
     /**
      * 在创建实体类属性的swagger注解时创建注释
@@ -40,8 +45,6 @@ public class FastGenerator {
                 .globalConfig(builder -> builder
                         .author(author)
                         .outputDir(System.getProperty("user.dir") + outputDir)
-                        //启用swagger
-                        //.enableSwagger()
                         //关闭生成后自动打开文件夹
                         .disableOpenDir()
                         .commentDate(commentDateFormat))
@@ -52,12 +55,11 @@ public class FastGenerator {
                         .service(servicePackage)
                         .serviceImpl(serviceImplPackage)
                         .mapper(mapperPackage)
-                        .other(otherPackage)
                         .xml(xmlPackage))
                 .strategyConfig(builder -> builder
                         // 跳过视图
                         .enableSkipView()
-                        //entity配置
+                        /*-------------entity配置-------------*/
                         .entityBuilder()
                         //启用lombok
                         .enableLombok()
@@ -68,31 +70,38 @@ public class FastGenerator {
                         //entity公共父类设置
                         .superClass(BaseEntity.class)
                         .addSuperEntityColumns("version", "create_time", "update_time", "creator_id", "updater_id", "del_flag")
-
-                        //service配置
+                        .enableFileOverride()
+                        /*-------------service配置-------------*/
                         .serviceBuilder()
                         .formatServiceFileName("%sMBPService")
                         .formatServiceImplFileName("%sMBPServiceImpl")
-
-                        //mapper配置
+                        .enableFileOverride()
+                        /*-------------mapper配置-------------*/
                         .mapperBuilder()
-                        .enableMapperAnnotation())
+                        .mapperAnnotation(Mapper.class)
+                        .enableFileOverride()
+                        .enableBaseColumnList()
+                        .enableBaseResultMap()
+                        .convertXmlFileName(tableName -> "MBP"+tableName+"Mapper"))
                 .templateConfig(builder -> builder
-                        .disable(TemplateType.CONTROLLER, TemplateType.SERVICEIMPL)
+                        .disable(TemplateType.CONTROLLER)
                         .entity("/templates/entity.java")
                         .service("/templates/service.java")
                         .serviceImpl("/templates/serviceImpl.java")
                         .mapper("/templates/mapper.java")
                         .xml("/templates/mapper.xml"))
-                .injectionConfig(builder -> {
-                    Map<String, Object> customFieldMap = new TreeMap<>();
-                    customFieldMap.put("enableFieldCommentWithSwagger", enableFieldCommentWithSwagger);
-                    builder.customMap(customFieldMap);
-                    Map<String, String> customFileMap = new TreeMap<>();
-                    customFileMap.put("Dto.java", "/templates/dto.java.vm");
-                    customFileMap.put("Vo.java", "/templates/vo.java.vm");
-                    builder.customFile(customFileMap);
-                })
+                .injectionConfig(builder -> builder
+                        .customFile(fileBuilder -> fileBuilder
+                                .fileName("Dto.java")
+                                .templatePath("/templates/dto.java.ftl")
+                                .packageName(dtoPackage)
+                                .enableFileOverride())
+                        .customFile(fileBuilder -> fileBuilder
+                                .fileName("Vo.java")
+                                .templatePath("/templates/vo.java.ftl")
+                                .packageName(voPackage)
+                                .enableFileOverride()))
+                .templateEngine(new FreemarkerTemplateEngine())
                 .execute();
     }
 
@@ -169,8 +178,13 @@ public class FastGenerator {
         return this;
     }
 
-    public FastGenerator otherPackage(String otherPackage) {
-        this.otherPackage = otherPackage;
+    public FastGenerator dtoPackage(String dtoPackage) {
+        this.dtoPackage = dtoPackage;
+        return this;
+    }
+
+    public FastGenerator voPackage(String voPackage) {
+        this.voPackage = voPackage;
         return this;
     }
 }

@@ -1,0 +1,35 @@
+package site.yuanshen.data.vo;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.*;
+
+/**
+ * $!{table.comment}前端封装
+ *
+ * @since ${date}
+ */
+@Data
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode
+@With
+@Schema(title = "${entity}前端封装", description = "$!{table.comment}前端封装")
+public class ${entity}Vo {
+## ----------  BEGIN 字段循环遍历  ----------
+#foreach($field in ${table.fields})
+
+#if(${field.keyFlag})
+    #set($keyPropertyName=${field.propertyName})
+#end
+#if("$!field.comment" != "")
+    /**
+     * ${field.comment}
+     */
+    @Schema(title = "${field.comment}")
+#end
+    private ${field.propertyType} ${field.propertyName};
+#end
+## ----------  END 字段循环遍历  ----------
+
+}

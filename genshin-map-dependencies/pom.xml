@@ -9,7 +9,8 @@
     <version>1.0</version>
 
     <properties>
-        <mybatis-plus.version>3.5.2</mybatis-plus.version>
+        <postgresql.version>42.2.27</postgresql.version>
+        <mybatis-plus.version>3.5.3.1</mybatis-plus.version>
         <druid.version>1.2.13</druid.version>
         <fastjson2.version>2.0.24</fastjson2.version>
         <springdoc.version>1.6.11</springdoc.version>
@@ -22,6 +23,14 @@
 
     <dependencyManagement>
         <dependencies>
+
+            <!--postgresql-->
+            <dependency>
+                <groupId>org.postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>${postgresql.version}</version>
+            </dependency>
+
             <!-- mybatis plus -->
             <dependency>
                 <groupId>com.baomidou</groupId>

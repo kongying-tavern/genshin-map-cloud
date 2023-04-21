@@ -23,20 +23,20 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @AllArgsConstructor
 @With
-#if(${superEntityClass})
-@EqualsAndHashCode(callSuper = true)
-#else
-@EqualsAndHashCode(callSuper = false)
-#end
-#if(${chainModel})
-@Accessors(chain = true)
-#end
+    #if(${superEntityClass})
+    @EqualsAndHashCode(callSuper = true)
+    #else
+    @EqualsAndHashCode(callSuper = false)
+    #end
+    #if(${chainModel})
+    @Accessors(chain = true)
+    #end
 #end
 #if(${table.convert})
-@TableName("${schemaName}${table.name}")
+@TableName("${schemaName}${table.name}" )
 #end
 #if(${swagger})
-@Schema(name = "${entity}对象", description = "$!{table.comment}")
+@Schema(name = "${entity}对象" , description = "$!{table.comment}" )
 #end
 #if(${superEntityClass})
 public class ${entity} extends ${superEntityClass}#if(${activeRecord})<${entity}>#end {
@@ -54,52 +54,52 @@ private static final long serialVersionUID=1L;
 ## ----------  BEGIN 字段循环遍历  ----------
 #foreach($field in ${table.fields})
 
-#if(${field.keyFlag})
-    #set($keyPropertyName=${field.propertyName})
-#end
-#if("$!field.comment" != "")
-#if(${swagger} && !${enableFieldCommentWithSwagger})
-    @Schema(name = "${field.comment}")
-#elseif(${swagger} && ${enableFieldCommentWithSwagger})
-    /**
-     * ${field.comment}
-     */
-    @Schema(name = "${field.comment}")
-#else
-    /**
-     * ${field.comment}
-     */
-#end
-#end
-#if(${field.keyFlag})
-## 主键
-#if(${field.keyIdentityFlag})
-    @TableId(value = "${field.annotationColumnName}", type = IdType.AUTO)
-#elseif(!$null.isNull(${idType}) && "$!idType" != "")
-    @TableId(value = "${field.annotationColumnName}", type = IdType.${idType})
-#elseif(${field.convert})
-    @TableId("${field.annotationColumnName}")
-#end
-## 普通字段
-#elseif(${field.fill})
-## -----   存在字段填充设置   -----
-#if(${field.convert})
-    @TableField(value = "${field.annotationColumnName}", fill = FieldFill.${field.fill})
-#else
-    @TableField(fill = FieldFill.${field.fill})
-#end
-#elseif(${field.convert})
-    @TableField("${field.annotationColumnName}")
-#end
-## 乐观锁注解
-#if(${field.versionField})
+    #if(${field.keyFlag})
+        #set($keyPropertyName=${field.propertyName})
+    #end
+    #if("$!field.comment" != "")
+        #if(${swagger} && !${enableFieldCommentWithSwagger})
+        @Schema(name = "${field.comment}" )
+        #elseif(${swagger} && ${enableFieldCommentWithSwagger})
+        /**
+         * ${field.comment}
+         */
+        @Schema(name = "${field.comment}" )
+        #else
+        /**
+         * ${field.comment}
+         */
+        #end
+    #end
+    #if(${field.keyFlag})
+        ## 主键
+        #if(${field.keyIdentityFlag})
+        @TableId(value = "${field.annotationColumnName}" , type = IdType.AUTO)
+        #elseif(!$null.isNull(${idType}) && "$!idType" != "")
+        @TableId(value = "${field.annotationColumnName}" , type = IdType.${idType})
+        #elseif(${field.convert})
+        @TableId("${field.annotationColumnName}" )
+        #end
+        ## 普通字段
+    #elseif(${field.fill})
+        ## -----   存在字段填充设置   -----
+        #if(${field.convert})
+        @TableField(value = "${field.annotationColumnName}" , fill = FieldFill.${field.fill})
+        #else
+        @TableField(fill = FieldFill.${field.fill})
+        #end
+    #elseif(${field.convert})
+    @TableField("${field.annotationColumnName}" )
+    #end
+    ## 乐观锁注解
+    #if(${field.versionField})
     @Version
-#end
-## 逻辑删除注解
-#if(${field.logicDeleteField})
+    #end
+    ## 逻辑删除注解
+    #if(${field.logicDeleteField})
     @TableLogic
-#end
-    private ${field.propertyType} ${field.propertyName};
+    #end
+private ${field.propertyType} ${field.propertyName};
 #end
 ## ----------  END 字段循环遍历  ----------
 
@@ -161,4 +161,4 @@ public String toString() {
         "}";
         }
 #end
-}
+        }
