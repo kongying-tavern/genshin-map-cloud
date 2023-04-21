@@ -6,6 +6,11 @@ import com.alibaba.fastjson2.annotation.JSONField;
 import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.entity.${entity};
 import site.yuanshen.data.vo.${entity}Vo;
+<#list table.importPackages as pkg>
+    <#if !pkg?contains("mybatisplus") && !pkg?contains("BaseEntity")>
+import ${pkg};
+    </#if>
+</#list>
 
 
 /**

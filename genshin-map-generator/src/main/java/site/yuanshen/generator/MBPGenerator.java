@@ -8,6 +8,9 @@ import site.yuanshen.generator.utils.FastGenerator;
  * @author Moment
  */
 public class MBPGenerator {
+    /**
+     * url，需包含schema信息，且需确保用户能读到pg_class，最好使用postgres账户，例子：jdbc:postgresql://localhost:5432/genshin_map?currentSchema=genshin_map
+     */
     private static String url = System.getenv("GSAPI_DB_URL");
 
     private static String username = System.getenv("GSAPI_DB_USER");

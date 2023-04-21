@@ -3,6 +3,12 @@ package site.yuanshen.data.vo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
+<#list table.importPackages as pkg>
+    <#if !pkg?contains("mybatisplus") && !pkg?contains("BaseEntity")>
+import ${pkg};
+    </#if>
+</#list>
+
 /**
 * ${table.comment}前端封装
 *
@@ -22,8 +28,8 @@ public class ${entity}Vo {
     </#if>
     <#if field.comment??>
     /**
-    * ${field.comment}
-    */
+     * ${field.comment}
+     */
     @Schema(title = "${field.comment}")
     </#if>
     private ${field.propertyType} ${field.propertyName};

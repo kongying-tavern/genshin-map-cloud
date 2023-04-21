@@ -1,9 +1,15 @@
 package site.yuanshen.generator.utils;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.generator.FastAutoGenerator;
+import com.baomidou.mybatisplus.generator.config.DataSourceConfig;
 import com.baomidou.mybatisplus.generator.config.TemplateType;
 import com.baomidou.mybatisplus.generator.config.builder.CustomFile;
+import com.baomidou.mybatisplus.generator.config.converts.PostgreSqlTypeConvert;
+import com.baomidou.mybatisplus.generator.config.querys.PostgreSqlQuery;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
+import com.baomidou.mybatisplus.generator.fill.Property;
+import com.baomidou.mybatisplus.generator.query.SQLQuery;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Component;
 import site.yuanshen.data.base.BaseEntity;
@@ -40,7 +46,12 @@ public class FastGenerator {
     public void build() {
         System.out.println("Output Dir: " + outputDir);
 
-        FastAutoGenerator.create(url, userName, password)
+        FastAutoGenerator.create(new DataSourceConfig.Builder(url,userName,password)
+                        //3.5.3之后，默认为DefaultQuery，会使得pg的json数据被识别为object，且无法被mbp的转化器转化
+                        .databaseQueryClass(SQLQuery.class)
+                        .schema("genshin_map")
+                        .dbQuery(new PostgreSqlQuery())
+                        .typeConvert(new PostgreSqlTypeConvert()))
                 //全局配置
                 .globalConfig(builder -> builder
                         .author(author)
@@ -69,7 +80,9 @@ public class FastGenerator {
                         .disableSerialVersionUID()
                         //entity公共父类设置
                         .superClass(BaseEntity.class)
-                        .addSuperEntityColumns("version", "create_time", "update_time", "creator_id", "updater_id", "del_flag")
+                        .versionPropertyName("version")
+                        .addTableFills(new Property("version", FieldFill.INSERT))
+                        .addSuperEntityColumns("create_time", "update_time", "creator_id", "updater_id", "del_flag")
                         .enableFileOverride()
                         /*-------------service配置-------------*/
                         .serviceBuilder()
