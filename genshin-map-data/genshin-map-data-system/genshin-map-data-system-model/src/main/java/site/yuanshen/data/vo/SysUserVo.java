@@ -1,31 +1,45 @@
 package site.yuanshen.data.vo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
-import java.util.List;
+import java.time.LocalDateTime;
 
 /**
- * 用户信息
- *
- * @author Moment
- * @since 2022-04-20 10:18:18
- */
+* 系统用户表前端封装
+*
+* @since 2023-04-22 06:47:07
+*/
 @Data
-@ToString
+@With
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(title = "用户信息Vo", description = "用户信息Vo")
+@Schema(title = "SysUser前端封装", description = "系统用户表前端封装")
 public class SysUserVo {
+
+    /**
+     * 乐观锁
+     */
+    @Schema(title = "乐观锁")
+    private Long version;
 
     /**
      * ID
      */
-    @Schema(title = "用户ID")
+    @Schema(title = "ID")
     private Long id;
+
+    /**
+     * 更新人
+     */
+    @Schema(title = "更新人")
+    private Long updaterId;
+
+    /**
+     * 更新时间
+     */
+    @Schema(title = "更新时间")
+    private LocalDateTime updateTime;
 
     /**
      * 用户名
@@ -55,12 +69,12 @@ public class SysUserVo {
      * 头像链接
      */
     @Schema(title = "头像链接")
-    private String logoUrl;
+    private String logo;
 
     /**
-     * 角色列表
+     * 角色ID
      */
-    @Schema(title = "角色列表")
-    private List<SysRoleVo> roleList;
+    @Schema(title = "角色ID")
+    private Integer roleId;
 
 }

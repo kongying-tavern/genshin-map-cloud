@@ -35,4 +35,11 @@ public class SysUserUpdateDto {
      */
     private String logoUrl;
 
+    /**
+     * 角色ID
+     *
+     * @see site.yuanshen.data.enums.RoleEnum
+     */
+    private Integer roleId;
+
 }

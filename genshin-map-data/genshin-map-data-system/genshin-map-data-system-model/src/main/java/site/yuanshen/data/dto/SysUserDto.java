@@ -1,34 +1,45 @@
 package site.yuanshen.data.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
-import lombok.experimental.Accessors;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.*;
+import com.alibaba.fastjson2.annotation.JSONField;
 import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.entity.SysUser;
-import site.yuanshen.data.vo.SysRoleVo;
 import site.yuanshen.data.vo.SysUserVo;
+import java.time.LocalDateTime;
 
-import java.util.List;
 
 /**
- * 用户信息Dto
+ * 系统用户表路数据封装
  *
- * @author Moment
- * @since 2022-04-20 10:18:18
+ * @since 2023-04-22 06:47:07
  */
 @Data
-@ToString
+@With
 @NoArgsConstructor
 @AllArgsConstructor
-@Accessors(chain = true)
+@Schema(title = "SysUser数据封装", description = "系统用户表数据封装")
 public class SysUserDto {
+
+    /**
+     * 乐观锁
+     */
+    private Long version;
 
     /**
      * ID
      */
     private Long id;
+
+    /**
+     * 更新人
+     */
+    private Long updaterId;
+
+    /**
+     * 更新时间
+     */
+    private LocalDateTime updateTime;
 
     /**
      * 用户名
@@ -53,19 +64,29 @@ public class SysUserDto {
     /**
      * 头像链接
      */
-    private String logoUrl;
+    private String logo;
 
     /**
-     * 角色列表
+     * 角色ID
      */
-    private List<SysRoleVo> roleList;
+    private Integer roleId;
 
-    public SysUserDto(SysUser user) {
-        BeanUtils.copyProperties(user, this);
+    public SysUserDto(SysUser sysUser) {
+        BeanUtils.copy(sysUser, this);
     }
 
+    public SysUserDto(SysUserVo sysUserVo) {
+        BeanUtils.copy(sysUserVo, this);
+    }
+
+    @JSONField(serialize = false)
+    public SysUser getEntity() {
+        return BeanUtils.copy(this, SysUser.class);
+    }
+
+    @JSONField(serialize = false)
     public SysUserVo getVo() {
-        return BeanUtils.copyProperties(this, SysUserVo.class);
+        return BeanUtils.copy(this, SysUserVo.class);
     }
 
 }

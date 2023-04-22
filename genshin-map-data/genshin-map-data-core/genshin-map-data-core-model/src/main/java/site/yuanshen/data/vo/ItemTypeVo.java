@@ -1,35 +1,45 @@
 package site.yuanshen.data.vo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import java.time.LocalDateTime;
 
 /**
- * 物品类型前端封装
- *
- * @author Moment
- * @since 2022-06-15
- */
+* 物品类型表前端封装
+*
+* @since 2023-04-22 06:47:07
+*/
 @Data
+@With
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = false)
-@Schema(title = "ItemType前端封装", description = "物品类型前端封装")
+@Schema(title = "ItemType前端封装", description = "物品类型表前端封装")
 public class ItemTypeVo {
 
     /**
-     * 乐观锁：修改次数
+     * 乐观锁
      */
-    @Schema(title = "乐观锁：修改次数")
+    @Schema(title = "乐观锁")
     private Long version;
 
     /**
-     * 类型ID
+     * ID
      */
-    @Schema(title = "类型ID")
-    private Long typeId;
+    @Schema(title = "ID")
+    private Long id;
+
+    /**
+     * 更新人
+     */
+    @Schema(title = "更新人")
+    private Long updaterId;
+
+    /**
+     * 更新时间
+     */
+    @Schema(title = "更新时间")
+    private LocalDateTime updateTime;
 
     /**
      * 图标标签
@@ -62,14 +72,15 @@ public class ItemTypeVo {
     private Boolean isFinal;
 
     /**
-     * 隐藏标志
+     * 隐藏标记
      */
-    @Schema(title = "隐藏标志")
+    @Schema(title = "隐藏标记")
     private Integer hiddenFlag;
 
     /**
-     * 物品类型排序
+     * 排序
      */
-    @Schema(title = "物品类型排序")
+    @Schema(title = "排序")
     private Integer sortIndex;
+
 }

@@ -74,13 +74,13 @@ public class SysUserArchiveSlotDto {
     private LinkedList<ArchiveDto> archiveHistory;
 
     public SysUserArchiveSlotDto(SysUserArchive sysUserArchive) {
-        BeanUtils.copyProperties(sysUserArchive, this);
+        BeanUtils.copy(sysUserArchive, this);
         archiveHistory = new LinkedList<>(JSON.parseArray(sysUserArchive.getData()).toJavaList(ArchiveDto.class));
     }
 
     public SysUserArchive getEntity() {
-        return BeanUtils.copyProperties(this, SysUserArchive.class)
-                .setData(JSON.toJSONString(archiveHistory));
+        return BeanUtils.copy(this, SysUserArchive.class)
+                .withData(JSON.toJSONString(archiveHistory));
     }
 
     /**
@@ -95,12 +95,11 @@ public class SysUserArchiveSlotDto {
      * @return 历史存档列表
      */
     public ArchiveSlotVo getSlotVo() {
-        ArchiveSlotVo vo = BeanUtils.copyProperties(this, ArchiveSlotVo.class);
         AtomicInteger index = new AtomicInteger(1);
-        vo.setArchive(archiveHistory.stream()
-                .map(dto->dto.getVo(index.getAndAdd(1)))
-                .collect(Collectors.toList()));
-        return vo;
+        return BeanUtils.copy(this, ArchiveSlotVo.class)
+                .withArchive(archiveHistory.stream()
+                        .map(dto -> dto.getVo(index.getAndAdd(1)))
+                        .collect(Collectors.toList()));
     }
 
     /**

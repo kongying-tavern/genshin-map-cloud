@@ -1,83 +1,72 @@
 package site.yuanshen.data.dto;
 
-import com.alibaba.fastjson2.annotation.JSONField;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
+import lombok.*;
+import com.alibaba.fastjson2.annotation.JSONField;
 import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.entity.Icon;
 import site.yuanshen.data.vo.IconVo;
+import java.time.LocalDateTime;
 
-import java.util.List;
 
 /**
- * 图标数据对象
+ * 图标主表路数据封装
  *
- * @author Moment
- * @since 2022-06-02
+ * @since 2023-04-22 06:47:07
  */
 @Data
+@With
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = false)
-@Accessors(chain = true)
-@Schema(title = "Icon数据对象", description = "图标数据对象")
+@Schema(title = "Icon数据封装", description = "图标主表数据封装")
 public class IconDto {
 
     /**
-     * 乐观锁：修改次数
+     * 乐观锁
      */
-    @Schema(title = "乐观锁：修改次数")
     private Long version;
 
     /**
-     * 图标ID
+     * ID
      */
-    @Schema(title = "图标ID")
-    private Long iconId;
+    private Long id;
+
+    /**
+     * 更新人
+     */
+    private Long updaterId;
+
+    /**
+     * 更新时间
+     */
+    private LocalDateTime updateTime;
 
     /**
      * 图标名称
      */
-    @Schema(title = "图标名称")
     private String name;
-
-    /**
-     * 图标类型ID列表
-     */
-    @Schema(title = "图标类型ID列表")
-    private List<Long> typeIdList;
 
     /**
      * 图标url
      */
-    @Schema(title = "图标url")
     private String url;
 
-    /**
-     * 创建者ID
-     */
-    @Schema(title = "创建者ID")
-    private Long creator;
-
     public IconDto(Icon icon) {
-        BeanUtils.copyProperties(icon, this);
+        BeanUtils.copy(icon, this);
     }
 
     public IconDto(IconVo iconVo) {
-        BeanUtils.copyProperties(iconVo, this);
+        BeanUtils.copy(iconVo, this);
     }
 
     @JSONField(serialize = false)
     public Icon getEntity() {
-        return BeanUtils.copyProperties(this, Icon.class);
+        return BeanUtils.copy(this, Icon.class);
     }
+
     @JSONField(serialize = false)
     public IconVo getVo() {
-        return BeanUtils.copyProperties(this, IconVo.class);
+        return BeanUtils.copy(this, IconVo.class);
     }
 
 }

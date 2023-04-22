@@ -1,59 +1,69 @@
 package site.yuanshen.data.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
+import com.baomidou.mybatisplus.annotation.Version;
+import java.time.LocalDateTime;
 import site.yuanshen.data.base.BaseEntity;
+import lombok.*;
 
 /**
  * 点位-物品关联表
  *
- * @author Moment
- * @since 2022-07-01 08:25:06
+ * @since 2023-04-23 01:08:53
  */
 @Data
+@With
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-@Accessors(chain = true)
 @TableName("marker_item_link")
-@Schema(title = "MarkerItemLink对象", description = "点位-物品关联表")
 public class MarkerItemLink extends BaseEntity {
 
     /**
-     * id
+     * 乐观锁
      */
-    @Schema(title = "id")
+    @TableField(value = "version", fill = FieldFill.INSERT_UPDATE)
+    @Version
+    private Long version;
+
+    /**
+     * ID
+     */
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
     /**
-     * 物品id
+     * 更新人
      */
-    @Schema(title = "物品id")
-    @TableField("item_id")
+    @TableField(value = "updater_id", fill = FieldFill.INSERT_UPDATE)
+    private Long updaterId;
+
+    /**
+     * 更新时间
+     */
+    @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
+    private LocalDateTime updateTime;
+
+    /**
+     * 物品ID
+     */
+    @TableId("item_id")
     private Long itemId;
 
     /**
-     * 点位id
+     * 点位ID
      */
-    @Schema(title = "点位id")
-    @TableField("marker_id")
+    @TableId("marker_id")
     private Long markerId;
 
     /**
-     * 点位是否在该物品处计数
+     * 物品于该点位数量
      */
-    @Schema(title = "点位物品数量")
     @TableField("count")
     private Integer count;
-
 
 }

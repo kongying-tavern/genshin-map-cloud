@@ -1,99 +1,97 @@
 package site.yuanshen.data.dto;
 
-import com.alibaba.fastjson2.annotation.JSONField;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
+import lombok.*;
+import com.alibaba.fastjson2.annotation.JSONField;
 import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.entity.ItemType;
 import site.yuanshen.data.vo.ItemTypeVo;
+import java.time.LocalDateTime;
+
 
 /**
- * 物品类型数据封装
+ * 物品类型表路数据封装
  *
- * @author Moment
- * @since 2022-06-15
+ * @since 2023-04-22 06:47:07
  */
 @Data
+@With
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = false)
-@Accessors(chain = true)
-@Schema(title = "ItemType数据封装", description = "物品类型数据封装")
+@Schema(title = "ItemType数据封装", description = "物品类型表数据封装")
 public class ItemTypeDto {
 
     /**
-     * 乐观锁：修改次数
+     * 乐观锁
      */
-    @Schema(title = "乐观锁：修改次数")
     private Long version;
 
     /**
-     * 类型ID
+     * ID
      */
-    @Schema(title = "类型ID")
-    private Long typeId;
+    private Long id;
+
+    /**
+     * 更新人
+     */
+    private Long updaterId;
+
+    /**
+     * 更新时间
+     */
+    private LocalDateTime updateTime;
 
     /**
      * 图标标签
      */
-    @Schema(title = "图标标签")
     private String iconTag;
 
     /**
      * 类型名
      */
-    @Schema(title = "类型名")
     private String name;
 
     /**
      * 类型补充说明
      */
-    @Schema(title = "类型补充说明")
     private String content;
 
     /**
      * 父级类型ID（无父级则为-1）
      */
-    @Schema(title = "父级类型ID（无父级则为-1）")
     private Long parentId;
 
     /**
      * 是否为末端类型
      */
-    @Schema(title = "是否为末端类型")
     private Boolean isFinal;
 
     /**
-     * 隐藏标志
+     * 隐藏标记
      */
-    @Schema(title = "隐藏标志")
     private Integer hiddenFlag;
 
     /**
-     * 物品类型排序
+     * 排序
      */
-    @Schema(title = "物品类型排序")
     private Integer sortIndex;
 
     public ItemTypeDto(ItemType itemType) {
-        BeanUtils.copyProperties(itemType, this);
-        this.typeId = itemType.getId();
+        BeanUtils.copy(itemType, this);
     }
 
     public ItemTypeDto(ItemTypeVo itemTypeVo) {
-        BeanUtils.copyProperties(itemTypeVo, this);
+        BeanUtils.copy(itemTypeVo, this);
     }
 
     @JSONField(serialize = false)
     public ItemType getEntity() {
-        return BeanUtils.copyProperties(this, ItemType.class).setId(this.typeId);
+        return BeanUtils.copy(this, ItemType.class);
     }
+
     @JSONField(serialize = false)
     public ItemTypeVo getVo() {
-        return BeanUtils.copyProperties(this, ItemTypeVo.class);
+        return BeanUtils.copy(this, ItemTypeVo.class);
     }
+
 }

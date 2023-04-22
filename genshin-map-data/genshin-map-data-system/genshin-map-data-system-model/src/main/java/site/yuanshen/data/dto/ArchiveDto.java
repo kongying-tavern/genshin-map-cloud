@@ -3,6 +3,7 @@ package site.yuanshen.data.dto;
 import com.alibaba.fastjson2.annotation.JSONField;
 import lombok.*;
 import lombok.experimental.Accessors;
+import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.common.core.utils.CachedBeanCopier;
 import site.yuanshen.data.vo.ArchiveVo;
 
@@ -14,11 +15,9 @@ import java.time.LocalDateTime;
  * @author Moment
  */
 @Data
-@ToString
+@With
 @NoArgsConstructor
 @AllArgsConstructor
-@Accessors(chain = true)
-@EqualsAndHashCode(callSuper = false)
 public class ArchiveDto {
 
     /**
@@ -38,13 +37,12 @@ public class ArchiveDto {
     }
 
     public ArchiveDto(ArchiveVo vo) {
-        CachedBeanCopier.copyProperties(vo, this);
+        BeanUtils.copy(vo, this);
     }
 
     public ArchiveVo getVo(int historyIndex) {
-        ArchiveVo vo = CachedBeanCopier.copyProperties(this, ArchiveVo.class);
-        vo.setHistoryIndex(historyIndex);
-        return vo;
+        return BeanUtils.copy(this, ArchiveVo.class)
+                .withHistoryIndex(historyIndex);
     }
 
 }

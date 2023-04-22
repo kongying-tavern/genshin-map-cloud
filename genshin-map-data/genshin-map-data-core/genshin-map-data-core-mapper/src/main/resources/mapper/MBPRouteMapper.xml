@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="site.yuanshen.data.mapper.RouteMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="site.yuanshen.data.entity.Route">
+        <id column="id" property="id"/>
+        <result column="creator_id" property="creatorId"/>
+        <result column="create_time" property="createTime"/>
+        <result column="del_flag" property="delFlag"/>
+        <result column="version" property="version"/>
+        <result column="updater_id" property="updaterId"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="name" property="name"/>
+        <result column="content" property="content"/>
+        <result column="marker_list" property="markerList"/>
+        <result column="hidden_flag" property="hiddenFlag"/>
+        <result column="video" property="video"/>
+        <result column="extra" property="extra"/>
+        <result column="creator_nickname" property="creatorNickname"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        r.creator_id,
+        r.create_time,
+        r.del_flag,
+        r.version,
+        r.id,
+        r.updater_id,
+        r.update_time,
+        r.name,
+        r.content,
+        r.marker_list,
+        r.hidden_flag,
+        r.video,
+        r.extra,
+        r.creator_nickname
+    </sql>
+
+</mapper>

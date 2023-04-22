@@ -1,78 +1,77 @@
 package site.yuanshen.data.dto;
 
-import com.alibaba.fastjson2.annotation.JSONField;
-import com.baomidou.mybatisplus.annotation.TableField;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
+import lombok.*;
+import com.alibaba.fastjson2.annotation.JSONField;
 import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.entity.TagType;
 import site.yuanshen.data.vo.TagTypeVo;
+import java.time.LocalDateTime;
+
 
 /**
- * 图标标签分类数据封装
+ * 图标标签分类表路数据封装
  *
- * @author Moment
- * @since 2022-06-02
+ * @since 2023-04-22 06:47:07
  */
 @Data
+@With
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = false)
-@Accessors(chain = true)
-@Schema(title = "TagType数据封装", description = "图标标签分类数据封装")
+@Schema(title = "TagType数据封装", description = "图标标签分类表数据封装")
 public class TagTypeDto {
 
     /**
-     * 乐观锁：修改次数
+     * 乐观锁
      */
-    @Schema(title = "乐观锁：修改次数")
     private Long version;
 
     /**
-     * 分类ID
+     * ID
      */
-    @Schema(title = "分类ID")
     private Long id;
 
     /**
-     * 分类名
+     * 更新人
      */
-    @Schema(title = "分类名")
+    private Long updaterId;
+
+    /**
+     * 更新时间
+     */
+    private LocalDateTime updateTime;
+
+    /**
+     * 分类名称
+     */
     private String name;
 
     /**
      * 父级分类ID（-1为根分类）
      */
-    @Schema(title = "父级分类ID（-1为根分类）")
     private Long parent;
 
     /**
      * 是否为末端类型
      */
-    @Schema(title = "是否为末端类型")
     private Boolean isFinal;
 
     public TagTypeDto(TagType tagType) {
-        BeanUtils.copyProperties(tagType, this);
-        this.id = tagType.getId();
+        BeanUtils.copy(tagType, this);
     }
 
     public TagTypeDto(TagTypeVo tagTypeVo) {
-        BeanUtils.copyProperties(tagTypeVo, this);
+        BeanUtils.copy(tagTypeVo, this);
     }
 
     @JSONField(serialize = false)
     public TagType getEntity() {
-        return BeanUtils.copyProperties(this, TagType.class).setId(this.id);
+        return BeanUtils.copy(this, TagType.class);
     }
 
     @JSONField(serialize = false)
     public TagTypeVo getVo() {
-        return BeanUtils.copyProperties(this, TagTypeVo.class);
+        return BeanUtils.copy(this, TagTypeVo.class);
     }
 
 }

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="site.yuanshen.data.mapper.TagMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="site.yuanshen.data.entity.Tag">
+        <id column="id" property="id"/>
+        <id column="tag" property="tag"/>
+        <id column="icon_id" property="iconId"/>
+        <result column="creator_id" property="creatorId"/>
+        <result column="create_time" property="createTime"/>
+        <result column="del_flag" property="delFlag"/>
+        <result column="version" property="version"/>
+        <result column="updater_id" property="updaterId"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        t.creator_id,
+        t.create_time,
+        t.del_flag,
+        t.version,
+        t.id,
+        t.updater_id,
+        t.update_time,
+        t.tag,
+        t.icon_id
+    </sql>
+
+</mapper>

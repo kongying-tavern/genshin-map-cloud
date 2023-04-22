@@ -1,34 +1,31 @@
 package site.yuanshen.data.vo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
 
 /**
- * 点位-物品关联前端模型
- *
- * @author Moment
- * @since 2022-06-24
- */
+* 点位-物品关联表前端封装
+*
+* @since 2023-04-22 06:47:07
+*/
 @Data
+@With
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = false)
-@Schema(title = "MarkerItemLink前端模型", description = "点位-物品关联前端模型")
+@Schema(title = "MarkerItemLink前端封装", description = "点位-物品关联表前端封装")
 public class MarkerItemLinkVo {
 
     /**
-     * 物品id
+     * 物品ID
      */
-    @Schema(title = "物品id")
+    @Schema(title = "物品ID")
     private Long itemId;
 
     /**
-     * 点位是否在该物品处计数
+     * 物品于该点位数量
      */
-    @Schema(title = "点位物品数量")
+    @Schema(title = "物品于该点位数量")
     private Integer count;
 
     /**
@@ -36,7 +33,5 @@ public class MarkerItemLinkVo {
      */
     @Schema(title = "图标标签")
     private String iconTag;
-
-
 
 }

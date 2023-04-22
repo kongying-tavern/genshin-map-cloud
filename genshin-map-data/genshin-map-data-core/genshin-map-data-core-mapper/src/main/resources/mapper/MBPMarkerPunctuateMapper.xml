@@ -5,41 +5,57 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="site.yuanshen.data.entity.MarkerPunctuate">
         <id column="id" property="id"/>
-        <result column="version" property="version"/>
+        <id column="original_marker_id" property="originalMarkerId"/>
         <result column="creator_id" property="creatorId"/>
-        <result column="updater_id" property="updaterId"/>
         <result column="create_time" property="createTime"/>
-        <result column="update_time" property="updateTime"/>
         <result column="del_flag" property="delFlag"/>
+        <result column="version" property="version"/>
+        <result column="updater_id" property="updaterId"/>
+        <result column="update_time" property="updateTime"/>
         <result column="punctuate_id" property="punctuateId"/>
-        <result column="original_marker_id" property="originalMarkerId"/>
         <result column="marker_title" property="markerTitle"/>
         <result column="item_list" property="itemList"/>
         <result column="position" property="position"/>
         <result column="content" property="content"/>
+        <result column="extra" property="extra"/>
         <result column="picture" property="picture"/>
         <result column="marker_creator_id" property="markerCreatorId"/>
         <result column="picture_creator_id" property="pictureCreatorId"/>
         <result column="video_path" property="videoPath"/>
+        <result column="hidden_flag" property="hiddenFlag"/>
         <result column="author" property="author"/>
         <result column="status" property="status"/>
         <result column="audit_remark" property="auditRemark"/>
         <result column="method_type" property="methodType"/>
         <result column="refresh_time" property="refreshTime"/>
-        <result column="hidden_flag" property="hiddenFlag"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        version,
-        creator_id,
-        updater_id,
-        create_time,
-        update_time,
-        del_flag,
-     id, punctuate_id, original_marker_id, marker_title, item_list, position, content,
-		    picture, marker_creator_id, picture_creator_id, video_path, author, status,
-		    audit_remark, method_type,refresh_time,hidden_flag
+        mp.creator_id,
+        mp.create_time,
+        mp.del_flag,
+        mp.version,
+        mp.id,
+        mp.updater_id,
+        mp.update_time,
+        mp.punctuate_id,
+        mp.original_marker_id,
+        mp.marker_title,
+        mp.item_list,
+        mp.position,
+        mp.content,
+        mp.extra,
+        mp.picture,
+        mp.marker_creator_id,
+        mp.picture_creator_id,
+        mp.video_path,
+        mp.hidden_flag,
+        mp.author,
+        mp.status,
+        mp.audit_remark,
+        mp.method_type,
+        mp.refresh_time
     </sql>
 
 </mapper>

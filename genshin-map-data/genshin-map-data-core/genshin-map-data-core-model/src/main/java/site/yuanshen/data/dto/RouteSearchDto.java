@@ -53,7 +53,7 @@ public class RouteSearchDto {
     private Long size;
 
     public RouteSearchDto(RouteSearchVo searchVo) {
-        BeanUtils.copyProperties(searchVo, this);
+        BeanUtils.copy(searchVo, this);
     }
 
     public Page<Route> getPage() {

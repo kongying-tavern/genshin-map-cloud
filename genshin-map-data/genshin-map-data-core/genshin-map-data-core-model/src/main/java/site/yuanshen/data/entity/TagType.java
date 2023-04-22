@@ -1,59 +1,69 @@
 package site.yuanshen.data.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
+import com.baomidou.mybatisplus.annotation.Version;
+import java.time.LocalDateTime;
 import site.yuanshen.data.base.BaseEntity;
+import lombok.*;
 
 /**
  * 图标标签分类表
  *
- * @author Moment
- * @since 2022-06-25 12:17:27
+ * @since 2023-04-23 01:08:53
  */
 @Data
+@With
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-@Accessors(chain = true)
 @TableName("tag_type")
-@Schema(title = "TagType对象", description = "图标标签分类表")
 public class TagType extends BaseEntity {
 
     /**
-     * id
+     * 乐观锁
      */
-    @Schema(title = "id")
+    @TableField(value = "version", fill = FieldFill.INSERT_UPDATE)
+    @Version
+    private Long version;
+
+    /**
+     * ID
+     */
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
     /**
+     * 更新人
+     */
+    @TableField(value = "updater_id", fill = FieldFill.INSERT_UPDATE)
+    private Long updaterId;
+
+    /**
+     * 更新时间
+     */
+    @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
+    private LocalDateTime updateTime;
+
+    /**
      * 分类名称
      */
-    @Schema(title = "分类名称")
     @TableField("name")
     private String name;
 
     /**
-     * 父级分类id（-1为根分类）
+     * 父级分类ID（-1为根分类）
      */
-    @Schema(title = "父级分类id（-1为根分类）")
-    @TableField("parent")
+    @TableId("parent")
     private Long parent;
 
     /**
      * 是否为末端类型
      */
-    @Schema(title = "是否为末端类型")
     @TableField("is_final")
     private Boolean isFinal;
-
 
 }

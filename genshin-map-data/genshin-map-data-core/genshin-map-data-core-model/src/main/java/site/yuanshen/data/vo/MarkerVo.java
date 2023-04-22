@@ -1,37 +1,52 @@
 package site.yuanshen.data.vo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * 点位完整信息的前端封装
- *
- * @author Moment
- * @since 2022-06-23
- */
+* 点位主表前端封装
+*
+* @since 2023-04-22 06:47:07
+*/
 @Data
+@With
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = false)
-@Schema(title = "Marker完整信息的前端封装", description = "点位完整信息的前端封装")
+@Schema(title = "Marker前端封装", description = "点位主表前端封装")
 public class MarkerVo {
 
     /**
-     * 乐观锁：修改次数
+     * 乐观锁
      */
-    @Schema(title = "乐观锁：修改次数")
+    @Schema(title = "乐观锁")
     private Long version;
 
     /**
-     * 点位ID
+     * ID
      */
-    @Schema(title = "点位ID")
+    @Schema(title = "ID")
     private Long id;
+
+    /**
+     * 更新人
+     */
+    @Schema(title = "更新人")
+    private Long updaterId;
+
+    /**
+     * 更新时间
+     */
+    @Schema(title = "更新时间")
+    private LocalDateTime updateTime;
+
+    /**
+     * 点位签戳（用于兼容旧点位ID）
+     */
+    @Schema(title = "点位签戳（用于兼容旧点位ID）")
+    private String markerStamp;
 
     /**
      * 点位名称
@@ -82,15 +97,9 @@ public class MarkerVo {
     private String videoPath;
 
     /**
-     * 额外特殊字段
+     * 点位刷新时间;单位:毫秒
      */
-    @Schema(title = "额外特殊字段")
-    private String extra;
-
-    /**
-     * 刷新时间
-     */
-    @Schema(title = "刷新时间")
+    @Schema(title = "点位刷新时间;单位:毫秒")
     private Long refreshTime;
 
     /**
@@ -98,4 +107,11 @@ public class MarkerVo {
      */
     @Schema(title = "隐藏标志")
     private Integer hiddenFlag;
+
+    /**
+     * 额外特殊字段
+     */
+    @Schema(title = "额外特殊字段")
+    private String extra;
+
 }

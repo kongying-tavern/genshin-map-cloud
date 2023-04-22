@@ -1,101 +1,105 @@
 package site.yuanshen.data.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
+import com.baomidou.mybatisplus.annotation.Version;
+import java.time.LocalDateTime;
 import site.yuanshen.data.base.BaseEntity;
+import lombok.*;
 
 /**
  * 地区主表
  *
- * @author Moment
- * @since 2022-06-25 12:17:27
+ * @since 2023-04-23 01:08:53
  */
 @Data
+@With
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-@Accessors(chain = true)
 @TableName("area")
-@Schema(title = "Area对象", description = "地区主表")
 public class Area extends BaseEntity {
 
     /**
-     * id
+     * 乐观锁
      */
-    @Schema(title = "id")
+    @TableField(value = "version", fill = FieldFill.INSERT_UPDATE)
+    @Version
+    private Long version;
+
+    /**
+     * ID
+     */
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
     /**
+     * 更新人
+     */
+    @TableField(value = "updater_id", fill = FieldFill.INSERT_UPDATE)
+    private Long updaterId;
+
+    /**
+     * 更新时间
+     */
+    @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
+    private LocalDateTime updateTime;
+
+    /**
      * 地区名称
      */
-    @Schema(title = "地区名称")
     @TableField("name")
     private String name;
 
     /**
-     * 地区代码;
+     * 地区代码
      */
-    @Schema(title = "地区代码")
     @TableField("code")
     private String code;
 
     /**
      * 地区说明
      */
-    @Schema(title = "地区说明")
     @TableField("content")
     private String content;
 
     /**
      * 图标标签
      */
-    @Schema(title = "图标标签")
     @TableField("icon_tag")
     private String iconTag;
 
     /**
-     * 父级地区id（无父级则为-1）
+     * 父级地区ID（无父级则为-1）
      */
-    @Schema(title = "父级地区id（无父级则为-1）")
     @TableField("parent_id")
     private Long parentId;
 
     /**
      * 是否为末端地区
      */
-    @Schema(title = "是否为末端地区")
     @TableField("is_final")
     private Boolean isFinal;
 
     /**
-     * 隐藏标志
+     * 权限屏蔽标记
      */
-    @Schema(title = "隐藏标志")
     @TableField("hidden_flag")
     private Integer hiddenFlag;
 
     /**
-     * 地区排序
+     * 额外标记;低位第一位：前台是否显示
      */
-    @Schema(title = "地区排序")
-    @TableField("sort_index")
-    private Integer sortIndex;
-
-    /**
-     * 特殊物品标记，二进制表示<br>
-     * 低位第一位：是否为显示物品
-     */
-    @Schema(title = "特殊物品标记")
     @TableField("special_flag")
     private Integer specialFlag;
+
+    /**
+     * 排序
+     */
+    @TableField("sort_index")
+    private Integer sortIndex;
 
 }

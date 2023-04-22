@@ -1,107 +1,110 @@
 package site.yuanshen.data.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
+import com.baomidou.mybatisplus.annotation.Version;
+import java.time.LocalDateTime;
 import site.yuanshen.data.base.BaseEntity;
+import lombok.*;
 
 /**
  * 物品表
  *
- * @author Moment
- * @since 2022-06-25 12:17:27
+ * @since 2023-04-23 01:08:53
  */
 @Data
+@With
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-@Accessors(chain = true)
 @TableName("item")
-@Schema(title = "Item对象", description = "物品表")
 public class Item extends BaseEntity {
 
     /**
-     * id
+     * 乐观锁
      */
-    @Schema(title = "id")
+    @TableField(value = "version", fill = FieldFill.INSERT_UPDATE)
+    @Version
+    private Long version;
+
+    /**
+     * ID
+     */
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
     /**
+     * 更新人
+     */
+    @TableField(value = "updater_id", fill = FieldFill.INSERT_UPDATE)
+    private Long updaterId;
+
+    /**
+     * 更新时间
+     */
+    @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
+    private LocalDateTime updateTime;
+
+    /**
      * 物品名称
      */
-    @Schema(title = "物品名称")
     @TableField("name")
     private String name;
 
     /**
-     * 地区id（须确保是末端地区）
+     * 地区ID（须确保是末端地区）
      */
-    @Schema(title = "地区id（须确保是末端地区）")
-    @TableField("area_id")
+    @TableId("area_id")
     private Long areaId;
+
+    /**
+     * 默认刷新时间;单位:毫秒
+     */
+    @TableField("default_refresh_time")
+    private Long defaultRefreshTime;
 
     /**
      * 默认描述模板;用于提交新物品点位时的描述模板
      */
-    @Schema(title = "默认描述模板;用于提交新物品点位时的描述模板")
     @TableField("default_content")
     private String defaultContent;
 
     /**
+     * 默认数量
+     */
+    @TableField("default_count")
+    private Integer defaultCount;
+
+    /**
      * 图标标签
      */
-    @Schema(title = "图标标签")
     @TableField("icon_tag")
     private String iconTag;
 
     /**
      * 图标样式类型
      */
-    @Schema(title = "图标样式类型")
     @TableField("icon_style_type")
     private Integer iconStyleType;
 
     /**
      * 隐藏标志
      */
-    @Schema(title = "隐藏标志")
     @TableField("hidden_flag")
     private Integer hiddenFlag;
 
     /**
-     * 刷新时间
-     */
-    @Schema(title = "刷新时间(单位:毫秒)")
-    @TableField("default_refresh_time")
-    private Long defaultRefreshTime;
-
-    /**
      * 物品排序
      */
-    @Schema(title = "物品排序")
     @TableField("sort_index")
     private Integer sortIndex;
 
     /**
-     * 默认物品数量
+     * 特殊物品标记;二进制表示；低位第一位：前台是否显示
      */
-    @Schema(title = "默认物品数量")
-    @TableField("default_count")
-    private Integer defaultCount;
-
-    /**
-     * 特殊物品标记，二进制表示<br>
-     * 低位第一位：是否为显示物品
-     */
-    @Schema(title = "特殊物品标记")
     @TableField("special_flag")
     private Integer specialFlag;
 

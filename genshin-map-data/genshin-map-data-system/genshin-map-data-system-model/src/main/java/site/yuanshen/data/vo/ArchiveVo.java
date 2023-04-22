@@ -2,9 +2,10 @@ package site.yuanshen.data.vo;
 
 import com.alibaba.fastjson2.annotation.JSONField;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.With;
-import lombok.experimental.WithBy;
 
 import java.time.LocalDateTime;
 
@@ -14,6 +15,9 @@ import java.time.LocalDateTime;
  * @author Moment
  */
 @Data
+@With
+@NoArgsConstructor
+@AllArgsConstructor
 @Schema(title = "存档VO", description = "存档VO")
 public class ArchiveVo {
 

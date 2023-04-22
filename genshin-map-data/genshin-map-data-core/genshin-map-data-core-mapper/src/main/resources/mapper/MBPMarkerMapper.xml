@@ -5,13 +5,13 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="site.yuanshen.data.entity.Marker">
         <id column="id" property="id"/>
-        <result column="version" property="version"/>
         <result column="creator_id" property="creatorId"/>
-        <result column="updater_id" property="updaterId"/>
         <result column="create_time" property="createTime"/>
-        <result column="update_time" property="updateTime"/>
         <result column="del_flag" property="delFlag"/>
-        <result column="marker_id" property="markerId"/>
+        <result column="version" property="version"/>
+        <result column="updater_id" property="updaterId"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="marker_stamp" property="markerStamp"/>
         <result column="marker_title" property="markerTitle"/>
         <result column="position" property="position"/>
         <result column="content" property="content"/>
@@ -21,17 +21,29 @@
         <result column="video_path" property="videoPath"/>
         <result column="refresh_time" property="refreshTime"/>
         <result column="hidden_flag" property="hiddenFlag"/>
+        <result column="extra" property="extra"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        version,
-        creator_id,
-        updater_id,
-        create_time,
-        update_time,
-        del_flag,
-     id, marker_id, marker_title, position, content, picture, marker_creator_id, picture_creator_id, video_path,refresh_time,hidden_flag
+        m.creator_id,
+        m.create_time,
+        m.del_flag,
+        m.version,
+        m.id,
+        m.updater_id,
+        m.update_time,
+        m.marker_stamp,
+        m.marker_title,
+        m.position,
+        m.content,
+        m.picture,
+        m.marker_creator_id,
+        m.picture_creator_id,
+        m.video_path,
+        m.refresh_time,
+        m.hidden_flag,
+        m.extra
     </sql>
 
 </mapper>

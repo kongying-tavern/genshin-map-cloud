@@ -1,35 +1,45 @@
 package site.yuanshen.data.vo;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 /**
- * 路线前端封装
- *
- * @author Moment
- * @since 2023-01-03 05:10:07
- */
+* 路线前端封装
+*
+* @since 2023-04-22 06:47:07
+*/
 @Data
-@ToString
+@With
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode
 @Schema(title = "Route前端封装", description = "路线前端封装")
 public class RouteVo {
 
     /**
-     * 乐观锁：修改次数
+     * 乐观锁
      */
-    @Schema(title = "乐观锁：修改次数")
+    @Schema(title = "乐观锁")
     private Long version;
 
     /**
-     * 路线ID
+     * ID
      */
-    @Schema(title = "路线ID")
+    @Schema(title = "ID")
     private Long id;
+
+    /**
+     * 更新人
+     */
+    @Schema(title = "更新人")
+    private Long updaterId;
+
+    /**
+     * 更新时间
+     */
+    @Schema(title = "更新时间")
+    private LocalDateTime updateTime;
 
     /**
      * 路线名称
@@ -68,16 +78,9 @@ public class RouteVo {
     private String extra;
 
     /**
-     * 创建人
-     */
-    @Schema(title = "创建人")
-    private Long creatorId;
-
-    /**
      * 创建人昵称
      */
     @Schema(title = "创建人昵称")
     private String creatorNickname;
-
 
 }

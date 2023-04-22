@@ -1,35 +1,45 @@
 package site.yuanshen.data.vo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import java.time.LocalDateTime;
 
 /**
- * 图标分类前端封装
- *
- * @author Moment
- * @since 2022-06-02
- */
+* 图标分类表前端封装
+*
+* @since 2023-04-22 06:47:07
+*/
 @Data
+@With
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = false)
-@Schema(title = "IconType前端封装", description = "图标分类前端封装")
+@Schema(title = "IconType前端封装", description = "图标分类表前端封装")
 public class IconTypeVo {
 
     /**
-     * 乐观锁：修改次数
+     * 乐观锁
      */
-    @Schema(title = "乐观锁：修改次数")
+    @Schema(title = "乐观锁")
     private Long version;
 
     /**
-     * 分类ID
+     * ID
      */
-    @Schema(title = "分类ID")
+    @Schema(title = "ID")
     private Long id;
+
+    /**
+     * 更新人
+     */
+    @Schema(title = "更新人")
+    private Long updaterId;
+
+    /**
+     * 更新时间
+     */
+    @Schema(title = "更新时间")
+    private LocalDateTime updateTime;
 
     /**
      * 分类名

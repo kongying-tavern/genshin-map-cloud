@@ -1,177 +1,147 @@
 package site.yuanshen.data.dto;
 
-import com.alibaba.fastjson2.JSONArray;
-import com.alibaba.fastjson2.annotation.JSONField;
-import com.baomidou.mybatisplus.annotation.TableField;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
+import lombok.*;
+import com.alibaba.fastjson2.annotation.JSONField;
 import site.yuanshen.common.core.utils.BeanUtils;
-import site.yuanshen.data.entity.MarkerItemLink;
 import site.yuanshen.data.entity.MarkerPunctuate;
-import site.yuanshen.data.enums.PunctuateMethodEnum;
-import site.yuanshen.data.enums.PunctuateStatusEnum;
 import site.yuanshen.data.vo.MarkerPunctuateVo;
+import java.time.LocalDateTime;
 
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
- * 打点完整信息的数据封装
+ * 点位提交表路数据封装
  *
- * @author Moment
- * @since 2022-06-24
+ * @since 2023-04-22 06:47:07
  */
 @Data
+@With
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = false)
-@Accessors(chain = true)
-@Schema(title = "MarkerPunctuate完整信息的数据封装", description = "打点完整信息的数据封装")
+@Schema(title = "MarkerPunctuate数据封装", description = "点位提交表数据封装")
 public class MarkerPunctuateDto {
 
     /**
-     * 乐观锁：修改次数
+     * 乐观锁
      */
-    @Schema(title = "乐观锁：修改次数")
     private Long version;
 
     /**
-     * 打点ID
+     * ID
      */
-    @Schema(title = "打点ID")
+    private Long id;
+
+    /**
+     * 更新人
+     */
+    private Long updaterId;
+
+    /**
+     * 更新时间
+     */
+    private LocalDateTime updateTime;
+
+    /**
+     * 点位提交ID
+     */
     private Long punctuateId;
 
     /**
-     * 原有点位id
+     * 原有点位ID
      */
-    @Schema(title = "原有点位id")
     private Long originalMarkerId;
 
     /**
      * 点位名称
      */
-    @Schema(title = "点位名称")
     private String markerTitle;
-
-    /**
-     * 点位坐标
-     */
-    @Schema(title = "点位坐标")
-    private String position;
 
     /**
      * 点位物品列表
      */
-    @Schema(title = "点位物品列表")
-    private List<MarkerItemLinkDto> itemList;
+    private String itemList;
+
+    /**
+     * 点位坐标
+     */
+    private String position;
 
     /**
      * 点位说明
      */
-    @Schema(title = "点位说明")
     private String content;
+
+    /**
+     * 额外特殊字段
+     */
+    private String extra;
 
     /**
      * 点位图片
      */
-    @Schema(title = "点位图片")
     private String picture;
 
     /**
      * 点位初始标记者
      */
-    @Schema(title = "点位初始标记者")
     private Long markerCreatorId;
 
     /**
      * 点位图片上传者
      */
-    @Schema(title = "点位图片上传者")
     private Long pictureCreatorId;
 
     /**
      * 点位视频
      */
-    @Schema(title = "点位视频")
     private String videoPath;
 
     /**
-     * 额外特殊字段具体内容
+     * 隐藏标志
      */
-    @Schema(title = "额外特殊字段具体内容")
-    private String markerExtraContent;
+    private Integer hiddenFlag;
 
     /**
-     * 点位提交者id
+     * 点位提交者ID
      */
-    @Schema(title = "点位提交者id")
     private Long author;
 
     /**
      * 状态;0:暂存 1:审核中 2:不通过
      */
-    @Schema(title = "状态;0:暂存 1:审核中 2:不通过")
-    private PunctuateStatusEnum status;
+    private Integer status;
 
     /**
      * 审核备注
      */
-    @Schema(title = "审核备注")
-    @TableField("audit_remark")
     private String auditRemark;
 
     /**
      * 操作类型;1: 新增 2: 修改 3: 删除
      */
-    @Schema(title = "操作类型;1: 新增 2: 修改 3: 删除")
-    private PunctuateMethodEnum methodType;
+    private Integer methodType;
 
     /**
-     * 刷新时间
+     * 点位刷新时间
      */
-    @Schema(title = "刷新时间")
     private Long refreshTime;
 
-    /**
-     * 隐藏标志
-     */
-    @Schema(title = "隐藏标志")
-    private Integer hiddenFlag;
-
-
-    public MarkerPunctuateDto(MarkerPunctuateVo vo) {
-        BeanUtils.copyProperties(vo, this);
-        methodType = PunctuateMethodEnum.from(vo.getMethodType());
-        status = PunctuateStatusEnum.from(vo.getStatus());
+    public MarkerPunctuateDto(MarkerPunctuate markerPunctuate) {
+        BeanUtils.copy(markerPunctuate, this);
     }
 
-    public MarkerPunctuateDto(MarkerPunctuate punctuate) {
-        BeanUtils.copyProperties(punctuate, this);
-        this.itemList = JSONArray.parseArray(punctuate.getItemList(), MarkerItemLinkDto.class);
+    public MarkerPunctuateDto(MarkerPunctuateVo markerPunctuateVo) {
+        BeanUtils.copy(markerPunctuateVo, this);
     }
-
 
     @JSONField(serialize = false)
     public MarkerPunctuate getEntity() {
-        return BeanUtils.copyProperties(this, MarkerPunctuate.class).setItemList(JSONArray.toJSONString(this.itemList));
+        return BeanUtils.copy(this, MarkerPunctuate.class);
     }
-
-    @JSONField(serialize = false)
-    public List<MarkerItemLink> getLinkEntity() {
-        return this.itemList.stream().map(MarkerItemLinkDto::getEntity).collect(Collectors.toList());
-    }
-
 
     @JSONField(serialize = false)
     public MarkerPunctuateVo getVo() {
-        return BeanUtils.copyProperties(this, MarkerPunctuateVo.class)
-                .withItemList(itemList.stream().map(MarkerItemLinkDto::getVo).collect(Collectors.toList()))
-                .withMethodType(methodType.getTypeCode())
-                .withStatus(status.getValue());
+        return BeanUtils.copy(this, MarkerPunctuateVo.class);
     }
 
 }

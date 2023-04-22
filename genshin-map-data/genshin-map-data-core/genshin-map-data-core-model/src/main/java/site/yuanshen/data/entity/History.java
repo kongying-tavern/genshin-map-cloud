@@ -1,60 +1,81 @@
 package site.yuanshen.data.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
+import com.baomidou.mybatisplus.annotation.Version;
+import java.time.LocalDateTime;
 import site.yuanshen.data.base.BaseEntity;
+import lombok.*;
 
-@Schema(title = "history")
+/**
+ * 历史操作表
+ *
+ * @since 2023-04-23 01:08:53
+ */
 @Data
-@Accessors(chain = true)
+@With
+@NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-@TableName(value = "history")
+@TableName("history")
 public class History extends BaseEntity {
+
+    /**
+     * 乐观锁
+     */
+    @TableField(value = "version", fill = FieldFill.INSERT_UPDATE)
+    @Version
+    private Long version;
+
+    /**
+     * ID
+     */
     @TableId(value = "id", type = IdType.AUTO)
-    @Schema(title = "")
     private Long id;
+
+    /**
+     * 更新人
+     */
+    @TableField(value = "updater_id", fill = FieldFill.INSERT_UPDATE)
+    private Long updaterId;
+
+    /**
+     * 更新时间
+     */
+    @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
+    private LocalDateTime updateTime;
 
     /**
      * 内容
      */
-    @TableField(value = "content")
-    @Schema(title = "内容")
+    @TableField("content")
     private String content;
 
     /**
-     * md5
+     * MD5
      */
-    @TableField(value = "md5")
-    @Schema(title = "md5")
+    @TableField("md5")
     private String md5;
 
     /**
-     * 类型id
+     * 原ID
      */
-    @TableField(value = "t_id")
-    @Schema(title = "类型id")
+    @TableField("t_id")
     private Long tId;
 
     /**
-     * 记录类型
+     * 操作数据类型;1地区; 2图标; 3物品; 4点位; 5标签
      */
-    @TableField(value = "`type`")
-    @Schema(title = "记录类型")
+    @TableField("type")
     private Integer type;
 
     /**
-     * ipv4
+     * IPv4
      */
-    @TableField(value = "ipv4")
-    @Schema(title = "ipv4")
+    @TableField("ipv4")
     private String ipv4;
 
 }

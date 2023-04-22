@@ -1,7 +1,7 @@
 package site.yuanshen.data.vo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
+import lombok.*;
 
 /**
  * 角色Vo
@@ -9,6 +9,9 @@ import lombok.Data;
  * @author Moment
  */
 @Data
+@With
+@NoArgsConstructor
+@AllArgsConstructor
 @Schema(title = "角色Vo", description = "角色Vo")
 public class SysRoleVo {
 
@@ -16,7 +19,7 @@ public class SysRoleVo {
      * 角色ID
      */
     @Schema(title = "角色ID")
-    private Long id;
+    private Integer id;
 
     /**
      * 角色名

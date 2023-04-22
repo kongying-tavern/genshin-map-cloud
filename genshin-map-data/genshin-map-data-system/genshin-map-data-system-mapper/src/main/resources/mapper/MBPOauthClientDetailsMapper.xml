@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="site.yuanshen.data.mapper.OauthClientDetailsMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="site.yuanshen.data.entity.OauthClientDetails">
+        <id column="id" property="id"/>
+        <result column="creator_id" property="creatorId"/>
+        <result column="create_time" property="createTime"/>
+        <result column="del_flag" property="delFlag"/>
+        <result column="version" property="version"/>
+        <result column="updater_id" property="updaterId"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="client_id" property="clientId"/>
+        <result column="client_secret" property="clientSecret"/>
+        <result column="scope" property="scope"/>
+        <result column="authorized_grant_types" property="authorizedGrantTypes"/>
+        <result column="web_server_redirect_uri" property="webServerRedirectUri"/>
+        <result column="authorities" property="authorities"/>
+        <result column="access_token_validity" property="accessTokenValidity"/>
+        <result column="refresh_token_validity" property="refreshTokenValidity"/>
+        <result column="additional_information" property="additionalInformation"/>
+        <result column="auto_approve" property="autoApprove"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        ocd.creator_id,
+        ocd.create_time,
+        ocd.del_flag,
+        ocd.version,
+        ocd.id,
+        ocd.updater_id,
+        ocd.update_time,
+        ocd.client_id,
+        ocd.client_secret,
+        ocd.scope,
+        ocd.authorized_grant_types,
+        ocd.web_server_redirect_uri,
+        ocd.authorities,
+        ocd.access_token_validity,
+        ocd.refresh_token_validity,
+        ocd.additional_information,
+        ocd.auto_approve
+    </sql>
+
+</mapper>

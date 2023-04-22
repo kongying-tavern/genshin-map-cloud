@@ -1,93 +1,87 @@
 package site.yuanshen.data.dto;
 
-import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.JSONObject;
-import com.alibaba.fastjson2.annotation.JSONField;
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
+import lombok.*;
+import com.alibaba.fastjson2.annotation.JSONField;
 import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.entity.History;
 import site.yuanshen.data.vo.HistoryVo;
-
 import java.time.LocalDateTime;
 
 
+/**
+ * 历史操作表路数据封装
+ *
+ * @since 2023-04-22 06:47:07
+ */
 @Data
+@With
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = false)
-@Accessors(chain = true)
-@Schema(title = "History数据对象", description = "History数据对象")
+@Schema(title = "History数据封装", description = "历史操作表数据封装")
 public class HistoryDto {
 
-    @Schema(title = "id")
+    /**
+     * 乐观锁
+     */
+    private Long version;
+
+    /**
+     * ID
+     */
     private Long id;
+
+    /**
+     * 更新人
+     */
+    private Long updaterId;
+
+    /**
+     * 更新时间
+     */
+    private LocalDateTime updateTime;
 
     /**
      * 内容
      */
-    @Schema(title = "内容")
-    private Object content;
+    private String content;
 
     /**
-     * md5
+     * MD5
      */
-    @Schema(title = "md5")
     private String md5;
 
     /**
-     * 类型id
+     * 原ID
      */
-    @Schema(title = "类型id")
     private Long tId;
 
     /**
-     * 记录类型
+     * 操作数据类型;1地区; 2图标; 3物品; 4点位; 5标签
      */
-    @Schema(title = "记录类型")
     private Integer type;
 
     /**
-     * ipv4
+     * IPv4
      */
-    @Schema(title = "ipv4")
     private String ipv4;
 
-    /**
-     * 创建人
-     */
-    @Schema(title = "创建人")
-    private Long creatorId;
-
-    /**
-     * 创建时间
-     */
-    @Schema(title = "创建时间")
-    private LocalDateTime createTime;
-
     public HistoryDto(History history) {
-        BeanUtils.copyProperties(history, this).setContent(JSON.parseObject(history.getContent()));
+        BeanUtils.copy(history, this);
+    }
+
+    public HistoryDto(HistoryVo historyVo) {
+        BeanUtils.copy(historyVo, this);
     }
 
     @JSONField(serialize = false)
     public History getEntity() {
-        return BeanUtils.copyProperties(this, History.class);
-    }
-
-    public HistoryDto(HistoryVo historyVo) {
-        BeanUtils.copyProperties(historyVo, this);
+        return BeanUtils.copy(this, History.class);
     }
 
     @JSONField(serialize = false)
     public HistoryVo getVo() {
-        return BeanUtils.copyProperties(this, HistoryVo.class);
+        return BeanUtils.copy(this, HistoryVo.class);
     }
+
 }

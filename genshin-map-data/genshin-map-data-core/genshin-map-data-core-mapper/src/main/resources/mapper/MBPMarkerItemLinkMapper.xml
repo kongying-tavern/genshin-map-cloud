@@ -5,26 +5,29 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="site.yuanshen.data.entity.MarkerItemLink">
         <id column="id" property="id"/>
-        <result column="version" property="version"/>
+        <id column="item_id" property="itemId"/>
+        <id column="marker_id" property="markerId"/>
         <result column="creator_id" property="creatorId"/>
-        <result column="updater_id" property="updaterId"/>
         <result column="create_time" property="createTime"/>
-        <result column="update_time" property="updateTime"/>
         <result column="del_flag" property="delFlag"/>
-        <result column="item_id" property="itemId"/>
-        <result column="marker_id" property="markerId"/>
+        <result column="version" property="version"/>
+        <result column="updater_id" property="updaterId"/>
+        <result column="update_time" property="updateTime"/>
         <result column="count" property="count"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        version,
-        creator_id,
-        updater_id,
-        create_time,
-        update_time,
-        del_flag,
-     id, item_id, marker_id, count
+        mil.creator_id,
+        mil.create_time,
+        mil.del_flag,
+        mil.version,
+        mil.id,
+        mil.updater_id,
+        mil.update_time,
+        mil.item_id,
+        mil.marker_id,
+        mil.count
     </sql>
 
 </mapper>

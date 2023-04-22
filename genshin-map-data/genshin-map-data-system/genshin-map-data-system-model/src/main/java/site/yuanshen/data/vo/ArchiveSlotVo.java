@@ -1,7 +1,7 @@
 package site.yuanshen.data.vo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -12,6 +12,9 @@ import java.util.List;
  * @author Moment
  */
 @Data
+@With
+@NoArgsConstructor
+@AllArgsConstructor
 @Schema(title = "存档槽位VO", description = "存档槽位VO")
 public class ArchiveSlotVo {
 

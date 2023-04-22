@@ -5,26 +5,29 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="site.yuanshen.data.entity.TagType">
         <id column="id" property="id"/>
-        <result column="version" property="version"/>
+        <id column="parent" property="parent"/>
         <result column="creator_id" property="creatorId"/>
-        <result column="updater_id" property="updaterId"/>
         <result column="create_time" property="createTime"/>
-        <result column="update_time" property="updateTime"/>
         <result column="del_flag" property="delFlag"/>
+        <result column="version" property="version"/>
+        <result column="updater_id" property="updaterId"/>
+        <result column="update_time" property="updateTime"/>
         <result column="name" property="name"/>
-        <result column="parent" property="parent"/>
         <result column="is_final" property="isFinal"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        version,
-        creator_id,
-        updater_id,
-        create_time,
-        update_time,
-        del_flag,
-     id, type_id, name, parent, is_final
+        tt.creator_id,
+        tt.create_time,
+        tt.del_flag,
+        tt.version,
+        tt.id,
+        tt.updater_id,
+        tt.update_time,
+        tt.name,
+        tt.parent,
+        tt.is_final
     </sql>
 
 </mapper>

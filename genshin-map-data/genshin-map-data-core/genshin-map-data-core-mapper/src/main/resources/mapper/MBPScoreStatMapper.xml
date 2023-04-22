@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="site.yuanshen.data.mapper.ScoreStatMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="site.yuanshen.data.entity.ScoreStat">
+        <id column="id" property="id"/>
+        <id column="scope" property="scope"/>
+        <id column="span" property="span"/>
+        <id column="span_start_time" property="spanStartTime"/>
+        <id column="span_end_time" property="spanEndTime"/>
+        <id column="user_id" property="userId"/>
+        <result column="creator_id" property="creatorId"/>
+        <result column="create_time" property="createTime"/>
+        <result column="del_flag" property="delFlag"/>
+        <result column="version" property="version"/>
+        <result column="updater_id" property="updaterId"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="content" property="content"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        ss.creator_id,
+        ss.create_time,
+        ss.del_flag,
+        ss.version,
+        ss.id,
+        ss.updater_id,
+        ss.update_time,
+        ss.scope,
+        ss.span,
+        ss.span_start_time,
+        ss.span_end_time,
+        ss.user_id,
+        ss.content
+    </sql>
+
+</mapper>

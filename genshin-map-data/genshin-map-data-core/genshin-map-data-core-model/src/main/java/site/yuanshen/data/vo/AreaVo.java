@@ -1,35 +1,45 @@
 package site.yuanshen.data.vo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import java.time.LocalDateTime;
 
 /**
- * 地区前端封装
- *
- * @author Moment
- * @since 2022-06-11
- */
+* 地区主表前端封装
+*
+* @since 2023-04-22 06:47:07
+*/
 @Data
+@With
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = false)
-@Schema(title = "Area前端封装", description = "地区前端封装")
+@Schema(title = "Area前端封装", description = "地区主表前端封装")
 public class AreaVo {
 
     /**
-     * 乐观锁：修改次数
+     * 乐观锁
      */
-    @Schema(title = "乐观锁：修改次数")
+    @Schema(title = "乐观锁")
     private Long version;
 
     /**
-     * 地区ID
+     * ID
      */
-    @Schema(title = "地区ID")
-    private Long areaId;
+    @Schema(title = "ID")
+    private Long id;
+
+    /**
+     * 更新人
+     */
+    @Schema(title = "更新人")
+    private Long updaterId;
+
+    /**
+     * 更新时间
+     */
+    @Schema(title = "更新时间")
+    private LocalDateTime updateTime;
 
     /**
      * 地区名称
@@ -38,7 +48,7 @@ public class AreaVo {
     private String name;
 
     /**
-     * 地区代码;
+     * 地区代码
      */
     @Schema(title = "地区代码")
     private String code;
@@ -62,27 +72,27 @@ public class AreaVo {
     private Long parentId;
 
     /**
-     * 是否为末端类型
+     * 是否为末端地区
      */
     @Schema(title = "是否为末端地区")
     private Boolean isFinal;
 
     /**
-     * 隐藏标志
+     * 权限屏蔽标记
      */
-    @Schema(title = "隐藏标志")
+    @Schema(title = "权限屏蔽标记")
     private Integer hiddenFlag;
 
     /**
-     * 地区排序
+     * 额外标记;低位第一位：前台是否显示
      */
-    @Schema(title = "地区排序")
-    private Integer sortIndex;
+    @Schema(title = "额外标记;低位第一位：前台是否显示")
+    private Integer specialFlag;
 
     /**
-     * 特殊物品标记，二进制表示<br>
-     * 低位第一位：是否为显示物品
+     * 排序
      */
-    @Schema(title = "特殊物品标记")
-    private Integer specialFlag;
+    @Schema(title = "排序")
+    private Integer sortIndex;
+
 }

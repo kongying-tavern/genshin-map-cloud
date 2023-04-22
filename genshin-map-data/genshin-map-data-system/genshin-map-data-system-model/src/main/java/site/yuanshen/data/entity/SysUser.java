@@ -1,27 +1,34 @@
 package site.yuanshen.data.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.*;
-import lombok.experimental.Accessors;
+import com.baomidou.mybatisplus.annotation.Version;
+import java.time.LocalDateTime;
 import site.yuanshen.data.base.BaseEntity;
+import lombok.*;
 
 /**
- * 用户系统表
+ * 系统用户表
  *
- * @author Moment
- * @since 2022-04-20 10:18:18
+ * @since 2023-04-23 01:08:53
  */
 @Data
-@ToString
+@With
 @NoArgsConstructor
 @AllArgsConstructor
-@Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
 @TableName("sys_user")
 public class SysUser extends BaseEntity {
+
+    /**
+     * 乐观锁
+     */
+    @TableField(value = "version", fill = FieldFill.INSERT_UPDATE)
+    @Version
+    private Long version;
 
     /**
      * ID
@@ -30,9 +37,21 @@ public class SysUser extends BaseEntity {
     private Long id;
 
     /**
+     * 更新人
+     */
+    @TableField(value = "updater_id", fill = FieldFill.INSERT_UPDATE)
+    private Long updaterId;
+
+    /**
+     * 更新时间
+     */
+    @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
+    private LocalDateTime updateTime;
+
+    /**
      * 用户名
      */
-    @TableField("username")
+    @TableId("username")
     private String username;
 
     /**
@@ -50,19 +69,25 @@ public class SysUser extends BaseEntity {
     /**
      * QQ
      */
-    @TableField("QQ")
+    @TableId("qq")
     private String qq;
 
     /**
      * 手机号
      */
-    @TableField("phone")
+    @TableId("phone")
     private String phone;
 
     /**
      * 头像链接
      */
     @TableField("logo")
-    private String logoUrl;
+    private String logo;
+
+    /**
+     * 角色ID
+     */
+    @TableField("role_id")
+    private Integer roleId;
 
 }

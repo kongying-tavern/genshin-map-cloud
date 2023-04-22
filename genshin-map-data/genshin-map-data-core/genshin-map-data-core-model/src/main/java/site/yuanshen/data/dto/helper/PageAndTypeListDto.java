@@ -2,10 +2,7 @@ package site.yuanshen.data.dto.helper;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.vo.helper.PageAndTypeListVo;
 
@@ -18,9 +15,9 @@ import java.util.List;
  * @since 2022-06-02
  */
 @Data
+@With
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = false)
 @Schema(title = "带分类的分页查询DTO", description = "带分类的分页查询数据封装")
 public class PageAndTypeListDto {
 

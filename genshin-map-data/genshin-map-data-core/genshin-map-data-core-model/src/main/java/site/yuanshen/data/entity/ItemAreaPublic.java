@@ -1,45 +1,57 @@
 package site.yuanshen.data.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
+import com.baomidou.mybatisplus.annotation.Version;
+import java.time.LocalDateTime;
 import site.yuanshen.data.base.BaseEntity;
+import lombok.*;
 
 /**
- * 地区公用物品记录表;创建新地区时直接作为基础关联
+ * 地区公用物品记录表
  *
- * @author Moment
- * @since 2022-06-25 12:17:27
+ * @since 2023-04-23 01:08:53
  */
 @Data
+@With
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-@Accessors(chain = true)
 @TableName("item_area_public")
-@Schema(title = "ItemAreaPublic对象", description = "地区公用物品记录表;创建新地区时直接作为基础关联")
 public class ItemAreaPublic extends BaseEntity {
 
     /**
-     * id
+     * 乐观锁
      */
-    @Schema(title = "id")
+    @TableField(value = "version", fill = FieldFill.INSERT_UPDATE)
+    @Version
+    private Long version;
+
+    /**
+     * ID
+     */
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
     /**
-     * 物品id
+     * 更新人
      */
-    @Schema(title = "物品id")
+    @TableField(value = "updater_id", fill = FieldFill.INSERT_UPDATE)
+    private Long updaterId;
+
+    /**
+     * 更新时间
+     */
+    @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
+    private LocalDateTime updateTime;
+
+    /**
+     * 物品ID
+     */
     @TableField("item_id")
     private Long itemId;
-
 
 }

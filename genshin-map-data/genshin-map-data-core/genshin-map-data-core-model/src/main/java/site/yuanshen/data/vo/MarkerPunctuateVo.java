@@ -1,41 +1,56 @@
 package site.yuanshen.data.vo;
 
-import com.baomidou.mybatisplus.annotation.TableField;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
-import java.util.List;
+import java.time.LocalDateTime;
 
 /**
- * 打点完整信息的前端封装
- *
- * @author Moment
- * @since 2022-06-24
- */
+* 点位提交表前端封装
+*
+* @since 2023-04-22 06:47:07
+*/
 @Data
+@With
 @NoArgsConstructor
 @AllArgsConstructor
-@With
-@EqualsAndHashCode(callSuper = false)
-@Schema(title = "MarkerPunctuate完整信息的前端封装", description = "打点完整信息的前端封装")
+@Schema(title = "MarkerPunctuate前端封装", description = "点位提交表前端封装")
 public class MarkerPunctuateVo {
 
     /**
-     * 乐观锁：修改次数
+     * 乐观锁
      */
-    @Schema(title = "乐观锁：修改次数")
+    @Schema(title = "乐观锁")
     private Long version;
 
     /**
-     * 打点ID
+     * ID
      */
-    @Schema(title = "打点ID")
+    @Schema(title = "ID")
+    private Long id;
+
+    /**
+     * 更新人
+     */
+    @Schema(title = "更新人")
+    private Long updaterId;
+
+    /**
+     * 更新时间
+     */
+    @Schema(title = "更新时间")
+    private LocalDateTime updateTime;
+
+    /**
+     * 点位提交ID
+     */
+    @Schema(title = "点位提交ID")
     private Long punctuateId;
 
     /**
-     * 原有点位id
+     * 原有点位ID
      */
-    @Schema(title = "原有点位id")
+    @Schema(title = "原有点位ID")
     private Long originalMarkerId;
 
     /**
@@ -45,22 +60,28 @@ public class MarkerPunctuateVo {
     private String markerTitle;
 
     /**
+     * 点位物品列表
+     */
+    @Schema(title = "点位物品列表")
+    private String itemList;
+
+    /**
      * 点位坐标
      */
     @Schema(title = "点位坐标")
     private String position;
 
     /**
-     * 点位物品列表
-     */
-    @Schema(title = "点位物品列表")
-    private List<MarkerItemLinkVo> itemList;
-
-    /**
      * 点位说明
      */
     @Schema(title = "点位说明")
     private String content;
+
+    /**
+     * 额外特殊字段
+     */
+    @Schema(title = "额外特殊字段")
+    private String extra;
 
     /**
      * 点位图片
@@ -87,15 +108,15 @@ public class MarkerPunctuateVo {
     private String videoPath;
 
     /**
-     * 额外特殊字段
+     * 隐藏标志
      */
-    @Schema(title = "额外特殊字段")
-    private String extra;
+    @Schema(title = "隐藏标志")
+    private Integer hiddenFlag;
 
     /**
-     * 点位提交者id
+     * 点位提交者ID
      */
-    @Schema(title = "点位提交者id")
+    @Schema(title = "点位提交者ID")
     private Long author;
 
     /**
@@ -108,7 +129,6 @@ public class MarkerPunctuateVo {
      * 审核备注
      */
     @Schema(title = "审核备注")
-    @TableField("audit_remark")
     private String auditRemark;
 
     /**
@@ -118,14 +138,9 @@ public class MarkerPunctuateVo {
     private Integer methodType;
 
     /**
-     * 刷新时间
+     * 点位刷新时间
      */
-    @Schema(title = "刷新时间")
+    @Schema(title = "点位刷新时间")
     private Long refreshTime;
 
-    /**
-     * 隐藏标志
-     */
-    @Schema(title = "隐藏标志")
-    private Integer hiddenFlag;
 }

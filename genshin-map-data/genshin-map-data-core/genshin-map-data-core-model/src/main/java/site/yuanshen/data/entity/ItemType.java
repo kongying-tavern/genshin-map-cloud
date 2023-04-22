@@ -1,92 +1,93 @@
 package site.yuanshen.data.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
+import com.baomidou.mybatisplus.annotation.Version;
+import java.time.LocalDateTime;
 import site.yuanshen.data.base.BaseEntity;
+import lombok.*;
 
 /**
  * 物品类型表
  *
- * @author Moment
- * @since 2022-06-25 12:17:27
+ * @since 2023-04-23 01:08:53
  */
 @Data
+@With
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-@Accessors(chain = true)
 @TableName("item_type")
-@Schema(title = "ItemType对象", description = "物品类型表")
 public class ItemType extends BaseEntity {
 
     /**
-     * id
+     * 乐观锁
      */
-    @Schema(title = "id")
+    @TableField(value = "version", fill = FieldFill.INSERT_UPDATE)
+    @Version
+    private Long version;
+
+    /**
+     * ID
+     */
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
-//	/**
-//	 * 类型id
-//	 */
-//	@Schema(title = "类型id")
-//	@TableField("type_id")
-//	private Long typeId;
+    /**
+     * 更新人
+     */
+    @TableField(value = "updater_id", fill = FieldFill.INSERT_UPDATE)
+    private Long updaterId;
+
+    /**
+     * 更新时间
+     */
+    @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
+    private LocalDateTime updateTime;
 
     /**
      * 图标标签
      */
-    @Schema(title = "图标标签")
     @TableField("icon_tag")
     private String iconTag;
 
     /**
      * 类型名
      */
-    @Schema(title = "类型名")
     @TableField("name")
     private String name;
 
     /**
      * 类型补充说明
      */
-    @Schema(title = "类型补充说明")
     @TableField("content")
     private String content;
 
     /**
-     * 父级类型id（无父级则为-1）
+     * 父级类型ID（无父级则为-1）
      */
-    @Schema(title = "父级类型id（无父级则为-1）")
-    @TableField("parent_id")
+    @TableId("parent_id")
     private Long parentId;
 
     /**
      * 是否为末端类型
      */
-    @Schema(title = "是否为末端类型")
     @TableField("is_final")
     private Boolean isFinal;
 
     /**
-     * 隐藏标志
+     * 隐藏标记
      */
-    @Schema(title = "隐藏标志")
     @TableField("hidden_flag")
     private Integer hiddenFlag;
 
     /**
-     * 物品类型排序
+     * 排序
      */
-    @Schema(title = "物品类型排序")
-    @TableField("sort_index")
+    @TableId("sort_index")
     private Integer sortIndex;
+
 }
