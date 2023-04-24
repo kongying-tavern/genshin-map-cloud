@@ -51,7 +51,7 @@ public class Icon extends BaseEntity {
     /**
      * 图标名称
      */
-    @TableId("name")
+    @TableField("name")
     private String name;
 
     /**

@@ -14,6 +14,7 @@ import lombok.*;
 @With
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 <#if table.convert>
 @TableName("${schemaName}${table.name}")
 </#if>

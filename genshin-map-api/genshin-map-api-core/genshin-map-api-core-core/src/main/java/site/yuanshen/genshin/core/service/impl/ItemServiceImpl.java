@@ -69,7 +69,7 @@ public class ItemServiceImpl implements ItemService {
                 .parallelStream()
                 .map(item ->
                         new ItemDto(item)
-                                .setTypeIdList(typeMap.getOrDefault(item.getId(), new ArrayList<>())))
+                                .withTypeIdList(typeMap.getOrDefault(item.getId(), new ArrayList<>())))
                 .sorted(Comparator.comparing(ItemDto::getSortIndex).reversed())
                 .collect(Collectors.toList());
     }
@@ -130,10 +130,9 @@ public class ItemServiceImpl implements ItemService {
         return new PageListVo<ItemVo>()
                 .setRecord(itemPage.getRecords().stream()
                         .map(ItemDto::new)
-                        .map(itemDto -> itemDto.setCount(Optional.ofNullable(markerItemLinkCount.get(itemDto.getItemId())).orElse(0)))
-                        .map(itemDto -> itemDto.setTypeIdList(itemToTypeMap.get(itemDto.getItemId())))
+                        .map(dto -> dto.withTypeIdList((itemToTypeMap.get(dto.getId()))))
                         .map(ItemDto::getVo)
-                        .sorted(Comparator.comparing(ItemVo::getSortIndex).thenComparing(ItemVo::getItemId).reversed()).collect(Collectors.toList()))
+                        .sorted(Comparator.comparing(ItemVo::getSortIndex).thenComparing(ItemVo::getId).reversed()).collect(Collectors.toList()))
                 .setTotal(itemPage.getTotal())
                 .setSize(itemPage.getSize());
     }
@@ -150,6 +149,7 @@ public class ItemServiceImpl implements ItemService {
     public Boolean updateItem(List<ItemVo> itemVoList, Integer editSame) {
         for (ItemVo itemVo : itemVoList) {
             ItemDto itemDto = new ItemDto(itemVo);
+            List<Long> typeIdList = itemVo.getTypeIdList();
             //同名编辑
             List<Item> sameItems = new ArrayList<>();
             if (editSame.equals(1)) {
@@ -157,7 +157,7 @@ public class ItemServiceImpl implements ItemService {
                         .eq(Item::getName, itemDto.getName()));
             }
             //物品ID
-            List<Long> itemIds = new ArrayList<>(Collections.singletonList(itemDto.getItemId()));
+            List<Long> itemIds = new ArrayList<>(Collections.singletonList(itemDto.getId()));
             itemIds.addAll(sameItems.parallelStream().map(Item::getId).collect(Collectors.toList()));
 
             //在更新逻辑之前做历史信息记录
@@ -166,10 +166,10 @@ public class ItemServiceImpl implements ItemService {
 
             //对比类型信息是否更改
             Set<Long> oldTypeIds = itemTypeLinkMapper.selectList(Wrappers.<ItemTypeLink>lambdaQuery()
-                            .eq(ItemTypeLink::getItemId, itemDto.getItemId()))
+                            .eq(ItemTypeLink::getItemId, itemDto.getId()))
                     .stream()
                     .map(ItemTypeLink::getTypeId).collect(Collectors.toSet());
-            Set<Long> newTypeIds = new TreeSet<>(itemDto.getTypeIdList());
+            Set<Long> newTypeIds = new TreeSet<>(typeIdList);
             //如果更改了就进行分类的刷新
             if (!oldTypeIds.equals(newTypeIds)) {
                 //删除旧分类连接
@@ -180,8 +180,8 @@ public class ItemServiceImpl implements ItemService {
                     itemTypeLinkMBPService.saveBatch(
                             newTypeIds.stream()
                                     .map(id -> new ItemTypeLink()
-                                            .setItemId(itemDto.getItemId())
-                                            .setTypeId(id))
+                                            .withItemId(itemDto.getId())
+                                            .withTypeId(id))
                                     .collect(Collectors.toList())
                     );
                 }
@@ -191,8 +191,8 @@ public class ItemServiceImpl implements ItemService {
                     itemIds.parallelStream().forEach(itemId -> {
                         newLink.addAll(newTypeIds.stream()
                                 .map(id -> new ItemTypeLink()
-                                        .setItemId(itemId)
-                                        .setTypeId(id))
+                                        .withItemId(itemId)
+                                        .withTypeId(id))
                                 .collect(Collectors.toList()));
                     });
                     itemTypeLinkMBPService.saveBatch(newLink);
@@ -230,8 +230,8 @@ public class ItemServiceImpl implements ItemService {
         boolean res = itemTypeLinkMBPService.saveBatch(
                 itemIdList.stream()
                         .map(id -> new ItemTypeLink()
-                                .setItemId(id)
-                                .setTypeId(typeId))
+                                .withItemId(id)
+                                .withTypeId(typeId))
                         .collect(Collectors.toList())
         );
         return res;
@@ -254,9 +254,10 @@ public class ItemServiceImpl implements ItemService {
             //判断是否有不存在的类型ID
             if (typeIdList.size() != itemTypeMapper.selectCount(Wrappers.<ItemType>lambdaQuery().in(ItemType::getId, typeIdList)))
                 throw new RuntimeException("类型ID错误");
+            //批量保存
             itemTypeLinkMBPService.saveBatch(
                     typeIdList.stream()
-                            .map(id -> new ItemTypeLink().setItemId(item.getId()).setTypeId(id))
+                            .map(id -> new ItemTypeLink().withItemId(item.getId()).withTypeId(id))
                             .collect(Collectors.toList())
             );
         }
@@ -287,7 +288,7 @@ public class ItemServiceImpl implements ItemService {
             itemMBPService.save(item);
             //根据新id给typeLink赋值并重新插入一份
             itemTypeLinks = itemTypeLinks.stream().map(itemTypeLink ->
-                    itemTypeLink.setItemId(item.getId()).setId(null)
+                    itemTypeLink.withItemId(item.getId()).withId(null)
             ).collect(Collectors.toList());
             itemTypeLinkMBPService.saveBatch(itemTypeLinks);
         }
@@ -316,15 +317,15 @@ public class ItemServiceImpl implements ItemService {
                 .eq(ItemTypeLink::getItemId, itemId));
         markerItemLinkMapper.delete(Wrappers.<MarkerItemLink>lambdaQuery()
                 .eq(MarkerItemLink::getItemId, itemId));
-        boolean deleted = itemMapper.delete(Wrappers.<Item>lambdaQuery()
+        return itemMapper.delete(Wrappers.<Item>lambdaQuery()
                 .eq(Item::getId, itemId)) == 1;
-        return deleted;
     }
 
     //---------------存储历史信息-------------------
 
     /**
-     * @param itemIds
+     * 将当前点位信息存入历史记录表
+     * @param itemIds 物品Id列表
      * @param sameItems 同名物品List(若无需同名则默认为空)
      */
     private void saveHistoryItem(List<Long> itemIds, List<Item> sameItems) {
@@ -340,7 +341,7 @@ public class ItemServiceImpl implements ItemService {
                                     .eq(ItemTypeLink::getItemId, item.getId()))
                             .stream().map(ItemTypeLink::getTypeId).collect(Collectors.toList());
 
-                    return new ItemDto(item).setTypeIdList(typeLink);
+                    return new ItemDto(item).withTypeIdList(typeLink);
                 }
         ).collect(Collectors.toList());
 

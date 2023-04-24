@@ -74,7 +74,7 @@ public class IconTypeServiceImpl implements IconTypeService {
     )
     public Long addIconType(IconTypeDto iconTypeDto) {
         IconType iconType = iconTypeDto.getEntity()
-                .setIsFinal(true);
+                .withIsFinal(true);
         iconTypeMapper.insert(iconType);
         //设置父级
         if (!iconTypeDto.getParent().equals(-1L)) {

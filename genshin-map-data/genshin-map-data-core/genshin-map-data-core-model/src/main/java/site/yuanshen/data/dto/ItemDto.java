@@ -7,6 +7,7 @@ import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.entity.Item;
 import site.yuanshen.data.vo.ItemVo;
 import java.time.LocalDateTime;
+import java.util.List;
 
 
 /**
@@ -90,6 +91,11 @@ public class ItemDto {
      * 特殊物品标记;二进制表示；低位第一位：前台是否显示
      */
     private Integer specialFlag;
+
+    /**
+     * 物品类型ID列表
+     */
+    private List<Long> typeIdList;
 
     public ItemDto(Item item) {
         BeanUtils.copy(item, this);

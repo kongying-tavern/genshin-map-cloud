@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="site.yuanshen.data.mapper.IconMapper">
+
+    <select id="selectPageIcon"
+            resultType="site.yuanshen.data.entity.Icon"
+            parameterType="site.yuanshen.data.dto.TagSearchDto">
+        select i.*
+        from icon i
+        <if test="searchDto.typeIdList != null and searchDto.typeIdList.size > 0">
+            left join icon_type_link itl on i.icon_id = itl.icon_id
+        </if>
+        <where>
+             i.del_flag = 0
+            <if test="searchDto.typeIdList != null and searchDto.typeIdList.size > 0">
+                and itl.del_flag = 0
+            </if>
+            <if test="searchDto.typeIdList != null and searchDto.typeIdList.size > 0">
+                and itl.type_id in
+                <foreach collection="searchDto.typeIdList" open="(" separator="," close=")" item="typeId">
+                    #{typeId}
+                </foreach>
+            </if>
+            <if test="searchDto.iconIdList != null and searchDto.iconIdList.size > 0">
+                and i.icon_id in
+                <foreach collection="searchDto.iconIdList" open="(" separator="," close=")" item="iconId">
+                    #{iconId}
+                </foreach>
+            </if>
+            <if test="searchDto.creator != null">
+                and i.creator = #{creator}
+            </if>
+        </where>
+    </select>
+
+</mapper>

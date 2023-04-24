@@ -51,13 +51,13 @@ public class IconTypeLink extends BaseEntity {
     /**
      * 分类ID
      */
-    @TableId("type_id")
+    @TableField("type_id")
     private Long typeId;
 
     /**
      * 图标ID
      */
-    @TableId("icon_id")
+    @TableField("icon_id")
     private Long iconId;
 
 }

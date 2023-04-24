@@ -31,7 +31,7 @@ public interface MarkerService {
      * @param markerSearchVo 点位查询前端封装
      * @return 点位完整信息的数据封装列表
      */
-    List<MarkerDto> searchMarker(MarkerSearchVo markerSearchVo);
+    List<MarkerVo> searchMarker(MarkerSearchVo markerSearchVo);
 
     /**
      * 通过ID列表查询点位信息
@@ -39,7 +39,7 @@ public interface MarkerService {
      * @param markerIdList 点位ID列表
      * @return 点位完整信息的数据封装列表
      */
-    List<MarkerDto> listMarkerById(List<Long> markerIdList,List<Integer> hiddenFlagList);
+    List<MarkerVo> listMarkerById(List<Long> markerIdList, List<Integer> hiddenFlagList);
 
 
     /**

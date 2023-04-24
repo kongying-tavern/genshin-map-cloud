@@ -40,21 +40,21 @@ public class ${entity}Dto {
 <#------------  END 字段循环遍历  ---------->
 
     public ${entity}Dto(${entity} ${entity?uncap_first}) {
-        BeanUtils.copyProperties(${entity?uncap_first}, this);
+        BeanUtils.copy(${entity?uncap_first}, this);
     }
 
     public ${entity}Dto(${entity}Vo ${entity?uncap_first}Vo) {
-        BeanUtils.copyProperties(${entity?uncap_first}Vo, this);
+        BeanUtils.copy(${entity?uncap_first}Vo, this);
     }
 
     @JSONField(serialize = false)
     public ${entity} getEntity() {
-        return BeanUtils.copyProperties(this, ${entity}.class);
+        return BeanUtils.copy(this, ${entity}.class);
     }
 
     @JSONField(serialize = false)
     public ${entity}Vo getVo() {
-        return BeanUtils.copyProperties(this, ${entity}Vo.class);
+        return BeanUtils.copy(this, ${entity}Vo.class);
     }
 
 }

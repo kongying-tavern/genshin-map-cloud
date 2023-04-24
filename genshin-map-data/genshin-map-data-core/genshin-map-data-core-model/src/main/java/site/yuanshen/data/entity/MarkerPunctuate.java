@@ -9,6 +9,8 @@ import com.baomidou.mybatisplus.annotation.Version;
 import java.time.LocalDateTime;
 import site.yuanshen.data.base.BaseEntity;
 import lombok.*;
+import site.yuanshen.data.enums.PunctuateMethodEnum;
+import site.yuanshen.data.enums.PunctuateStatusEnum;
 
 /**
  * 点位提交表
@@ -57,7 +59,7 @@ public class MarkerPunctuate extends BaseEntity {
     /**
      * 原有点位ID
      */
-    @TableId("original_marker_id")
+    @TableField("original_marker_id")
     private Long originalMarkerId;
 
     /**
@@ -130,7 +132,7 @@ public class MarkerPunctuate extends BaseEntity {
      * 状态;0:暂存 1:审核中 2:不通过
      */
     @TableField("status")
-    private Integer status;
+    private PunctuateStatusEnum status;
 
     /**
      * 审核备注
@@ -142,7 +144,7 @@ public class MarkerPunctuate extends BaseEntity {
      * 操作类型;1: 新增 2: 修改 3: 删除
      */
     @TableField("method_type")
-    private Integer methodType;
+    private PunctuateMethodEnum methodType;
 
     /**
      * 点位刷新时间

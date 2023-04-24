@@ -51,13 +51,13 @@ public class TagTypeLink extends BaseEntity {
     /**
      * 分类ID
      */
-    @TableId("type_id")
+    @TableField("type_id")
     private Long typeId;
 
     /**
      * 标签名称
      */
-    @TableId("tag_name")
+    @TableField("tag_name")
     private String tagName;
 
 }

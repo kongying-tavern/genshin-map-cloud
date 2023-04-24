@@ -51,13 +51,13 @@ public class ItemTypeLink extends BaseEntity {
     /**
      * 类型ID;此处必须为末端类型
      */
-    @TableId("type_id")
+    @TableField("type_id")
     private Long typeId;
 
     /**
      * 物品ID
      */
-    @TableId("item_id")
+    @TableField("item_id")
     private Long itemId;
 
 }

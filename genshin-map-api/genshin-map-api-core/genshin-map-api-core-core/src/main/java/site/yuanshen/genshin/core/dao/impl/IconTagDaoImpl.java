@@ -16,12 +16,8 @@ import site.yuanshen.data.entity.TagTypeLink;
 import site.yuanshen.data.mapper.IconMapper;
 import site.yuanshen.data.mapper.TagMapper;
 import site.yuanshen.data.mapper.TagTypeLinkMapper;
-import site.yuanshen.data.mapper.TagTypeMapper;
 import site.yuanshen.data.vo.TagVo;
 import site.yuanshen.genshin.core.dao.IconTagDao;
-import site.yuanshen.genshin.core.service.mbp.TagMBPService;
-import site.yuanshen.genshin.core.service.mbp.TagTypeLinkMBPService;
-import site.yuanshen.genshin.core.service.mbp.TagTypeMBPService;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -67,13 +63,13 @@ public class IconTagDaoImpl implements IconTagDao {
                     typeMap.put(typeLink.getTagName(), tempList);
                 });
         //收集图标信息
-        List<Long> iconIdList = tagDtoList.stream().map(TagDto::getIconId).distinct().collect(Collectors.toList());
-        Map<Long, String> urlMap = iconMapper.selectList(Wrappers.<Icon>lambdaQuery().in(Icon::getIconId, iconIdList))
-                .stream().collect(Collectors.toMap(Icon::getIconId, Icon::getUrl));
+        List<Long> iconIdList = tagDtoList.stream().map(TagDto::getId).distinct().collect(Collectors.toList());
+        Map<Long, String> urlMap = iconMapper.selectList(Wrappers.<Icon>lambdaQuery().in(Icon::getId, iconIdList))
+                .stream().collect(Collectors.toMap(Icon::getId, Icon::getUrl));
         return tagDtoList.stream().map(dto ->
-                                dto.setTypeIdList(typeMap.getOrDefault(dto.getTag(), new ArrayList<>()))
-                                        .setUrl(urlMap.getOrDefault(dto.getIconId(), ""))
-                                        .getVo())
+                                dto.getVo()
+                                        .withTypeIdList(typeMap.getOrDefault(dto.getTag(), new ArrayList<>()))
+                                        .withUrl(urlMap.getOrDefault(dto.getId(), "")))
                         .collect(Collectors.toList());
     }
 

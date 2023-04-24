@@ -57,7 +57,7 @@ public class IconType extends BaseEntity {
     /**
      * 父级分类ID（-1为根分类）
      */
-    @TableId("parent")
+    @TableField("parent")
     private Long parent;
 
     /**

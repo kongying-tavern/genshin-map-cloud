@@ -57,7 +57,7 @@ public class Item extends BaseEntity {
     /**
      * 地区ID（须确保是末端地区）
      */
-    @TableId("area_id")
+    @TableField("area_id")
     private Long areaId;
 
     /**

@@ -34,7 +34,7 @@ public class HistoryServiceImpl extends ServiceImpl<HistoryMapper, History> impl
                 .setRecord(historyPage.getRecords().stream()
                         .map(HistoryDto::new)
                         .map(HistoryDto::getVo)
-                        .sorted(Comparator.comparing(HistoryVo::getCreateTime)).collect(Collectors.toList()))
+                        .sorted(Comparator.comparing(HistoryVo::getUpdateTime)).collect(Collectors.toList()))
                 .setTotal(historyPage.getTotal())
                 .setSize(historyPage.getSize());
     }

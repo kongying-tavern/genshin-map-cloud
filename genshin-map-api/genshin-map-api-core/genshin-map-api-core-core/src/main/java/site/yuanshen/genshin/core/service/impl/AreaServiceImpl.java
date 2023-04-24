@@ -100,7 +100,7 @@ public class AreaServiceImpl implements AreaService {
     )
     public Long createArea(AreaDto areaDto) {
         Area area = areaDto.getEntity()
-                .setIsFinal(true);
+                .withIsFinal(true);
         areaMapper.insert(area);
         //插入公共物品
         List<Long> commonItemIdList = itemAreaPublicMapper.selectList(Wrappers.<ItemAreaPublic>lambdaQuery())
@@ -134,7 +134,7 @@ public class AreaServiceImpl implements AreaService {
     public Boolean updateArea(AreaDto areaDto) {
         //获取地区实体
         Area area = areaMapper.selectOne(Wrappers.<Area>lambdaQuery()
-                .eq(Area::getId, areaDto.getAreaId()));
+                .eq(Area::getId, areaDto.getId()));
         //更新父级的末端标志
         if (!areaDto.getParentId().equals(area.getParentId())) {
             areaMapper.update(null, Wrappers.<Area>lambdaUpdate()
@@ -149,14 +149,14 @@ public class AreaServiceImpl implements AreaService {
                         .set(Area::getIsFinal, true));
             }
         }
-        if (areaDto.getAreaId().equals(areaDto.getParentId())) {
+        if (areaDto.getId().equals(areaDto.getParentId())) {
             throw new RuntimeException("地区ID不允许与父ID相同，会造成自身父子");
         }
         //更新实体
         BeanUtils.copyNotNull(areaDto.getEntity(),area);
         //判断是否是末端地区
         area.setIsFinal(areaMapper.selectCount(Wrappers.<Area>lambdaQuery()
-                .eq(Area::getParentId, areaDto.getAreaId()))
+                .eq(Area::getParentId, areaDto.getId()))
                 == 0);
         return areaMapper.updateById(area) == 1;
     }

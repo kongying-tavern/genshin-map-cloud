@@ -6,14 +6,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.yuanshen.data.dto.MarkerPunctuateDto;
 import site.yuanshen.data.dto.helper.PageSearchDto;
 import site.yuanshen.data.entity.Marker;
 import site.yuanshen.data.entity.MarkerPunctuate;
-import site.yuanshen.data.enums.PunctuateMethodEnum;
 import site.yuanshen.data.enums.PunctuateStatusEnum;
 import site.yuanshen.data.mapper.MarkerMapper;
 import site.yuanshen.data.mapper.MarkerPunctuateMapper;
@@ -21,9 +19,7 @@ import site.yuanshen.data.vo.MarkerPunctuateVo;
 import site.yuanshen.data.vo.helper.PageListVo;
 import site.yuanshen.genshin.core.service.PunctuateService;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -101,12 +97,12 @@ public class PunctuateServiceImpl implements PunctuateService {
         }
         MarkerPunctuate markerPunctuate = punctuateDto.getEntity()
                 //临时id
-                .setPunctuateId(-1L)
-                .setStatus(PunctuateStatusEnum.STAGE);
+                .withPunctuateId(-1L)
+                .withStatus(PunctuateStatusEnum.STAGE);
         markerPunctuateMapper.insert(markerPunctuate);
         //正式更新id
         markerPunctuateMapper.updateById(
-                markerPunctuate.setPunctuateId(markerPunctuate.getId()));
+                markerPunctuate.withPunctuateId(markerPunctuate.getId()));
         return markerPunctuate.getPunctuateId();
     }
 
@@ -150,10 +146,10 @@ public class PunctuateServiceImpl implements PunctuateService {
                 .orElseThrow(() -> new RuntimeException("无该打点信息，请联系管理员"));
         //赋予新信息对应的固有字段
         MarkerPunctuate newPunctuate = punctuateDto.getEntity()
-                .setMarkerCreatorId(punctuate.getOriginalMarkerId())
-                .setStatus(PunctuateStatusEnum.STAGE)
-                .setAuditRemark(punctuate.getAuditRemark())
-                .setId(punctuate.getId());
+                .withMarkerCreatorId(punctuate.getOriginalMarkerId())
+                .withStatus(PunctuateStatusEnum.STAGE)
+                .withAuditRemark(punctuate.getAuditRemark())
+                .withId(punctuate.getId());
         return markerPunctuateMapper.updateById(newPunctuate) == 1;
     }
 

@@ -21,20 +21,12 @@ public class BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 逻辑删除:0:未删除，1:删除
+     * 逻辑删除: false:未删除，true:删除
      */
-    @TableLogic
+    @TableLogic(value = "false", delval = "true")
     @JsonIgnore
-    @Schema(title = "逻辑删除:0:未删除，1:删除")
-    private Short delFlag;
-
-    /**
-     * 乐观锁：修改次数
-     */
-    @Version
-    @Schema(title = "乐观锁：修改次数")
-    @TableField(fill = FieldFill.INSERT)
-    private Long version;
+    @Schema(title = "逻辑删除: false:未删除，true:删除")
+    private Boolean delFlag;
 
     /**
      * 创建人
@@ -44,25 +36,10 @@ public class BaseEntity implements Serializable {
     private Long creatorId;
 
     /**
-     * 更新人
-     */
-    @TableField(fill = FieldFill.INSERT_UPDATE)
-    @Schema(title = "更新人")
-    private Long updaterId;
-
-    /**
      * 创建时间
      */
     @Schema(title = "创建时间")
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
-
-    /**
-     * 更新时间
-     */
-    @Schema(title = "更新时间")
-    @TableField(fill = FieldFill.INSERT_UPDATE)
-    private LocalDateTime updateTime;
-
 
 }

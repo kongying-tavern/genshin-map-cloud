@@ -49,12 +49,6 @@ public class ItemVo {
     private String name;
 
     /**
-     * 物品类型ID列表
-     */
-    @Schema(title = "物品类型ID列表")
-    private List<Long> typeIdList;
-
-    /**
      * 地区ID（须确保是末端地区）
      */
     @Schema(title = "地区ID（须确保是末端地区）")
@@ -107,5 +101,11 @@ public class ItemVo {
      */
     @Schema(title = "特殊物品标记;二进制表示；低位第一位：前台是否显示")
     private Integer specialFlag;
+
+    /**
+     * 物品类型ID列表
+     */
+    @Schema(title = "物品类型ID列表")
+    private List<Long> typeIdList;
 
 }

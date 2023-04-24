@@ -271,7 +271,7 @@ public class ScoreGeneratePunctuateHelper {
                     History history = historyMap.get(markerId);
 
                     if(history == null) {
-                        MarkerDto o = BeanUtils.copyProperties(marker, MarkerDto.class);
+                        MarkerDto o = BeanUtils.copy(marker, MarkerDto.class);
                         history = HistoryConvert.convert(o);
                         history.setCreatorId(marker.getUpdaterId());
                         history.setCreateTime(marker.getUpdateTime().plusSeconds(100L));
@@ -381,12 +381,12 @@ public class ScoreGeneratePunctuateHelper {
         stat.forEach((scoreKey, scoreVal) -> {
             if(scoreVal != null) {
                 final ScoreStat scoreStat = (new ScoreStat())
-                        .setScope(ScoreScopeEnum.PUNCTUATE.name())
-                        .setSpan(spanName)
-                        .setUserId(scoreKey.getUserId())
-                        .setSpanStartTime(scoreKey.getSpanStartTime())
-                        .setSpanEndTime(scoreKey.getSpanEndTime())
-                        .setContent(JSON.toJSONString(scoreVal));
+                        .withScope(ScoreScopeEnum.PUNCTUATE.name())
+                        .withSpan(spanName)
+                        .withUserId(scoreKey.getUserId())
+                        .withSpanStartTime(scoreKey.getSpanStartTime())
+                        .withSpanEndTime(scoreKey.getSpanEndTime())
+                        .withContent(JSON.toJSONString(scoreVal));
                 scoreStat.setCreatorId(operatorId);
                 scoreList.add(scoreStat);
             }

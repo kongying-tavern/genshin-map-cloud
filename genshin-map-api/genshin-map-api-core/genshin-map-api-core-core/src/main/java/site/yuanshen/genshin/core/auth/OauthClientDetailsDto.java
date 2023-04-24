@@ -1,16 +1,20 @@
 package site.yuanshen.genshin.core.auth;
 
-import cn.hutool.core.convert.Convert;
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
+import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.annotation.JSONField;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.With;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.provider.ClientDetails;
 import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.entity.OauthClientDetails;
+import site.yuanshen.data.enums.RoleEnum;
 
-import java.util.Collections;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 /**
@@ -93,79 +97,68 @@ public class OauthClientDetailsDto implements ClientDetails {
     public OauthClientDetails getEntity() {
         return BeanUtils.copy(this, OauthClientDetails.class);
     }
-
-    /**
-     * The resources that this client can access. Can be ignored by callers if empty.
-     *
-     * @return The resources of this client.
-     */
     @Override
-    public Set<String> getResourceIds() {
-        return new TreeSet<>();
+    public String getClientId() {
+        return clientId;
     }
 
-    /**
-     * Whether a secret is required to authenticate this client.
-     *
-     * @return Whether a secret is required to authenticate this client.
-     */
+    @Override
+    public Set<String> getResourceIds() {
+        return Collections.emptySet();
+    }
+
     @Override
     public boolean isSecretRequired() {
         return true;
     }
 
-    /**
-     * Whether this client is limited to a specific scope. If false, the scope of the authentication request will be
-     * ignored.
-     *
-     * @return Whether this client is limited to a specific scope.
-     */
+    @Override
+    public String getClientSecret() {
+        return clientSecret;
+    }
+
     @Override
     public boolean isScoped() {
         return true;
     }
 
-    /**
-     * The pre-defined redirect URI for this client to use during the "authorization_code" access grant. See OAuth spec,
-     * section 4.1.1.
-     *
-     * @return The pre-defined redirect URI for this client.
-     */
+    @Override
+    public Set<String> getScope() {
+        return Collections.singleton(scope);
+    }
+
+    @Override
+    public Set<String> getAuthorizedGrantTypes() {
+        return new TreeSet<>(List.of(authorizedGrantTypes.split(",")));
+    }
+
     @Override
     public Set<String> getRegisteredRedirectUri() {
         return Collections.singleton(webServerRedirectUri);
     }
 
-    /**
-     * The access token validity period for this client. Null if not set explicitly (implementations might use that fact
-     * to provide a default value for instance).
-     *
-     * @return the access token validity period
-     */
+    @Override
+    public Collection<GrantedAuthority> getAuthorities() {
+        return Optional.ofNullable(JSON.parseArray(authorities,String.class)).orElse(new ArrayList<>()).stream().map(RoleEnum::getRoleFromCode).map(RoleAuthDto::new).collect(Collectors.toList());
+    }
+
     @Override
     public Integer getAccessTokenValiditySeconds() {
         return accessTokenValidity;
     }
 
-    /**
-     * The refresh token validity period for this client. Null for default value set by token service, and
-     * zero or negative for non-expiring tokens.
-     *
-     * @return the refresh token validity period
-     */
     @Override
     public Integer getRefreshTokenValiditySeconds() {
         return refreshTokenValidity;
     }
 
-    /**
-     * Test whether client needs user approval for a particular scope.
-     *
-     * @param scope the scope to consider
-     * @return true if this client does not need user approval
-     */
     @Override
     public boolean isAutoApprove(String scope) {
-        return Convert.toBool(autoApprove);
+        return Boolean.parseBoolean(autoApprove);
+    }
+
+    @Override
+    public Map<String, Object> getAdditionalInformation() {
+        return new TreeMap<>();
     }
 }

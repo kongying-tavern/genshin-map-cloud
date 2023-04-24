@@ -82,14 +82,13 @@ public class TagServiceImpl implements TagService {
                     typeMap.put(typeLink.getTagName(), tempList);
                 });
         //收集图标信息
-        List<Long> iconIdList = tagDtoList.stream().map(TagDto::getIconId).distinct().collect(Collectors.toList());
-        Map<Long, String> urlMap = iconMapper.selectList(Wrappers.<Icon>lambdaQuery().in(Icon::getIconId, iconIdList))
-                .stream().collect(Collectors.toMap(Icon::getIconId, Icon::getUrl));
+        List<Long> iconIdList = tagDtoList.stream().map(TagDto::getId).distinct().collect(Collectors.toList());
+        Map<Long, String> urlMap = iconMapper.selectList(Wrappers.<Icon>lambdaQuery().in(Icon::getId, iconIdList))
+                .stream().collect(Collectors.toMap(Icon::getId, Icon::getUrl));
         return new PageListVo<TagVo>()
                 .setRecord(tagDtoList.stream().map(dto ->
-                                dto.setTypeIdList(typeMap.getOrDefault(dto.getTag(), new ArrayList<>()))
-                                        .setUrl(urlMap.getOrDefault(dto.getIconId(), ""))
-                                        .getVo())
+                                dto.getVo().withTypeIdList(typeMap.getOrDefault(dto.getTag(), new ArrayList<>()))
+                                        .withUrl(urlMap.getOrDefault(dto.getId(), "")))
                         .collect(Collectors.toList()))
                 .setTotal(tagPage.getTotal())
                 .setSize(tagPage.getSize());
@@ -103,17 +102,18 @@ public class TagServiceImpl implements TagService {
      */
     @Override
     @Cacheable(value = "iconTag", key = "#name")
-    public TagDto getTag(String name) {
+    public TagVo getTag(String name) {
         //获取类型信息
         List<Long> typeIdList = tagTypeLinkMapper.selectList(Wrappers.<TagTypeLink>lambdaQuery()
                         .eq(TagTypeLink::getTagName, name)).stream()
                 .map(TagTypeLink::getTypeId).collect(Collectors.toList());
         Tag tag = tagMapper.selectOne(Wrappers.<Tag>lambdaQuery()
                 .eq(Tag::getTag, name));
-        Icon icon = iconMapper.selectOne(Wrappers.<Icon>lambdaQuery().eq(Icon::getIconId, tag.getIconId()));
+        Icon icon = iconMapper.selectOne(Wrappers.<Icon>lambdaQuery().eq(Icon::getId, tag.getId()));
         return new TagDto(tag)
-                .setTypeIdList(typeIdList)
-                .setUrl(icon.getUrl());
+                .getVo()
+                .withTypeIdList(typeIdList)
+                .withUrl(icon.getUrl());
     }
 
     /**
@@ -128,7 +128,7 @@ public class TagServiceImpl implements TagService {
     public Boolean updateTag(String tagName, Long iconId) {
         boolean isUpdate = tagMapper.update(null, Wrappers.<Tag>lambdaUpdate()
                 .eq(Tag::getTag, tagName)
-                .set(Tag::getIconId, iconId)) == 1;
+                .set(Tag::getId, iconId)) == 1;
         if (!isUpdate) throw new RuntimeException("未进行实质修改");
         return true;
     }
@@ -136,22 +136,23 @@ public class TagServiceImpl implements TagService {
     /**
      * 修改标签的分类信息
      *
-     * @param tagDto 标签Dto
+     * @param tagVo 标签Dto
      * @return 是否成功
      */
     @Override
     @Transactional
-    public Boolean updateTypeInTag(TagDto tagDto) {
+    public Boolean updateTypeInTag(TagVo tagVo) {
+        TagDto tagDto = new TagDto(tagVo);
+        List<Long> typeIdList = tagVo.getTypeIdList();
         //删除旧类型链接
         tagTypeLinkMapper.delete(Wrappers.<TagTypeLink>lambdaQuery()
                 .eq(TagTypeLink::getTagName, tagDto.getTag()));
         //检验并插入新类型
-        List<Long> typeIdList = tagDto.getTypeIdList();
         if (typeIdList.size() != tagTypeMapper.selectList(Wrappers.<TagType>lambdaQuery().in(TagType::getId, typeIdList)).size())
             throw new RuntimeException("类型ID错误");
         tagTypeLinkMBPService.saveBatch(
                 typeIdList.stream()
-                        .map(id -> new TagTypeLink().setTagName(tagDto.getTag()).setTypeId(id))
+                        .map(id -> new TagTypeLink().withTagName(tagVo.getTag()).withTypeId(id))
                         .collect(Collectors.toList())
         );
         return true;
@@ -169,7 +170,7 @@ public class TagServiceImpl implements TagService {
         //判断是否重复
         Tag tag = tagMapper.selectOne(Wrappers.<Tag>lambdaQuery().eq(Tag::getTag, tagName));
         if (tag == null) {
-            return tagMapper.insert(new Tag().setTag(tagName)) == 1;
+            return tagMapper.insert(new Tag().withTag(tagName)) == 1;
         } else {
             return false;
         }

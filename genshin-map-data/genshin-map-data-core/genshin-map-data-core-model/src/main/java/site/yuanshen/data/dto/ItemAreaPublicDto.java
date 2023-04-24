@@ -7,6 +7,7 @@ import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.entity.ItemAreaPublic;
 import site.yuanshen.data.vo.ItemAreaPublicVo;
 import java.time.LocalDateTime;
+import java.util.List;
 
 
 /**
@@ -46,12 +47,77 @@ public class ItemAreaPublicDto {
      */
     private Long itemId;
 
+    /**
+     * 物品名称
+     */
+    private String name;
+
+    /**
+     * 地区ID（须确保是末端地区）
+     */
+    private Long areaId;
+
+    /**
+     * 默认刷新时间;单位:毫秒
+     */
+    private Long defaultRefreshTime;
+
+    /**
+     * 默认描述模板;用于提交新物品点位时的描述模板
+     */
+    private String defaultContent;
+
+    /**
+     * 默认数量
+     */
+    private Integer defaultCount;
+
+    /**
+     * 图标标签
+     */
+    private String iconTag;
+
+    /**
+     * 图标样式类型
+     */
+    private Integer iconStyleType;
+
+    /**
+     * 隐藏标志
+     */
+    private Integer hiddenFlag;
+
+    /**
+     * 物品排序
+     */
+    private Integer sortIndex;
+
+    /**
+     * 特殊物品标记;二进制表示；低位第一位：前台是否显示
+     */
+    private Integer specialFlag;
+
+    /**
+     * 物品类型ID列表
+     */
+    private List<Long> typeIdList;
+
     public ItemAreaPublicDto(ItemAreaPublic itemAreaPublic) {
         BeanUtils.copy(itemAreaPublic, this);
     }
 
     public ItemAreaPublicDto(ItemAreaPublicVo itemAreaPublicVo) {
         BeanUtils.copy(itemAreaPublicVo, this);
+    }
+
+    public ItemAreaPublicDto withItemDto(ItemDto itemDto) {
+        BeanUtils.copyNotNull(itemDto
+                        .withVersion(null)
+                        .withId(null)
+                        .withUpdaterId(null)
+                        .withUpdateTime(null),
+                this);
+        return this;
     }
 
     @JSONField(serialize = false)

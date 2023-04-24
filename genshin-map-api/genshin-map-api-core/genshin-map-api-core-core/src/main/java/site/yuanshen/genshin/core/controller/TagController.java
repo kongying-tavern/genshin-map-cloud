@@ -43,7 +43,7 @@ public class TagController {
     @PostMapping("/get/single/{name}")
     public R<TagVo> getTag(@PathVariable("name") String name) {
         return RUtils.create(
-                tagService.getTag(name).getVo()
+                tagService.getTag(name)
         );
     }
 
@@ -58,7 +58,7 @@ public class TagController {
     @Operation(summary = "修改标签的分类信息", description = "本接口仅在后台使用，故分离出来")
     @PostMapping("/updateType")
     public R<Boolean> updateTypeInTag(@RequestBody TagVo tagVo) {
-        Boolean result = tagService.updateTypeInTag(new TagDto(tagVo));
+        Boolean result = tagService.updateTypeInTag(tagVo);
         cacheService.cleanIconTagCache(tagVo.getTag());
         return RUtils.create(result);
     }

@@ -51,7 +51,7 @@ public class SysUser extends BaseEntity {
     /**
      * 用户名
      */
-    @TableId("username")
+    @TableField("username")
     private String username;
 
     /**
@@ -69,13 +69,13 @@ public class SysUser extends BaseEntity {
     /**
      * QQ
      */
-    @TableId("qq")
+    @TableField("qq")
     private String qq;
 
     /**
      * 手机号
      */
-    @TableId("phone")
+    @TableField("phone")
     private String phone;
 
     /**

@@ -81,8 +81,10 @@ public class FastGenerator {
                         //entity公共父类设置
                         .superClass(BaseEntity.class)
                         .versionPropertyName("version")
-                        .addTableFills(new Property("version", FieldFill.INSERT))
-                        .addSuperEntityColumns("create_time", "update_time", "creator_id", "updater_id", "del_flag")
+                        .addTableFills(new Property("version", FieldFill.INSERT_UPDATE))
+                        .addTableFills(new Property("updateTime", FieldFill.INSERT_UPDATE))
+                        .addTableFills(new Property("updaterId", FieldFill.INSERT_UPDATE))
+                        .addSuperEntityColumns("create_time", "creator_id", "del_flag")
                         .enableFileOverride()
                         /*-------------service配置-------------*/
                         .serviceBuilder()

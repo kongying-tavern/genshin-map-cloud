@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.yuanshen.common.core.utils.JsonUtils;
 import site.yuanshen.data.dto.MarkerDto;
+import site.yuanshen.data.dto.MarkerItemLinkDto;
 import site.yuanshen.data.dto.helper.PageSearchDto;
 import site.yuanshen.data.entity.*;
 import site.yuanshen.data.mapper.*;
@@ -22,6 +23,7 @@ import site.yuanshen.genshin.core.service.mbp.MarkerItemLinkMBPService;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -116,7 +118,7 @@ public class MarkerServiceImpl implements MarkerService {
      */
     @Override
     //此处是两个方法的缝合，不需要加缓存
-    public List<MarkerDto> searchMarker(MarkerSearchVo markerSearchVo) {
+    public List<MarkerVo> searchMarker(MarkerSearchVo markerSearchVo) {
         List<Long> markerIdList = searchMarkerId(markerSearchVo);
         return listMarkerById(markerIdList, markerSearchVo.getHiddenFlagList());
     }
@@ -130,7 +132,7 @@ public class MarkerServiceImpl implements MarkerService {
      */
     @Override
     @Cacheable(value = "listMarkerById")
-    public List<MarkerDto> listMarkerById(List<Long> markerIdList, List<Integer> hiddenFlagList) {
+    public List<MarkerVo> listMarkerById(List<Long> markerIdList, List<Integer> hiddenFlagList) {
         //为空直接返回
         if (markerIdList.isEmpty()) return new ArrayList<>();
         //获取关联的物品Id
@@ -152,8 +154,24 @@ public class MarkerServiceImpl implements MarkerService {
         );
         //构建返回
         return markerMapper.selectList(Wrappers.<Marker>lambdaQuery().in(Marker::getId, markerIdList).in(!hiddenFlagList.isEmpty(), Marker::getHiddenFlag, hiddenFlagList))
-                .parallelStream().map(marker ->
-                        new MarkerDto(marker, itemLinkMap.get(marker.getId()), itemMap))
+                .parallelStream()
+                .map(MarkerDto::new)
+                .map(dto -> dto
+                        .withItemList(
+                                itemLinkMap.get(dto.getId()).stream()
+                                        .map(MarkerItemLinkDto::new)
+                                        .map(MarkerItemLinkDto::getVo)
+                                        .map(vo->{
+                                            Long itemId = vo.getItemId();
+                                            if (itemMap.containsKey(itemId))
+                                                return vo.withIconTag(itemMap.get(itemId).getIconTag());
+                                            else log.error("点位关联物品缺失:{}", itemId);
+                                            return null;
+                                        })
+                                        .filter(Objects::nonNull)
+                                        .collect(Collectors.toList())
+                        ))
+                .map(MarkerDto::getVo)
                 .collect(Collectors.toList());
     }
 
@@ -181,11 +199,11 @@ public class MarkerServiceImpl implements MarkerService {
     public Long createMarker(MarkerDto markerDto) {
         Marker marker = markerDto.getEntity();
         markerMapper.insert(marker);
-        //正式更新id item_id+marker_id得唯一
-        List<MarkerItemLink> itemLinkList = markerDto.getItemList().parallelStream().map(markerItemLinkDto -> markerItemLinkDto.getEntity().setMarkerId(marker.getId())).collect(
-                Collectors.collectingAndThen(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(o -> o.getItemId() + ";" + o.getMarkerId()))), ArrayList::new));
+        List<MarkerItemLink> itemLinkList = new ArrayList<>(
+                markerDto.getItemList().parallelStream()
+                        .map(MarkerItemLinkDto::new).map(dto -> dto.withMarkerId(marker.getId()).getEntity())
+                        .collect(Collectors.toMap(MarkerItemLink::getItemId, Function.identity())).values());
         markerItemLinkMBPService.saveBatch(itemLinkList);
-
         return marker.getId();
     }
 
@@ -213,7 +231,7 @@ public class MarkerServiceImpl implements MarkerService {
 
         if (markerDto.getItemList() != null && !markerDto.getItemList().isEmpty()) {
             markerItemLinkMapper.delete(Wrappers.<MarkerItemLink>lambdaQuery().eq(MarkerItemLink::getMarkerId, markerDto.getId()));
-            List<MarkerItemLink> itemLinkList = markerDto.getItemList().parallelStream().map(markerItemLinkDto -> markerItemLinkDto.getEntity().setMarkerId(markerDto.getId())).collect(Collectors.toList());
+            List<MarkerItemLink> itemLinkList = markerDto.getItemList().parallelStream().map(MarkerItemLinkDto::new).map(dto->dto.withMarkerId(markerDto.getId()).getEntity()).collect(Collectors.toList());
             markerItemLinkMBPService.saveBatch(itemLinkList);
         } else if (markerDto.getItemList() != null) {
             markerItemLinkMapper.delete(Wrappers.<MarkerItemLink>lambdaQuery().eq(MarkerItemLink::getMarkerId, markerDto.getId()));
@@ -240,9 +258,12 @@ public class MarkerServiceImpl implements MarkerService {
 
     private MarkerDto buildMarkerDto(Long markerId) {
         Marker marker = markerMapper.selectOne(Wrappers.<Marker>lambdaQuery().eq(Marker::getId, markerId));
-        //获取关联的物品ID
-        List<MarkerItemLink> markerItemLinks = markerItemLinkMapper.selectList(Wrappers.<MarkerItemLink>lambdaQuery().eq(MarkerItemLink::getMarkerId, markerId));
-        return new MarkerDto(marker, markerItemLinks);
+        return new MarkerDto(marker).withItemList(
+                markerItemLinkMapper.selectList(Wrappers.<MarkerItemLink>lambdaQuery().eq(MarkerItemLink::getMarkerId, markerId))
+                        .stream()
+                        .map(MarkerItemLinkDto::new)
+                        .map(MarkerItemLinkDto::getVo)
+                        .collect(Collectors.toList()));
     }
 
     private void saveHistoryMarker(MarkerDto dto) {

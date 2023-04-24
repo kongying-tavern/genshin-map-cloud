@@ -51,13 +51,13 @@ public class MarkerItemLink extends BaseEntity {
     /**
      * 物品ID
      */
-    @TableId("item_id")
+    @TableField("item_id")
     private Long itemId;
 
     /**
      * 点位ID
      */
-    @TableId("marker_id")
+    @TableField("marker_id")
     private Long markerId;
 
     /**

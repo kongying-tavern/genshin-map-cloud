@@ -7,12 +7,14 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import site.yuanshen.data.dto.ItemAreaPublicDto;
 import site.yuanshen.data.dto.ItemDto;
 import site.yuanshen.data.dto.helper.PageSearchDto;
 import site.yuanshen.data.entity.Item;
 import site.yuanshen.data.entity.ItemAreaPublic;
 import site.yuanshen.data.mapper.ItemAreaPublicMapper;
 import site.yuanshen.data.mapper.ItemMapper;
+import site.yuanshen.data.vo.ItemAreaPublicVo;
 import site.yuanshen.data.vo.ItemVo;
 import site.yuanshen.data.vo.helper.PageListVo;
 import site.yuanshen.genshin.core.service.ItemCommonService;
@@ -21,6 +23,7 @@ import site.yuanshen.genshin.core.service.mbp.ItemAreaPublicMBPService;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -44,20 +47,28 @@ public class ItemCommonServiceImpl implements ItemCommonService {
      */
     @Override
     @Cacheable("listCommonItem")
-    public PageListVo<ItemVo> listCommonItem(PageSearchDto pageSearchDto) {
-        Page<ItemAreaPublic> areaPublicPage = itemAreaPublicMapper.selectPage(pageSearchDto.getPageEntity(), Wrappers.<ItemAreaPublic>query());
-        if (areaPublicPage.getTotal() == 0L) {
-            return new PageListVo<>(new ArrayList<>(), areaPublicPage.getTotal(), areaPublicPage.getSize());
+    public PageListVo<ItemAreaPublicVo> listCommonItem(PageSearchDto pageSearchDto) {
+        //取公共物品实体
+        Page<ItemAreaPublic> itemPublicPage = itemAreaPublicMapper.selectPage(pageSearchDto.getPageEntity(), Wrappers.<ItemAreaPublic>query());
+        List<ItemAreaPublic> itemPublicList = itemPublicPage.getRecords();
+        if (itemPublicList.isEmpty()) {
+            return new PageListVo<>(new ArrayList<>(), itemPublicPage.getTotal(), itemPublicPage.getSize());
         }
-        return new PageListVo<ItemVo>()
-                .setRecord(itemMapper.selectList(Wrappers.<Item>lambdaQuery()
-                                .in(Item::getId,
-                                        areaPublicPage.getRecords().parallelStream()
-                                                .map(ItemAreaPublic::getItemId).collect(Collectors.toList())))
-                        .parallelStream().map(ItemDto::new).map(ItemDto::getVo)
-                        .sorted(Comparator.comparing(ItemVo::getSortIndex).reversed()).collect(Collectors.toList()))
-                .setTotal(areaPublicPage.getTotal())
-                .setSize(areaPublicPage.getSize());
+        //取物品具体信息
+        Map<Long, ItemDto> itemMap = itemMapper.selectList(Wrappers.<Item>lambdaQuery()
+                        .in(Item::getId, itemPublicList.parallelStream()
+                                .map(ItemAreaPublic::getItemId).collect(Collectors.toList())))
+                .parallelStream().map(ItemDto::new).collect(Collectors.toMap(ItemDto::getId, item -> item));
+        //组合VO
+        return new PageListVo<ItemAreaPublicVo>()
+                .setRecord(itemPublicList.parallelStream()
+                        .map(ItemAreaPublicDto::new)
+                        .map(dto -> dto.withItemDto(itemMap.get(dto.getAreaId())))
+                        .map(ItemAreaPublicDto::getVo)
+                        .sorted(Comparator.comparingLong(ItemAreaPublicVo::getId))
+                        .collect(Collectors.toList()))
+                .setTotal(itemPublicPage.getTotal())
+                .setSize(itemPublicPage.getSize());
     }
 
     /**
@@ -86,7 +97,7 @@ public class ItemCommonServiceImpl implements ItemCommonService {
 
         return itemAreaPublicMBPService.saveBatch(itemList.parallelStream()
                 .map(id -> new ItemAreaPublic()
-                        .setItemId(id))
+                        .withItemId(id))
                 .collect(Collectors.toList()));
     }
 

@@ -1,12 +1,11 @@
-package site.yuanshen.data.dto;
+package site.yuanshen.genshin.core.auth;
 
 import lombok.Data;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import site.yuanshen.data.entity.SysUser;
+import site.yuanshen.data.enums.RoleEnum;
 
-import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 包含密码等安全信息的用户Dto
@@ -49,9 +48,7 @@ public class SysUserSecurityDto  implements UserDetails {
     /**
      * 角色
      */
-    private List<SysRoleDto> roleDtoList;
-
-
+    private List<RoleEnum> roleEnumList;
 
     @Override
     public String getUsername() {
@@ -59,8 +56,8 @@ public class SysUserSecurityDto  implements UserDetails {
     }
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roleDtoList;
+    public List<RoleAuthDto> getAuthorities() {
+        return roleEnumList.stream().map(RoleAuthDto::new).collect(Collectors.toList());
     }
 
     @Override

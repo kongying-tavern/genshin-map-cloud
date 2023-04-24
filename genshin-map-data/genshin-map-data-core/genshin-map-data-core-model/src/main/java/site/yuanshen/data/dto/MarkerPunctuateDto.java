@@ -5,6 +5,8 @@ import lombok.*;
 import com.alibaba.fastjson2.annotation.JSONField;
 import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.entity.MarkerPunctuate;
+import site.yuanshen.data.enums.PunctuateMethodEnum;
+import site.yuanshen.data.enums.PunctuateStatusEnum;
 import site.yuanshen.data.vo.MarkerPunctuateVo;
 import java.time.LocalDateTime;
 
@@ -109,7 +111,7 @@ public class MarkerPunctuateDto {
     /**
      * 状态;0:暂存 1:审核中 2:不通过
      */
-    private Integer status;
+    private PunctuateStatusEnum status;
 
     /**
      * 审核备注
@@ -119,7 +121,7 @@ public class MarkerPunctuateDto {
     /**
      * 操作类型;1: 新增 2: 修改 3: 删除
      */
-    private Integer methodType;
+    private PunctuateMethodEnum methodType;
 
     /**
      * 点位刷新时间
@@ -132,6 +134,8 @@ public class MarkerPunctuateDto {
 
     public MarkerPunctuateDto(MarkerPunctuateVo markerPunctuateVo) {
         BeanUtils.copy(markerPunctuateVo, this);
+        status = PunctuateStatusEnum.from(markerPunctuateVo.getStatus());
+        methodType = PunctuateMethodEnum.from(markerPunctuateVo.getMethodType());
     }
 
     @JSONField(serialize = false)
@@ -141,7 +145,9 @@ public class MarkerPunctuateDto {
 
     @JSONField(serialize = false)
     public MarkerPunctuateVo getVo() {
-        return BeanUtils.copy(this, MarkerPunctuateVo.class);
+        return BeanUtils.copy(this, MarkerPunctuateVo.class)
+                .withStatus(status.getValue())
+                .withMethodType(methodType.getTypeCode());
     }
 
 }

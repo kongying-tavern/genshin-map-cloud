@@ -1,7 +1,7 @@
 package site.yuanshen.genshin.core.service;
 
 import site.yuanshen.data.dto.helper.PageSearchDto;
-import site.yuanshen.data.vo.ItemVo;
+import site.yuanshen.data.vo.ItemAreaPublicVo;
 import site.yuanshen.data.vo.helper.PageListVo;
 
 import java.util.List;
@@ -21,7 +21,7 @@ public interface ItemCommonService {
      * @param pageSearchDto 分页查询数据封装
      * @return 物品前端封装的分页封装
      */
-    PageListVo<ItemVo> listCommonItem(PageSearchDto pageSearchDto);
+    PageListVo<ItemAreaPublicVo> listCommonItem(PageSearchDto pageSearchDto);
 
     /**
      * 新增地区公用物品

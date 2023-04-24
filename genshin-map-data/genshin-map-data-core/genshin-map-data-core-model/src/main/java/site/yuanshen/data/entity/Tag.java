@@ -51,13 +51,13 @@ public class Tag extends BaseEntity {
     /**
      * 标签名
      */
-    @TableId("tag")
+    @TableField("tag")
     private String tag;
 
     /**
      * 图标ID
      */
-    @TableId("icon_id")
+    @TableField("icon_id")
     private Long iconId;
 
 }

@@ -1,3 +1,0 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  site.yuanshen.common.mysql.config.MysqlAutoConfiguration,\
-  site.yuanshen.common.mysql.handler.MybatisPlusMetaObjectHandler

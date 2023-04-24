@@ -51,31 +51,31 @@ public class ScoreStat extends BaseEntity {
     /**
      * 统计范围
      */
-    @TableId("scope")
+    @TableField("scope")
     private String scope;
 
     /**
      * 统计颗粒度
      */
-    @TableId("span")
+    @TableField("span")
     private String span;
 
     /**
      * 统计起始时间
      */
-    @TableId("span_start_time")
+    @TableField("span_start_time")
     private LocalDateTime spanStartTime;
 
     /**
      * 统计终止时间
      */
-    @TableId("span_end_time")
+    @TableField("span_end_time")
     private LocalDateTime spanEndTime;
 
     /**
      * 用户ID
      */
-    @TableId("user_id")
+    @TableField("user_id")
     private Long userId;
 
     /**

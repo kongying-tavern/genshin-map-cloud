@@ -37,6 +37,6 @@ public class ClientDetailsServiceImpl implements ClientDetailsService {
         if (oauthClientDetails == null) {
             throw new ClientRegistrationException("客户端不存在");
         }
-        return new ClientSecurityDto(oauthClientDetails);
+        return new OauthClientDetailsDto(oauthClientDetails);
     }
 }

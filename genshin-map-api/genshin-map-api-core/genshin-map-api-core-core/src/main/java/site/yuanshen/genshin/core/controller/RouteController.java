@@ -67,7 +67,7 @@ public class RouteController {
     @Operation(summary = "新增路线", description = "返回新增路线ID")
     @PutMapping("/add")
     public R<Long> createRoute(@RequestBody RouteVo routeVo, @RequestHeader("userId") Long userId) {
-        routeVo.setCreatorId(userId);
+        routeVo.setUpdaterId(userId);
         return RUtils.create(
                 routeService.createRoute(new RouteDto(routeVo))
         );
@@ -76,7 +76,7 @@ public class RouteController {
     @Operation(summary = "修改路线", description = "修改路线")
     @PostMapping
     public R<Boolean> updateRoute(@RequestBody RouteVo routeVo, @RequestHeader("userId") Long userId, @RequestHeader("Authorities") String authoritiesString) {
-        checkRole(routeVo.getCreatorId(), userId, authoritiesString);
+        checkRole(routeVo.getUpdaterId(), userId, authoritiesString);
         return RUtils.create(
                 routeService.updateRoute(new RouteDto(routeVo))
         );
@@ -86,7 +86,7 @@ public class RouteController {
     @DeleteMapping("/{routeId}")
     public R<Boolean> deleteRoute(@PathVariable("routeId") Long routeId, @RequestHeader("userId") Long userId, @RequestHeader("Authorities") String authoritiesString) {
         RouteDto route = routeService.listRouteById(Collections.singletonList(routeId), HiddenFlagEnum.getAllFlagList()).get(0);
-        checkRole(route.getCreatorId(), userId, authoritiesString);
+        checkRole(route.getUpdaterId(), userId, authoritiesString);
         return RUtils.create(
                 routeService.deleteRoute(routeId)
         );

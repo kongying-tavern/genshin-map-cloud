@@ -1,5 +1,9 @@
 package site.yuanshen.data.mapper;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.apache.ibatis.annotations.Param;
+import site.yuanshen.data.dto.TagSearchDto;
 import site.yuanshen.data.entity.Tag;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
@@ -11,5 +15,7 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface TagMapper extends BaseMapper<Tag> {
+
+    Page<Tag> selectPageIconTag(IPage<?> page, @Param("tagSearchDto") TagSearchDto tagSearchDto);
 
 }

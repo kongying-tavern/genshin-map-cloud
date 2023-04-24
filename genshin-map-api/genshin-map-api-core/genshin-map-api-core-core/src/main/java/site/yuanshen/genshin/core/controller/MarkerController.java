@@ -52,8 +52,7 @@ public class MarkerController {
     public R<List<MarkerVo>> searchMarker(@RequestHeader(value = "userDataLevel", required = false) String userDataLevel, @RequestBody MarkerSearchVo markerSearchVo) {
         markerSearchVo.setHiddenFlagList(HiddenFlagEnum.getFlagList(userDataLevel));
         return RUtils.create(
-                markerService.searchMarker(markerSearchVo).parallelStream()
-                        .map(MarkerDto::getVo).collect(Collectors.toList())
+                markerService.searchMarker(markerSearchVo)
         );
     }
 
@@ -61,8 +60,7 @@ public class MarkerController {
     @PostMapping("/get/list_byid")
     public R<List<MarkerVo>> listMarkerById(@RequestHeader(value = "userDataLevel", required = false) String userDataLevel, @RequestBody List<Long> markerIdList) {
         return RUtils.create(
-                markerService.listMarkerById(markerIdList,HiddenFlagEnum.getFlagList(userDataLevel)).parallelStream()
-                        .map(MarkerDto::getVo).collect(Collectors.toList())
+                markerService.listMarkerById(markerIdList,HiddenFlagEnum.getFlagList(userDataLevel))
         );
     }
 

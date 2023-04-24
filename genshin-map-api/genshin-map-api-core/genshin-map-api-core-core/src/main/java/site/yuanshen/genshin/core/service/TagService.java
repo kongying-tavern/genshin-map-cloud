@@ -1,6 +1,5 @@
 package site.yuanshen.genshin.core.service;
 
-import site.yuanshen.data.dto.TagDto;
 import site.yuanshen.data.dto.TagSearchDto;
 import site.yuanshen.data.vo.TagVo;
 import site.yuanshen.data.vo.helper.PageListVo;
@@ -28,7 +27,7 @@ public interface TagService {
      * @param name 图标标签
      * @return 图标前端对象
      */
-    TagDto getTag(String name);
+    TagVo getTag(String name);
 
     /**
      * 修改标签关联
@@ -42,10 +41,10 @@ public interface TagService {
     /**
      * 修改标签的分类信息
      *
-     * @param tagDto 标签Dto
+     * @param tagVo 标签Dto
      * @return 是否成功
      */
-    Boolean updateTypeInTag(TagDto tagDto);
+    Boolean updateTypeInTag(TagVo tagVo);
 
     /**
      * 创建标签，只创建一个空标签

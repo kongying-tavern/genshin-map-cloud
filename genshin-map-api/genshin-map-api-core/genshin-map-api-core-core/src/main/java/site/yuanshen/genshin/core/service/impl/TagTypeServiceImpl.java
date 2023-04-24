@@ -81,7 +81,7 @@ public class TagTypeServiceImpl implements TagTypeService {
     @CacheEvict(value = "listIconTagType", allEntries = true)
     public Long addTagType(TagTypeDto tagTypeDto) {
         TagType tagType = tagTypeDto.getEntity()
-                .setIsFinal(true);
+                .withIsFinal(true);
         tagTypeMapper.insert(tagType);
         //设置父级
         if (!tagTypeDto.getParent().equals(-1L)) {

@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import site.yuanshen.common.web.response.R;
 import site.yuanshen.common.web.response.RUtils;
-import site.yuanshen.data.dto.IconDto;
 import site.yuanshen.data.dto.IconSearchDto;
 import site.yuanshen.data.vo.IconSearchVo;
 import site.yuanshen.data.vo.IconVo;
@@ -41,7 +40,7 @@ public class IconController {
     @PostMapping("/get/single/{iconId}")
     public R<IconVo> getIcon(@PathVariable("iconId") Long iconId) {
         return RUtils.create(
-                iconService.getIcon(iconId).getVo()
+                iconService.getIcon(iconId)
         );
     }
 
@@ -49,7 +48,7 @@ public class IconController {
     @PostMapping("/update")
     public R<Boolean> updateIcon(@RequestBody IconVo iconVo) {
         return RUtils.create(
-                iconService.updateIcon(new IconDto(iconVo))
+                iconService.updateIcon(iconVo)
         );
     }
 
@@ -58,7 +57,7 @@ public class IconController {
     @PutMapping("/add")
     public R<Long> createIcon(@RequestBody IconVo iconVo) {
         return RUtils.create(
-                iconService.createIcon(new IconDto(iconVo))
+                iconService.createIcon(iconVo)
         );
     }
 

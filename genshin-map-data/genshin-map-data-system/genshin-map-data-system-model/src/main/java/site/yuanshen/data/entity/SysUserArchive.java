@@ -63,7 +63,7 @@ public class SysUserArchive extends BaseEntity {
     /**
      * 用户ID
      */
-    @TableId("user_id")
+    @TableField("user_id")
     private Long userId;
 
     /**

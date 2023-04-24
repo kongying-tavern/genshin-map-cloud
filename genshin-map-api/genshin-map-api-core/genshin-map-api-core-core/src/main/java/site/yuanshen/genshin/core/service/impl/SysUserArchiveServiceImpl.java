@@ -83,10 +83,10 @@ public class SysUserArchiveServiceImpl implements SysUserArchiveService {
         if (this.getSlotEntity(slotIndex, userId) != null) throw new RuntimeException("槽位下标冲突，请重新选择下标");
         return sysUserArchiveMapper.insert(
                 new SysUserArchive()
-                        .setSlotIndex(slotIndex)
-                        .setUserId(userId)
-                        .setName(name)
-                        .setData((JSON.toJSONString(Collections.singletonList(new ArchiveDto(archive))))))
+                        .withSlotIndex(slotIndex)
+                        .withUserId(userId)
+                        .withName(name)
+                        .withData((JSON.toJSONString(Collections.singletonList(new ArchiveDto(archive))))))
                 == 1;
     }
 
@@ -121,7 +121,7 @@ public class SysUserArchiveServiceImpl implements SysUserArchiveService {
     public boolean renameSlot(int slotIndex, Long userId, String newName) {
         SysUserArchive archive = getSlotEntity(slotIndex, userId);
         if (archive == null) throw new RuntimeException("槽位不存在");
-        return sysUserArchiveMapper.updateById(archive.setName(newName)) == 1;
+        return sysUserArchiveMapper.updateById(archive.withName(newName)) == 1;
     }
 
     /**

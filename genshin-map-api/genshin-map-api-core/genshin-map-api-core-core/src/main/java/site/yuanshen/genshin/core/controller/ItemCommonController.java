@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import site.yuanshen.common.web.response.R;
 import site.yuanshen.common.web.response.RUtils;
 import site.yuanshen.data.dto.helper.PageSearchDto;
-import site.yuanshen.data.vo.ItemVo;
+import site.yuanshen.data.vo.ItemAreaPublicVo;
 import site.yuanshen.data.vo.helper.PageListVo;
 import site.yuanshen.data.vo.helper.PageSearchVo;
 import site.yuanshen.genshin.core.service.ItemCommonService;
@@ -32,7 +32,7 @@ public class ItemCommonController {
 
     @Operation(summary = "列出地区公用物品", description = "列出地区公用物品")
     @PostMapping("/get/list")
-    public R<PageListVo<ItemVo>> listCommonItem(@RequestBody PageSearchVo pageSearchVo) {
+    public R<PageListVo<ItemAreaPublicVo>> listCommonItem(@RequestBody PageSearchVo pageSearchVo) {
         return RUtils.create(
                 itemCommonService.listCommonItem(new PageSearchDto(pageSearchVo))
         );

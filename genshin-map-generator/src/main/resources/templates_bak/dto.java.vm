@@ -36,21 +36,21 @@ public class ${entity}Dto {
 ## ----------  END 字段循环遍历  ----------
 
     public ${entity}Dto(${entity} ${entity.substring(0,1).toLowerCase()}${entity.substring(1)}) {
-        BeanUtils.copyProperties(${entity.substring(0,1).toLowerCase()}${entity.substring(1)}, this);
+        BeanUtils.copy(${entity.substring(0,1).toLowerCase()}${entity.substring(1)}, this);
     }
 
     public ${entity}Dto(${entity}Vo ${entity.substring(0,1).toLowerCase()}${entity.substring(1)}Vo) {
-        BeanUtils.copyProperties(${entity.substring(0,1).toLowerCase()}${entity.substring(1)}Vo, this);
+        BeanUtils.copy(${entity.substring(0,1).toLowerCase()}${entity.substring(1)}Vo, this);
     }
 
     @JSONField(serialize = false)
     public ${entity} getEntity() {
-        return BeanUtils.copyProperties(this, ${entity}.class);
+        return BeanUtils.copy(this, ${entity}.class);
     }
 
     @JSONField(serialize = false)
     public ${entity}Vo getVo() {
-        return BeanUtils.copyProperties(this, ${entity}Vo.class);
+        return BeanUtils.copy(this, ${entity}Vo.class);
     }
 
 

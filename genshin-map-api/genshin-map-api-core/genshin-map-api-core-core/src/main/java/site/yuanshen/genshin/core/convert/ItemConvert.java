@@ -33,7 +33,7 @@ public class ItemConvert extends DefaultConvert{
         ItemDto item = (ItemDto) o;
         item.setVersion(null);
         String content = JSON.toJSONString(item);
-        Long id = item.getItemId();
+        Long id = item.getId();
         return Pair.of(content, id);
     }
 }

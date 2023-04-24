@@ -69,7 +69,7 @@ public class ItemType extends BaseEntity {
     /**
      * 父级类型ID（无父级则为-1）
      */
-    @TableId("parent_id")
+    @TableField("parent_id")
     private Long parentId;
 
     /**
@@ -87,7 +87,7 @@ public class ItemType extends BaseEntity {
     /**
      * 排序
      */
-    @TableId("sort_index")
+    @TableField("sort_index")
     private Integer sortIndex;
 
 }

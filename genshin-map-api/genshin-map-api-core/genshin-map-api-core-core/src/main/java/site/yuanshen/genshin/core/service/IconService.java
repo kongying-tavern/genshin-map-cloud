@@ -1,10 +1,6 @@
 package site.yuanshen.genshin.core.service;
 
-import site.yuanshen.data.dto.IconDto;
 import site.yuanshen.data.dto.IconSearchDto;
-import site.yuanshen.data.dto.IconTypeDto;
-import site.yuanshen.data.dto.helper.PageAndTypeListDto;
-import site.yuanshen.data.vo.IconTypeVo;
 import site.yuanshen.data.vo.IconVo;
 import site.yuanshen.data.vo.helper.PageListVo;
 
@@ -31,23 +27,23 @@ public interface IconService {
      * @param iconId 图标ID
      * @return 图标前端对象
      */
-    IconDto getIcon(Long iconId);
+    IconVo getIcon(Long iconId);
 
     /**
      * 修改图标信息
      *
-     * @param iconDto 图标前端对象
+     * @param iconVo 图标前端对象
      * @return 是否成功
      */
-    Boolean updateIcon(IconDto iconDto);
+    Boolean updateIcon(IconVo iconVo);
 
     /**
      * 新增图标
      *
-     * @param iconDto 图标前端对象
+     * @param iconVo 图标前端对象
      * @return 新图标的ID
      */
-    Long createIcon(IconDto iconDto);
+    Long createIcon(IconVo iconVo);
 
     /**
      * 删除图标

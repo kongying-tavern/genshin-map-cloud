@@ -125,7 +125,7 @@ public class ItemTypeServiceImpl implements ItemTypeService {
     public Boolean updateItemType(ItemTypeDto itemTypeDto) {
         //获取类型实体
         ItemType itemType = itemTypeMapper.selectOne(Wrappers.<ItemType>lambdaQuery()
-                .eq(ItemType::getId, itemTypeDto.getTypeId()));
+                .eq(ItemType::getId, itemTypeDto.getId()));
         //设置内容 TODO 检查所有的set是否包含了所有的属性 或者直接替换成属性复制工具
         itemType.setIconTag(itemTypeDto.getIconTag());
         itemType.setName(itemTypeDto.getName());

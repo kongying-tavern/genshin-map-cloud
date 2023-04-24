@@ -5,8 +5,10 @@ import lombok.*;
 import com.alibaba.fastjson2.annotation.JSONField;
 import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.entity.Marker;
+import site.yuanshen.data.vo.MarkerItemLinkVo;
 import site.yuanshen.data.vo.MarkerVo;
 import java.time.LocalDateTime;
+import java.util.List;
 
 
 /**
@@ -55,6 +57,11 @@ public class MarkerDto {
      * 点位坐标
      */
     private String position;
+
+    /**
+     * 点位物品列表
+     */
+    private List<MarkerItemLinkVo> itemList;
 
     /**
      * 点位说明

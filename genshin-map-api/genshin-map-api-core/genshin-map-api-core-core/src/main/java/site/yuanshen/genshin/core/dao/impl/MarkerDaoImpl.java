@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 import site.yuanshen.common.core.utils.CompressUtils;
 import site.yuanshen.data.dto.MarkerDto;
+import site.yuanshen.data.dto.MarkerItemLinkDto;
 import site.yuanshen.data.dto.helper.PageSearchDto;
 import site.yuanshen.data.entity.Item;
 import site.yuanshen.data.entity.Marker;
@@ -24,10 +25,7 @@ import site.yuanshen.data.vo.helper.PageListVo;
 import site.yuanshen.genshin.core.dao.MarkerDao;
 
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -78,12 +76,28 @@ public class MarkerDaoImpl implements MarkerDao {
         //获取item_id,得到item合集
         Map<Long, Item> itemMap = itemMapper.selectList(Wrappers.<Item>lambdaQuery()
                         .in(Item::getId, markerItemLinks.stream().map(MarkerItemLink::getItemId).collect(Collectors.toSet())))
-                .stream().collect(Collectors.toMap(Item::getId, Item -> Item));
+                .parallelStream().collect(Collectors.toMap(Item::getId, Item -> Item));
 
 
         return new PageListVo<MarkerVo>()
                 .setRecord(markerPage.getRecords().parallelStream()
-                        .map(marker -> new MarkerDto(marker, itemLinkMap.get(marker.getId()), itemMap).getVo())
+                        .map(MarkerDto::new)
+                        .map(dto -> dto
+                                .withItemList(
+                                        itemLinkMap.get(dto.getId()).stream()
+                                                .map(MarkerItemLinkDto::new)
+                                                .map(MarkerItemLinkDto::getVo)
+                                                .map(vo->{
+                                                    Long itemId = vo.getItemId();
+                                                    if (itemMap.containsKey(itemId))
+                                                        return vo.withIconTag(itemMap.get(itemId).getIconTag());
+                                                    else log.error("点位关联物品缺失:{}", itemId);
+                                                    return null;
+                                                })
+                                                .filter(Objects::nonNull)
+                                                .collect(Collectors.toList())
+                                ))
+                        .map(MarkerDto::getVo)
                         .collect(Collectors.toList()))
                 .setTotal(markerPage.getTotal())
                 .setSize(markerPage.getSize());
@@ -121,7 +135,23 @@ public class MarkerDaoImpl implements MarkerDao {
                         .in(Item::getId, markerItemLinks.stream().map(MarkerItemLink::getItemId).collect(Collectors.toSet())))
                 .stream().collect(Collectors.toMap(Item::getId, Item -> Item));
         return markerList.parallelStream()
-                .map(marker -> new MarkerDto(marker, itemLinkMap.get(marker.getId()), itemMap).getVo())
+                .map(MarkerDto::new)
+                .map(dto -> dto
+                        .withItemList(
+                                itemLinkMap.get(dto.getId()).stream()
+                                        .map(MarkerItemLinkDto::new)
+                                        .map(MarkerItemLinkDto::getVo)
+                                        .map(vo->{
+                                            Long itemId = vo.getItemId();
+                                            if (itemMap.containsKey(itemId))
+                                                return vo.withIconTag(itemMap.get(itemId).getIconTag());
+                                            else log.error("点位关联物品缺失:{}", itemId);
+                                            return null;
+                                        })
+                                        .filter(Objects::nonNull)
+                                        .collect(Collectors.toList())
+                        ))
+                .map(MarkerDto::getVo)
                 .collect(Collectors.toList());
     }
 

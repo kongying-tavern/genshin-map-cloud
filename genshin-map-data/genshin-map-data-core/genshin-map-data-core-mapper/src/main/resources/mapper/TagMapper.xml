@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="site.yuanshen.data.mapper.TagMapper">
+
+    <select id="selectPageIconTag"
+            resultType="site.yuanshen.data.entity.Tag"
+            parameterType="site.yuanshen.data.dto.TagSearchDto">
+        select t.*
+        from tag t
+        <if test="tagSearchDto.typeIdList != null and tagSearchDto.typeIdList.size > 0">
+            left join tag_type_link ttl on t.tag = ttl.tag_name
+        </if>
+        <where>
+             t.del_flag = 0
+            <if test="tagSearchDto.typeIdList != null and tagSearchDto.typeIdList.size > 0">
+                and  ttl.del_flag = 0
+            </if>
+
+            <if test="tagSearchDto.typeIdList != null and tagSearchDto.typeIdList.size > 0">
+                and ttl.type_id in
+                <foreach collection="tagSearchDto.typeIdList" open="(" separator="," close=")" item="typeId">
+                    #{typeId}
+                </foreach>
+            </if>
+            <if test="tagSearchDto.tagList != null and tagSearchDto.tagList.size > 0">
+                and t.tag in
+                <foreach collection="tagSearchDto.tagList" open="(" separator="," close=")" item="tag">
+                    #{tag}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+</mapper>

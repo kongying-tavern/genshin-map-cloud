@@ -101,7 +101,7 @@ public class RouteServiceImpl implements RouteService {
      */
     @Override
     public Long createRoute(RouteDto routeDto) {
-        SysUser user = getUserNotNull(routeDto.getCreatorId());
+        SysUser user = getUserNotNull(routeDto.getUpdaterId());
         routeDto.setCreatorNickname(StringUtils.isNotBlank(user.getNickname()) ? user.getNickname() : user.getUsername());
         Route entity = routeDto.getEntity();
         entity.setVersion(0L);
@@ -118,15 +118,8 @@ public class RouteServiceImpl implements RouteService {
      */
     @Override
     public Boolean updateRoute(RouteDto routeDto) {
-        Route original = routeMapper.selectById(routeDto.getId());
-        routeMapper.updateById(
-                routeDto.withCreatorId(original.getCreatorId())
-                        .withCreatorNickname(original.getCreatorNickname())
-                        .getEntity());
         return 1 == routeMapper.updateById(
-                routeDto.withCreatorId(original.getCreatorId())
-                        .withCreatorNickname(original.getCreatorNickname())
-                        .getEntity());
+                routeDto.getEntity());
     }
 
     /**

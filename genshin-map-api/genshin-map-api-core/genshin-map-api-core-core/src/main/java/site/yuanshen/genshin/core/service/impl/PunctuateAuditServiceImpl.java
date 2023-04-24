@@ -5,8 +5,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.yuanshen.common.core.utils.BeanUtils;
@@ -171,9 +169,9 @@ public class PunctuateAuditServiceImpl implements PunctuateAuditService {
         switch (markerPunctuate.getMethodType()) {
             case ADD: {
                 //插入自身
-                Marker marker = BeanUtils.copyProperties(markerPunctuate, Marker.class)
+                Marker marker = BeanUtils.copy(markerPunctuate, Marker.class)
                         //ID应为空
-                        .setId(null);
+                        .withId(null);
                 markerMapper.insert(marker);
                 //清除提交信息
                 markerPunctuateMapper.delete(Wrappers.<MarkerPunctuate>lambdaQuery().eq(MarkerPunctuate::getPunctuateId, punctuateId));
@@ -187,7 +185,7 @@ public class PunctuateAuditServiceImpl implements PunctuateAuditService {
                 Marker oldMarker = Optional.ofNullable(markerMapper.selectOne(Wrappers.<Marker>lambdaQuery().eq(Marker::getId, originalMarkerId)))
                         .orElseThrow(() -> new RuntimeException("无法找到原始id对应的原始点位，无法做出更改，请联系管理员"));
                 //原有点位拷贝一份作为新点位
-                Marker newMarker = BeanUtils.copyProperties(oldMarker, Marker.class);
+                Marker newMarker = BeanUtils.copy(oldMarker, Marker.class);
                 //打点的更改信息复制到新点位中（使用了hutool的copy，忽略null值）
                 BeanUtils.copyNotNull(markerPunctuate, newMarker);
                 markerMapper.updateById(newMarker);
@@ -225,7 +223,7 @@ public class PunctuateAuditServiceImpl implements PunctuateAuditService {
                                 .eq(MarkerPunctuate::getPunctuateId, punctuateId)
                                 .eq(MarkerPunctuate::getStatus, PunctuateStatusEnum.COMMIT.getValue())))
                 .orElseThrow(() -> new RuntimeException("无打点相关信息，请联系系统管理员"));
-        markerPunctuateMapper.updateById(markerPunctuate.setStatus(PunctuateStatusEnum.REJECT).setAuditRemark(auditRemark));
+        markerPunctuateMapper.updateById(markerPunctuate.withStatus(PunctuateStatusEnum.REJECT).withAuditRemark(auditRemark));
         return true;
     }
 

@@ -19,8 +19,7 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFactory;
-import site.yuanshen.data.dto.SysRoleDto;
-import site.yuanshen.data.dto.SysUserSecurityDto;
+import site.yuanshen.data.enums.RoleEnum;
 
 import java.security.KeyPair;
 import java.util.*;
@@ -58,8 +57,8 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
             Map<String, Object> additionalInfo = new HashMap<>();
             if (principal instanceof SysUserSecurityDto) {
                 SysUserSecurityDto userPrincipal = (SysUserSecurityDto) principal;
-                List<SysRoleDto> roleList = userPrincipal.getRoleDtoList();
-                List<String> roleCodeList = Optional.of(roleList).orElse(new ArrayList<>()).stream().map(SysRoleDto::getCode).collect(Collectors.toList());
+                List<RoleEnum> roleList = userPrincipal.getRoleEnumList();
+                List<String> roleCodeList = Optional.of(roleList).orElse(new ArrayList<>()).stream().map(RoleEnum::getCode).collect(Collectors.toList());
                 additionalInfo.put("userId", userPrincipal.getUserId());
                 additionalInfo.put("userRoles", roleCodeList);
             }
