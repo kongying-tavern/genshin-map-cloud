@@ -138,7 +138,7 @@ public class MarkerDaoImpl implements MarkerDao {
                 .map(MarkerDto::new)
                 .map(dto -> dto
                         .withItemList(
-                                itemLinkMap.get(dto.getId()).stream()
+                                itemLinkMap.getOrDefault(dto.getId(),Collections.emptyList()).stream()
                                         .map(MarkerItemLinkDto::new)
                                         .map(MarkerItemLinkDto::getVo)
                                         .map(vo->{
@@ -173,7 +173,7 @@ public class MarkerDaoImpl implements MarkerDao {
                             listMarkerId3000RangePage(index))
                     .getBytes(StandardCharsets.UTF_8));
         } catch (Exception e) {
-            throw new RuntimeException("创建压缩失败" + e);
+            throw new RuntimeException("创建压缩失败" ,e);
         }
     }
 
