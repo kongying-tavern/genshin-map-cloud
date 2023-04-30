@@ -7,8 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import site.yuanshen.common.web.response.R;
 import site.yuanshen.common.web.response.RUtils;
-import site.yuanshen.data.vo.ArchiveSlotVo;
-import site.yuanshen.data.vo.ArchiveVo;
+import site.yuanshen.data.vo.SysArchiveSlotVo;
+import site.yuanshen.data.vo.SysArchiveVo;
 import site.yuanshen.genshin.core.service.SysUserArchiveService;
 
 import java.util.List;
@@ -29,19 +29,19 @@ public class SysUserArchiveController {
 
     @Operation(summary = "获取指定存档槽位的当前存档", description = "获取指定存档槽位的当前存档，获取槽位最新存档（1号历史记录的存档）")
     @GetMapping("/last/{slot_index}")
-    public R<ArchiveVo> getLastArchive(@PathVariable("slot_index") int slotIndex, @RequestHeader("userId") Long userId) {
+    public R<SysArchiveVo> getLastArchive(@PathVariable("slot_index") int slotIndex, @RequestHeader("userId") Long userId) {
         return RUtils.create(archiveService.getLastArchive(slotIndex, userId));
     }
 
     @Operation(summary = "获取指定槽位的所有历史存档", description = "获取指定槽位的所有历史存档")
     @GetMapping("/history/{slot_index}")
-    public R<ArchiveSlotVo> getHistoryArchive(@PathVariable("slot_index") int slotIndex, @RequestHeader("userId") Long userId) {
+    public R<SysArchiveSlotVo> getHistoryArchive(@PathVariable("slot_index") int slotIndex, @RequestHeader("userId") Long userId) {
         return RUtils.create(archiveService.getSlot(slotIndex, userId));
     }
 
     @Operation(summary = "获取所有槽位的历史存档", description = "获取所有槽位的历史存档")
     @GetMapping("/all_history")
-    public R<List<ArchiveSlotVo>> getAllHistoryArchive(@RequestHeader("userId") Long userId) {
+    public R<List<SysArchiveSlotVo>> getAllHistoryArchive(@RequestHeader("userId") Long userId) {
         return RUtils.create(archiveService.getAllSlot(userId));
     }
 
@@ -49,6 +49,7 @@ public class SysUserArchiveController {
             description = "新建存档并存入，注意槽位下标不能冲突")
     @PutMapping("/{slot_index}/{name}")
     public R<Boolean> createSlotAndSaveArchive(@PathVariable("slot_index") int slotIndex, @RequestBody String archive, @RequestHeader("userId") Long userId, @PathVariable("name") String name) {
+
         return RUtils.create(archiveService.createSlotAndSaveArchive(slotIndex, archive, userId, name));
     }
 
@@ -71,7 +72,7 @@ public class SysUserArchiveController {
     @Operation(summary = "删除最近一次存档（恢复为上次存档）",
             description = "删除最近一次存档，也意味着恢复为上次存档。会返回上一次存档。如果存档为空，则返回400，并附带报错信息")
     @DeleteMapping("/restore/{slot_index}")
-    public R<ArchiveVo> restoreArchive(@PathVariable("slot_index") int slotIndex, @RequestHeader("userId") Long userId) {
+    public R<SysArchiveVo> restoreArchive(@PathVariable("slot_index") int slotIndex, @RequestHeader("userId") Long userId) {
         return RUtils.create(archiveService.restoreArchive(slotIndex, userId));
     }
 

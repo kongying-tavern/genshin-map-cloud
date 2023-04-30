@@ -1,82 +1,49 @@
 package site.yuanshen.data.dto;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson2.annotation.JSONField;
+import lombok.*;
 import site.yuanshen.common.core.utils.BeanUtils;
-import site.yuanshen.data.entity.SysUserArchive;
-import site.yuanshen.data.vo.SysUserArchiveVo;
+import site.yuanshen.data.vo.SysArchiveVo;
+
 import java.time.LocalDateTime;
 
-
 /**
- * 系统用户存档表路数据封装
+ * 存档Dto</p>
+ * 此为单个存档数据封装
  *
- * @since 2023-04-22 06:47:07
+ * @see SysUserArchiveSlotDto
+ * @author Moment
  */
 @Data
 @With
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(title = "SysUserArchive数据封装", description = "系统用户存档表数据封装")
 public class SysUserArchiveDto {
 
     /**
-     * 乐观锁
+     * 存档时间
      */
-    private Long version;
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime time;
 
     /**
-     * ID
+     * 存档
      */
-    private Long id;
+    private String archive;
 
-    /**
-     * 更新人
-     */
-    private Long updaterId;
-
-    /**
-     * 更新时间
-     */
-    private LocalDateTime updateTime;
-
-    /**
-     * 存档名称
-     */
-    private String name;
-
-    /**
-     * 槽位顺序
-     */
-    private Integer slotIndex;
-
-    /**
-     * 用户ID
-     */
-    private Long userId;
-
-    /**
-     * 存档信息
-     */
-    private String data;
-
-    public SysUserArchiveDto(SysUserArchive sysUserArchive) {
-        BeanUtils.copy(sysUserArchive, this);
+    public SysUserArchiveDto(String archive) {
+        this.archive = StrUtil.cleanBlank(archive);
+        time = LocalDateTime.now();
     }
 
-    public SysUserArchiveDto(SysUserArchiveVo sysUserArchiveVo) {
-        BeanUtils.copy(sysUserArchiveVo, this);
+    public SysUserArchiveDto(SysArchiveVo vo) {
+        BeanUtils.copy(vo, this);
     }
 
-    @JSONField(serialize = false)
-    public SysUserArchive getEntity() {
-        return BeanUtils.copy(this, SysUserArchive.class);
-    }
-
-    @JSONField(serialize = false)
-    public SysUserArchiveVo getVo() {
-        return BeanUtils.copy(this, SysUserArchiveVo.class);
+    public SysArchiveVo getVo(int historyIndex) {
+        return BeanUtils.copy(this, SysArchiveVo.class)
+                .withHistoryIndex(historyIndex);
     }
 
 }

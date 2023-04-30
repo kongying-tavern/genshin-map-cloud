@@ -1,7 +1,7 @@
 package site.yuanshen.genshin.core.service;
 
-import site.yuanshen.data.vo.ArchiveSlotVo;
-import site.yuanshen.data.vo.ArchiveVo;
+import site.yuanshen.data.vo.SysArchiveSlotVo;
+import site.yuanshen.data.vo.SysArchiveVo;
 
 import java.util.List;
 
@@ -17,20 +17,20 @@ public interface SysUserArchiveService {
      * @param userId    用户id
      * @return 指定存档槽位的当前存档
      */
-    ArchiveVo getLastArchive(int slotIndex, Long userId);
+    SysArchiveVo getLastArchive(int slotIndex, Long userId);
 
     /**
      * @param slotIndex 槽位下标
      * @param userId    用户id
      * @return 指定槽位的所有历史存档
      */
-    ArchiveSlotVo getSlot(int slotIndex, Long userId);
+    SysArchiveSlotVo getSlot(int slotIndex, Long userId);
 
     /**
      * @param userId 用户id
      * @return 所有槽位的历史存档
      */
-    List<ArchiveSlotVo> getAllSlot(Long userId);
+    List<SysArchiveSlotVo> getAllSlot(Long userId);
 
     /**
      * 新建存档槽位并将存档存入<br>
@@ -73,7 +73,7 @@ public interface SysUserArchiveService {
      * @param userId    用户id
      * @return 新的当前存档
      */
-    ArchiveVo restoreArchive(int slotIndex, Long userId);
+    SysArchiveVo restoreArchive(int slotIndex, Long userId);
 
     /**
      * 删除存档槽位

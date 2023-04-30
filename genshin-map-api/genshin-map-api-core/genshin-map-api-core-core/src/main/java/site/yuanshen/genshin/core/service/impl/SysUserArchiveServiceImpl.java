@@ -4,12 +4,12 @@ import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import site.yuanshen.data.dto.ArchiveDto;
+import site.yuanshen.data.dto.SysUserArchiveDto;
 import site.yuanshen.data.dto.SysUserArchiveSlotDto;
 import site.yuanshen.data.entity.SysUserArchive;
 import site.yuanshen.data.mapper.SysUserArchiveMapper;
-import site.yuanshen.data.vo.ArchiveSlotVo;
-import site.yuanshen.data.vo.ArchiveVo;
+import site.yuanshen.data.vo.SysArchiveSlotVo;
+import site.yuanshen.data.vo.SysArchiveVo;
 import site.yuanshen.genshin.core.service.SysUserArchiveService;
 
 import java.util.Collections;
@@ -41,7 +41,7 @@ public class SysUserArchiveServiceImpl implements SysUserArchiveService {
      * @return 指定存档槽位的当前存档
      */
     @Override
-    public ArchiveVo getLastArchive(int slotIndex, Long userId) {
+    public SysArchiveVo getLastArchive(int slotIndex, Long userId) {
         return new SysUserArchiveSlotDto(getSlotEntity(slotIndex, userId))
                 .getArchiveVo(1);
     }
@@ -52,7 +52,7 @@ public class SysUserArchiveServiceImpl implements SysUserArchiveService {
      * @return 指定槽位的所有历史存档
      */
     @Override
-    public ArchiveSlotVo getSlot(int slotIndex, Long userId) {
+    public SysArchiveSlotVo getSlot(int slotIndex, Long userId) {
         return new SysUserArchiveSlotDto(getSlotEntity(slotIndex, userId)).getSlotVo();
     }
 
@@ -62,10 +62,10 @@ public class SysUserArchiveServiceImpl implements SysUserArchiveService {
      * @return 所有槽位的历史存档
      */
     @Override
-    public List<ArchiveSlotVo> getAllSlot(Long userId) {
+    public List<SysArchiveSlotVo> getAllSlot(Long userId) {
         return sysUserArchiveMapper.selectList(Wrappers.<SysUserArchive>lambdaQuery().eq(SysUserArchive::getUserId, userId))
-                .stream().sorted(Comparator.comparingLong(SysUserArchive::getSlotIndex))
-                .map(archive -> new SysUserArchiveSlotDto(archive).getSlotVo())
+                .parallelStream().map(SysUserArchiveSlotDto::new).sorted(Comparator.comparingLong(SysUserArchiveSlotDto::getSlotIndex))
+                .map(SysUserArchiveSlotDto::getSlotVo)
                 .collect(Collectors.toList());
     }
 
@@ -86,7 +86,7 @@ public class SysUserArchiveServiceImpl implements SysUserArchiveService {
                         .withSlotIndex(slotIndex)
                         .withUserId(userId)
                         .withName(name)
-                        .withData((JSON.toJSONString(Collections.singletonList(new ArchiveDto(archive))))))
+                        .withData((JSON.toJSONString(Collections.singletonList(new SysUserArchiveDto(archive))))))
                 == 1;
     }
 
@@ -133,11 +133,11 @@ public class SysUserArchiveServiceImpl implements SysUserArchiveService {
      * @return 新的当前存档
      */
     @Override
-    public ArchiveVo restoreArchive(int slotIndex, Long userId) {
+    public SysArchiveVo restoreArchive(int slotIndex, Long userId) {
         SysUserArchiveSlotDto slotDto = new SysUserArchiveSlotDto(getSlotEntity(slotIndex, userId));
-        ArchiveVo archiveVo = slotDto.restoreHistory();
+        SysArchiveVo sysArchiveVo = slotDto.restoreHistory();
         sysUserArchiveMapper.updateById(slotDto.getEntity());
-        return archiveVo;
+        return sysArchiveVo;
     }
 
     /**

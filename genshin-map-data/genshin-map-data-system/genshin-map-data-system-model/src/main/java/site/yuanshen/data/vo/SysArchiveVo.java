@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Schema(title = "存档VO", description = "存档VO")
-public class ArchiveVo {
+public class SysArchiveVo {
 
     /**
      * 存档时间

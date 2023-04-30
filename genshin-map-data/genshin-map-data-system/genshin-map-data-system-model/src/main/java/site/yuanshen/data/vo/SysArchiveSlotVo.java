@@ -16,7 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Schema(title = "存档槽位VO", description = "存档槽位VO")
-public class ArchiveSlotVo {
+public class SysArchiveSlotVo {
 
     /**
      * 乐观锁：修改次数
@@ -57,6 +57,6 @@ public class ArchiveSlotVo {
      * 存档列表
      */
     @Schema(title = "存档列表")
-    private List<ArchiveVo> archive;
+    private List<SysArchiveVo> archive;
 
 }
