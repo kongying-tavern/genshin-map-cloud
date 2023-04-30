@@ -89,8 +89,19 @@ public class OauthClientDetailsDto implements ClientDetails {
      */
     private String autoApprove;
 
-    public OauthClientDetailsDto(OauthClientDetails oauthClientDetails) {
-        BeanUtils.copy(oauthClientDetails, this);
+    public OauthClientDetailsDto(OauthClientDetails entity) {
+        this.version = entity.getVersion();
+        this.id = entity.getId();
+        this.clientId = entity.getClientId();
+        this.clientSecret = entity.getClientSecret();
+        this.scope = entity.getScope();
+        this.authorizedGrantTypes = entity.getAuthorizedGrantTypes();
+        this.webServerRedirectUri = entity.getWebServerRedirectUri();
+        this.authorities = entity.getAuthorities();
+        this.accessTokenValidity = entity.getAccessTokenValidity();
+        this.refreshTokenValidity = entity.getRefreshTokenValidity();
+        this.additionalInformation = entity.getAdditionalInformation();
+        this.autoApprove = entity.getAutoApprove();
     }
 
     @JSONField(serialize = false)
