@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 
 
 /**
- * 点位提交表路数据封装
+ * 点位提交数据封装
  *
  * @since 2023-04-22 06:47:07
  */

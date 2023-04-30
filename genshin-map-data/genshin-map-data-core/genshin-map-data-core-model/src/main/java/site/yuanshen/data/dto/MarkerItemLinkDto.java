@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 
 /**
- * 点位-物品关联表路数据封装
+ * 点位-物品关联数据封装
  *
  * @since 2023-04-22 06:47:07
  */

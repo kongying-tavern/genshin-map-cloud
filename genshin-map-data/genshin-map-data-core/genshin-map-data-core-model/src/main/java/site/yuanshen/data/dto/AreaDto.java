@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 
 /**
- * 地区主表路数据封装
+ * 地区主数据封装
  *
  * @since 2023-04-22 06:47:07
  */

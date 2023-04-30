@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 
 /**
- * Spring默认Oauth2客户端表路数据封装
+ * Spring默认Oauth2客户端数据封装
  *
  * @since 2023-04-22 04:19:03
  */
