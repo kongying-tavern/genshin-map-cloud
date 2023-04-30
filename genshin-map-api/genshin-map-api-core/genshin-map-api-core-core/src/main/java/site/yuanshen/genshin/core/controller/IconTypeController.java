@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.*;
 import site.yuanshen.common.web.response.R;
 import site.yuanshen.common.web.response.RUtils;
 import site.yuanshen.data.dto.IconTypeDto;
-import site.yuanshen.data.dto.helper.PageAndTypeListDto;
+import site.yuanshen.data.dto.helper.PageAndTypeSearchDto;
 import site.yuanshen.data.vo.IconTypeVo;
-import site.yuanshen.data.vo.helper.PageAndTypeListVo;
+import site.yuanshen.data.vo.helper.PageAndTypeSearchVo;
 import site.yuanshen.data.vo.helper.PageListVo;
 import site.yuanshen.genshin.core.service.IconTypeService;
 
@@ -31,9 +31,9 @@ public class IconTypeController {
 
     @Operation(summary = "列出分类", description = "列出图标的分类，parentID为-1的时候为列出所有的根分类，isTraverse为1时遍历所有子分类，默认为1，可分页")
     @PostMapping("/get/list")
-    public R<PageListVo<IconTypeVo>> listIconType(@RequestBody PageAndTypeListVo searchVo) {
+    public R<PageListVo<IconTypeVo>> listIconType(@RequestBody PageAndTypeSearchVo searchVo) {
         return RUtils.create(
-                iconTypeService.listIconType(new PageAndTypeListDto(searchVo))
+                iconTypeService.listIconType(new PageAndTypeSearchDto(searchVo))
         );
     }
 

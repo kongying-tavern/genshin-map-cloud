@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import site.yuanshen.common.core.utils.BeanUtils;
-import site.yuanshen.data.vo.helper.PageAndTypeListVo;
+import site.yuanshen.data.vo.helper.PageAndTypeSearchVo;
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Schema(title = "带分类的分页查询DTO", description = "带分类的分页查询数据封装")
-public class PageAndTypeListDto {
+public class PageAndTypeSearchDto {
 
     /**
      * 当前页，从0开始
@@ -43,7 +43,7 @@ public class PageAndTypeListDto {
         return new Page<>(current, size);
     }
 
-    public PageAndTypeListDto(PageAndTypeListVo searchVo) {
+    public PageAndTypeSearchDto(PageAndTypeSearchVo searchVo) {
         BeanUtils.copyNotNull(searchVo, this);
     }
 

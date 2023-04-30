@@ -19,7 +19,7 @@ import java.util.List;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 @Schema(title = "带分类的分页查询前端封装", description = "带分类的分页查询前端封装")
-public class PageAndTypeListVo {
+public class PageAndTypeSearchVo {
 
     /**
      * 当前页，从0开始

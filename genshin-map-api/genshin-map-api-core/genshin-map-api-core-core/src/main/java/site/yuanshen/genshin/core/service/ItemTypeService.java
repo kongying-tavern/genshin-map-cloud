@@ -1,7 +1,7 @@
 package site.yuanshen.genshin.core.service;
 
 import site.yuanshen.data.dto.ItemTypeDto;
-import site.yuanshen.data.dto.helper.PageAndTypeListDto;
+import site.yuanshen.data.dto.helper.PageAndTypeSearchDto;
 import site.yuanshen.data.vo.ItemTypeVo;
 import site.yuanshen.data.vo.helper.PageListVo;
 
@@ -24,7 +24,7 @@ public interface ItemTypeService {
      * @param hiddenFlagList hidden_flag范围
      * @return 物品类型的前端封装的分页封装
      */
-    PageListVo<ItemTypeVo> listItemType(PageAndTypeListDto searchDto, Integer self,List<Integer> hiddenFlagList);
+    PageListVo<ItemTypeVo> listItemType(PageAndTypeSearchDto searchDto, Integer self, List<Integer> hiddenFlagList);
 
     /**
      * 列出所有物品类型

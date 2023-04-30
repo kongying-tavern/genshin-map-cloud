@@ -1,7 +1,7 @@
 package site.yuanshen.genshin.core.service;
 
 import site.yuanshen.data.dto.IconTypeDto;
-import site.yuanshen.data.dto.helper.PageAndTypeListDto;
+import site.yuanshen.data.dto.helper.PageAndTypeSearchDto;
 import site.yuanshen.data.vo.IconTypeVo;
 import site.yuanshen.data.vo.helper.PageListVo;
 
@@ -20,7 +20,7 @@ public interface IconTypeService {
      * @param searchDto 带遍历的分页查询Dto
      * @return 图标类型列表
      */
-    PageListVo<IconTypeVo> listIconType(PageAndTypeListDto searchDto);
+    PageListVo<IconTypeVo> listIconType(PageAndTypeSearchDto searchDto);
 
     /**
      * 新增分类

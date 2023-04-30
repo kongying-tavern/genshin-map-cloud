@@ -1,7 +1,7 @@
 package site.yuanshen.genshin.core.service;
 
 import site.yuanshen.data.dto.TagTypeDto;
-import site.yuanshen.data.dto.helper.PageAndTypeListDto;
+import site.yuanshen.data.dto.helper.PageAndTypeSearchDto;
 import site.yuanshen.data.vo.TagTypeVo;
 import site.yuanshen.data.vo.helper.PageListVo;
 
@@ -19,7 +19,7 @@ public interface TagTypeService {
      * @param searchDto 带遍历的分页查询DTO
      * @return 图标标签分类列表
      */
-    PageListVo<TagTypeVo> listTagType(PageAndTypeListDto searchDto);
+    PageListVo<TagTypeVo> listTagType(PageAndTypeSearchDto searchDto);
 
     /**
      * 新增分类

@@ -9,7 +9,7 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.yuanshen.data.dto.IconTypeDto;
-import site.yuanshen.data.dto.helper.PageAndTypeListDto;
+import site.yuanshen.data.dto.helper.PageAndTypeSearchDto;
 import site.yuanshen.data.entity.IconType;
 import site.yuanshen.data.entity.IconTypeLink;
 import site.yuanshen.data.mapper.IconTypeLinkMapper;
@@ -42,7 +42,7 @@ public class IconTypeServiceImpl implements IconTypeService {
      */
     @Override
     @Cacheable(value = "listIconType")
-    public PageListVo<IconTypeVo> listIconType(PageAndTypeListDto searchDto) {
+    public PageListVo<IconTypeVo> listIconType(PageAndTypeSearchDto searchDto) {
         Page<IconType> iconTypePage = iconTypeMapper.selectPage(searchDto.getPageEntity(),
                 Wrappers.<IconType>lambdaQuery()
                         .in(IconType::getParent,

@@ -8,7 +8,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.yuanshen.data.dto.TagTypeDto;
-import site.yuanshen.data.dto.helper.PageAndTypeListDto;
+import site.yuanshen.data.dto.helper.PageAndTypeSearchDto;
 import site.yuanshen.data.entity.TagType;
 import site.yuanshen.data.entity.TagTypeLink;
 import site.yuanshen.data.mapper.IconMapper;
@@ -54,7 +54,7 @@ public class TagTypeServiceImpl implements TagTypeService {
      */
     @Override
     @Cacheable(value = "listIconTagType")
-    public PageListVo<TagTypeVo> listTagType(PageAndTypeListDto searchDto) {
+    public PageListVo<TagTypeVo> listTagType(PageAndTypeSearchDto searchDto) {
         Page<TagType> tagTypePage = tagTypeMapper.selectPage(searchDto.getPageEntity(),
                 Wrappers.<TagType>lambdaQuery()
                         .in(TagType::getParent,

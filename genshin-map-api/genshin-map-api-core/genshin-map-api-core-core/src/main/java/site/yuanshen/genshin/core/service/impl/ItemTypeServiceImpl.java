@@ -7,7 +7,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.yuanshen.data.dto.ItemTypeDto;
-import site.yuanshen.data.dto.helper.PageAndTypeListDto;
+import site.yuanshen.data.dto.helper.PageAndTypeSearchDto;
 import site.yuanshen.data.entity.ItemType;
 import site.yuanshen.data.entity.ItemTypeLink;
 import site.yuanshen.data.mapper.ItemTypeLinkMapper;
@@ -44,7 +44,7 @@ public class ItemTypeServiceImpl implements ItemTypeService {
      */
     @Override
     @Cacheable("listItemType")
-    public PageListVo<ItemTypeVo> listItemType(PageAndTypeListDto searchDto, Integer self,List<Integer> hiddenFlagList) {
+    public PageListVo<ItemTypeVo> listItemType(PageAndTypeSearchDto searchDto, Integer self, List<Integer> hiddenFlagList) {
         Page<ItemType> itemTypePage = new Page<>();
         //查询自身
         List<Long> typeIdList = searchDto.getTypeIdList();

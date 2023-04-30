@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.*;
 import site.yuanshen.common.web.response.R;
 import site.yuanshen.common.web.response.RUtils;
 import site.yuanshen.data.dto.TagTypeDto;
-import site.yuanshen.data.dto.helper.PageAndTypeListDto;
+import site.yuanshen.data.dto.helper.PageAndTypeSearchDto;
 import site.yuanshen.data.vo.TagTypeVo;
-import site.yuanshen.data.vo.helper.PageAndTypeListVo;
+import site.yuanshen.data.vo.helper.PageAndTypeSearchVo;
 import site.yuanshen.data.vo.helper.PageListVo;
 import site.yuanshen.genshin.core.service.CacheService;
 import site.yuanshen.genshin.core.service.TagTypeService;
@@ -33,9 +33,9 @@ public class TagTypeController {
 
     @Operation(summary = "列出分类", description = "列出标签的分类，parentID为-1的时候为列出所有的根分类，isTraverse为1时遍历所有子分类，默认为1，可分页")
     @PostMapping("/get/list")
-    public R<PageListVo<TagTypeVo>> listTagType(@RequestBody PageAndTypeListVo searchVo) {
+    public R<PageListVo<TagTypeVo>> listTagType(@RequestBody PageAndTypeSearchVo searchVo) {
         return RUtils.create(
-                tagTypeService.listTagType(new PageAndTypeListDto(searchVo))
+                tagTypeService.listTagType(new PageAndTypeSearchDto(searchVo))
         );
     }
 
