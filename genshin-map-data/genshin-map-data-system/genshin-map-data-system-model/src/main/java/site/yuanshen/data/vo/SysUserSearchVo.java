@@ -9,6 +9,9 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 
+/**
+ * 用户列表查询前端封装
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

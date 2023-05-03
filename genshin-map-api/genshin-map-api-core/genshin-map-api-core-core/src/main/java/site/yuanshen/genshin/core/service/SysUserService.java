@@ -1,13 +1,6 @@
 package site.yuanshen.genshin.core.service;
 
-import site.yuanshen.common.web.response.Codes;
-import site.yuanshen.data.dto.SysUserDto;
-import site.yuanshen.data.dto.SysUserPasswordUpdateDto;
-import site.yuanshen.data.dto.SysUserSearchDto;
-import site.yuanshen.data.dto.SysUserUpdateDto;
-import site.yuanshen.data.entity.SysUser;
-import site.yuanshen.data.vo.SysUserRegisterVo;
-import site.yuanshen.data.vo.SysUserVo;
+import site.yuanshen.data.vo.*;
 import site.yuanshen.data.vo.helper.PageListVo;
 
 /**
@@ -47,13 +40,19 @@ public interface SysUserService {
      * @param updateDto 信息更新封装
      * @return 是否更新成功
      */
-    Boolean updateUser(SysUserUpdateDto updateDto);
+    Boolean updateUser(SysUserUpdateVo updateDto);
 
     /**
-     * @param passwordUpdateDto 密码更新封装
+     * @param updateVo 密码更新封装
      * @return 是否更新成功
      */
-    Boolean updatePassword(SysUserPasswordUpdateDto passwordUpdateDto);
+    Boolean updatePassword(SysUserPasswordUpdateVo updateVo);
 
-    PageListVo<SysUserVo> listPage(SysUserSearchDto sysUserSearchDto);
+    PageListVo<SysUserVo> listPage(SysUserSearchVo searchVo);
+
+    /**
+     * @param updateVo 密码更新封装
+     * @return 是否更新成功
+     */
+    Boolean updatePasswordByAdmin(SysUserPasswordUpdateVo updateVo);
 }

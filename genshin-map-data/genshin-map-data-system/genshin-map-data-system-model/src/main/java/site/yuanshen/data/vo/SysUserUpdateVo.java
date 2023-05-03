@@ -1,14 +1,22 @@
-package site.yuanshen.data.dto;
+package site.yuanshen.data.vo;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.With;
 
 /**
- * 用户信息更新Dto
+ * 用户信息更新前端封装
  *
  * @author Moment
  */
 @Data
-public class SysUserUpdateDto {
+@With
+@NoArgsConstructor
+@AllArgsConstructor
+@Schema(title = "用户信息更新前端封装", description = "用户信息更新前端封装, 此封装不包括密码")
+public class SysUserUpdateVo {
 
     /**
      * 用户ID
