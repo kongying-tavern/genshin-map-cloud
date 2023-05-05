@@ -31,16 +31,17 @@ public class SysUserController {
 
     @Operation(summary = "用户注册(管理员权限)", description = "用户注册(管理员权限)，可以注册任意用户名密码的用户")
     @PostMapping("/register")
-    public R<Long> registerUser(@RequestBody SysUserRegisterVo registerDto) {
-        if (!UserUtils.checkRegisterParamEmpty(registerDto)) throw new RuntimeException("请检查注册参数，不允许空用户名或者空密码");
-        return RUtils.create(userService.register(registerDto));
+    public R<Long> registerUser(@RequestBody SysUserRegisterVo registerVo) {
+        if (!UserUtils.checkRegisterParamEmpty(registerVo)) throw new RuntimeException("请检查注册参数，不允许空用户名或者空密码");
+        return RUtils.create(userService.register(registerVo));
     }
 
     @Operation(summary = "qq用户注册", description = "qq用户注册，会对qq的有效性进行验证，并且会关联qq机器人进行验证码验证")
     @PostMapping("/register/qq")
-    public R<Long> registerUserByQQ(@RequestBody SysUserRegisterVo registerDto) {
-        if (!checkRegisterParamEmpty(registerDto)) throw new RuntimeException("请检查注册参数，不允许空qq号或者空密码");
-        return RUtils.create(userService.registerByQQ(registerDto));
+    public R<Long> registerUserByQQ(@RequestBody SysUserRegisterVo registerVo) {
+        if (!checkRegisterParamEmpty(registerVo)) throw new RuntimeException("请检查注册参数，不允许空qq号或者空密码");
+        if (checkRegisterQQParam(registerVo))throw new RuntimeException("qq号为空或格式不匹配");
+        return RUtils.create(userService.registerByQQ(registerVo));
     }
 
     @Operation(summary = "用户信息获取", description = "普通用户可以获取到自己的信息，系统管理员可以查看所有用户的")
@@ -58,7 +59,7 @@ public class SysUserController {
     @Operation(summary = "用户信息批量查询", description = "用户信息批量查询")
     @PostMapping("/info/userList")
     public R<PageListVo<SysUserVo>> getUserList(@RequestBody SysUserSearchVo sysUserSearchVo){
-        return RUtils.create(userService.listPage(sysUserSearchVo));
+        return RUtils.create(userService.searchPage(sysUserSearchVo));
     }
 
 

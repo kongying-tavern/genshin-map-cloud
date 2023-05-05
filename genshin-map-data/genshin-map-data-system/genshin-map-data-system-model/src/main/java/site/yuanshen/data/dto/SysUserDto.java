@@ -1,10 +1,12 @@
 package site.yuanshen.data.dto;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import com.alibaba.fastjson2.annotation.JSONField;
 import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.entity.SysUser;
+import site.yuanshen.data.vo.SysUserRegisterVo;
 import site.yuanshen.data.vo.SysUserVo;
 import java.time.LocalDateTime;
 
@@ -47,6 +49,11 @@ public class SysUserDto {
     private String username;
 
     /**
+     * 密码
+     */
+    private String password;
+
+    /**
      * 昵称
      */
     private String nickname;
@@ -77,6 +84,10 @@ public class SysUserDto {
 
     public SysUserDto(SysUserVo sysUserVo) {
         BeanUtils.copy(sysUserVo, this);
+    }
+
+    public SysUserDto(SysUserRegisterVo registerVo) {
+        BeanUtils.copy(registerVo, this);
     }
 
     @JSONField(serialize = false)

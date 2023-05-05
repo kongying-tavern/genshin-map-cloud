@@ -28,6 +28,15 @@ public class UserUtils {
     }
 
     /**
+     * @param registerVo 注册视图层封装
+     * @return qq号是否符合基本规则
+     */
+    public static boolean checkRegisterQQParam(SysUserRegisterVo registerVo) {
+        String qq = registerVo.getUsername();
+        return StrUtil.isNotEmpty(qq) && qq.matches("[1-9]\\d{4,10}");
+    }
+
+    /**
      * 校验密码修改参数是否为空
      *
      * @param updateVo 更新密码视图层封装
