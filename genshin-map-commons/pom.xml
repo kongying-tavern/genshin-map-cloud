@@ -16,6 +16,7 @@
     <modules>
         <module>genshin-map-commons-core</module>
         <module>genshin-map-commons-web</module>
+        <module>genshin-map-commons-mbp</module>
         <module>genshin-map-commons-pgsql</module>
     </modules>
 

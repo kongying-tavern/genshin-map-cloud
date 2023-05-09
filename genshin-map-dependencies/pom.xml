@@ -18,6 +18,7 @@
         <springboot.version>2.3.12.RELEASE</springboot.version>
         <hutool.version>5.8.11</hutool.version>
         <apache-commons.version>4.4</apache-commons.version>
+        <commons-lang.version>2.6</commons-lang.version>
         <cglib.version>3.3.0</cglib.version>
     </properties>
 
@@ -116,6 +117,11 @@
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-collections4</artifactId>
                 <version>${apache-commons.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-lang</groupId>
+                <artifactId>commons-lang</artifactId>
+                <version>${commons-lang.version}</version>
             </dependency>
 
             <dependency>
