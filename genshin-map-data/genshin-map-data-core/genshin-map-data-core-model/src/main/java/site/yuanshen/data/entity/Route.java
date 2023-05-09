@@ -9,6 +9,8 @@ import com.baomidou.mybatisplus.annotation.Version;
 import java.time.LocalDateTime;
 import site.yuanshen.data.base.BaseEntity;
 import lombok.*;
+import site.yuanshen.handler.MybatisPlusJsonArrayTypeHandler;
+import site.yuanshen.handler.MybatisPlusJsonObjectTypeHandler;
 
 /**
  * 路线
@@ -63,7 +65,7 @@ public class Route extends BaseEntity {
     /**
      * 点位顺序数组
      */
-    @TableField("marker_list")
+    @TableField(value = "marker_list", typeHandler = MybatisPlusJsonArrayTypeHandler.class)
     private String markerList;
 
     /**
@@ -81,7 +83,7 @@ public class Route extends BaseEntity {
     /**
      * 额外信息
      */
-    @TableField("extra")
+    @TableField(value = "extra", typeHandler = MybatisPlusJsonObjectTypeHandler.class)
     private String extra;
 
     /**

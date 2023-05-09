@@ -11,6 +11,7 @@ import site.yuanshen.data.base.BaseEntity;
 import lombok.*;
 import site.yuanshen.data.enums.PunctuateMethodEnum;
 import site.yuanshen.data.enums.PunctuateStatusEnum;
+import site.yuanshen.handler.MybatisPlusJsonObjectTypeHandler;
 
 /**
  * 点位提交表
@@ -89,7 +90,7 @@ public class MarkerPunctuate extends BaseEntity {
     /**
      * 额外特殊字段
      */
-    @TableField("extra")
+    @TableField(value = "extra", typeHandler = MybatisPlusJsonObjectTypeHandler.class)
     private String extra;
 
     /**

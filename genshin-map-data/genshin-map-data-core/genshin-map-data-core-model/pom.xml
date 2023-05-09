@@ -15,6 +15,11 @@
     <dependencies>
         <dependency>
             <groupId>site.yuanshen</groupId>
+            <artifactId>genshin-map-commons-mbp</artifactId>
+            <version>${gsapi.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>site.yuanshen</groupId>
             <artifactId>genshin-map-data-base</artifactId>
             <version>${gsapi.version}</version>
         </dependency>
