@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.annotation.Version;
 import java.time.LocalDateTime;
 import site.yuanshen.data.base.BaseEntity;
 import lombok.*;
+import site.yuanshen.handler.MybatisPlusJsonArrayTypeHandler;
 
 /**
  * 系统用户存档表
@@ -69,7 +70,7 @@ public class SysUserArchive extends BaseEntity {
     /**
      * 存档信息
      */
-    @TableField("data")
+    @TableField(value = "data", typeHandler = MybatisPlusJsonArrayTypeHandler.class)
     private String data;
 
 }
