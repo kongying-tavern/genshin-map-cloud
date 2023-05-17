@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.annotation.Version;
 import java.time.LocalDateTime;
 import site.yuanshen.data.base.BaseEntity;
 import lombok.*;
-import site.yuanshen.handler.MybatisPlusJsonObjectTypeHandler;
+import site.yuanshen.handler.MybatisPlusJsonTypeHandler;
 
 /**
  * 点位主表
@@ -112,7 +112,7 @@ public class Marker extends BaseEntity {
     /**
      * 额外特殊字段
      */
-    @TableField(value = "extra", typeHandler = MybatisPlusJsonObjectTypeHandler.class)
+    @TableField(value = "extra", typeHandler = MybatisPlusJsonTypeHandler.class)
     private String extra;
 
 }
