@@ -1,9 +1,13 @@
 package site.yuanshen.data.vo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.With;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
 * 系统用户存档表前端封装
@@ -63,6 +67,6 @@ public class SysUserArchiveVo {
      * 存档信息
      */
     @Schema(title = "存档信息")
-    private String data;
+    private List<Object> data;
 
 }

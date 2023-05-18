@@ -1,8 +1,11 @@
 package site.yuanshen.data.dto;
 
-import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONArray;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.With;
 import org.apache.commons.lang.StringUtils;
 import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.entity.SysUserArchive;
@@ -11,6 +14,7 @@ import site.yuanshen.data.vo.SysArchiveVo;
 
 import java.time.LocalDateTime;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -64,7 +68,7 @@ public class SysUserArchiveSlotDto {
     /**
      * 存档信息
      */
-    private String data;
+    private List<Object> data;
 
     /**
      * 存档历史
@@ -73,12 +77,12 @@ public class SysUserArchiveSlotDto {
 
     public SysUserArchiveSlotDto(SysUserArchive sysUserArchive) {
         BeanUtils.copy(sysUserArchive, this);
-        archiveHistory = new LinkedList<>(JSON.parseArray(sysUserArchive.getData()).toJavaList(SysUserArchiveDto.class));
+        archiveHistory = new LinkedList<>(JSONArray.from(sysUserArchive.getData()).toJavaList(SysUserArchiveDto.class));
     }
 
     public SysUserArchive getEntity() {
         return BeanUtils.copy(this, SysUserArchive.class)
-                .withData(JSON.toJSONString(archiveHistory));
+                .withData(JSONArray.from(archiveHistory));
     }
 
     /**

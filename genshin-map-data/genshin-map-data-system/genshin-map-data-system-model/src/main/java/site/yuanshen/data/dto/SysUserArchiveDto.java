@@ -2,7 +2,10 @@ package site.yuanshen.data.dto;
 
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson2.annotation.JSONField;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.With;
 import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.vo.SysArchiveVo;
 

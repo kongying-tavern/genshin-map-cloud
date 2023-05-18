@@ -1,15 +1,12 @@
 package site.yuanshen.data.entity;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.annotation.Version;
-import java.time.LocalDateTime;
-import site.yuanshen.data.base.BaseEntity;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.*;
-import site.yuanshen.handler.MybatisPlusJsonTypeHandler;
+import site.yuanshen.data.base.BaseEntity;
+import site.yuanshen.handler.MybatisPlusJsonArrayTypeHandler;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 系统用户存档表
@@ -21,7 +18,7 @@ import site.yuanshen.handler.MybatisPlusJsonTypeHandler;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-@TableName("sys_user_archive")
+@TableName(value = "sys_user_archive", autoResultMap = true)
 public class SysUserArchive extends BaseEntity {
 
     /**
@@ -70,7 +67,7 @@ public class SysUserArchive extends BaseEntity {
     /**
      * 存档信息
      */
-    @TableField(value = "data", typeHandler = MybatisPlusJsonTypeHandler.class)
-    private String data;
+    @TableField(value = "data", typeHandler = MybatisPlusJsonArrayTypeHandler.class)
+    private List<Object> data;
 
 }

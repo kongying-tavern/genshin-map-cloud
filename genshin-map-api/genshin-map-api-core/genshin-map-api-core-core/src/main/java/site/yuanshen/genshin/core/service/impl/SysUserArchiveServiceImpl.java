@@ -86,7 +86,7 @@ public class SysUserArchiveServiceImpl implements SysUserArchiveService {
                         .withSlotIndex(slotIndex)
                         .withUserId(userId)
                         .withName(name)
-                        .withData((JSON.toJSONString(Collections.singletonList(new SysUserArchiveDto(archive))))))
+                        .withData(Collections.singletonList(new SysUserArchiveDto(archive))))
                 == 1;
     }
 
