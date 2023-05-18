@@ -1,9 +1,14 @@
 package site.yuanshen.data.vo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.With;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 
 /**
 * 路线前端封装
@@ -57,7 +62,7 @@ public class RouteVo {
      * 点位顺序数组
      */
     @Schema(title = "点位顺序数组")
-    private String markerList;
+    private List<Object> markerList;
 
     /**
      * 显隐等级
@@ -75,7 +80,7 @@ public class RouteVo {
      * 额外信息
      */
     @Schema(title = "额外信息")
-    private String extra;
+    private Map<String, Object> extra;
 
     /**
      * 创建人昵称

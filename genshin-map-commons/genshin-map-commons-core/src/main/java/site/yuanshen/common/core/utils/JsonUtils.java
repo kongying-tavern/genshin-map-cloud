@@ -20,19 +20,31 @@ public class JsonUtils {
         return JSON.toJSONString(merge(oldJsonObj, newJsonObj));
     }
 
-    public static Map<String, Object> merge(Map<String, Object> jsonObj, Map<String, Object> config) {
-        for(Map.Entry<String, Object> conf : config.entrySet()) {
-            String key = conf.getKey();
-            Object val = conf.getValue();
+    public static Map<String, Object> merge(Map<String, Object> oldJsonObject, Map<String, Object> newJsonObject) {
+        Map<String, Object> oldJsonObj = jsonToMap(oldJsonObject);
+        Map<String, Object> newJsonObj = jsonToMap(newJsonObject);
+
+        for(Map.Entry<String, Object> newJsonEntry : newJsonObj.entrySet()) {
+            String key = newJsonEntry.getKey();
+            Object val = newJsonEntry.getValue();
 
             if(val == null) {
-                jsonObj.remove(key);
+                oldJsonObj.remove(key);
             } else {
-                jsonObj.put(key, val);
+                oldJsonObj.put(key, val);
             }
         }
 
-        return  jsonObj;
+        return oldJsonObj;
+    }
+
+    public static Map<String, Object> jsonToMap(Map<String, Object> jsonObject) {
+        Map<String, Object> jsonObj = new HashMap<>();
+
+        if(jsonObject == null) {
+            return jsonObj;
+        }
+        return jsonObject;
     }
 
     public static Map<String, Object> jsonToMap(String jsonString) {

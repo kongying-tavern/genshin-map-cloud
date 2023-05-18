@@ -1,9 +1,13 @@
 package site.yuanshen.data.vo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.With;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 /**
 * 点位提交表前端封装
@@ -81,7 +85,7 @@ public class MarkerPunctuateVo {
      * 额外特殊字段
      */
     @Schema(title = "额外特殊字段")
-    private String extra;
+    private Map<String, Object> extra;
 
     /**
      * 点位图片

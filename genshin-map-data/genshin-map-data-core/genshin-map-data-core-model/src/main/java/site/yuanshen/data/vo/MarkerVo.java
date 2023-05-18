@@ -1,10 +1,14 @@
 package site.yuanshen.data.vo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.With;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 /**
 * 点位主表前端封装
@@ -112,6 +116,6 @@ public class MarkerVo {
      * 额外特殊字段
      */
     @Schema(title = "额外特殊字段")
-    private String extra;
+    private Map<String, Object> extra;
 
 }

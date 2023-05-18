@@ -220,7 +220,7 @@ public class MarkerServiceImpl implements MarkerService {
         //保存历史记录
         saveHistoryMarker(markerRecord);
 
-        String mergeResult = JsonUtils.merge(markerRecord.getExtra(), markerDto.getExtra());
+        Map<String, Object> mergeResult = JsonUtils.merge(markerRecord.getExtra(), markerDto.getExtra());
         markerDto.setExtra(mergeResult);
 
         Boolean updated = markerMapper.update(markerDto.getEntity(), Wrappers.<Marker>lambdaUpdate()

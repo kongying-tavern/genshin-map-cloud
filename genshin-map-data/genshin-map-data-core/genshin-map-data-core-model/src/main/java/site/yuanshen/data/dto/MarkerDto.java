@@ -9,6 +9,7 @@ import site.yuanshen.data.vo.MarkerItemLinkVo;
 import site.yuanshen.data.vo.MarkerVo;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -101,7 +102,7 @@ public class MarkerDto {
     /**
      * 额外特殊字段
      */
-    private String extra;
+    private Map<String, Object> extra;
 
     public MarkerDto(Marker marker) {
         BeanUtils.copy(marker, this);

@@ -1,15 +1,14 @@
 package site.yuanshen.data.entity;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.annotation.Version;
-import java.time.LocalDateTime;
-import site.yuanshen.data.base.BaseEntity;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.*;
-import site.yuanshen.handler.MybatisPlusJsonTypeHandler;
+import site.yuanshen.data.base.BaseEntity;
+import site.yuanshen.handler.MybatisPlusJsonArrayTypeHandler;
+import site.yuanshen.handler.MybatisPlusJsonObjectTypeHandler;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 路线
@@ -21,7 +20,7 @@ import site.yuanshen.handler.MybatisPlusJsonTypeHandler;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-@TableName("route")
+@TableName(value = "route", autoResultMap = true)
 public class Route extends BaseEntity {
 
     /**
@@ -64,8 +63,8 @@ public class Route extends BaseEntity {
     /**
      * 点位顺序数组
      */
-    @TableField(value = "marker_list", typeHandler = MybatisPlusJsonTypeHandler.class)
-    private String markerList;
+    @TableField(value = "marker_list", typeHandler = MybatisPlusJsonArrayTypeHandler.class)
+    private List<Object> markerList;
 
     /**
      * 显隐等级
@@ -82,8 +81,8 @@ public class Route extends BaseEntity {
     /**
      * 额外信息
      */
-    @TableField(value = "extra", typeHandler = MybatisPlusJsonTypeHandler.class)
-    private String extra;
+    @TableField(value = "extra", typeHandler = MybatisPlusJsonObjectTypeHandler.class)
+    private Map<String, Object> extra;
 
     /**
      * 创建人昵称

@@ -1,14 +1,19 @@
 package site.yuanshen.data.dto;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
 import com.alibaba.fastjson2.annotation.JSONField;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.With;
 import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.entity.MarkerPunctuate;
 import site.yuanshen.data.enums.PunctuateMethodEnum;
 import site.yuanshen.data.enums.PunctuateStatusEnum;
 import site.yuanshen.data.vo.MarkerPunctuateVo;
+
 import java.time.LocalDateTime;
+import java.util.Map;
 
 
 /**
@@ -76,7 +81,7 @@ public class MarkerPunctuateDto {
     /**
      * 额外特殊字段
      */
-    private String extra;
+    private Map<String, Object> extra;
 
     /**
      * 点位图片

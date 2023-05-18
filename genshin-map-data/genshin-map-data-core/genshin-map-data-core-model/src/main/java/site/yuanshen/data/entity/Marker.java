@@ -1,15 +1,12 @@
 package site.yuanshen.data.entity;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.annotation.Version;
-import java.time.LocalDateTime;
-import site.yuanshen.data.base.BaseEntity;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.*;
-import site.yuanshen.handler.MybatisPlusJsonTypeHandler;
+import site.yuanshen.data.base.BaseEntity;
+import site.yuanshen.handler.MybatisPlusJsonObjectTypeHandler;
+
+import java.time.LocalDateTime;
+import java.util.Map;
 
 /**
  * 点位主表
@@ -21,7 +18,7 @@ import site.yuanshen.handler.MybatisPlusJsonTypeHandler;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-@TableName("marker")
+@TableName(value = "marker", autoResultMap = true)
 public class Marker extends BaseEntity {
 
     /**
@@ -112,7 +109,7 @@ public class Marker extends BaseEntity {
     /**
      * 额外特殊字段
      */
-    @TableField(value = "extra", typeHandler = MybatisPlusJsonTypeHandler.class)
-    private String extra;
+    @TableField(value = "extra", typeHandler = MybatisPlusJsonObjectTypeHandler.class)
+    private Map<String, Object> extra;
 
 }

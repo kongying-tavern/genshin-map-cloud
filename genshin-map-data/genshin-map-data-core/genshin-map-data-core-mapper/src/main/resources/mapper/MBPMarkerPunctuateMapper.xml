@@ -17,7 +17,7 @@
         <result column="item_list" property="itemList"/>
         <result column="position" property="position"/>
         <result column="content" property="content"/>
-        <result column="extra" property="extra"/>
+        <result column="extra" property="extra" typeHandler="site.yuanshen.handler.MybatisPlusJsonObjectTypeHandler"/>
         <result column="picture" property="picture"/>
         <result column="marker_creator_id" property="markerCreatorId"/>
         <result column="picture_creator_id" property="pictureCreatorId"/>
