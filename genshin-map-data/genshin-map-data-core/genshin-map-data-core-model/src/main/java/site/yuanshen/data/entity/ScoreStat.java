@@ -1,14 +1,12 @@
 package site.yuanshen.data.entity;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.annotation.Version;
-import java.time.LocalDateTime;
-import site.yuanshen.data.base.BaseEntity;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.*;
+import site.yuanshen.data.base.BaseEntity;
+import site.yuanshen.handler.MybatisPlusJsonObjectTypeHandler;
+
+import java.time.LocalDateTime;
+import java.util.Map;
 
 /**
  * 评分统计
@@ -20,7 +18,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-@TableName("score_stat")
+@TableName(value = "score_stat", autoResultMap = true)
 public class ScoreStat extends BaseEntity {
 
     /**
@@ -81,7 +79,7 @@ public class ScoreStat extends BaseEntity {
     /**
      * 修改的字段JSON
      */
-    @TableField("content")
-    private String content;
+    @TableField(value = "content", typeHandler = MybatisPlusJsonObjectTypeHandler.class)
+    private Map<String, Object> content;
 
 }

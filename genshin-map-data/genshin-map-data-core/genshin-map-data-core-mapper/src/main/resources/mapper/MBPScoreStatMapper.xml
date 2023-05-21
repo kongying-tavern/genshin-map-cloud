@@ -16,7 +16,7 @@
         <result column="version" property="version"/>
         <result column="updater_id" property="updaterId"/>
         <result column="update_time" property="updateTime"/>
-        <result column="content" property="content"/>
+        <result column="content" property="content" typeHandler="site.yuanshen.handler.MybatisPlusJsonObjectTypeHandler"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->

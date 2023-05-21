@@ -11,6 +11,8 @@ public class ScoreDataPunctuateVo {
     private Map<String, Integer> chars = new HashMap<>();
 
     public void merge(ScoreDataPunctuateVo data) {
+        if(data == null)
+            return;
         if(this.fields == null)
             this.fields = new HashMap<>();
         if(this.chars == null)

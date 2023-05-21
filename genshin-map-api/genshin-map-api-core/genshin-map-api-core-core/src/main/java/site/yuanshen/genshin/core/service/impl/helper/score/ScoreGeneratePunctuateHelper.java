@@ -1,6 +1,7 @@
 package site.yuanshen.genshin.core.service.impl.helper.score;
 
 import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
@@ -48,7 +49,7 @@ public class ScoreGeneratePunctuateHelper {
         final List<History> historyList = historyMapper.selectList(
                 Wrappers.<History>lambdaQuery()
                         .eq(History::getType, 4)
-                        .eq(BaseEntity::getDelFlag, 0)
+                        .eq(BaseEntity::getDelFlag, false)
                         .ge(BaseEntity::getCreateTime, span.getSpanStartTime())
                         .le(BaseEntity::getCreateTime, span.getSpanEndTime())
                 );
@@ -164,7 +165,7 @@ public class ScoreGeneratePunctuateHelper {
                 Wrappers.<History>lambdaQuery()
                         .in(History::getTId, markerIds)
                         .eq(History::getType, 4)
-                        .eq(BaseEntity::getDelFlag, 0)
+                        .eq(BaseEntity::getDelFlag, false)
                         .lt(BaseEntity::getCreateTime, span.getSpanStartTime())
                         .orderByDesc(History::getCreateTime)
         );
@@ -239,7 +240,7 @@ public class ScoreGeneratePunctuateHelper {
                 Wrappers.<History>lambdaQuery()
                         .in(History::getTId, markerIds)
                         .eq(History::getType, 4)
-                        .eq(BaseEntity::getDelFlag, 0)
+                        .eq(BaseEntity::getDelFlag, false)
                         .gt(BaseEntity::getCreateTime, span.getSpanEndTime())
                         .orderByAsc(History::getCreateTime)
         );
@@ -386,7 +387,7 @@ public class ScoreGeneratePunctuateHelper {
                         .withUserId(scoreKey.getUserId())
                         .withSpanStartTime(scoreKey.getSpanStartTime())
                         .withSpanEndTime(scoreKey.getSpanEndTime())
-                        .withContent(JSON.toJSONString(scoreVal));
+                        .withContent(JSONObject.from(scoreVal).toJavaObject(Map.class));
                 scoreStat.setCreatorId(operatorId);
                 scoreList.add(scoreStat);
             }

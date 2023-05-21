@@ -1,9 +1,13 @@
 package site.yuanshen.data.vo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.With;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 /**
 * 评分统计前端封装
@@ -75,6 +79,6 @@ public class ScoreStatVo {
      * 修改的字段JSON
      */
     @Schema(title = "修改的字段JSON")
-    private String content;
+    private Map<String, Object> content;
 
 }

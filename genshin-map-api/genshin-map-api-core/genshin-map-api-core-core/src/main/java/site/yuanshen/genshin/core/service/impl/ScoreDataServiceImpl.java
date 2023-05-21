@@ -1,5 +1,7 @@
 package site.yuanshen.genshin.core.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import site.yuanshen.common.core.utils.JsonUtils;
@@ -46,7 +48,7 @@ public class ScoreDataServiceImpl implements ScoreDataService {
                     .setUserId(userId)
                     .setData(new ScoreDataPunctuateVo())
             );
-            final ScoreDataPunctuateVo scoreContent = JsonUtils.jsonToObject(scoreRow.getContent(), ScoreDataPunctuateVo.class);
+            final ScoreDataPunctuateVo scoreContent = JSONObject.parseObject(JSON.toJSONString(scoreRow.getContent()), ScoreDataPunctuateVo.class);
             scoreDataMap.get(userId).getData().merge(scoreContent);
         });
 

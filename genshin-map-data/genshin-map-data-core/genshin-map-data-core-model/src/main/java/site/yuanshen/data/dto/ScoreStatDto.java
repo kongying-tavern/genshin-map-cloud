@@ -1,12 +1,17 @@
 package site.yuanshen.data.dto;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
 import com.alibaba.fastjson2.annotation.JSONField;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.With;
 import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.entity.ScoreStat;
 import site.yuanshen.data.vo.ScoreStatVo;
+
 import java.time.LocalDateTime;
+import java.util.Map;
 
 
 /**
@@ -69,7 +74,7 @@ public class ScoreStatDto {
     /**
      * 修改的字段JSON
      */
-    private String content;
+    private Map<String, Object> content;
 
     public ScoreStatDto(ScoreStat scoreStat) {
         BeanUtils.copy(scoreStat, this);

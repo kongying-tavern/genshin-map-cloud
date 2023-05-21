@@ -79,7 +79,7 @@ public class ScoreHelper {
         scope = StringUtils.defaultIfEmpty(scope, "");
         final List<ScoreStat> scoreList = scoreStatMapper.selectList(
                 Wrappers.<ScoreStat>lambdaQuery()
-                        .eq(BaseEntity::getDelFlag, 0)
+                        .eq(BaseEntity::getDelFlag, false)
                         .eq(ScoreStat::getScope, scope)
                         .eq(ScoreStat::getSpan, span.getSpan())
                         .ge(ScoreStat::getSpanStartTime, span.getSpanStartTime())
