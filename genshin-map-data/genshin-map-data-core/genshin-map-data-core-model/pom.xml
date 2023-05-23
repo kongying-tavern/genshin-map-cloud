@@ -23,6 +23,11 @@
             <artifactId>genshin-map-data-base</artifactId>
             <version>${gsapi.version}</version>
         </dependency>
+        <dependency>
+            <groupId>site.yuanshen</groupId>
+            <artifactId>genshin-map-data-system-model</artifactId>
+            <version>${gsapi.version}</version>
+        </dependency>
     </dependencies>
 
 </project>
