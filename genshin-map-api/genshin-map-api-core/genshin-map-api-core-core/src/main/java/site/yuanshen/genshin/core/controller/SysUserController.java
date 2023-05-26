@@ -40,7 +40,7 @@ public class SysUserController {
     @PostMapping("/register/qq")
     public R<Long> registerUserByQQ(@RequestBody SysUserRegisterVo registerVo) {
         if (!checkRegisterParamEmpty(registerVo)) throw new RuntimeException("请检查注册参数，不允许空qq号或者空密码");
-        if (checkRegisterQQParam(registerVo))throw new RuntimeException("qq号为空或格式不匹配");
+        if (!checkRegisterQQParam(registerVo)) throw new RuntimeException("qq号为空或格式不匹配");
         return RUtils.create(userService.registerByQQ(registerVo));
     }
 
