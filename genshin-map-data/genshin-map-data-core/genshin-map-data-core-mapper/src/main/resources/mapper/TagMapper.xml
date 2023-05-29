@@ -11,9 +11,9 @@
             left join tag_type_link ttl on t.tag = ttl.tag_name
         </if>
         <where>
-             t.del_flag = 0
+             t.del_flag = false
             <if test="tagSearchDto.typeIdList != null and tagSearchDto.typeIdList.size > 0">
-                and  ttl.del_flag = 0
+                and  ttl.del_flag = false
             </if>
 
             <if test="tagSearchDto.typeIdList != null and tagSearchDto.typeIdList.size > 0">

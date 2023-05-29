@@ -12,9 +12,9 @@
             left join item_type_link itl on i.id = itl.item_id
         </if>
         <where>
-            i.del_flag = 0
+            i.del_flag = false
             <if test="itemSearchDto.typeIdList != null">
-                and itl.del_flag = 0
+                and itl.del_flag = false
             </if>
             <if test="itemSearchDto.typeIdList != null and itemSearchDto.typeIdList.size > 0">
                 and itl.type_id in
