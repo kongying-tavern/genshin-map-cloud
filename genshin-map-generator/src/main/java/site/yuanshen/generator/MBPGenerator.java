@@ -19,12 +19,16 @@ public class MBPGenerator {
 
     private static String author = System.getenv("GSAPI_AUTHOR");
 
+    private static String entity = System.getenv("GSAPI_ENTITY");
+
+
     public static void main(String[] args) throws Exception {
         FastGenerator generator = FastGenerator.getFastGenerator()
                 .url(url)
                 .userName(username)
                 .password(password)
                 .author(author)
+                .entity(entity)
                 .outputDir("/generator")
                 .commentDateFormat("yyyy-MM-dd hh:mm:ss");
         generator.entityPackage("site.yuanshen.data.entity")

@@ -28,6 +28,7 @@ public class FastGenerator {
     private String userName;
     private String password;
     private String author;
+    private String entity;
     private String outputDir;
     private String commentDateFormat;
 
@@ -73,6 +74,8 @@ public class FastGenerator {
                         .mapper(mapperPackage)
                         .xml(xmlPackage))
                 .strategyConfig(builder -> builder
+                        // 添加需要生成模块的白名单列表
+                        .addInclude(StringUtils.split(entity, ","))
                         // 跳过视图
                         .enableSkipView()
                         /*-------------entity配置-------------*/
@@ -163,6 +166,11 @@ public class FastGenerator {
 
     public FastGenerator author(String author) {
         this.author = author;
+        return this;
+    }
+
+    public FastGenerator entity(String entity) {
+        this.entity = entity;
         return this;
     }
 
