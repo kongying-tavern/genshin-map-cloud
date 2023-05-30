@@ -4,24 +4,27 @@ import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.generator.FastAutoGenerator;
 import com.baomidou.mybatisplus.generator.config.DataSourceConfig;
 import com.baomidou.mybatisplus.generator.config.TemplateType;
-import com.baomidou.mybatisplus.generator.config.builder.CustomFile;
 import com.baomidou.mybatisplus.generator.config.converts.PostgreSqlTypeConvert;
 import com.baomidou.mybatisplus.generator.config.querys.PostgreSqlQuery;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
 import com.baomidou.mybatisplus.generator.fill.Property;
 import com.baomidou.mybatisplus.generator.query.SQLQuery;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Component;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 import site.yuanshen.data.base.BaseEntity;
 
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.stream.Collectors;
+import java.net.URI;
+import java.nio.charset.StandardCharsets;
 
 @Component
 
 public class FastGenerator {
     private String url;
+    private String schema;
     private String userName;
     private String password;
     private String author;
@@ -43,13 +46,15 @@ public class FastGenerator {
      */
     private static final Boolean enableFieldCommentWithSwagger = true;
 
+    private static final String defaultSchema = "genshin_map";
+
     public void build() {
         System.out.println("Output Dir: " + outputDir);
 
         FastAutoGenerator.create(new DataSourceConfig.Builder(url,userName,password)
                         //3.5.3之后，默认为DefaultQuery，会使得pg的json数据被识别为object，且无法被mbp的转化器转化
                         .databaseQueryClass(SQLQuery.class)
-                        .schema("genshin_map")
+                        .schema(schema)
                         .dbQuery(new PostgreSqlQuery())
                         .typeConvert(new PostgreSqlTypeConvert()))
                 //全局配置
@@ -126,7 +131,24 @@ public class FastGenerator {
 
     public FastGenerator url(String url) {
         this.url = url;
+        this.schema = this.getUrlSchema();
         return this;
+    }
+
+    private String getUrlSchema() {
+        try {
+            URI uri = new URI(this.url);
+            UriComponents uriComponents = UriComponentsBuilder
+                    .fromUri(uri)
+                    .encode(StandardCharsets.UTF_8)
+                    .build();
+            MultiValueMap<String, String> queryMap = uriComponents.getQueryParams();
+            String querySchema = queryMap.getFirst("currentSchema");
+            String querySchemaStr = StringUtils.defaultIfBlank(querySchema, defaultSchema);
+            return querySchemaStr;
+        } catch (Exception e) {
+            return defaultSchema;
+        }
     }
 
     public FastGenerator userName(String userName) {
