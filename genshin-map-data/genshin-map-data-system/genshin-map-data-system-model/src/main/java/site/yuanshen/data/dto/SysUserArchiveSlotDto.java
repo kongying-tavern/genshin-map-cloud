@@ -14,7 +14,6 @@ import site.yuanshen.data.vo.SysArchiveVo;
 
 import java.time.LocalDateTime;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -64,11 +63,6 @@ public class SysUserArchiveSlotDto {
      * 用户ID
      */
     private Long userId;
-
-    /**
-     * 存档信息
-     */
-    private List<Object> data;
 
     /**
      * 存档历史
