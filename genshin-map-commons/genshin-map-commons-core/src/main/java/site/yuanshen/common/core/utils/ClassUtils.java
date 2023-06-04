@@ -1,6 +1,7 @@
 package site.yuanshen.common.core.utils;
 
-import org.apache.commons.lang.StringUtils;
+import cn.hutool.core.text.NamingCase;
+import cn.hutool.core.util.StrUtil;
 
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
@@ -21,7 +22,7 @@ public class ClassUtils {
         try {
             final Field field = clazz.getDeclaredField(propName);
             if(field != null) {
-                final String propNameCap = StringUtils.capitalize(propName);
+                final String propNameCap = NamingCase.toPascalCase(propName);
                 final String getMethodName = "get" + propNameCap;
                 final Method getMethod = clazz.getDeclaredMethod(getMethodName, new Class[]{});
                 final String setMethodName = "set" + propNameCap;
@@ -77,13 +78,13 @@ public class ClassUtils {
      * @return 获取到的数据，无法获取返回 null
      */
     public static Object getValue(Object item, String prop) {
-        if(StringUtils.isBlank(prop)) {
+        if(StrUtil.isBlank(prop)) {
             return null;
         } else if(item == null) {
             return null;
         }
 
-        String[] propChunks = StringUtils.split(prop, ".");
+        String[] propChunks = StrUtil.splitToArray(prop, '.');
         try {
             Object itemChunk = item;
             Object obj = null;

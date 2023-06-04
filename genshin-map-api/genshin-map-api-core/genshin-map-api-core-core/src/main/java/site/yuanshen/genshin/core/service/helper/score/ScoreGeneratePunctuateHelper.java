@@ -1,11 +1,10 @@
 package site.yuanshen.genshin.core.service.helper.score;
 
-import com.alibaba.fastjson2.JSON;
+import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Component;
 import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.common.core.utils.DiffUtils;
@@ -36,7 +35,7 @@ public class ScoreGeneratePunctuateHelper {
     private final MarkerItemLinkMapper markerItemLinkMapper;
     private final ItemMapper itemMapper;
 
-    private final static Function<String, String> strHandler = v -> StringUtils.defaultIfEmpty(v, "");
+    private final static Function<String, String> strHandler = v -> StrUtil.emptyToDefault(v, "");
     private final static Function<Integer, Integer> intHandler = v -> v == null ? 0 : v;
     private final static Function<Long, Long> longHandler = v -> v == null ? 0 : v;
 
@@ -78,7 +77,7 @@ public class ScoreGeneratePunctuateHelper {
     public List<Marker> getHistoryMarkers(List<History> historyList) {
         final List<Long> markerIds = historyList.stream().map(History::getTId).collect(Collectors.toList());
         List<Marker> markerList = new ArrayList<>();
-        if (CollectionUtils.isNotEmpty(markerIds)) {
+        if (CollectionUtil.isNotEmpty(markerIds)) {
             markerList = markerMapper.selectList(
                     Wrappers.<Marker>lambdaQuery()
                             .in(Marker::getId, markerIds)
@@ -94,14 +93,14 @@ public class ScoreGeneratePunctuateHelper {
      * @return
      */
     public Map<Long, Item> getInitializeMarkerItemMap(ScoreSpanConfigDto span, List<Marker> markerList) {
-        if(CollectionUtils.isEmpty(markerList)) {
+        if(CollectionUtil.isEmpty(markerList)) {
             return new HashMap<>();
         }
 
         final List<Long> markerIds = markerList.stream()
                 .map(Marker::getId)
                 .collect(Collectors.toList());
-        if(CollectionUtils.isEmpty(markerIds)) {
+        if(CollectionUtil.isEmpty(markerIds)) {
             return new HashMap<>();
         }
         final List<MarkerItemLink> markerItemLinkList = markerItemLinkMapper.selectList(
@@ -119,7 +118,7 @@ public class ScoreGeneratePunctuateHelper {
         final List<Long> itemIds = markerItemLinkMap
                 .values()
                 .stream().collect(Collectors.toList());
-        if(CollectionUtils.isEmpty(itemIds)) {
+        if(CollectionUtil.isEmpty(itemIds)) {
             return new HashMap<>();
         }
         final List<Item> itemList = itemMapper.selectList(
@@ -152,12 +151,12 @@ public class ScoreGeneratePunctuateHelper {
      * @return
      */
     public Map<Long, History> getInitializeHistoryMap(ScoreSpanConfigDto span, List<Marker> markerList) {
-        if(CollectionUtils.isEmpty(markerList)) {
+        if(CollectionUtil.isEmpty(markerList)) {
             return new HashMap<>();
         }
 
         final List<Long> markerIds = markerList.stream().map(Marker::getId).collect(Collectors.toList());
-        if(CollectionUtils.isEmpty(markerIds)) {
+        if(CollectionUtil.isEmpty(markerIds)) {
             return new HashMap<>();
         }
 
@@ -197,8 +196,8 @@ public class ScoreGeneratePunctuateHelper {
                     if(span.isTimeMatch(createTime)) {
                         final Long markerId = marker.getId();
                         final Item markerItem = markerItemMap.getOrDefault(markerId, new Item());
-                        final String markerItemTitle = StringUtils.defaultIfEmpty(markerItem.getName(), "");
-                        final String markerItemContent = StringUtils.defaultIfEmpty(markerItem.getDefaultContent(), "");
+                        final String markerItemTitle = StrUtil.emptyToDefault(markerItem.getName(), "");
+                        final String markerItemContent = StrUtil.emptyToDefault(markerItem.getDefaultContent(), "");
                         // 生成点位DTO
                         MarkerDto o = new MarkerDto();
                         o.setId(markerId);
@@ -227,12 +226,12 @@ public class ScoreGeneratePunctuateHelper {
      * @return
      */
     public Map<Long, History> getFinalizeHistoryMap(ScoreSpanConfigDto span, List<Marker> markerList) {
-        if(CollectionUtils.isEmpty(markerList)) {
+        if(CollectionUtil.isEmpty(markerList)) {
             return new HashMap<>();
         }
 
         final List<Long> markerIds = markerList.stream().map(Marker::getId).collect(Collectors.toList());
-        if(CollectionUtils.isEmpty(markerIds)) {
+        if(CollectionUtil.isEmpty(markerIds)) {
             return new HashMap<>();
         }
 
@@ -341,7 +340,7 @@ public class ScoreGeneratePunctuateHelper {
 
         for(Map.Entry<Long, List<History>> group : historyGroup.entrySet()) {
             List<History> histories = group.getValue();
-            if(CollectionUtils.isNotEmpty(histories)) {
+            if(CollectionUtil.isNotEmpty(histories)) {
                 int historySize = histories.size();
                 for(int i = 1; i < historySize; i++) {
                     final History historyBefore = histories.get(i - 1);

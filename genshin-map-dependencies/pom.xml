@@ -17,8 +17,7 @@
         <nimbus-jose-jwt.version>9.21</nimbus-jose-jwt.version>
         <springboot.version>2.3.12.RELEASE</springboot.version>
         <hutool.version>5.8.11</hutool.version>
-        <apache-commons.version>4.4</apache-commons.version>
-        <commons-lang.version>2.6</commons-lang.version>
+        <commons-compres.version>1.21</commons-compres.version>
         <cglib.version>3.3.0</cglib.version>
     </properties>
 
@@ -120,14 +119,15 @@
             </dependency>
 
             <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-collections4</artifactId>
-                <version>${apache-commons.version}</version>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-crypto</artifactId>
+                <version>${hutool.version}</version>
             </dependency>
+
             <dependency>
-                <groupId>commons-lang</groupId>
-                <artifactId>commons-lang</artifactId>
-                <version>${commons-lang.version}</version>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-compress</artifactId>
+                <version>${commons-compres.version}</version>
             </dependency>
 
             <dependency>

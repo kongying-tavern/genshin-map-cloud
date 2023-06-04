@@ -1,5 +1,6 @@
 package site.yuanshen.generator.utils;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.generator.FastAutoGenerator;
 import com.baomidou.mybatisplus.generator.config.DataSourceConfig;
@@ -9,7 +10,6 @@ import com.baomidou.mybatisplus.generator.config.querys.PostgreSqlQuery;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
 import com.baomidou.mybatisplus.generator.fill.Property;
 import com.baomidou.mybatisplus.generator.query.SQLQuery;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
@@ -42,11 +42,6 @@ public class FastGenerator {
     private String dtoPackage;
     private String voPackage;
 
-    /**
-     * 在创建实体类属性的swagger注解时创建注释
-     */
-    private static final Boolean enableFieldCommentWithSwagger = true;
-
     private static final String defaultSchema = "genshin_map";
 
     public void build() {
@@ -75,7 +70,7 @@ public class FastGenerator {
                         .xml(xmlPackage))
                 .strategyConfig(builder -> builder
                         // 添加需要生成模块的白名单列表
-                        .addInclude(StringUtils.split(entity, ","))
+                        .addInclude(StrUtil.split(entity, ","))
                         // 跳过视图
                         .enableSkipView()
                         /*-------------entity配置-------------*/
@@ -147,7 +142,7 @@ public class FastGenerator {
                     .build();
             MultiValueMap<String, String> queryMap = uriComponents.getQueryParams();
             String querySchema = queryMap.getFirst("currentSchema");
-            String querySchemaStr = StringUtils.defaultIfBlank(querySchema, defaultSchema);
+            String querySchemaStr = StrUtil.blankToDefault(querySchema, defaultSchema);
             return querySchemaStr;
         } catch (Exception e) {
             return defaultSchema;

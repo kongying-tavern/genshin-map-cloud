@@ -1,11 +1,9 @@
 package site.yuanshen.common.web.response;
 
-import com.alibaba.nacos.shaded.io.grpc.netty.shaded.io.netty.util.internal.StringUtil;
-import lombok.AllArgsConstructor;
+import cn.hutool.core.util.StrUtil;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
-import org.apache.commons.lang.StringUtils;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -51,7 +49,7 @@ public class R<T> implements Serializable {
         this.errorStatus = code.getStatus();
         this.errorData = error;
         this.message = code.getMsg();
-        if(StringUtils.isNotBlank(message)) {
+        if(StrUtil.isNotBlank(message)) {
             this.message = message;
         }
         this.data = data;
@@ -63,7 +61,7 @@ public class R<T> implements Serializable {
         this.errorStatus = Codes.FAIL.getStatus();
         this.errorData = error;
         this.message = e.getMessage();
-        if(StringUtils.isNotBlank(message)) {
+        if(StrUtil.isNotBlank(message)) {
             this.message = message;
         }
         this.data = data;

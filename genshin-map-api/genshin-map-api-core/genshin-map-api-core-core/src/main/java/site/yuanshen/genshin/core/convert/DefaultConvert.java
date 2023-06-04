@@ -1,8 +1,8 @@
 package site.yuanshen.genshin.core.convert;
 
 import cn.hutool.core.lang.Pair;
+import cn.hutool.crypto.SecureUtil;
 import cn.hutool.extra.servlet.ServletUtil;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import site.yuanshen.data.entity.History;
@@ -27,7 +27,7 @@ public abstract class DefaultConvert implements Convert {
         Pair<String, Long> contentAndId = getContentAndId(o);
         String content = contentAndId.getKey();
         Long tId = contentAndId.getValue();
-        String md5 = DigestUtils.md5Hex(content);
+        String md5 = SecureUtil.md5(content);
 
         history.setTId(tId);
         history.setContent(content);

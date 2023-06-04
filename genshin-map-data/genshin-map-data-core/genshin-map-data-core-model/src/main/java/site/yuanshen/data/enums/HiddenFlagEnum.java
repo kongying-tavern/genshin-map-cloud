@@ -1,13 +1,10 @@
 package site.yuanshen.data.enums;
 
-import io.swagger.v3.oas.models.security.SecurityScheme;
+import cn.hutool.core.convert.Convert;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.math.NumberUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -29,8 +26,6 @@ public enum HiddenFlagEnum {
 
     /**
      * 判断点位权限
-     * @param userDataLevel
-     * @return
      */
     public static List<Integer> getFlagList(int userDataLevel){
         List<Integer> list = new ArrayList<>();
@@ -44,7 +39,7 @@ public enum HiddenFlagEnum {
     }
 
     public static List<Integer> getFlagList(String userDataLevel){
-       return getFlagList(NumberUtils.toInt(userDataLevel,0));
+       return getFlagList(Convert.toInt(userDataLevel,0));
     }
 
     public static List<Integer> getAllFlagList() {

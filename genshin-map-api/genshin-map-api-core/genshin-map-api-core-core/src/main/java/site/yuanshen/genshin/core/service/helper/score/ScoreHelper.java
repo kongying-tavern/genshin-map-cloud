@@ -1,11 +1,10 @@
 package site.yuanshen.genshin.core.service.helper.score;
 
-import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Component;
 import site.yuanshen.common.core.utils.TimeUtils;
 import site.yuanshen.data.base.BaseEntity;
@@ -17,7 +16,6 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Component
@@ -53,7 +51,7 @@ public class ScoreHelper {
     }
 
     public void clearData(String scope, ScoreSpanConfigDto span) {
-        scope = StringUtils.defaultIfEmpty(scope, "");
+        scope = StrUtil.emptyToDefault(scope, "");
         scoreStatMapper.delete(
                 Wrappers.<ScoreStat>lambdaQuery()
                         .eq(ScoreStat::getScope, scope)
@@ -76,7 +74,7 @@ public class ScoreHelper {
     }
 
     public List<ScoreStat> getData(String scope, ScoreSpanConfigDto span) {
-        scope = StringUtils.defaultIfEmpty(scope, "");
+        scope = StrUtil.emptyToDefault(scope, "");
         final List<ScoreStat> scoreList = scoreStatMapper.selectList(
                 Wrappers.<ScoreStat>lambdaQuery()
                         .eq(BaseEntity::getDelFlag, false)

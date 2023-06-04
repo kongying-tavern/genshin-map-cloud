@@ -1,12 +1,12 @@
 package site.yuanshen.data.dto;
 
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson2.JSONArray;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.With;
-import org.apache.commons.lang.StringUtils;
 import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.entity.SysUserArchive;
 import site.yuanshen.data.vo.SysArchiveSlotVo;
@@ -105,7 +105,7 @@ public class SysUserArchiveSlotDto {
      * @return 存档是否已更改
      */
     public boolean saveArchive(String newArchive) {
-        if (!archiveHistory.isEmpty() && StringUtils.equals(archiveHistory.getFirst().getArchive(), newArchive))
+        if (!archiveHistory.isEmpty() && StrUtil.equals(archiveHistory.getFirst().getArchive(), newArchive))
             return false;
         archiveHistory.add(0, new SysUserArchiveDto(newArchive));
         while (archiveHistory.size() > 5) {

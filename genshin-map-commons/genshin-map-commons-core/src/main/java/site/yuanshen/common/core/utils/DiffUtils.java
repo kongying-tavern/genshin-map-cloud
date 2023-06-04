@@ -1,10 +1,10 @@
 package site.yuanshen.common.core.utils;
 
+import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.StrUtil;
 import lombok.Data;
 import lombok.Getter;
 import lombok.experimental.Accessors;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
@@ -107,18 +107,18 @@ public class DiffUtils {
 
         // 1. 数据字段结构构造
         List<String> cfDiffFields = config.getFields();
-        if(CollectionUtils.isEmpty(cfDiffFields)) {
+        if(CollectionUtil.isEmpty(cfDiffFields)) {
             List<Field> dtBeforeFields = ClassUtils.getFields(before.getClass());
             List<String> dtBeforeFieldNames = dtBeforeFields.stream().filter(Objects::nonNull).map(Field::getName).collect(Collectors.toList());
             List<Field> dtAfterFields = ClassUtils.getFields(after.getClass());
             List<String> dtAfterFieldNames = dtAfterFields.stream().filter(Objects::nonNull).map(Field::getName).collect(Collectors.toList());
-            cfDiffFields = CollectionUtils.union(dtBeforeFieldNames, dtAfterFieldNames).stream().filter(v -> v != null).distinct().collect(Collectors.toList());
+            cfDiffFields = CollectionUtil.union(dtBeforeFieldNames, dtAfterFieldNames).stream().filter(v -> v != null).distinct().collect(Collectors.toList());
         }
 
         // 2. 删除忽略字段
         List<String> cfIgnoreFields = config.getIgnore();
-        if(CollectionUtils.isNotEmpty(cfIgnoreFields)) {
-            cfDiffFields = CollectionUtils.subtract(cfDiffFields, cfIgnoreFields).stream().collect(Collectors.toList());
+        if(CollectionUtil.isNotEmpty(cfIgnoreFields)) {
+            cfDiffFields = CollectionUtil.subtract(cfDiffFields, cfIgnoreFields).stream().collect(Collectors.toList());
         }
 
         // 3. 比较字段值
@@ -191,14 +191,14 @@ public class DiffUtils {
         private String text1;
 
         public Levenshtein setText1(String text1) {
-            this.text1 = StringUtils.defaultIfEmpty(text1, "");
+            this.text1 = StrUtil.emptyToDefault(text1, "");
             return this;
         }
 
         private String text2;
 
         public Levenshtein setText2(String text2) {
-            this.text2 = StringUtils.defaultIfEmpty(text2, "");
+            this.text2 = StrUtil.emptyToDefault(text2, "");
             return this;
         }
 

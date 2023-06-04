@@ -1,7 +1,7 @@
 package site.yuanshen.common.core.utils;
 
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson2.JSON;
-import org.apache.commons.lang.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -50,7 +50,7 @@ public class JsonUtils {
     public static Map<String, Object> jsonToMap(String jsonString) {
         Map<String, Object> jsonObj = new HashMap<>();
 
-        if(StringUtils.isBlank(jsonString)) {
+        if(StrUtil.isBlank(jsonString)) {
             jsonString = "{}";
         }
 

@@ -1,11 +1,11 @@
 package site.yuanshen.common.core.utils;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.Getter;
-import org.apache.commons.lang.StringUtils;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -72,7 +72,7 @@ public class EntityUtils {
             final String fieldDbName = fieldAnnotation == null ? "" : fieldAnnotation.value();
             final String fieldName = field.getName();
 
-            if(StringUtils.isNotBlank(fieldDbName) && StringUtils.isNotBlank(fieldName)) {
+            if(StrUtil.isNotBlank(fieldDbName) && StrUtil.isNotBlank(fieldName)) {
                 final ColumnConfig fieldConfig = new ColumnConfig();
                 fieldConfig.setDbFieldName(fieldDbName);
                 fieldConfig.setPropertyName(fieldName);

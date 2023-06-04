@@ -1,9 +1,9 @@
 package site.yuanshen.genshin.core.service;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import site.yuanshen.data.base.BaseEntity;
 import site.yuanshen.data.dto.RouteDto;
@@ -15,7 +15,6 @@ import site.yuanshen.data.mapper.RouteMapper;
 import site.yuanshen.data.mapper.SysUserMapper;
 import site.yuanshen.data.vo.RouteVo;
 import site.yuanshen.data.vo.helper.PageListVo;
-import site.yuanshen.genshin.core.service.RouteService;
 
 import java.util.List;
 import java.util.Optional;
@@ -63,9 +62,9 @@ public class RouteService {
         Page<Route> routePage = routeMapper.selectPage(searchDto.getPage(),
                 Wrappers.<Route>lambdaQuery()
                         .orderByAsc(Route::getId)
-                        .like(StringUtils.isNotBlank(namePart), Route::getName, namePart)
-                        .like(StringUtils.isNotBlank(nicknamePart), Route::getCreatorNickname, nicknamePart)
-                        .eq(StringUtils.isNotBlank(creatorId), BaseEntity::getCreatorId, creatorId));
+                        .like(StrUtil.isNotBlank(namePart), Route::getName, namePart)
+                        .like(StrUtil.isNotBlank(nicknamePart), Route::getCreatorNickname, nicknamePart)
+                        .eq(StrUtil.isNotBlank(creatorId), BaseEntity::getCreatorId, creatorId));
         return new PageListVo<RouteVo>()
                 .setRecord(routePage.getRecords().parallelStream()
                         .filter(route -> hiddenFlagList.contains(route.getHiddenFlag()))
@@ -98,7 +97,7 @@ public class RouteService {
      */
     public Long createRoute(RouteDto routeDto) {
         SysUser user = getUserNotNull(routeDto.getUpdaterId());
-        routeDto.setCreatorNickname(StringUtils.isNotBlank(user.getNickname()) ? user.getNickname() : user.getUsername());
+        routeDto.setCreatorNickname(StrUtil.isNotBlank(user.getNickname()) ? user.getNickname() : user.getUsername());
         Route entity = routeDto.getEntity();
         entity.setVersion(0L);
         entity.setId(0L);

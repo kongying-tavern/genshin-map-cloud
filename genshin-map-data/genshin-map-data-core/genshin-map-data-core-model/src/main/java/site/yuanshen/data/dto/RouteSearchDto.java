@@ -1,9 +1,9 @@
 package site.yuanshen.data.dto;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
-import org.apache.commons.lang3.StringUtils;
 import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.entity.Route;
 import site.yuanshen.data.vo.RouteSearchVo;
@@ -61,7 +61,7 @@ public class RouteSearchDto {
     }
 
     public void checkParams() {
-        if (StringUtils.isNoneBlank(this.creatorId,this.creatorNicknamePart))
+        if (StrUtil.hasBlank(this.creatorId,this.creatorNicknamePart))
             throw new RuntimeException("创建人id不能与创建人昵称模糊搜索字段共存");
     }
 }

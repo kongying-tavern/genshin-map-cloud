@@ -1,6 +1,6 @@
 package site.yuanshen.common.core.utils;
 
-import org.apache.commons.lang.StringUtils;
+import cn.hutool.core.util.StrUtil;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -40,7 +40,7 @@ public class TimeUtils {
      * @return 时间戳
      */
     public static Timestamp toTimestamp(LocalDateTime dt, String tz) {
-        final String tzKey = StringUtils.defaultIfEmpty(tz, "");
+        final String tzKey = StrUtil.emptyToDefault(tz, "");
         final ZoneId tzId = ZoneId.of(tzKey);
         return toTimestamp(dt, tzId);
     }
