@@ -16,7 +16,7 @@
         <springdoc.version>1.6.11</springdoc.version>
         <nimbus-jose-jwt.version>9.21</nimbus-jose-jwt.version>
         <springboot.version>2.3.12.RELEASE</springboot.version>
-        <hutool.version>5.8.11</hutool.version>
+        <hutool.version>5.8.19</hutool.version>
         <commons-compres.version>1.21</commons-compres.version>
         <cglib.version>3.3.0</cglib.version>
     </properties>
