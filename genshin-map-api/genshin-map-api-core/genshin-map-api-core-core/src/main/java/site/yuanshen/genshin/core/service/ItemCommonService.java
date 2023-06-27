@@ -12,6 +12,7 @@ import site.yuanshen.data.dto.ItemDto;
 import site.yuanshen.data.dto.helper.PageSearchDto;
 import site.yuanshen.data.entity.Item;
 import site.yuanshen.data.entity.ItemAreaPublic;
+import site.yuanshen.data.enums.HiddenFlagEnum;
 import site.yuanshen.data.mapper.ItemAreaPublicMapper;
 import site.yuanshen.data.mapper.ItemMapper;
 import site.yuanshen.data.vo.ItemAreaPublicVo;
@@ -34,6 +35,7 @@ import java.util.stream.Collectors;
 public class ItemCommonService {
 
     private final ItemMapper itemMapper;
+    private final ItemService itemService;
     private final ItemAreaPublicMapper itemAreaPublicMapper;
     private final ItemAreaPublicMBPService itemAreaPublicMBPService;
 
@@ -52,15 +54,16 @@ public class ItemCommonService {
             return new PageListVo<>(new ArrayList<>(), itemPublicPage.getTotal(), itemPublicPage.getSize());
         }
         //取物品具体信息
-        Map<Long, ItemDto> itemMap = itemMapper.selectList(Wrappers.<Item>lambdaQuery()
-                        .in(Item::getId, itemPublicList.parallelStream()
-                                .map(ItemAreaPublic::getItemId).collect(Collectors.toList())))
-                .parallelStream().map(ItemDto::new).collect(Collectors.toMap(ItemDto::getId, item -> item));
+        Map<Long, ItemDto> itemMap = itemService.listItemById(
+                        itemPublicList.parallelStream()
+                                .map(ItemAreaPublic::getItemId).collect(Collectors.toList()),
+                        HiddenFlagEnum.getAllFlagList())
+                .parallelStream().collect(Collectors.toMap(ItemDto::getId, item -> item));
         //组合VO
         return new PageListVo<ItemAreaPublicVo>()
                 .setRecord(itemPublicList.parallelStream()
                         .map(ItemAreaPublicDto::new)
-                        .map(dto -> dto.withItemDto(itemMap.get(dto.getAreaId())))
+                        .map(dto -> dto.withItemDto(itemMap.get(dto.getItemId())))
                         .map(ItemAreaPublicDto::getVo)
                         .sorted(Comparator.comparingLong(ItemAreaPublicVo::getId))
                         .collect(Collectors.toList()))
