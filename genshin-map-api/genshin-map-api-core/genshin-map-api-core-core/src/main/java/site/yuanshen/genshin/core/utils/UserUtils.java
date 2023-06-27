@@ -45,9 +45,9 @@ public class UserUtils {
      */
     @SuppressWarnings("RedundantIfStatement")
     public static boolean checkPasswordParamEmpty(SysUserPasswordUpdateVo updateVo, boolean checkOldPassword) {
-        if (StrUtil.isEmpty(updateVo.getPassword())) return false;
-        if (checkOldPassword && StrUtil.isEmpty(updateVo.getOldPassword())) return false;
-        return true;
+        if (StrUtil.isEmpty(updateVo.getPassword())) return true;
+        if (checkOldPassword && StrUtil.isEmpty(updateVo.getOldPassword())) return true;
+        return false;
     }
 
     /**
