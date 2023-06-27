@@ -112,12 +112,12 @@ public class IconService {
     public Boolean updateIcon(IconVo iconVo) {
         IconDto iconDto = new IconDto(iconVo);
         //取类型ID
-        Set<Long> newTypeIds = new TreeSet<>(iconVo.getTypeIdList());
+        HashSet<Long> newTypeIds = new HashSet<>(iconVo.getTypeIdList());
         //对比类型信息是否更改
-        Set<Long> oldTypeIds = iconTypeLinkMapper.selectList(Wrappers.<IconTypeLink>lambdaQuery()
+        HashSet<Long> oldTypeIds = iconTypeLinkMapper.selectList(Wrappers.<IconTypeLink>lambdaQuery()
                         .eq(IconTypeLink::getId, iconDto.getId()))
                 .stream()
-                .map(IconTypeLink::getTypeId).collect(Collectors.toSet());
+                .map(IconTypeLink::getTypeId).collect(Collectors.toCollection(HashSet::new));
         //如果类型ID更改了就进行分类的刷新
         if (!oldTypeIds.equals(newTypeIds)) {
             iconTypeLinkMapper.delete(Wrappers.<IconTypeLink>lambdaQuery()

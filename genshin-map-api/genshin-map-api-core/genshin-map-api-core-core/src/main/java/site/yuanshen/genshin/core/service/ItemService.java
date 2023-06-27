@@ -161,11 +161,11 @@ public class ItemService {
 
 
             //对比类型信息是否更改
-            Set<Long> oldTypeIds = itemTypeLinkMapper.selectList(Wrappers.<ItemTypeLink>lambdaQuery()
+            HashSet<Long> oldTypeIds = itemTypeLinkMapper.selectList(Wrappers.<ItemTypeLink>lambdaQuery()
                             .eq(ItemTypeLink::getItemId, itemDto.getId()))
                     .stream()
-                    .map(ItemTypeLink::getTypeId).collect(Collectors.toSet());
-            Set<Long> newTypeIds = new TreeSet<>(typeIdList);
+                    .map(ItemTypeLink::getTypeId).collect(Collectors.toCollection(HashSet::new));
+            HashSet<Long> newTypeIds = new HashSet<>(typeIdList);
             //如果更改了就进行分类的刷新
             if (!oldTypeIds.equals(newTypeIds)) {
                 //删除旧分类连接
