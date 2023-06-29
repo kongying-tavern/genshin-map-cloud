@@ -7,6 +7,8 @@ import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.entity.Marker;
 import site.yuanshen.data.vo.MarkerItemLinkVo;
 import site.yuanshen.data.vo.MarkerVo;
+import site.yuanshen.data.vo.SysUserVo;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +40,11 @@ public class MarkerDto {
      * 更新人
      */
     private Long updaterId;
+
+    /**
+     * 更新人信息
+     */
+    private SysUserVo updater;
 
     /**
      * 更新时间

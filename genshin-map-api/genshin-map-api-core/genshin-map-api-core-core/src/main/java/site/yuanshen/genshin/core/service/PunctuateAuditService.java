@@ -22,7 +22,6 @@ import site.yuanshen.data.mapper.MarkerPunctuateMapper;
 import site.yuanshen.data.vo.MarkerPunctuateVo;
 import site.yuanshen.data.vo.PunctuateSearchVo;
 import site.yuanshen.data.vo.helper.PageListVo;
-import site.yuanshen.genshin.core.service.PunctuateAuditService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -110,7 +109,9 @@ public class PunctuateAuditService {
     //此处是两个方法的缝合，不需要加缓存
     public List<MarkerPunctuateDto> searchPunctuate(PunctuateSearchVo punctuateSearchVo) {
         List<Long> punctuateIdList = searchPunctuateId(punctuateSearchVo);
-        return listPunctuateById(punctuateIdList);
+        List<MarkerPunctuateDto> result = listPunctuateById(punctuateIdList);
+        UserAppenderService.appendUser(result, MarkerPunctuateDto::getUpdaterId, MarkerPunctuateDto::getUpdaterId, MarkerPunctuateDto::setUpdater);
+        return result;
     }
 
     /**
@@ -123,9 +124,11 @@ public class PunctuateAuditService {
         if (punctuateIdList.isEmpty()) {
             return new ArrayList<>();
         }
-        return markerPunctuateMapper.selectList(Wrappers.<MarkerPunctuate>lambdaQuery().in(MarkerPunctuate::getPunctuateId, punctuateIdList))
+        List<MarkerPunctuateDto> result = markerPunctuateMapper.selectList(Wrappers.<MarkerPunctuate>lambdaQuery().in(MarkerPunctuate::getPunctuateId, punctuateIdList))
                 .parallelStream().map(MarkerPunctuateDto::new)
                 .collect(Collectors.toList());
+        UserAppenderService.appendUser(result, MarkerPunctuateDto::getUpdaterId, MarkerPunctuateDto::getUpdaterId, MarkerPunctuateDto::setUpdater);
+        return result;
     }
 
     /**
@@ -136,7 +139,7 @@ public class PunctuateAuditService {
      */
     public PageListVo<MarkerPunctuateVo> listAllPunctuatePage(PageSearchDto pageSearchDto) {
         Page<MarkerPunctuate> punctuatePage = markerPunctuateMapper.selectPage(pageSearchDto.getPageEntity(), Wrappers.lambdaQuery());
-        return new PageListVo<MarkerPunctuateVo>()
+        PageListVo<MarkerPunctuateVo> page = new PageListVo<MarkerPunctuateVo>()
                 .setRecord(punctuatePage.getRecords()
                         .parallelStream()
                         .map(MarkerPunctuateDto::new)
@@ -144,6 +147,10 @@ public class PunctuateAuditService {
                         .collect(Collectors.toList()))
                 .setSize(punctuatePage.getSize())
                 .setTotal(punctuatePage.getTotal());
+        List<MarkerPunctuateVo> result = page.getRecord();
+        UserAppenderService.appendUser(result, MarkerPunctuateVo::getUpdaterId, MarkerPunctuateVo::getUpdaterId, MarkerPunctuateVo::setUpdater);
+        page.setRecord(result);
+        return page;
     }
 
     /**

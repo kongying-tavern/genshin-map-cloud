@@ -62,11 +62,13 @@ public class ItemTypeService {
                     .in(ItemType::getParentId,
                             typeIdList != null && typeIdList.size() > 0 ? typeIdList : Collections.singletonList(-1L)));
         }
+        List<ItemTypeVo> result = itemTypePage.getRecords().stream()
+                .map(ItemTypeDto::new).map(ItemTypeDto::getVo)
+                .sorted(Comparator.comparing(ItemTypeVo::getSortIndex).reversed())
+                .collect(Collectors.toList());
+        UserAppenderService.appendUser(result, ItemTypeVo::getUpdaterId, ItemTypeVo::getUpdaterId, ItemTypeVo::setUpdater);
         return new PageListVo<ItemTypeVo>()
-                .setRecord(itemTypePage.getRecords().stream()
-                        .map(ItemTypeDto::new).map(ItemTypeDto::getVo)
-                        .sorted(Comparator.comparing(ItemTypeVo::getSortIndex).reversed())
-                        .collect(Collectors.toList()))
+                .setRecord(result)
                 .setSize(itemTypePage.getSize())
                 .setTotal(itemTypePage.getTotal());
     }
@@ -79,12 +81,14 @@ public class ItemTypeService {
      */
     @Cacheable("listAllItemType")
     public List<ItemTypeVo> listAllItemType(List<Integer> hiddenFlagList) {
-        return itemTypeMapper.selectList(Wrappers.<ItemType>lambdaQuery()
+        List<ItemTypeVo> result = itemTypeMapper.selectList(Wrappers.<ItemType>lambdaQuery()
                         .in(!hiddenFlagList.isEmpty(), ItemType::getHiddenFlag, hiddenFlagList))
                 .stream()
                 .map(ItemTypeDto::new)
                 .map(ItemTypeDto::getVo)
                 .collect(Collectors.toList());
+        UserAppenderService.appendUser(result, ItemTypeVo::getUpdaterId, ItemTypeVo::getUpdaterId, ItemTypeVo::setUpdater);
+        return result;
     }
 
     /**

@@ -118,7 +118,9 @@ public class MarkerService {
     //此处是两个方法的缝合，不需要加缓存
     public List<MarkerVo> searchMarker(MarkerSearchVo markerSearchVo) {
         List<Long> markerIdList = searchMarkerId(markerSearchVo);
-        return listMarkerById(markerIdList, markerSearchVo.getHiddenFlagList());
+        List<MarkerVo> result = listMarkerById(markerIdList, markerSearchVo.getHiddenFlagList());
+        UserAppenderService.appendUser(result, MarkerVo::getUpdaterId, MarkerVo::getUpdaterId, MarkerVo::setUpdater);
+        return result;
     }
 
 
@@ -150,7 +152,7 @@ public class MarkerService {
                         })
         );
         //构建返回
-        return markerMapper.selectList(Wrappers.<Marker>lambdaQuery().in(Marker::getId, markerIdList).in(!hiddenFlagList.isEmpty(), Marker::getHiddenFlag, hiddenFlagList))
+        List<MarkerVo> result = markerMapper.selectList(Wrappers.<Marker>lambdaQuery().in(Marker::getId, markerIdList).in(!hiddenFlagList.isEmpty(), Marker::getHiddenFlag, hiddenFlagList))
                 .parallelStream()
                 .map(MarkerDto::new)
                 .map(dto -> dto
@@ -158,7 +160,7 @@ public class MarkerService {
                                 itemLinkMap.get(dto.getId()).stream()
                                         .map(MarkerItemLinkDto::new)
                                         .map(MarkerItemLinkDto::getVo)
-                                        .map(vo->{
+                                        .map(vo -> {
                                             Long itemId = vo.getItemId();
                                             if (itemMap.containsKey(itemId))
                                                 return vo.withIconTag(itemMap.get(itemId).getIconTag());
@@ -170,6 +172,8 @@ public class MarkerService {
                         ))
                 .map(MarkerDto::getVo)
                 .collect(Collectors.toList());
+        UserAppenderService.appendUser(result, MarkerVo::getUpdaterId, MarkerVo::getUpdaterId, MarkerVo::setUpdater);
+        return result;
     }
 
 
@@ -181,7 +185,11 @@ public class MarkerService {
      * @return 点位完整信息的前端封装的分页记录
      */
     public PageListVo<MarkerVo> listMarkerPage(PageSearchDto pageSearchDto,List<Integer> hiddenFlagList) {
-        return markerDao.listMarkerPage(pageSearchDto,hiddenFlagList);
+        PageListVo<MarkerVo> page = markerDao.listMarkerPage(pageSearchDto, hiddenFlagList);
+        List<MarkerVo> result = page.getRecord();
+        UserAppenderService.appendUser(result, MarkerVo::getUpdaterId, MarkerVo::getUpdaterId, MarkerVo::setUpdater);
+        page.setRecord(result);
+        return page;
     }
 
     /**

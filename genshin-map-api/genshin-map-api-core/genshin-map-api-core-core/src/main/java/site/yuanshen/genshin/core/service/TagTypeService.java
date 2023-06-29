@@ -59,13 +59,17 @@ public class TagTypeService {
                                 Optional.ofNullable(searchDto.getTypeIdList())
                                         .orElse(Collections.singletonList(-1L)))
         );
-        return new PageListVo<TagTypeVo>()
+        PageListVo<TagTypeVo> page = new PageListVo<TagTypeVo>()
                 .setRecord(tagTypePage.getRecords().stream()
                         .map(TagTypeDto::new)
                         .map(TagTypeDto::getVo)
                         .collect(Collectors.toList()))
                 .setSize(tagTypePage.getSize())
                 .setTotal(tagTypePage.getTotal());
+        List<TagTypeVo> result = page.getRecord();
+        UserAppenderService.appendUser(result, TagTypeVo::getUpdaterId, TagTypeVo::getUpdaterId, TagTypeVo::setUpdater);
+        page.setRecord(result);
+        return page;
     }
 
     /**

@@ -84,13 +84,17 @@ public class TagService {
         List<Long> iconIdList = tagDtoList.stream().map(TagDto::getId).distinct().collect(Collectors.toList());
         Map<Long, String> urlMap = iconMapper.selectList(Wrappers.<Icon>lambdaQuery().in(Icon::getId, iconIdList))
                 .stream().collect(Collectors.toMap(Icon::getId, Icon::getUrl));
-        return new PageListVo<TagVo>()
+        PageListVo<TagVo> page = new PageListVo<TagVo>()
                 .setRecord(tagDtoList.stream().map(dto ->
                                 dto.getVo().withTypeIdList(typeMap.getOrDefault(dto.getTag(), new ArrayList<>()))
                                         .withUrl(urlMap.getOrDefault(dto.getId(), "")))
                         .collect(Collectors.toList()))
                 .setTotal(tagPage.getTotal())
                 .setSize(tagPage.getSize());
+        List<TagVo> result = page.getRecord();
+        UserAppenderService.appendUser(result, TagVo::getUpdaterId, TagVo::getUpdaterId, TagVo::setUpdater);
+        page.setRecord(result);
+        return page;
     }
 
     /**
@@ -108,10 +112,12 @@ public class TagService {
         Tag tag = tagMapper.selectOne(Wrappers.<Tag>lambdaQuery()
                 .eq(Tag::getTag, name));
         Icon icon = iconMapper.selectOne(Wrappers.<Icon>lambdaQuery().eq(Icon::getId, tag.getId()));
-        return new TagDto(tag)
+        TagVo result = new TagDto(tag)
                 .getVo()
                 .withTypeIdList(typeIdList)
                 .withUrl(icon.getUrl());
+        result = UserAppenderService.appendUser(TagVo.class, result, TagVo::getUpdaterId, TagVo::getUpdaterId, TagVo::setUpdater);
+        return result;
     }
 
     /**

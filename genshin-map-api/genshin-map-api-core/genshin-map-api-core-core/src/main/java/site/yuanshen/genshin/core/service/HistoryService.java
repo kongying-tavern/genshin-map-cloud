@@ -14,6 +14,7 @@ import site.yuanshen.data.vo.HistoryVo;
 import site.yuanshen.data.vo.helper.PageListVo;
 
 import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,11 +29,13 @@ public class HistoryService extends ServiceImpl<HistoryMapper, History> {
                         .eq(ObjectUtil.isNotNull(historySearchDto.getType()),History::getType, historySearchDto.getType())
                         .in(!historySearchDto.getId().isEmpty(),History::getTId, historySearchDto.getId()));
 
+        List<HistoryVo> result = historyPage.getRecords().stream()
+                .map(HistoryDto::new)
+                .map(HistoryDto::getVo)
+                .sorted(Comparator.comparing(HistoryVo::getUpdateTime)).collect(Collectors.toList());
+        UserAppenderService.appendUser(result, HistoryVo::getUpdaterId, HistoryVo::getUpdaterId, HistoryVo::setUpdater);
         return new PageListVo<HistoryVo>()
-                .setRecord(historyPage.getRecords().stream()
-                        .map(HistoryDto::new)
-                        .map(HistoryDto::getVo)
-                        .sorted(Comparator.comparing(HistoryVo::getUpdateTime)).collect(Collectors.toList()))
+                .setRecord(result)
                 .setTotal(historyPage.getTotal())
                 .setSize(historyPage.getSize());
     }

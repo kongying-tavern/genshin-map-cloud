@@ -5,6 +5,7 @@ import lombok.*;
 import com.alibaba.fastjson2.annotation.JSONField;
 import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.entity.Tag;
+import site.yuanshen.data.vo.SysUserVo;
 import site.yuanshen.data.vo.TagVo;
 import java.time.LocalDateTime;
 
@@ -35,6 +36,11 @@ public class TagDto {
      * 更新人
      */
     private Long updaterId;
+
+    /**
+     * 更新人信息
+     */
+    private SysUserVo updater;
 
     /**
      * 更新时间

@@ -46,12 +46,14 @@ public class IconTypeService {
                         .in(IconType::getParent,
                                 Optional.ofNullable(searchDto.getTypeIdList())
                                         .orElse(Collections.singletonList(-1L))));
+        List<IconTypeVo> result = iconTypePage
+                .getRecords().stream()
+                .map(IconTypeDto::new)
+                .map(IconTypeDto::getVo)
+                .collect(Collectors.toList());
+        UserAppenderService.appendUser(result, IconTypeVo::getUpdaterId, IconTypeVo::getUpdaterId, IconTypeVo::setUpdater);
         return new PageListVo<IconTypeVo>()
-                .setRecord(iconTypePage
-                        .getRecords().stream()
-                        .map(IconTypeDto::new)
-                        .map(IconTypeDto::getVo)
-                        .collect(Collectors.toList()))
+                .setRecord(result)
                 .setSize(iconTypePage.getSize())
                 .setTotal(iconTypePage.getTotal());
     }

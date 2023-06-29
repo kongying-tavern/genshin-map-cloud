@@ -39,7 +39,7 @@ public class ItemVo {
     /**
      * 更新人信息
      */
-    @Schema(title = "更新人")
+    @Schema(title = "更新人信息")
     private SysUserVo updater;
 
     /**

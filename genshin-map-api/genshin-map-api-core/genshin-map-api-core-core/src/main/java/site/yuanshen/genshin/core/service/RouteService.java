@@ -42,10 +42,14 @@ public class RouteService {
     public PageListVo<RouteVo> listRoutePage(PageSearchDto pageSearchDto, List<Integer> hiddenFlagList) {
         Page<Route> routePage = routeMapper.selectPage(pageSearchDto.getPageEntity(), Wrappers.<Route>lambdaQuery().in(!hiddenFlagList.isEmpty(), Route::getHiddenFlag, hiddenFlagList)
                 .orderByAsc(Route::getId));
-        return new PageListVo<RouteVo>()
+        PageListVo<RouteVo> page = new PageListVo<RouteVo>()
                 .setRecord(routePage.getRecords().parallelStream().map(RouteDto::new).map(RouteDto::getVo).collect(Collectors.toList()))
                 .setSize(routePage.getSize())
                 .setTotal(routePage.getTotal());
+        List<RouteVo> result = page.getRecord();
+        UserAppenderService.appendUser(result, RouteVo::getUpdaterId, RouteVo::getUpdaterId, RouteVo::setUpdater);
+        page.setRecord(result);
+        return page;
     }
 
     /**
@@ -65,7 +69,7 @@ public class RouteService {
                         .like(StrUtil.isNotBlank(namePart), Route::getName, namePart)
                         .like(StrUtil.isNotBlank(nicknamePart), Route::getCreatorNickname, nicknamePart)
                         .eq(StrUtil.isNotBlank(creatorId), BaseEntity::getCreatorId, creatorId));
-        return new PageListVo<RouteVo>()
+        PageListVo<RouteVo> page = new PageListVo<RouteVo>()
                 .setRecord(routePage.getRecords().parallelStream()
                         .filter(route -> hiddenFlagList.contains(route.getHiddenFlag()))
                         .map(RouteDto::new)
@@ -73,6 +77,10 @@ public class RouteService {
                         .collect(Collectors.toList()))
                 .setSize(routePage.getSize())
                 .setTotal(routePage.getTotal());
+        List<RouteVo> result = page.getRecord();
+        UserAppenderService.appendUser(result, RouteVo::getUpdaterId, RouteVo::getUpdaterId, RouteVo::setUpdater);
+        page.setRecord(result);
+        return page;
     }
 
     /**
@@ -83,10 +91,12 @@ public class RouteService {
      * @return 路线信息分页封装
      */
     public List<RouteDto> listRouteById(List<Long> idList, List<Integer> hiddenFlagList) {
-        return routeMapper.selectBatchIds(idList).parallelStream()
+        List<RouteDto> result = routeMapper.selectBatchIds(idList).parallelStream()
                 .filter(route -> hiddenFlagList.contains(route.getHiddenFlag()))
                 .map(RouteDto::new)
                 .collect(Collectors.toList());
+        UserAppenderService.appendUser(result, RouteDto::getUpdaterId, RouteDto::getUpdaterId, RouteDto::setUpdater);
+        return result;
     }
 
     /**
