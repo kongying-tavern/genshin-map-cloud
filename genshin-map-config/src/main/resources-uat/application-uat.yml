@@ -4,7 +4,7 @@ spring:
       - nacos-uat
       - datasource-uat
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    driver-class-name: org.postgresql.Driver
     type: com.alibaba.druid.pool.DruidDataSource
     datasource:
       druid:
