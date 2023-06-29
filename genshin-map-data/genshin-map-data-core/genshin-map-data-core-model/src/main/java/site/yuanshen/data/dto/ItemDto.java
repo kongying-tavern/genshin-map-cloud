@@ -6,6 +6,8 @@ import com.alibaba.fastjson2.annotation.JSONField;
 import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.entity.Item;
 import site.yuanshen.data.vo.ItemVo;
+import site.yuanshen.data.vo.SysUserVo;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -36,6 +38,11 @@ public class ItemDto {
      * 更新人
      */
     private Long updaterId;
+
+    /**
+     * 更新人信息
+     */
+    private SysUserVo updater;
 
     /**
      * 更新时间

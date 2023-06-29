@@ -61,7 +61,7 @@ public class ItemService {
                             return typeList;
                         }));
         //取得实体类并转化为DTO，过程之中写入分类信息
-        return itemMapper.selectList(Wrappers.<Item>lambdaQuery()
+        List<ItemDto> result = itemMapper.selectList(Wrappers.<Item>lambdaQuery()
                         .in(!hiddenFlagList.isEmpty(), Item::getHiddenFlag, hiddenFlagList)
                         .in(Item::getId, itemIdList))
                 .parallelStream()
@@ -70,6 +70,8 @@ public class ItemService {
                                 .withTypeIdList(typeMap.getOrDefault(item.getId(), new ArrayList<>())))
                 .sorted(Comparator.comparing(ItemDto::getSortIndex).reversed())
                 .collect(Collectors.toList());
+        UserAppenderService.appendUser(result, ItemDto::getUpdaterId, ItemDto::getUpdaterId, ItemDto::setUpdater);
+        return result;
     }
 
     /**
@@ -123,13 +125,14 @@ public class ItemService {
                     );
         }
 
-
+        List<ItemVo> result = itemPage.getRecords().stream()
+                .map(ItemDto::new)
+                .map(dto -> dto.withTypeIdList((itemToTypeMap.get(dto.getId()))))
+                .map(ItemDto::getVo)
+                .sorted(Comparator.comparing(ItemVo::getSortIndex).thenComparing(ItemVo::getId).reversed()).collect(Collectors.toList());
+        UserAppenderService.appendUser(result, ItemVo::getUpdaterId, ItemVo::getUpdaterId, ItemVo::setUpdater);
         return new PageListVo<ItemVo>()
-                .setRecord(itemPage.getRecords().stream()
-                        .map(ItemDto::new)
-                        .map(dto -> dto.withTypeIdList((itemToTypeMap.get(dto.getId()))))
-                        .map(ItemDto::getVo)
-                        .sorted(Comparator.comparing(ItemVo::getSortIndex).thenComparing(ItemVo::getId).reversed()).collect(Collectors.toList()))
+                .setRecord(result)
                 .setTotal(itemPage.getTotal())
                 .setSize(itemPage.getSize());
     }

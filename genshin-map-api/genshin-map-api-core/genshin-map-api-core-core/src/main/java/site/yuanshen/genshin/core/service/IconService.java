@@ -70,10 +70,12 @@ public class IconService {
                             return typeList;
                         }));
         //写入分类信息
+        List<IconVo> result = iconDtoList.stream().map(dto ->
+                        dto.getVo().withTypeIdList(typeMap.getOrDefault(dto.getId(), new ArrayList<>())))
+                .collect(Collectors.toList());
+        UserAppenderService.appendUser(result, IconVo::getUpdaterId, IconVo::getUpdaterId, IconVo::setUpdater);
         return new PageListVo<IconVo>()
-                .setRecord(iconDtoList.stream().map(dto ->
-                                dto.getVo().withTypeIdList(typeMap.getOrDefault(dto.getId(), new ArrayList<>())))
-                        .collect(Collectors.toList()))
+                .setRecord(result)
                 .setSize(iconPage.getSize())
                 .setTotal(iconPage.getTotal());
     }
@@ -90,10 +92,12 @@ public class IconService {
         List<Long> typeIdList = iconTypeLinkMapper.selectList(Wrappers.<IconTypeLink>lambdaQuery()
                         .eq(IconTypeLink::getId, iconId)).stream()
                 .map(IconTypeLink::getTypeId).collect(Collectors.toList());
-        return new IconDto(
+        IconDto result = new IconDto(
                 iconMapper.selectOne(Wrappers.<Icon>lambdaQuery()
                         .eq(Icon::getId, iconId))
-        ).getVo().withTypeIdList(typeIdList);
+        );
+        result = UserAppenderService.appendUser(IconDto.class, result, IconDto::getUpdaterId, IconDto::getUpdaterId, IconDto::setUpdater);
+        return result == null ? null : result.getVo().withTypeIdList(typeIdList);
     }
 
     /**

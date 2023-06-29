@@ -37,6 +37,12 @@ public class ItemVo {
     private Long updaterId;
 
     /**
+     * 更新人信息
+     */
+    @Schema(title = "更新人")
+    private SysUserVo updater;
+
+    /**
      * 更新时间
      */
     @Schema(title = "更新时间")

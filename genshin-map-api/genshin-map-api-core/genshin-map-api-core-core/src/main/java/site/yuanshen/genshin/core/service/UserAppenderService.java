@@ -6,6 +6,7 @@ import site.yuanshen.data.entity.SysUser;
 import site.yuanshen.data.mapper.SysUserMapper;
 import site.yuanshen.data.vo.SysUserVo;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -57,6 +58,26 @@ public class UserAppenderService {
                 setterTarget.accept(item, user);
             } catch (Exception e) {
                 // nothing to do
+            }
+        }
+    }
+
+    public static <T> T appendUser(
+            Class<T> clazz,
+            T item,
+            Function<T, Long> getterSrc,
+            Function<T, Long> getterTarget,
+            BiConsumer<T, SysUserVo> setterTarget
+    ) {
+        List<T> list = Arrays.asList(item);
+        appendUser(list, getterSrc, getterTarget, setterTarget);
+        if(list.size() > 0) {
+            return list.get(0);
+        } else {
+            try {
+                return clazz.getDeclaredConstructor().newInstance();
+            } catch (Exception e) {
+                return null;
             }
         }
     }
