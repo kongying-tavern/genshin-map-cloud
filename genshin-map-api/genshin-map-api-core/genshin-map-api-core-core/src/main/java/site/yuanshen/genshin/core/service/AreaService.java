@@ -44,7 +44,7 @@ public class AreaService {
      * @param areaSearchVo 地区查询VO
      * @return 地区数据封装列表
      */
-//    @Cacheable(value = "listArea")
+    @Cacheable(value = "listArea")
     public List<AreaDto> listArea(AreaSearchVo areaSearchVo) {
         List<AreaDto> result = new ArrayList<>();
 
