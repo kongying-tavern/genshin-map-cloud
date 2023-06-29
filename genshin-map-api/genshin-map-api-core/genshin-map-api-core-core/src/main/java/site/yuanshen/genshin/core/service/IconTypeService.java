@@ -51,6 +51,7 @@ public class IconTypeService {
                 .map(IconTypeDto::new)
                 .map(IconTypeDto::getVo)
                 .collect(Collectors.toList());
+        UserAppenderService.appendUser(result, IconTypeVo::getCreatorId, IconTypeVo::getCreatorId, IconTypeVo::setCreator);
         UserAppenderService.appendUser(result, IconTypeVo::getUpdaterId, IconTypeVo::getUpdaterId, IconTypeVo::setUpdater);
         return new PageListVo<IconTypeVo>()
                 .setRecord(result)

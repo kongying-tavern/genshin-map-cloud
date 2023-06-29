@@ -66,6 +66,7 @@ public class ItemTypeService {
                 .map(ItemTypeDto::new).map(ItemTypeDto::getVo)
                 .sorted(Comparator.comparing(ItemTypeVo::getSortIndex).reversed())
                 .collect(Collectors.toList());
+        UserAppenderService.appendUser(result, ItemTypeVo::getCreatorId, ItemTypeVo::getCreatorId, ItemTypeVo::setCreator);
         UserAppenderService.appendUser(result, ItemTypeVo::getUpdaterId, ItemTypeVo::getUpdaterId, ItemTypeVo::setUpdater);
         return new PageListVo<ItemTypeVo>()
                 .setRecord(result)
@@ -87,6 +88,7 @@ public class ItemTypeService {
                 .map(ItemTypeDto::new)
                 .map(ItemTypeDto::getVo)
                 .collect(Collectors.toList());
+        UserAppenderService.appendUser(result, ItemTypeVo::getCreatorId, ItemTypeVo::getCreatorId, ItemTypeVo::setCreator);
         UserAppenderService.appendUser(result, ItemTypeVo::getUpdaterId, ItemTypeVo::getUpdaterId, ItemTypeVo::setUpdater);
         return result;
     }

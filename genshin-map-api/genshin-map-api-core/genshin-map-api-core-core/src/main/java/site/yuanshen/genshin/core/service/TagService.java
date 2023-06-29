@@ -92,6 +92,7 @@ public class TagService {
                 .setTotal(tagPage.getTotal())
                 .setSize(tagPage.getSize());
         List<TagVo> result = page.getRecord();
+        UserAppenderService.appendUser(result, TagVo::getCreatorId, TagVo::getCreatorId, TagVo::setCreator);
         UserAppenderService.appendUser(result, TagVo::getUpdaterId, TagVo::getUpdaterId, TagVo::setUpdater);
         page.setRecord(result);
         return page;
@@ -116,6 +117,7 @@ public class TagService {
                 .getVo()
                 .withTypeIdList(typeIdList)
                 .withUrl(icon.getUrl());
+        result = UserAppenderService.appendUser(TagVo.class, result, TagVo::getCreatorId, TagVo::getCreatorId, TagVo::setCreator);
         result = UserAppenderService.appendUser(TagVo.class, result, TagVo::getUpdaterId, TagVo::getUpdaterId, TagVo::setUpdater);
         return result;
     }

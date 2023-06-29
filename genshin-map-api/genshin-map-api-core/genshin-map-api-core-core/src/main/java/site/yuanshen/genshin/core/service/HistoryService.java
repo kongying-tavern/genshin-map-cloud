@@ -33,6 +33,7 @@ public class HistoryService extends ServiceImpl<HistoryMapper, History> {
                 .map(HistoryDto::new)
                 .map(HistoryDto::getVo)
                 .sorted(Comparator.comparing(HistoryVo::getUpdateTime)).collect(Collectors.toList());
+        UserAppenderService.appendUser(result, HistoryVo::getCreatorId, HistoryVo::getCreatorId, HistoryVo::setCreator);
         UserAppenderService.appendUser(result, HistoryVo::getUpdaterId, HistoryVo::getUpdaterId, HistoryVo::setUpdater);
         return new PageListVo<HistoryVo>()
                 .setRecord(result)

@@ -39,6 +39,21 @@ public class RouteDto {
     private Long id;
 
     /**
+     * 创建人
+     */
+    private Long creatorId;
+
+    /**
+     * 创建人人信息
+     */
+    private SysUserVo creator;
+
+    /**
+     * 创建时间
+     */
+    private LocalDateTime createTime;
+
+    /**
      * 更新人
      */
     private Long updaterId;

@@ -73,6 +73,7 @@ public class IconService {
         List<IconVo> result = iconDtoList.stream().map(dto ->
                         dto.getVo().withTypeIdList(typeMap.getOrDefault(dto.getId(), new ArrayList<>())))
                 .collect(Collectors.toList());
+        UserAppenderService.appendUser(result, IconVo::getCreatorId, IconVo::getCreatorId, IconVo::setCreator);
         UserAppenderService.appendUser(result, IconVo::getUpdaterId, IconVo::getUpdaterId, IconVo::setUpdater);
         return new PageListVo<IconVo>()
                 .setRecord(result)
@@ -96,6 +97,7 @@ public class IconService {
                 iconMapper.selectOne(Wrappers.<Icon>lambdaQuery()
                         .eq(Icon::getId, iconId))
         );
+        result = UserAppenderService.appendUser(IconDto.class, result, IconDto::getCreatorId, IconDto::getCreatorId, IconDto::setCreator);
         result = UserAppenderService.appendUser(IconDto.class, result, IconDto::getUpdaterId, IconDto::getUpdaterId, IconDto::setUpdater);
         return result == null ? null : result.getVo().withTypeIdList(typeIdList);
     }

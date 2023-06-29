@@ -67,6 +67,7 @@ public class TagTypeService {
                 .setSize(tagTypePage.getSize())
                 .setTotal(tagTypePage.getTotal());
         List<TagTypeVo> result = page.getRecord();
+        UserAppenderService.appendUser(result, TagTypeVo::getCreatorId, TagTypeVo::getCreatorId, TagTypeVo::setCreator);
         UserAppenderService.appendUser(result, TagTypeVo::getUpdaterId, TagTypeVo::getUpdaterId, TagTypeVo::setUpdater);
         page.setRecord(result);
         return page;

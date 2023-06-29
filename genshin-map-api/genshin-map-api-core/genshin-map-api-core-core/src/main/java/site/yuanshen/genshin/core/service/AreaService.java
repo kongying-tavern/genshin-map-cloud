@@ -56,6 +56,7 @@ public class AreaService {
                     .stream().map(AreaDto::new)
                     .sorted(Comparator.comparing(AreaDto::getSortIndex).reversed())
                     .collect(Collectors.toList());
+            UserAppenderService.appendUser(result, AreaDto::getCreatorId, AreaDto::getCreatorId, AreaDto::setCreator);
             UserAppenderService.appendUser(result, AreaDto::getUpdaterId, AreaDto::getUpdaterId, AreaDto::setUpdater);
             return result;
         }
@@ -69,6 +70,7 @@ public class AreaService {
             nowAreaIdList = areaList.parallelStream().map(Area::getId).collect(Collectors.toList());
             result.addAll(areaList.stream().map(AreaDto::new).collect(Collectors.toList()));
         }
+        UserAppenderService.appendUser(result, AreaDto::getCreatorId, AreaDto::getCreatorId, AreaDto::setCreator);
         UserAppenderService.appendUser(result, AreaDto::getUpdaterId, AreaDto::getUpdaterId, AreaDto::setUpdater);
         return result.stream().sorted(Comparator.comparing(AreaDto::getSortIndex).reversed()).collect(Collectors.toList());
     }
