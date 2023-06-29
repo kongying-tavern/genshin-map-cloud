@@ -100,7 +100,7 @@ public class MarkerService {
             List<Long> result = new ArrayList<>();
             itemIdList.parallelStream().forEach(itemId ->
                     result.addAll(markerPunctuateMapper.selectList(Wrappers.<MarkerPunctuate>lambdaQuery()
-                                    .apply("json_contains(item_list,{0})", "\"" + itemId.toString() + "\"")
+                                    .apply(String.format("(item_list::jsonb) @@ '$[*].itemId == %d'", itemId))
                                     .select(MarkerPunctuate::getPunctuateId))
                             .stream()
                             .map(MarkerPunctuate::getPunctuateId).collect(Collectors.toList()))

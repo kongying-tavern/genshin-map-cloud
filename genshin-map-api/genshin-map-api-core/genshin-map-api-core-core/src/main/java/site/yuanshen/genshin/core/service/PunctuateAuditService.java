@@ -92,7 +92,7 @@ public class PunctuateAuditService {
                 result.addAll(markerPunctuateMapper.selectList(Wrappers.<MarkerPunctuate>lambdaQuery()
                                 .in(isAuthor, MarkerPunctuate::getAuthor, searchVo.getAuthorList())
                                 //需要注意库中究竟存了什么
-                                .apply("json_contains(item_list,{0})", "{\"itemId\": " + itemId + "}")
+                                .apply(String.format("(item_list::jsonb) @@ '$[*].itemId == %d'", itemId))
                                 .select(MarkerPunctuate::getPunctuateId))
                         .stream()
                         .map(MarkerPunctuate::getPunctuateId).collect(Collectors.toList()))
