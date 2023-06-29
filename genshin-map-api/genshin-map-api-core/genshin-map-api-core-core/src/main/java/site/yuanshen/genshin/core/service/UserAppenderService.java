@@ -15,6 +15,13 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class UserAppenderService {
+    /**
+     * 向列表附加用户数据
+     * @param list         列表
+     * @param getterSrc    从原列表获取用户ID的 get 方法
+     * @param getterTarget 从目标列表获取用户ID的 get 方法
+     * @param setterTarget 向目标列表放置用户数据的 set 方法
+     */
     public static <T> void appendUser(
             List<T> list,
             Function<T, Long> getterSrc,
@@ -62,6 +69,14 @@ public class UserAppenderService {
         }
     }
 
+    /**
+     * 向对象附加用户数据
+     * @param clazz        对象对应的类
+     * @param item         对象数据
+     * @param getterSrc    从原列表获取用户ID的 get 方法
+     * @param getterTarget 从目标列表获取用户ID的 get 方法
+     * @param setterTarget 向目标列表放置用户数据的 set 方法
+     */
     public static <T> T appendUser(
             Class<T> clazz,
             T item,
