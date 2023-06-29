@@ -38,25 +38,7 @@ public class ScoreDataService {
     }
 
     private void packDataList(List<? extends ScoreDataPackVo<ScoreDataPunctuateVo>> list) {
-        final List<Long> userIds = list.stream()
-                .filter(Objects::nonNull)
-                .map(ScoreDataPackVo::getUserId)
-                .collect(Collectors.toList());
-        final List<SysUser> userList = sysUserMapper.selectUserWithDelete(userIds);
-        final Map<Long, SysUserVo> userVos = userList.stream()
-                .filter(Objects::nonNull)
-                .map(o -> (new SysUserDto(o)).getVo())
-                .collect(Collectors.toMap(
-                        SysUserVo::getId,
-                        v -> v,
-                        (o, n) -> n
-                ));
-
-        for(ScoreDataPackVo<ScoreDataPunctuateVo> item : list) {
-            final Long userId = item.getUserId();
-            final SysUserVo user = userVos.getOrDefault(userId, new SysUserVo());
-            item.setUser(user);
-        }
+        UserAppenderService.appendUser(list, ScoreDataPackVo::getUserId, ScoreDataPackVo::getUserId, ScoreDataPackVo::setUser);
     }
 
     private List<ScoreDataPackVo<ScoreDataPunctuateVo>> getDataPunctuate(ScoreSpanConfigDto span) {
