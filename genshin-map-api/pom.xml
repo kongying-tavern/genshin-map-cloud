@@ -36,6 +36,11 @@
             <artifactId>spring-boot-starter-log4j2</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.lmax</groupId>
+            <artifactId>disruptor</artifactId>
+        </dependency>
+
         <!-- 内部依赖 -->
         <dependency>
             <groupId>site.yuanshen</groupId>
@@ -49,7 +54,10 @@
             <version>${project.version}</version>
         </dependency>
 
-
+        <dependency>
+            <groupId>com.yomahub</groupId>
+            <artifactId>liteflow-spring-boot-starter</artifactId>
+        </dependency>
 
     </dependencies>
 

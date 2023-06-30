@@ -91,20 +91,20 @@
 
     </Appenders>
     <Loggers>
-        <Logger name="org.apache.catalina.startup.DigesterFactory" level="error"/>
-        <Logger name="org.apache.catalina.util.LifecycleBase" level="error"/>
-        <Logger name="org.apache.coyote.http11.Http11NioProtocol" level="warn"/>
-        <Logger name="org.apache.sshd.common.util.SecurityUtils" level="warn"/>
-        <Logger name="org.apache.tomcat.util.net.NioSelectorPool" level="warn"/>
-        <Logger name="org.eclipse.jetty.util.component.AbstractLifeCycle" level="error"/>
-        <Logger name="org.hibernate.validator.internal.util.Version" level="warn"/>
-        <Logger name="org.springframework.boot.actuate.endpoint.jmx" level="warn"/>
-        <Root level="info">
+        <AsyncLogger name="org.apache.catalina.startup.DigesterFactory" level="error" additivity="false"/>
+        <AsyncLogger name="org.apache.catalina.util.LifecycleBase" level="error" additivity="false"/>
+        <AsyncLogger name="org.apache.coyote.http11.Http11NioProtocol" level="warn" additivity="false"/>
+        <AsyncLogger name="org.apache.sshd.common.util.SecurityUtils" level="warn" additivity="false"/>
+        <AsyncLogger name="org.apache.tomcat.util.net.NioSelectorPool" level="warn" additivity="false"/>
+        <AsyncLogger name="org.eclipse.jetty.util.component.AbstractLifeCycle" level="error" additivity="false"/>
+        <AsyncLogger name="org.hibernate.validator.internal.util.Version" level="warn" additivity="false"/>
+        <AsyncLogger name="org.springframework.boot.actuate.endpoint.jmx" level="warn" additivity="false"/>
+        <AsyncRoot level="info" includeLocation="true">
             <AppenderRef ref="Console"/>
             <!--            <AppenderRef ref="Filelog"/>-->
             <!--            <AppenderRef ref="colorFilelog"/>-->
             <AppenderRef ref="ErrorFile"/>
             <AppenderRef ref="DebugFile"/>
-        </Root>
+        </AsyncRoot>
     </Loggers>
 </Configuration>

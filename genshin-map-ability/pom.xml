@@ -35,6 +35,11 @@
             <artifactId>spring-boot-starter-log4j2</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.lmax</groupId>
+            <artifactId>disruptor</artifactId>
+        </dependency>
+
         <!--本地依赖-->
         <dependency>
             <groupId>site.yuanshen</groupId>
