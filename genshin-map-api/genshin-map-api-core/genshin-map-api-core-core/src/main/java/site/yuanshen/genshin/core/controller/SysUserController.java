@@ -50,7 +50,7 @@ public class SysUserController {
                                     @RequestHeader("userId") Long headerUserId,
                                     @Parameter(hidden = true)
                                         @RequestHeader("Authorities") String rolesString) {
-        if (!userId.equals(headerUserId) || !checkRole(rolesString, RoleEnum.MAP_MANAGER))
+        if (!userId.equals(headerUserId) && !checkRole(rolesString, RoleEnum.MAP_MANAGER))
             throw new RuntimeException("权限不足，无法查看其他用户信息");
         return RUtils.create(userService.getUserInfo(userId));
     }
@@ -69,7 +69,7 @@ public class SysUserController {
                                  @RequestHeader("userId") Long headerUserId,
                                  @Parameter(hidden = true)
                                      @RequestHeader("Authorities") String rolesString) {
-        if (!ObjUtil.equals(headerUserId, updateVo.getUserId()) || !checkRole(rolesString, RoleEnum.ADMIN))
+        if (!ObjUtil.equals(headerUserId, updateVo.getUserId()) && !checkRole(rolesString, RoleEnum.ADMIN))
             throw new RuntimeException("权限不足，无法更新其他用户信息");
         return RUtils.create(userService.updateUser(updateVo));
     }
