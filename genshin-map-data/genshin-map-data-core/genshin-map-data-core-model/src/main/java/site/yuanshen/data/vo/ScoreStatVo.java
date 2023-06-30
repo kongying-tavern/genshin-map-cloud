@@ -43,7 +43,7 @@ public class ScoreStatVo {
      * 创建人信息
      */
     @Schema(title = "创建人信息")
-    private SysUserVo creator;
+    private SysUserSmallVo creator;
 
     /**
      * 创建时间
@@ -61,7 +61,7 @@ public class ScoreStatVo {
      * 更新人信息
      */
     @Schema(title = "更新人信息")
-    private SysUserVo updater;
+    private SysUserSmallVo updater;
 
     /**
      * 更新时间

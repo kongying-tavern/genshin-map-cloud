@@ -44,7 +44,7 @@ public class RouteVo {
      * 创建人信息
      */
     @Schema(title = "创建人信息")
-    private SysUserVo creator;
+    private SysUserSmallVo creator;
 
     /**
      * 创建时间
@@ -62,7 +62,7 @@ public class RouteVo {
      * 更新人信息
      */
     @Schema(title = "更新人信息")
-    private SysUserVo updater;
+    private SysUserSmallVo updater;
 
     /**
      * 更新时间

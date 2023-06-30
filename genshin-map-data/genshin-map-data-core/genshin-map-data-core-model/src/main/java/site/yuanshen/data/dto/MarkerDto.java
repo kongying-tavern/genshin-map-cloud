@@ -7,6 +7,7 @@ import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.entity.Marker;
 import site.yuanshen.data.vo.MarkerItemLinkVo;
 import site.yuanshen.data.vo.MarkerVo;
+import site.yuanshen.data.vo.SysUserSmallVo;
 import site.yuanshen.data.vo.SysUserVo;
 
 import java.time.LocalDateTime;
@@ -44,7 +45,7 @@ public class MarkerDto {
     /**
      * 创建人人信息
      */
-    private SysUserVo creator;
+    private SysUserSmallVo creator;
 
     /**
      * 创建时间
@@ -59,7 +60,7 @@ public class MarkerDto {
     /**
      * 更新人信息
      */
-    private SysUserVo updater;
+    private SysUserSmallVo updater;
 
     /**
      * 更新时间

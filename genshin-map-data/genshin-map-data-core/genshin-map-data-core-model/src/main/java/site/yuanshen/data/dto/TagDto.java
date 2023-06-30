@@ -5,6 +5,7 @@ import lombok.*;
 import com.alibaba.fastjson2.annotation.JSONField;
 import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.entity.Tag;
+import site.yuanshen.data.vo.SysUserSmallVo;
 import site.yuanshen.data.vo.SysUserVo;
 import site.yuanshen.data.vo.TagVo;
 import java.time.LocalDateTime;
@@ -40,7 +41,7 @@ public class TagDto {
     /**
      * 创建人人信息
      */
-    private SysUserVo creator;
+    private SysUserSmallVo creator;
 
     /**
      * 创建时间
@@ -55,7 +56,7 @@ public class TagDto {
     /**
      * 更新人信息
      */
-    private SysUserVo updater;
+    private SysUserSmallVo updater;
 
     /**
      * 更新时间

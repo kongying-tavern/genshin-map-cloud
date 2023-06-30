@@ -2,7 +2,7 @@ package site.yuanshen.data.vo.adapter.score;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
-import site.yuanshen.data.vo.SysUserVo;
+import site.yuanshen.data.vo.SysUserSmallVo;
 
 @Data
 @Accessors(chain = true)
@@ -13,7 +13,7 @@ public class ScoreDataPackVo<T> {
 
     Long userId = 0L;
 
-    SysUserVo user = new SysUserVo();
+    SysUserSmallVo user = new SysUserSmallVo();
 
     T data;
 }

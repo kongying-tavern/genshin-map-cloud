@@ -11,6 +11,7 @@ import site.yuanshen.data.entity.MarkerPunctuate;
 import site.yuanshen.data.enums.PunctuateMethodEnum;
 import site.yuanshen.data.enums.PunctuateStatusEnum;
 import site.yuanshen.data.vo.MarkerPunctuateVo;
+import site.yuanshen.data.vo.SysUserSmallVo;
 import site.yuanshen.data.vo.SysUserVo;
 
 import java.time.LocalDateTime;
@@ -47,7 +48,7 @@ public class MarkerPunctuateDto {
     /**
      * 创建人人信息
      */
-    private SysUserVo creator;
+    private SysUserSmallVo creator;
 
     /**
      * 创建时间
@@ -62,7 +63,7 @@ public class MarkerPunctuateDto {
     /**
      * 更新人信息
      */
-    private SysUserVo updater;
+    private SysUserSmallVo updater;
 
     /**
      * 更新时间

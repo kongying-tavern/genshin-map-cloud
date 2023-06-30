@@ -1,9 +1,11 @@
 package site.yuanshen.genshin.core.service;
 
+import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.common.web.utils.ApplicationUtils;
 import site.yuanshen.data.dto.SysUserDto;
 import site.yuanshen.data.entity.SysUser;
 import site.yuanshen.data.mapper.SysUserMapper;
+import site.yuanshen.data.vo.SysUserSmallVo;
 import site.yuanshen.data.vo.SysUserVo;
 
 import java.util.Arrays;
@@ -26,7 +28,7 @@ public class UserAppenderService {
             List<T> list,
             Function<T, Long> getterSrc,
             Function<T, Long> getterTarget,
-            BiConsumer<T, SysUserVo> setterTarget
+            BiConsumer<T, SysUserSmallVo> setterTarget
     ) {
         final List<Long> userIds = list.stream()
                 .filter(Objects::nonNull)
@@ -61,8 +63,9 @@ public class UserAppenderService {
                 // nothing to do
             }
             final SysUserVo user = userVos.getOrDefault(userId, new SysUserVo());
+            final SysUserSmallVo userVo = BeanUtils.copy(user, SysUserSmallVo.class);
             try {
-                setterTarget.accept(item, user);
+                setterTarget.accept(item, userVo);
             } catch (Exception e) {
                 // nothing to do
             }
@@ -82,7 +85,7 @@ public class UserAppenderService {
             T item,
             Function<T, Long> getterSrc,
             Function<T, Long> getterTarget,
-            BiConsumer<T, SysUserVo> setterTarget
+            BiConsumer<T, SysUserSmallVo> setterTarget
     ) {
         List<T> list = Arrays.asList(item);
         appendUser(list, getterSrc, getterTarget, setterTarget);

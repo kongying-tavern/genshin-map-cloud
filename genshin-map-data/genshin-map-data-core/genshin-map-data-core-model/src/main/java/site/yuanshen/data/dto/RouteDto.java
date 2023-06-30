@@ -9,6 +9,7 @@ import lombok.With;
 import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.entity.Route;
 import site.yuanshen.data.vo.RouteVo;
+import site.yuanshen.data.vo.SysUserSmallVo;
 import site.yuanshen.data.vo.SysUserVo;
 
 import java.time.LocalDateTime;
@@ -46,7 +47,7 @@ public class RouteDto {
     /**
      * 创建人人信息
      */
-    private SysUserVo creator;
+    private SysUserSmallVo creator;
 
     /**
      * 创建时间
@@ -61,7 +62,7 @@ public class RouteDto {
     /**
      * 更新人信息
      */
-    private SysUserVo updater;
+    private SysUserSmallVo updater;
 
     /**
      * 更新时间
