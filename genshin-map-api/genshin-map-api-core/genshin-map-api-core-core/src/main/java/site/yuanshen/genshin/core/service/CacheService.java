@@ -123,7 +123,7 @@ public class CacheService {
             }
     )
     public void refreshItemBz2() {
-        log.info("refreshMarkerBz2");
+        log.info("refreshItemBz2");
         itemDao.listAllItemBz2Md5();
     }
 
