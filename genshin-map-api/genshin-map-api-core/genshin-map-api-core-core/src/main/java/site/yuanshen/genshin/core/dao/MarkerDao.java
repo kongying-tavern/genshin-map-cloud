@@ -29,15 +29,6 @@ public interface MarkerDao {
     PageListVo<MarkerVo> listMarkerPage(PageSearchDto pageSearchDto, List<Integer> hiddenFlagList);
 
     /**
-     * 按点位ID区间查询所有点位信息
-     *
-     * @param closeLeft  左闭下标
-     * @param openRight  右开下标
-     * @return 点位完整信息的前端封装的分页记录
-     */
-    List<MarkerVo> listMarkerIdRange(Long closeLeft, Long openRight);
-
-    /**
      * 通过bz2返回点位分页
      *
      * @param index 下标（从1开始）
@@ -46,9 +37,9 @@ public interface MarkerDao {
     byte[] listPageMarkerByBz2(Integer index);
 
     /**
-     * 返回点位分页bz2的md5数组
-     *
-     * @return 分页字节数组的md5
+     * 刷新bz2返回点位分页
+     * @return 刷新后的各个分页
      */
-    List<String> listMarkerBz2MD5();
+    List<byte[]> refreshPageMarkerByBz2();
+
 }

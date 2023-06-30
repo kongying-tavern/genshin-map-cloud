@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="site.yuanshen.data.mapper.MarkerMapper">
+
+    <select id="selectListWithLargeIn" resultType="site.yuanshen.data.entity.Marker">
+        with id_list as (
+            select unnest(${unnest}::bigint[]) "id2")
+        select *
+        from marker as m left join id_list on m.id = id_list.id2
+        <if test="ew.customSqlSegment ==null or ew.customSqlSegment == ''">
+            where true
+        </if>
+         ${ew.customSqlSegment} and del_flag = false
+    </select>
+
+    <select id="selectWithLargeCustomIn" resultType="site.yuanshen.data.entity.Marker">
+        with id_list as (select unnest(${unnest}::bigint[]) "${column}2")
+        select * from
+        marker as m left join id_list on m.${column}=id_list."${column}2"
+        <if test="ew.customSqlSegment ==null or ew.customSqlSegment == ''">
+            where true
+        </if>
+        ${ew.customSqlSegment} and del_flag = false
+    </select>
+
+    <select id="selectListByMarkerItemLink" resultType="site.yuanshen.data.entity.Marker">
+        with id_list as (select unnest(${unnest}::bigint[]) "${column}2")
+        select
+        <include refid="Base_Column_List"/>
+        from marker as m inner join ( select distinct marker_id from marker_item_link, id_list
+        <if test="ew.customSqlSegment ==null or ew.customSqlSegment == ''">
+            where true
+        </if>
+        ${ew.customSqlSegment} and marker_item_link.${column}=id_list."${column}2" ) marker_id_list
+        on m.id = marker_id_list.marker_id
+        where m.del_flag = false
+    </select>
+
+</mapper>

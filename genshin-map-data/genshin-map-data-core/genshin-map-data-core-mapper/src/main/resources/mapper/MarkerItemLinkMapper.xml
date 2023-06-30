@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="site.yuanshen.data.mapper.MarkerItemLinkMapper">
+
+    <select id="selectListWithLargeIn" resultType="site.yuanshen.data.entity.MarkerItemLink">
+        with id_list as (
+        select unnest(${unnest}::bigint[]) "id2")
+        select *
+        from
+        marker_item_link as mil left join id_list on mil.id = id_list.id2
+        <if test="ew.customSqlSegment ==null or ew.customSqlSegment == ''">
+            where true
+        </if>
+        ${ew.customSqlSegment} and del_flag = false
+    </select>
+
+    <select id="selectWithLargeCustomIn" resultType="site.yuanshen.data.entity.MarkerItemLink">
+        with id_list as (
+        select unnest(${unnest}::bigint[]) "${column}2")
+        select *
+        from
+        marker_item_link as mil left join id_list on mil.${column} = id_list."${column}2"
+        <if test="ew.customSqlSegment ==null or ew.customSqlSegment == ''">
+            where true
+        </if>
+        ${ew.customSqlSegment} and del_flag = false
+    </select>
+
+</mapper>

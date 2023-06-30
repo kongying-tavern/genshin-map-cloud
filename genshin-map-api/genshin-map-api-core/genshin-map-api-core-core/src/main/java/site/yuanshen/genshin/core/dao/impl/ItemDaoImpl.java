@@ -2,26 +2,28 @@ package site.yuanshen.genshin.core.dao.impl;
 
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.caffeine.CaffeineCache;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 import site.yuanshen.common.core.utils.CompressUtils;
+import site.yuanshen.common.core.utils.PgsqlUtils;
 import site.yuanshen.data.dto.ItemDto;
 import site.yuanshen.data.entity.Item;
 import site.yuanshen.data.entity.ItemTypeLink;
 import site.yuanshen.data.entity.Marker;
 import site.yuanshen.data.entity.MarkerItemLink;
-import site.yuanshen.data.mapper.*;
+import site.yuanshen.data.mapper.ItemMapper;
+import site.yuanshen.data.mapper.ItemTypeLinkMapper;
+import site.yuanshen.data.mapper.MarkerItemLinkMapper;
+import site.yuanshen.data.mapper.MarkerMapper;
 import site.yuanshen.data.vo.ItemVo;
 import site.yuanshen.genshin.core.dao.ItemDao;
-import site.yuanshen.genshin.core.service.CacheService;
-import site.yuanshen.genshin.core.service.mbp.ItemAreaPublicMBPService;
-import site.yuanshen.genshin.core.service.mbp.ItemMBPService;
-import site.yuanshen.genshin.core.service.mbp.ItemTypeLinkMBPService;
-import site.yuanshen.genshin.core.service.mbp.ItemTypeMBPService;
 
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -33,14 +35,23 @@ import java.util.stream.Collectors;
  * @author Moment
  */
 @Service
-@RequiredArgsConstructor
 public class ItemDaoImpl implements ItemDao {
 
-    private final CacheManager cacheManager;
     private final ItemMapper itemMapper;
     private final ItemTypeLinkMapper itemTypeLinkMapper;
     private final MarkerItemLinkMapper markerItemLinkMapper;
     private final MarkerMapper markerMapper;
+
+    @Autowired
+    public ItemDaoImpl(ItemMapper itemMapper,
+                       ItemTypeLinkMapper itemTypeLinkMapper,
+                       MarkerItemLinkMapper markerItemLinkMapper,
+                       MarkerMapper markerMapper) {
+        this.itemMapper = itemMapper;
+        this.itemTypeLinkMapper = itemTypeLinkMapper;
+        this.markerItemLinkMapper = markerItemLinkMapper;
+        this.markerMapper = markerMapper;
+    }
 
     /**
      * @return 所有的物品信息
@@ -55,10 +66,8 @@ public class ItemDaoImpl implements ItemDao {
         if (itemList.size() == 0)
             return new ArrayList<>();
         //获取分类数据
-        List<ItemTypeLink> typeLinkList = itemTypeLinkMapper.selectList(Wrappers.<ItemTypeLink>lambdaQuery()
-                .in(ItemTypeLink::getItemId,
-                        itemList.stream()
-                                .map(Item::getId).distinct().collect(Collectors.toList())));
+        List<ItemTypeLink> typeLinkList = itemTypeLinkMapper.selectWithLargeCustomIn("item_id", PgsqlUtils.unnestStr(itemList.stream()
+                                .map(Item::getId).distinct().collect(Collectors.toList())),Wrappers.lambdaQuery());
         Map<Long, List<Long>> itemToTypeMap = new HashMap<>();
         for (ItemTypeLink typeLink : typeLinkList) {
             Long itemId = typeLink.getItemId();
@@ -68,10 +77,9 @@ public class ItemDaoImpl implements ItemDao {
         }
 
         //获取点位数据
-        List<MarkerItemLink> markerItemLinkList = markerItemLinkMapper.selectList(Wrappers.<MarkerItemLink>lambdaQuery()
-                .in(MarkerItemLink::getItemId,
-                        itemList.stream()
-                                .map(Item::getId).distinct().collect(Collectors.toList())));
+        List<MarkerItemLink> markerItemLinkList = markerItemLinkMapper.selectWithLargeCustomIn("item_id", PgsqlUtils.unnestStr(itemList.stream()
+                                .map(Item::getId).distinct().collect(Collectors.toList())),Wrappers.<MarkerItemLink>lambdaQuery());
+
         List<Long> markerIdList = markerMapper.selectList(Wrappers.<Marker>lambdaQuery()
                         .eq(Marker::getHiddenFlag, 0)
                         .select(Marker::getId))
@@ -94,39 +102,26 @@ public class ItemDaoImpl implements ItemDao {
      * @return 所有的物品信息的Bz2压缩
      */
     @Override
-    @Cacheable(value = "listAllItemBz2", key = "'allItemBz2'")
+    @Cacheable(value = "listAllItemBz2", cacheManager = "neverRefreshCacheManager")
     public byte[] listAllItemBz2() {
-        try {
-            return CompressUtils.compress(JSON.toJSONString(
-                            listAllItem())
-                    .getBytes(StandardCharsets.UTF_8));
-        } catch (Exception e) {
-            throw new RuntimeException("创建压缩失败" + e);
-        }
+        //通过refreshAllItemBz2()刷新失败
+        throw new RuntimeException("缓存未创建");
     }
 
     /**
-     * @return 所有的物品信息的Bz2压缩的md5
+     * 刷新物品压缩缓存并返回压缩文档
+     *
+     * @return 物品压缩文档
      */
     @Override
-    @Cacheable("listAllItemBz2Md5")
-    public String listAllItemBz2Md5() {
-        CaffeineCache itemBz2Cache = (CaffeineCache) cacheManager.getCache("listAllItemBz2");
-        byte[] allItemBz2;
-        if (itemBz2Cache != null) {
-            if (!itemBz2Cache.getNativeCache().asMap().isEmpty()) {
-                allItemBz2 = (byte[]) itemBz2Cache.getNativeCache().getIfPresent("allItemBz2");
-                if (allItemBz2 == null) {
-                    itemBz2Cache.evict("allItemBz2");
-                    allItemBz2 = listAllItemBz2();
-                }
-            } else {
-                itemBz2Cache.evict("allItemBz2");
-                allItemBz2 = listAllItemBz2();
-            }
-        } else {
-            allItemBz2 = listAllItemBz2();
+    @CachePut(value = "listAllItemBz2", cacheManager = "neverRefreshCacheManager")
+    public byte[] refreshAllItemBz2() {
+        try {
+            List<ItemVo> itemList = listAllItem();
+            byte[] result = JSON.toJSONString(itemList).getBytes(StandardCharsets.UTF_8);
+            return CompressUtils.compress(result);
+        } catch (Exception e) {
+            throw new RuntimeException("创建压缩失败", e);
         }
-        return DigestUtils.md5DigestAsHex(allItemBz2);
     }
 }

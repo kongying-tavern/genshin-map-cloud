@@ -22,8 +22,10 @@ public interface ItemDao {
     byte[] listAllItemBz2();
 
     /**
-     * @return 所有的物品信息的Bz2压缩的md5
+     * 刷新物品压缩缓存并返回压缩文档
+     *
+     * @return 物品压缩文档
      */
-    String listAllItemBz2Md5();
+    byte[] refreshAllItemBz2();
 
 }

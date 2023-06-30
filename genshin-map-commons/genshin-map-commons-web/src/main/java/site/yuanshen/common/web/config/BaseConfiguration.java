@@ -70,8 +70,19 @@ public class BaseConfiguration {
             CaffeineCacheManager caffeineCacheManager = new CaffeineCacheManager();
             Caffeine<Object, Object> caffeine = Caffeine.newBuilder()
                     // 设置最后一次写入或访问后经过固定时间过期
-                    .expireAfterAccess(60, TimeUnit.MINUTES)
+                    .expireAfterAccess(1, TimeUnit.MINUTES)
                     .softValues();
+            caffeineCacheManager.setCaffeine(caffeine);
+            return caffeineCacheManager;
+        }
+
+        /**
+         * 基础数据咖啡因缓存配置
+         */
+        @Bean("neverRefreshCacheManager")
+        public CacheManager neverRefreshCacheManager() {
+            CaffeineCacheManager caffeineCacheManager = new CaffeineCacheManager();
+            Caffeine<Object, Object> caffeine = Caffeine.newBuilder();
             caffeineCacheManager.setCaffeine(caffeine);
             return caffeineCacheManager;
         }

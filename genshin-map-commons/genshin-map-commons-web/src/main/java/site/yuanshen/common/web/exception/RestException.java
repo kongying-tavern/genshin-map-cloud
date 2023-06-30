@@ -12,7 +12,6 @@ import site.yuanshen.common.web.response.R;
 import site.yuanshen.common.web.response.RUtils;
 import site.yuanshen.common.web.utils.RequestUtils;
 
-import javax.naming.AuthenticationException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -80,5 +79,4 @@ public class RestException {
                         .map(ConstraintViolation::getMessage)
                         .collect(Collectors.toSet()));
     }
-
 }

@@ -11,8 +11,6 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 import org.springframework.util.StringUtils;
 import site.yuanshen.common.core.utils.DebounceExecutor;
 import site.yuanshen.genshin.core.dao.IconTagDao;
-import site.yuanshen.genshin.core.dao.ItemDao;
-import site.yuanshen.genshin.core.dao.MarkerDao;
 
 import java.util.Objects;
 import java.util.concurrent.*;
@@ -27,8 +25,8 @@ import java.util.concurrent.*;
 @RequiredArgsConstructor
 public class CacheService {
 
-    private final MarkerDao markerDao;
-    private final ItemDao itemDao;
+    private final MarkerDocService markerDocService;
+    private final ItemDocService itemDocService;
     private final IconTagDao iconTagDao;
     private final CacheManager cacheManager;
 
@@ -60,7 +58,8 @@ public class CacheService {
         runAfterTransactionByFuture(futureTask);
         try {
             if (futureTask.get() == Status.OK)
-                runAfterTransactionDebounceByKey(this::refreshIconTagBz2, FunctionKeyEnum.refreshIconTagBz2);
+                runAfterTransactionDebounceByKey(this::refreshIconTagBz2,
+                        FunctionKeyEnum.refreshIconTagBz2,5);
             else
                 log.error("cleanIconTagCache执行失败,未知原因");
         } catch (Exception e) {
@@ -77,7 +76,8 @@ public class CacheService {
             }
     )
     public void cleanItemCache() {
-        runAfterTransactionDebounceByKey(this::refreshItemBz2, FunctionKeyEnum.refreshItemBz2);
+        runAfterTransactionDebounceByKey(itemDocService::refreshItemBz2MD5,
+                FunctionKeyEnum.refreshItemBz2,5);
     }
 
     @Caching(
@@ -93,16 +93,13 @@ public class CacheService {
                     @CacheEvict(value = "searchMarkerId", allEntries = true, beforeInvocation = true),
                     @CacheEvict(value = "listMarkerById", allEntries = true, beforeInvocation = true),
                     @CacheEvict(value = "listMarkerPage", allEntries = true, beforeInvocation = true),
-                    @CacheEvict(value = "getMarkerCount", allEntries = true, beforeInvocation = true),
                     @CacheEvict(value = "listMarkerIdRange", allEntries = true, beforeInvocation = true),
-                    @CacheEvict(value = "listPageMarkerByBz2", allEntries = true, beforeInvocation = true),
-                    @CacheEvict(value = "listMarkerBz2MD5", allEntries = true, beforeInvocation = true),
             }
     )
     public void cleanMarkerCache() {
         log.info("cleanMarkerCache");
-        runAfterTransactionDebounceByKey(this::refreshMarkerBz2,
-                FunctionKeyEnum.refreshMarkerBz2);
+        runAfterTransactionDebounceByKey(markerDocService::refreshMarkerBz2MD5,
+                FunctionKeyEnum.refreshMarkerBz2, 5);
     }
 
     @Caching(
@@ -116,29 +113,6 @@ public class CacheService {
         iconTagDao.listAllTagBz2Md5();
     }
 
-    @Caching(
-            evict = {
-                    @CacheEvict(value = "listAllItemBz2", allEntries = true, beforeInvocation = true),
-                    @CacheEvict(value = "listAllItemBz2Md5", allEntries = true, beforeInvocation = true),
-            }
-    )
-    public void refreshItemBz2() {
-        log.info("refreshItemBz2");
-        itemDao.listAllItemBz2Md5();
-    }
-
-
-    @Caching(
-            evict = {
-                    @CacheEvict(value = "listPageMarkerByBz2", allEntries = true, beforeInvocation = true),
-                    @CacheEvict(value = "listMarkerBz2MD5", allEntries = true, beforeInvocation = true),
-            }
-    )
-    public void refreshMarkerBz2() {
-        log.info("refreshMarkerBz2");
-        markerDao.listMarkerBz2MD5();
-    }
-
     enum FunctionKeyEnum {
         refreshIconTagBz2,
         refreshItemBz2,
@@ -149,15 +123,15 @@ public class CacheService {
         OK, FAIL
     }
 
-    private void runAfterTransactionDebounceByKey(Runnable r, FunctionKeyEnum keyEnum) {
+    private void runAfterTransactionDebounceByKey(Runnable r, FunctionKeyEnum keyEnum, int second) {
         DebounceExecutor.debounce(keyEnum.name(), () -> {
-            log.info("Debounce Funtion Run: {}", keyEnum.name());
+            log.info("Debounce Function Run: {}", keyEnum.name());
             try {
                 executor.execute(r);
             } catch (RejectedExecutionException e) {
                 log.error("线程池拒绝：{}",keyEnum.name());
             }
-        }, 60, TimeUnit.SECONDS);
+        }, second, TimeUnit.SECONDS);
     }
 
 
@@ -165,7 +139,7 @@ public class CacheService {
         if (TransactionSynchronizationManager.isActualTransactionActive()) {
             // 当前存在事务
             TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter() {
-                            public void afterCommit() {
+                public void afterCommit() {
                     executor.execute(r);
                 }
             });
