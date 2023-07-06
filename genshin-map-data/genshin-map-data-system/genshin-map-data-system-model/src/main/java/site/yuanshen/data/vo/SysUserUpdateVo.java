@@ -41,7 +41,7 @@ public class SysUserUpdateVo {
     /**
      * 头像链接
      */
-    private String logoUrl;
+    private String logo;
 
     /**
      * 角色ID
