@@ -135,7 +135,7 @@ public class MarkerServiceImpl implements MarkerService {
         Map<Long, Item> itemMap = new HashMap<>();
         markerDao.getAllRelateInfoById(markerIdList, markerExtraMap, itemLinkMap, itemMap);
         //构建返回
-        return markerMapper.selectListWithLargeIn(unnestStr(markerIdList), Wrappers.<Marker>lambdaQuery())
+        return markerMapper.selectListWithLargeIn(unnestStr(markerIdList), Wrappers.<Marker>lambdaQuery().in(!hiddenFlagList.isEmpty(), Marker::getHiddenFlag, hiddenFlagList))
                 .parallelStream().map(marker ->
                         new MarkerDto(marker,
                                 markerExtraMap.get(marker.getId()),
