@@ -3,6 +3,7 @@ package site.yuanshen.data.mapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -21,7 +22,7 @@ public interface ItemMapper extends BaseMapper<Item> {
 
     Page<Item> selectPageItem(IPage<?> page, @Param("itemSearchDto") ItemSearchDto itemSearchDto);
 
-    List<Item> selectListWithLargeIn(@Param("unnest")String unnest, @Param("ew") LambdaQueryWrapper<Item> wrapper);
+    List<Item> selectListWithLargeIn(@Param("unnest")String unnest, @Param(Constants.WRAPPER) LambdaQueryWrapper<Item> wrapper);
 
     /**
      *  配合in使用
@@ -30,6 +31,6 @@ public interface ItemMapper extends BaseMapper<Item> {
      * @param wrapper
      * @return
      */
-    List<Item> selectWithLargeCustomIn(@Param("column")String column, @Param("unnest")String unnest, @Param("ew")LambdaQueryWrapper<Item> wrapper);
+    List<Item> selectWithLargeCustomIn(@Param("column")String column, @Param("unnest")String unnest, @Param(Constants.WRAPPER)LambdaQueryWrapper<Item> wrapper);
 
 }

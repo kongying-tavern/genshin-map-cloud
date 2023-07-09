@@ -39,15 +39,4 @@ public class MarkerSearchVo {
     @Schema(title = "类型ID列表")
     private List<Long> typeIdList;
 
-    /**
-     * 获取测试点位，默认为false不获取，为true时只获取测试点位
-     */
-    @Schema(title = "获取测试点位，默认为false不获取，为true时只获取测试点位")
-    private Boolean getBeta = false;
-
-
-
-    @Schema(title = "数据等级(hidden_flag范围)")
-    private List<Integer> hiddenFlagList;
-
 }

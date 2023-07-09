@@ -52,42 +52,41 @@ public class MarkerService {
      * @return 点位ID列表
      */
     @Cacheable(value = "searchMarkerId")
-    public List<Long> searchMarkerId(MarkerSearchVo searchVo) {
+    public List<Long> searchMarkerId(MarkerSearchVo searchVo, List<Integer> hiddenFlagList) {
         boolean isArea = !(searchVo.getAreaIdList() == null || searchVo.getAreaIdList().isEmpty());
         boolean isItem = !(searchVo.getItemIdList() == null || searchVo.getItemIdList().isEmpty());
         boolean isType = !(searchVo.getTypeIdList() == null || searchVo.getTypeIdList().isEmpty());
-        if (isArea && (isItem || isType) || isItem && isType)
+        if (isArea && isItem || isArea && isType || isType && isItem)
             throw new RuntimeException("条件冲突");
         List<Long> itemIdList = new ArrayList<>();
         if (isArea) {
             itemIdList = itemMapper.selectList(Wrappers.<Item>lambdaQuery()
-                            .in(Item::getAreaId, searchVo.getAreaIdList()).in(!searchVo.getHiddenFlagList().isEmpty(), Item::getHiddenFlag, searchVo.getHiddenFlagList())
+                            .in(Item::getAreaId, searchVo.getAreaIdList()).in(Item::getHiddenFlag, hiddenFlagList)
                             .select(Item::getId))
                     .stream()
                     .map(Item::getId).distinct().collect(Collectors.toList());
         }
         if (isItem) {
-            itemIdList = searchVo.getItemIdList();
+            itemIdList = itemMapper.selectList(Wrappers.<Item>lambdaQuery()
+                            .in(Item::getId, searchVo.getItemIdList()).in(Item::getHiddenFlag, hiddenFlagList)
+                            .select(Item::getId)).stream()
+                    .map(Item::getId).distinct().collect(Collectors.toList());
         }
         if (isType) {
-            itemIdList = itemTypeLinkMapper.selectList(Wrappers.<ItemTypeLink>lambdaQuery()
+            List<Long> tempItemIdList = itemTypeLinkMapper.selectList(Wrappers.<ItemTypeLink>lambdaQuery()
                             .in(ItemTypeLink::getTypeId, searchVo.getTypeIdList())
                             .select(ItemTypeLink::getItemId))
                     .stream()
                     .map(ItemTypeLink::getItemId).distinct().collect(Collectors.toList());
-        }
-
-        //如果不是按地区筛选,也就是说没经过筛选内鬼这一步,则再筛一遍 TODO:感觉繁琐了
-        if (!isArea) {
+            if (tempItemIdList.isEmpty()) return new ArrayList<>();
             itemIdList = itemMapper.selectList(Wrappers.<Item>lambdaQuery()
-                            .in(!itemIdList.isEmpty(),Item::getId, itemIdList).in(!searchVo.getHiddenFlagList().isEmpty(),Item::getHiddenFlag, searchVo.getHiddenFlagList())
+                            .in(Item::getId, itemIdList).in(Item::getHiddenFlag, hiddenFlagList)
                             .select(Item::getId)).stream()
                     .map(Item::getId).distinct().collect(Collectors.toList());
         }
 
 
-        if (!searchVo.getGetBeta()) {
-            log.info("获取正式点位:{}", itemIdList);
+            log.info("从物品ID获取正式点位ID， 物品ID:{}", itemIdList);
             if (itemIdList.isEmpty()) return new ArrayList<>();
             return markerItemLinkMapper.selectList(Wrappers.<MarkerItemLink>lambdaQuery()
                             .in(MarkerItemLink::getItemId, itemIdList)
@@ -95,18 +94,6 @@ public class MarkerService {
                     .stream()
                     .map(MarkerItemLink::getMarkerId)
                     .distinct().collect(Collectors.toList());
-        } else {
-            log.info("获取测试点位:{}", itemIdList);
-            List<Long> result = new ArrayList<>();
-            itemIdList.parallelStream().forEach(itemId ->
-                    result.addAll(markerPunctuateMapper.selectList(Wrappers.<MarkerPunctuate>lambdaQuery()
-                                    .apply(String.format("(item_list::jsonb) @@ '$[*].itemId == %d'", itemId))
-                                    .select(MarkerPunctuate::getPunctuateId))
-                            .stream()
-                            .map(MarkerPunctuate::getPunctuateId).collect(Collectors.toList()))
-            );
-            return result.stream().distinct().collect(Collectors.toList());
-        }
     }
 
     /**
@@ -116,9 +103,9 @@ public class MarkerService {
      * @return 点位完整信息的数据封装列表
      */
     //此处是两个方法的缝合，不需要加缓存
-    public List<MarkerVo> searchMarker(MarkerSearchVo markerSearchVo) {
-        List<Long> markerIdList = searchMarkerId(markerSearchVo);
-        List<MarkerVo> result = listMarkerById(markerIdList, markerSearchVo.getHiddenFlagList());
+    public List<MarkerVo> searchMarker(MarkerSearchVo markerSearchVo, List<Integer> hiddenFlagList) {
+        List<Long> markerIdList = searchMarkerId(markerSearchVo, hiddenFlagList);
+        List<MarkerVo> result = listMarkerById(markerIdList, hiddenFlagList);
         UserAppenderService.appendUser(result, MarkerVo::getCreatorId, MarkerVo::getCreatorId, MarkerVo::setCreator);
         UserAppenderService.appendUser(result, MarkerVo::getUpdaterId, MarkerVo::getUpdaterId, MarkerVo::setUpdater);
         return result;
@@ -131,48 +118,10 @@ public class MarkerService {
      * @param markerIdList 点位ID列表
      * @return 点位完整信息的数据封装列表
      */
-    @Cacheable(value = "listMarkerById")
     public List<MarkerVo> listMarkerById(List<Long> markerIdList, List<Integer> hiddenFlagList) {
         //为空直接返回
         if (markerIdList.isEmpty()) return new ArrayList<>();
-        //获取关联的物品Id
-        Map<Long, List<MarkerItemLink>> itemLinkMap = new ConcurrentHashMap<>();
-
-        List<MarkerItemLink> markerItemLinks = markerItemLinkMapper.selectList(Wrappers.<MarkerItemLink>lambdaQuery().in(MarkerItemLink::getMarkerId, markerIdList));
-        //获取item_id,得到item合集
-        Map<Long, Item> itemMap = itemMapper.selectList(Wrappers.<Item>lambdaQuery()
-                        .in(!markerItemLinks.isEmpty(),Item::getId, markerItemLinks.stream().map(MarkerItemLink::getItemId).collect(Collectors.toSet())))
-                .stream().collect(Collectors.toMap(Item::getId, Item -> Item));
-
-        markerItemLinks.parallelStream().forEach(markerItemLink ->
-                itemLinkMap.compute(markerItemLink.getMarkerId(),
-                        (markerId, linkList) -> {
-                            if (linkList == null) return new ArrayList<>(Collections.singletonList(markerItemLink));
-                            linkList.add(markerItemLink);
-                            return linkList;
-                        })
-        );
-        //构建返回
-        List<MarkerVo> result = markerMapper.selectList(Wrappers.<Marker>lambdaQuery().in(Marker::getId, markerIdList).in(!hiddenFlagList.isEmpty(), Marker::getHiddenFlag, hiddenFlagList))
-                .parallelStream()
-                .map(MarkerDto::new)
-                .map(dto -> dto
-                        .withItemList(
-                                itemLinkMap.get(dto.getId()).stream()
-                                        .map(MarkerItemLinkDto::new)
-                                        .map(MarkerItemLinkDto::getVo)
-                                        .map(vo -> {
-                                            Long itemId = vo.getItemId();
-                                            if (itemMap.containsKey(itemId))
-                                                return vo.withIconTag(itemMap.get(itemId).getIconTag());
-                                            else log.error("点位关联物品缺失:{}", itemId);
-                                            return null;
-                                        })
-                                        .filter(Objects::nonNull)
-                                        .collect(Collectors.toList())
-                        ))
-                .map(MarkerDto::getVo)
-                .collect(Collectors.toList());
+        List<MarkerVo> result = markerDao.listMarkerById(markerIdList, hiddenFlagList);
         UserAppenderService.appendUser(result, MarkerVo::getCreatorId, MarkerVo::getCreatorId, MarkerVo::setCreator);
         UserAppenderService.appendUser(result, MarkerVo::getUpdaterId, MarkerVo::getUpdaterId, MarkerVo::setUpdater);
         return result;

@@ -36,4 +36,51 @@
         where m.del_flag = false
     </select>
 
+    <select id="selectPageFilterByHiddenFlag" resultType="site.yuanshen.data.entity.Marker">
+        select
+        <include refid="Base_Column_List"/>
+        from marker
+        left join marker_item_link mil on marker.id = mil.marker_id
+        left join item i on i.id = mil.item_id
+        left join area a on a.id = i.area_id
+        <if test="ew.customSqlSegment ==null or ew.customSqlSegment == ''">
+            where true
+        </if>
+        ${ew.customSqlSegment}
+        and i.hidden_flag in
+        <foreach collection="hiddenFlags" item="hiddenFlag" open="(" close=")" separator=",">
+            #{hiddenFlag}
+        </foreach>
+        and a.hidden_flag in
+        <foreach collection="hiddenFlags" item="hiddenFlag" open="(" close=")" separator=",">
+            #{hiddenFlag}
+        </foreach>
+        and marker.del_flag = false
+    </select>
+
+    <select id="selectListWithLargeInFilterByHiddenFlag" resultType="site.yuanshen.data.entity.Marker">
+        with id_list as (select unnest(${unnest}::bigint[]) "${column}2")
+        select
+        <include refid="Base_Column_List"/>
+        from marker
+        inner join id_list on marker.${column}=id_list."${column}2"
+        left join marker_item_link mil on marker.id = mil.marker_id
+        left join item i on i.id = mil.item_id
+        left join area a on a.id = i.area_id
+        <if test="ew.customSqlSegment ==null or ew.customSqlSegment == ''">
+            where true
+        </if>
+        ${ew.customSqlSegment}
+        and
+        and i.hidden_flag in
+        <foreach collection="hiddenFlags" item="hiddenFlag" open="(" close=")" separator=",">
+            #{hiddenFlag}
+        </foreach>
+        and a.hidden_flag in
+        <foreach collection="hiddenFlags" item="hiddenFlag" open="(" close=")" separator=",">
+            #{hiddenFlag}
+        </foreach>
+        and marker.del_flag = false
+    </select>
+
 </mapper>

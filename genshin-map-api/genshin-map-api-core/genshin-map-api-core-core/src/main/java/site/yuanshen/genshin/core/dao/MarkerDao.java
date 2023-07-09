@@ -29,6 +29,15 @@ public interface MarkerDao {
     PageListVo<MarkerVo> listMarkerPage(PageSearchDto pageSearchDto, List<Integer> hiddenFlagList);
 
     /**
+     * 通过ID列表查询点位信息
+     *
+     * @param markerIdList   点位ID列表
+     * @param hiddenFlagList hidden_flag范围
+     * @return 点位完整信息的前端封装的分页记录
+     */
+    List<MarkerVo> listMarkerById(List<Long> markerIdList, List<Integer> hiddenFlagList);
+
+    /**
      * 通过bz2返回点位分页
      *
      * @param index 下标（从1开始）

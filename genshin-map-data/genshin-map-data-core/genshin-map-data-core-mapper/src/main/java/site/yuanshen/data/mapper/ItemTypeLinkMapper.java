@@ -2,6 +2,7 @@ package site.yuanshen.data.mapper;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.toolkit.Constants;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import site.yuanshen.data.entity.ItemTypeLink;
@@ -16,7 +17,7 @@ import java.util.List;
 @Mapper
 public interface ItemTypeLinkMapper extends BaseMapper<ItemTypeLink> {
 
-    List<ItemTypeLink> selectListWithLargeIn(@Param("unnest")String unnest, @Param("ew") LambdaQueryWrapper<ItemTypeLink> wrapper);
+    List<ItemTypeLink> selectListWithLargeIn(@Param("unnest")String unnest, @Param(Constants.WRAPPER) LambdaQueryWrapper<ItemTypeLink> wrapper);
 
     /**
      *  配合in使用
@@ -25,6 +26,6 @@ public interface ItemTypeLinkMapper extends BaseMapper<ItemTypeLink> {
      * @param wrapper
      * @return
      */
-    List<ItemTypeLink> selectWithLargeCustomIn(@Param("column")String column, @Param("unnest")String unnest, @Param("ew")LambdaQueryWrapper<ItemTypeLink> wrapper);
+    List<ItemTypeLink> selectWithLargeCustomIn(@Param("column")String column, @Param("unnest")String unnest, @Param(Constants.WRAPPER)LambdaQueryWrapper<ItemTypeLink> wrapper);
 
 }

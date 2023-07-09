@@ -2,8 +2,12 @@ package site.yuanshen.data.mapper;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Constants;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 import site.yuanshen.data.entity.Marker;
 import site.yuanshen.data.entity.MarkerItemLink;
 
@@ -22,7 +26,7 @@ public interface MarkerMapper extends BaseMapper<Marker> {
      * @param wrapper
      * @return
      */
-    List<Marker> selectListWithLargeIn(@Param("unnest")String unnest, @Param("ew")LambdaQueryWrapper<Marker> wrapper);
+    List<Marker> selectListWithLargeIn(@Param("unnest")String unnest, @Param(Constants.WRAPPER)LambdaQueryWrapper<Marker> wrapper);
 
     /**
      *  配合in使用
@@ -31,7 +35,11 @@ public interface MarkerMapper extends BaseMapper<Marker> {
      * @param wrapper
      * @return
      */
-    List<Marker> selectWithLargeCustomIn(@Param("column")String column, @Param("unnest")String unnest, @Param("ew")LambdaQueryWrapper<Marker> wrapper);
+    List<Marker> selectWithLargeCustomIn(@Param("column")String column, @Param("unnest")String unnest, @Param(Constants.WRAPPER)LambdaQueryWrapper<Marker> wrapper);
 
-    List<Marker> selectListByMarkerItemLink(@Param("column")String column, @Param("unnest")String unnest, @Param("ew")LambdaQueryWrapper<MarkerItemLink> wrapper);
+    List<Marker> selectListByMarkerItemLink(@Param("column")String column, @Param("unnest")String unnest, @Param(Constants.WRAPPER)LambdaQueryWrapper<MarkerItemLink> wrapper);
+
+    IPage<Marker> selectPageFilterByHiddenFlag(Page<Marker> page, @Param("hiddenFlags") List<Integer> hiddenFlagList, @Param(Constants.WRAPPER) LambdaQueryWrapper<Marker> wrapper);
+
+    List<Marker> selectListWithLargeInFilterByHiddenFlag(@Param("unnest")String unnest,@Param("hiddenFlags") List<Integer> hiddenFlagList, @Param(Constants.WRAPPER) LambdaQueryWrapper<Marker> wrapper);
 }

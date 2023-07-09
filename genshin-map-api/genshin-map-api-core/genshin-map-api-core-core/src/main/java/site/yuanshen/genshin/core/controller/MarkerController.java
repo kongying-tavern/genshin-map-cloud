@@ -40,9 +40,8 @@ public class MarkerController {
             description = "支持根据末端地区、末端类型、物品来进行查询，三种查询不能同时生效，同时存在时报错，同时支持测试点位获取")
     @PostMapping("/get/id")
     public R<List<Long>> searchMarkerId(@RequestHeader(value = "userDataLevel", required = false) String userDataLevel, @RequestBody MarkerSearchVo markerSearchVo) {
-        markerSearchVo.setHiddenFlagList(HiddenFlagEnum.getFlagList(userDataLevel));
         return RUtils.create(
-                markerService.searchMarkerId(markerSearchVo)
+                markerService.searchMarkerId(markerSearchVo, HiddenFlagEnum.getFlagList(userDataLevel))
         );
     }
 
@@ -50,9 +49,8 @@ public class MarkerController {
             description = "支持根据末端地区、末端类型、物品来进行查询，三种查询不能同时生效，同时存在时报错，同时支持测试点位获取")
     @PostMapping("/get/list_byinfo")
     public R<List<MarkerVo>> searchMarker(@RequestHeader(value = "userDataLevel", required = false) String userDataLevel, @RequestBody MarkerSearchVo markerSearchVo) {
-        markerSearchVo.setHiddenFlagList(HiddenFlagEnum.getFlagList(userDataLevel));
         return RUtils.create(
-                markerService.searchMarker(markerSearchVo)
+                markerService.searchMarker(markerSearchVo, HiddenFlagEnum.getFlagList(userDataLevel))
         );
     }
 

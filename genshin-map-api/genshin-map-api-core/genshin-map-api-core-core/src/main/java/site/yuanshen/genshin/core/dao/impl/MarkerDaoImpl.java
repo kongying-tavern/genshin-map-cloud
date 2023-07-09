@@ -1,9 +1,8 @@
 package site.yuanshen.genshin.core.dao.impl;
 
 import com.alibaba.fastjson2.JSON;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -16,9 +15,11 @@ import site.yuanshen.common.core.utils.PgsqlUtils;
 import site.yuanshen.data.dto.MarkerDto;
 import site.yuanshen.data.dto.MarkerItemLinkDto;
 import site.yuanshen.data.dto.helper.PageSearchDto;
+import site.yuanshen.data.entity.Area;
 import site.yuanshen.data.entity.Item;
 import site.yuanshen.data.entity.Marker;
 import site.yuanshen.data.entity.MarkerItemLink;
+import site.yuanshen.data.mapper.AreaMapper;
 import site.yuanshen.data.mapper.ItemMapper;
 import site.yuanshen.data.mapper.MarkerItemLinkMapper;
 import site.yuanshen.data.mapper.MarkerMapper;
@@ -44,17 +45,20 @@ public class MarkerDaoImpl implements MarkerDao {
     private final MarkerMapper markerMapper;
     private final MarkerItemLinkMapper markerItemLinkMapper;
     private final ItemMapper itemMapper;
+    private final AreaMapper areaMapper;
     private final CacheManager neverRefreshCacheManager;
 
     @Autowired
     public MarkerDaoImpl(MarkerMapper markerMapper,
                          MarkerItemLinkMapper markerItemLinkMapper,
                          ItemMapper itemMapper,
+                         AreaMapper areaMapper,
                          @Qualifier("neverRefreshCacheManager")
                          CacheManager neverRefreshCacheManager) {
         this.markerMapper = markerMapper;
         this.markerItemLinkMapper = markerItemLinkMapper;
         this.itemMapper = itemMapper;
+        this.areaMapper = areaMapper;
         this.neverRefreshCacheManager = neverRefreshCacheManager;
     }
 
@@ -74,13 +78,13 @@ public class MarkerDaoImpl implements MarkerDao {
     @Override
     @Cacheable(value = "listMarkerPage")
     public PageListVo<MarkerVo> listMarkerPage(PageSearchDto pageSearchDto, List<Integer> hiddenFlagList) {
-        Page<Marker> markerPage = markerMapper.selectPage(pageSearchDto.getPageEntity(), Wrappers.<Marker>lambdaQuery().in(!hiddenFlagList.isEmpty(), Marker::getHiddenFlag, hiddenFlagList));
+        IPage<Marker> markerPage = markerMapper.selectPageFilterByHiddenFlag(pageSearchDto.getPageEntity(),hiddenFlagList, Wrappers.lambdaQuery());
         List<Long> markerIdList = markerPage.getRecords().stream()
                 .map(Marker::getId).collect(Collectors.toList());
 
         ConcurrentHashMap<Long, List<MarkerItemLinkVo>> itemLinkMap = new ConcurrentHashMap<>();
         Map<Long, Item> itemMap = new HashMap<>();
-        getAllRelateInfoById(markerIdList, itemLinkMap, itemMap);
+        getAllItemRelateInfoById(markerIdList, itemLinkMap, itemMap);
 
         return new PageListVo<MarkerVo>()
                 .setRecord(markerPage.getRecords().parallelStream()
@@ -88,6 +92,29 @@ public class MarkerDaoImpl implements MarkerDao {
                         .collect(Collectors.toList()))
                 .setTotal(markerPage.getTotal())
                 .setSize(markerPage.getSize());
+    }
+
+    /**
+     * 通过ID列表查询点位信息
+     *
+     * @param markerIdList   点位ID列表
+     * @param hiddenFlagList hidden_flag范围
+     * @return 点位完整信息的数据封装列表
+     */
+    @Override
+    @Cacheable(value = "listMarkerById")
+    public List<MarkerVo> listMarkerById(List<Long> markerIdList, List<Integer> hiddenFlagList) {
+        List<Marker> markerList = markerMapper.selectListWithLargeInFilterByHiddenFlag(PgsqlUtils.unnestStr(markerIdList),hiddenFlagList, Wrappers.lambdaQuery());
+
+        markerIdList = markerList.stream().map(Marker::getId).collect(Collectors.toList());
+
+        ConcurrentHashMap<Long, List<MarkerItemLinkVo>> itemLinkMap = new ConcurrentHashMap<>();
+        Map<Long, Item> itemMap = new HashMap<>();
+        getAllItemRelateInfoById(markerIdList, itemLinkMap, itemMap);
+
+        return markerList.parallelStream()
+                        .map(marker -> new MarkerDto(marker).withItemList(itemLinkMap.get(marker.getId())).getVo())
+                        .collect(Collectors.toList());
     }
 
     public void getAllRelateInfoById(List<Long> markerIdList, ConcurrentHashMap<Long, List<MarkerItemLinkVo>> itemLinkMap, Map<Long, Item> itemMap) {
@@ -105,8 +132,7 @@ public class MarkerDaoImpl implements MarkerDao {
                 .distinct().collect(Collectors.toList());
         //获取item_id,得到item合集
         itemMap.putAll(
-                itemMapper.selectList(Wrappers.<Item>lambdaQuery()
-                        .apply("id = any({0}::bigint[])", itemIdList.toString().replace('[', '{').replace(']', '}')))
+                itemMapper.selectListWithLargeIn(PgsqlUtils.unnestStr(itemIdList),Wrappers.lambdaQuery())
                 .stream().collect(Collectors.toMap(Item::getId, Item -> Item))
         );
     }
@@ -158,17 +184,18 @@ public class MarkerDaoImpl implements MarkerDao {
     private List<MarkerVo> getAllMarkerVo() {
         List<Marker> markerList = markerMapper.selectList(Wrappers.<Marker>lambdaQuery().eq(Marker::getHiddenFlag, 0));
 
-        //获取item_id,得到item合集
-        Map<Long, Item> itemMap = itemMapper.selectList(Wrappers.<Item>lambdaQuery().eq(Item::getHiddenFlag, 0))
-                .stream().collect(Collectors.toMap(Item::getId, Item -> Item));
+        List<Long> hideAreas = areaMapper.selectList(Wrappers.<Area>lambdaQuery().select(Area::getId).in(Area::getHiddenFlag, 1,2))
+                .stream().map(Area::getId)
+                .collect(Collectors.toList());
 
-        Set<Long> hideItemSet = new HashSet<>();
+        //获取item_id,得到item合集
+        Map<Long, Item> itemMap = itemMapper.selectList(Wrappers.<Item>lambdaQuery().eq(Item::getHiddenFlag, 0).notIn(Item::getAreaId,hideAreas))
+                .stream().collect(Collectors.toMap(Item::getId, Item -> Item));
 
         ConcurrentHashMap<Long, List<MarkerItemLink>> itemLinkMap = new ConcurrentHashMap<>();
         markerItemLinkMapper.selectList(Wrappers.lambdaQuery())
                 .parallelStream().forEach(markerItemLink -> {
                             if (!itemMap.containsKey(markerItemLink.getItemId())) {
-                                hideItemSet.add(markerItemLink.getItemId());
                                 return;
                             }
                             itemLinkMap.compute(markerItemLink.getMarkerId(),
@@ -181,7 +208,6 @@ public class MarkerDaoImpl implements MarkerDao {
                         }
                 );
 
-        log.info("拥有点位的隐藏物品:{}", hideItemSet);
 
         return markerList.parallelStream()
                 .map(MarkerDto::new)
