@@ -117,7 +117,13 @@ public class MarkerDaoImpl implements MarkerDao {
                         .collect(Collectors.toList());
     }
 
-    public void getAllRelateInfoById(List<Long> markerIdList, ConcurrentHashMap<Long, List<MarkerItemLinkVo>> itemLinkMap, Map<Long, Item> itemMap) {
+    /**
+     * 根据点位ID查询对应的物品&物品关联
+     * @param markerIdList 点位ID列表
+     * @param itemLinkMap 物品链接Map  key:marker_id, value:marker_item_link
+     * @param itemMap 物品链接Map  key:item_id, value:item
+     */
+    public void getAllItemRelateInfoById(List<Long> markerIdList, ConcurrentHashMap<Long, List<MarkerItemLinkVo>> itemLinkMap, Map<Long, Item> itemMap) {
         List<Long> itemIdList = markerItemLinkMapper.selectWithLargeCustomIn("marker_id", PgsqlUtils.unnestStr(markerIdList), Wrappers.lambdaQuery())
                 .parallelStream().map(markerItemLink -> {
                     itemLinkMap.compute(markerItemLink.getMarkerId(),
