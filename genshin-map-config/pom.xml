@@ -33,6 +33,9 @@
                 <directory>src/main/resources-dev</directory>
             </resource>
             <resource>
+                <directory>src/main/resources-uat</directory>
+            </resource>
+            <resource>
                 <directory>src/main/resources-prod</directory>
             </resource>
         </resources>
