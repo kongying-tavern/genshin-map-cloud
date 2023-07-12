@@ -151,12 +151,8 @@ public class IconService {
         IconDto iconDto = new IconDto(iconVo);
         //取类型信息
         List<Long> typeIdList = iconVo.getTypeIdList();
-        Icon icon = iconDto.getEntity()
-                //临时id
-                .withId(-1L);
+        Icon icon = iconDto.getEntity();
         iconMapper.insert(icon);
-        //正式更新id
-        iconMapper.updateById(icon.withId(icon.getId()));
         //处理类型信息
         if (typeIdList != null) {
             //判断是否有不存在的类型ID
