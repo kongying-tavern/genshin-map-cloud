@@ -8,7 +8,7 @@
         select i.*
         from icon i
         <if test="searchDto.typeIdList != null and searchDto.typeIdList.size > 0">
-            left join icon_type_link itl on i.icon_id = itl.icon_id
+            left join icon_type_link itl on i.id = itl.icon_id
         </if>
         <where>
              i.del_flag = false
@@ -22,7 +22,7 @@
                 </foreach>
             </if>
             <if test="searchDto.iconIdList != null and searchDto.iconIdList.size > 0">
-                and i.icon_id in
+                and i.id in
                 <foreach collection="searchDto.iconIdList" open="(" separator="," close=")" item="iconId">
                     #{iconId}
                 </foreach>
