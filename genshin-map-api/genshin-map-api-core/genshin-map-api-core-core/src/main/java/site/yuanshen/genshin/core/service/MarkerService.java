@@ -80,7 +80,7 @@ public class MarkerService {
                     .map(ItemTypeLink::getItemId).distinct().collect(Collectors.toList());
             if (tempItemIdList.isEmpty()) return new ArrayList<>();
             itemIdList = itemMapper.selectList(Wrappers.<Item>lambdaQuery()
-                            .in(Item::getId, itemIdList).in(Item::getHiddenFlag, hiddenFlagList)
+                            .in(Item::getId, tempItemIdList).in(Item::getHiddenFlag, hiddenFlagList)
                             .select(Item::getId)).stream()
                     .map(Item::getId).distinct().collect(Collectors.toList());
         }
