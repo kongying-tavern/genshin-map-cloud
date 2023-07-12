@@ -25,10 +25,10 @@
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
     <#list table.commonFields as field>
-        <#list table.name?split("_") as s>${s?substring(0,1)?lower_case}</#list>.${field.columnName},
+        ${table.name}.${field.columnName},
     </#list>
     <#list table.fieldNames?split(", ") as field>
-        <#list table.name?split("_") as s>${s?substring(0,1)?lower_case}</#list>.${field}<#if field_has_next>,</#if>
+        ${table.name}.${field}<#if field_has_next>,</#if>
     </#list>
     </sql>
 

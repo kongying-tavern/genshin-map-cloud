@@ -4,13 +4,13 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="site.yuanshen.data.entity.ItemType">
-        <id column="id" property="id"/>
         <id column="parent_id" property="parentId"/>
         <id column="sort_index" property="sortIndex"/>
         <result column="creator_id" property="creatorId"/>
         <result column="create_time" property="createTime"/>
         <result column="del_flag" property="delFlag"/>
         <result column="version" property="version"/>
+        <result column="id" property="id"/>
         <result column="updater_id" property="updaterId"/>
         <result column="update_time" property="updateTime"/>
         <result column="icon_tag" property="iconTag"/>
@@ -22,20 +22,20 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        it.creator_id,
-        it.create_time,
-        it.del_flag,
-        it.version,
-        it.id,
-        it.updater_id,
-        it.update_time,
-        it.icon_tag,
-        it.name,
-        it.content,
-        it.parent_id,
-        it.is_final,
-        it.hidden_flag,
-        it.sort_index
+        item_type.creator_id,
+        item_type.create_time,
+        item_type.del_flag,
+        item_type.version,
+        item_type.id,
+        item_type.updater_id,
+        item_type.update_time,
+        item_type.icon_tag,
+        item_type.name,
+        item_type.content,
+        item_type.parent_id,
+        item_type.is_final,
+        item_type.hidden_flag,
+        item_type.sort_index
     </sql>
 
 </mapper>

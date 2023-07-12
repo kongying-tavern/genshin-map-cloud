@@ -4,11 +4,11 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="site.yuanshen.data.entity.Area">
-        <id column="id" property="id"/>
         <result column="creator_id" property="creatorId"/>
         <result column="create_time" property="createTime"/>
         <result column="del_flag" property="delFlag"/>
         <result column="version" property="version"/>
+        <result column="id" property="id"/>
         <result column="updater_id" property="updaterId"/>
         <result column="update_time" property="updateTime"/>
         <result column="name" property="name"/>
@@ -18,28 +18,28 @@
         <result column="parent_id" property="parentId"/>
         <result column="is_final" property="isFinal"/>
         <result column="hidden_flag" property="hiddenFlag"/>
-        <result column="special_flag" property="specialFlag"/>
         <result column="sort_index" property="sortIndex"/>
+        <result column="special_flag" property="specialFlag"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        a.creator_id,
-        a.create_time,
-        a.del_flag,
-        a.version,
-        a.id,
-        a.updater_id,
-        a.update_time,
-        a.name,
-        a.code,
-        a.content,
-        a.icon_tag,
-        a.parent_id,
-        a.is_final,
-        a.hidden_flag,
-        a.special_flag,
-        a.sort_index
+        area.creator_id,
+        area.create_time,
+        area.del_flag,
+        area.version,
+        area.id,
+        area.updater_id,
+        area.update_time,
+        area.name,
+        area.code,
+        area.content,
+        area.icon_tag,
+        area.parent_id,
+        area.is_final,
+        area.hidden_flag,
+        area.sort_index,
+        area.special_flag
     </sql>
 
 </mapper>

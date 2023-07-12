@@ -4,11 +4,11 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="site.yuanshen.data.entity.Marker">
-        <id column="id" property="id"/>
         <result column="creator_id" property="creatorId"/>
         <result column="create_time" property="createTime"/>
         <result column="del_flag" property="delFlag"/>
         <result column="version" property="version"/>
+        <result column="id" property="id"/>
         <result column="updater_id" property="updaterId"/>
         <result column="update_time" property="updateTime"/>
         <result column="marker_stamp" property="markerStamp"/>
@@ -26,24 +26,24 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        m.creator_id,
-        m.create_time,
-        m.del_flag,
-        m.version,
-        m.id,
-        m.updater_id,
-        m.update_time,
-        m.marker_stamp,
-        m.marker_title,
-        m.position,
-        m.content,
-        m.picture,
-        m.marker_creator_id,
-        m.picture_creator_id,
-        m.video_path,
-        m.refresh_time,
-        m.hidden_flag,
-        m.extra
+        marker.creator_id,
+        marker.create_time,
+        marker.del_flag,
+        marker.version,
+        marker.id,
+        marker.updater_id,
+        marker.update_time,
+        marker.marker_stamp,
+        marker.marker_title,
+        marker.position,
+        marker.content,
+        marker.picture,
+        marker.marker_creator_id,
+        marker.picture_creator_id,
+        marker.video_path,
+        marker.refresh_time,
+        marker.hidden_flag,
+        marker.extra
     </sql>
 
 </mapper>

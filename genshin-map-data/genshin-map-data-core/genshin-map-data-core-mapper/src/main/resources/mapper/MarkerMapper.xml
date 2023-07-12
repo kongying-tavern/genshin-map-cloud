@@ -6,21 +6,21 @@
         with id_list as (
             select unnest(${unnest}::bigint[]) "id2")
         select *
-        from marker as m left join id_list on m.id = id_list.id2
+        from marker left join id_list on marker.id = id_list.id2
         <if test="ew.customSqlSegment ==null or ew.customSqlSegment == ''">
-            where true
+            where true and
         </if>
-         ${ew.customSqlSegment} and del_flag = false
+         ${ew.customSqlSegment} del_flag = false
     </select>
 
     <select id="selectWithLargeCustomIn" resultType="site.yuanshen.data.entity.Marker">
         with id_list as (select unnest(${unnest}::bigint[]) "${column}2")
         select * from
-        marker as m left join id_list on m.${column}=id_list."${column}2"
+        marker inner join id_list on marker.${column}=id_list."${column}2"
         <if test="ew.customSqlSegment ==null or ew.customSqlSegment == ''">
-            where true
+            where true and
         </if>
-        ${ew.customSqlSegment} and del_flag = false
+        ${ew.customSqlSegment}  del_flag = false
     </select>
 
     <select id="selectListByMarkerItemLink" resultType="site.yuanshen.data.entity.Marker">
@@ -29,9 +29,9 @@
         <include refid="Base_Column_List"/>
         from marker as m inner join ( select distinct marker_id from marker_item_link, id_list
         <if test="ew.customSqlSegment ==null or ew.customSqlSegment == ''">
-            where true
+            where true and
         </if>
-        ${ew.customSqlSegment} and marker_item_link.${column}=id_list."${column}2" ) marker_id_list
+        ${ew.customSqlSegment} marker_item_link.${column}=id_list."${column}2" ) marker_id_list
         on m.id = marker_id_list.marker_id
         where m.del_flag = false
     </select>
@@ -40,14 +40,14 @@
         select
         <include refid="Base_Column_List"/>
         from marker
-        left join marker_item_link mil on marker.id = mil.marker_id
-        left join item i on i.id = mil.item_id
-        left join area a on a.id = i.area_id
+        inner join marker_item_link mil on marker.id = mil.marker_id and mil.del_flag = false
+        inner join item i on i.id = mil.item_id and i.del_flag = false
+        inner join area a on a.id = i.area_id and a.del_flag = false
         <if test="ew.customSqlSegment ==null or ew.customSqlSegment == ''">
-            where true
+            where true and
         </if>
         ${ew.customSqlSegment}
-        and i.hidden_flag in
+        i.hidden_flag in
         <foreach collection="hiddenFlags" item="hiddenFlag" open="(" close=")" separator=",">
             #{hiddenFlag}
         </foreach>
@@ -59,20 +59,19 @@
     </select>
 
     <select id="selectListWithLargeInFilterByHiddenFlag" resultType="site.yuanshen.data.entity.Marker">
-        with id_list as (select unnest(${unnest}::bigint[]) "${column}2")
+        with id_list as (select unnest(${unnest}::bigint[]) "id")
         select
         <include refid="Base_Column_List"/>
         from marker
-        inner join id_list on marker.${column}=id_list."${column}2"
-        left join marker_item_link mil on marker.id = mil.marker_id
-        left join item i on i.id = mil.item_id
-        left join area a on a.id = i.area_id
+        inner join id_list on marker.id=id_list.id
+        inner join marker_item_link mil on marker.id = mil.marker_id and mil.del_flag = false
+        inner join item i on i.id = mil.item_id and i.del_flag = false
+        inner join area a on a.id = i.area_id and a.del_flag = false
         <if test="ew.customSqlSegment ==null or ew.customSqlSegment == ''">
-            where true
+            where true and
         </if>
         ${ew.customSqlSegment}
-        and
-        and i.hidden_flag in
+        i.hidden_flag in
         <foreach collection="hiddenFlags" item="hiddenFlag" open="(" close=")" separator=",">
             #{hiddenFlag}
         </foreach>

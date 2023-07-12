@@ -4,12 +4,12 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="site.yuanshen.data.entity.Item">
-        <id column="id" property="id"/>
         <id column="area_id" property="areaId"/>
         <result column="creator_id" property="creatorId"/>
         <result column="create_time" property="createTime"/>
         <result column="del_flag" property="delFlag"/>
         <result column="version" property="version"/>
+        <result column="id" property="id"/>
         <result column="updater_id" property="updaterId"/>
         <result column="update_time" property="updateTime"/>
         <result column="name" property="name"/>
@@ -25,23 +25,23 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        i.creator_id,
-        i.create_time,
-        i.del_flag,
-        i.version,
-        i.id,
-        i.updater_id,
-        i.update_time,
-        i.name,
-        i.area_id,
-        i.default_refresh_time,
-        i.default_content,
-        i.default_count,
-        i.icon_tag,
-        i.icon_style_type,
-        i.hidden_flag,
-        i.sort_index,
-        i.special_flag
+        item.creator_id,
+        item.create_time,
+        item.del_flag,
+        item.version,
+        item.id,
+        item.updater_id,
+        item.update_time,
+        item.name,
+        item.area_id,
+        item.default_refresh_time,
+        item.default_content,
+        item.default_count,
+        item.icon_tag,
+        item.icon_style_type,
+        item.hidden_flag,
+        item.sort_index,
+        item.special_flag
     </sql>
 
 </mapper>

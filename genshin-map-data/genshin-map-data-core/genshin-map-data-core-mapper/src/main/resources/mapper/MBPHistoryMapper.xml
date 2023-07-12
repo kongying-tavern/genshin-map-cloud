@@ -8,30 +8,30 @@
         <result column="creator_id" property="creatorId"/>
         <result column="create_time" property="createTime"/>
         <result column="del_flag" property="delFlag"/>
-        <result column="version" property="version"/>
-        <result column="updater_id" property="updaterId"/>
-        <result column="update_time" property="updateTime"/>
         <result column="content" property="content"/>
         <result column="md5" property="md5"/>
         <result column="t_id" property="tId"/>
         <result column="type" property="type"/>
         <result column="ipv4" property="ipv4"/>
+        <result column="version" property="version"/>
+        <result column="updater_id" property="updaterId"/>
+        <result column="update_time" property="updateTime"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        h.creator_id,
-        h.create_time,
-        h.del_flag,
-        h.version,
-        h.id,
-        h.updater_id,
-        h.update_time,
-        h.content,
-        h.md5,
-        h.t_id,
-        h.type,
-        h.ipv4
+        history.creator_id,
+        history.create_time,
+        history.del_flag,
+        history.id,
+        history.content,
+        history.md5,
+        history.t_id,
+        history.type,
+        history.ipv4,
+        history.version,
+        history.updater_id,
+        history.update_time
     </sql>
 
 </mapper>

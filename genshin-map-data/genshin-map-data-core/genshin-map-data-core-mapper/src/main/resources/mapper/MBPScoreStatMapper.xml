@@ -21,19 +21,19 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        ss.creator_id,
-        ss.create_time,
-        ss.del_flag,
-        ss.version,
-        ss.id,
-        ss.updater_id,
-        ss.update_time,
-        ss.scope,
-        ss.span,
-        ss.span_start_time,
-        ss.span_end_time,
-        ss.user_id,
-        ss.content
+        score_stat.creator_id,
+        score_stat.create_time,
+        score_stat.del_flag,
+        score_stat.version,
+        score_stat.id,
+        score_stat.updater_id,
+        score_stat.update_time,
+        score_stat.scope,
+        score_stat.span,
+        score_stat.span_start_time,
+        score_stat.span_end_time,
+        score_stat.user_id,
+        score_stat.content
     </sql>
 
 </mapper>

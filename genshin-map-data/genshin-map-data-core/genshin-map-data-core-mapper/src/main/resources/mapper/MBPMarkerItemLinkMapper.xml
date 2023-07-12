@@ -4,13 +4,13 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="site.yuanshen.data.entity.MarkerItemLink">
-        <id column="id" property="id"/>
         <id column="item_id" property="itemId"/>
         <id column="marker_id" property="markerId"/>
         <result column="creator_id" property="creatorId"/>
         <result column="create_time" property="createTime"/>
         <result column="del_flag" property="delFlag"/>
         <result column="version" property="version"/>
+        <result column="id" property="id"/>
         <result column="updater_id" property="updaterId"/>
         <result column="update_time" property="updateTime"/>
         <result column="count" property="count"/>
@@ -18,16 +18,16 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        mil.creator_id,
-        mil.create_time,
-        mil.del_flag,
-        mil.version,
-        mil.id,
-        mil.updater_id,
-        mil.update_time,
-        mil.item_id,
-        mil.marker_id,
-        mil.count
+        marker_item_link.creator_id,
+        marker_item_link.create_time,
+        marker_item_link.del_flag,
+        marker_item_link.version,
+        marker_item_link.id,
+        marker_item_link.updater_id,
+        marker_item_link.update_time,
+        marker_item_link.item_id,
+        marker_item_link.marker_id,
+        marker_item_link.count
     </sql>
 
 </mapper>

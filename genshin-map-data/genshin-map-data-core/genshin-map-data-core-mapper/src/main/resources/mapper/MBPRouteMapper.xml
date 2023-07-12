@@ -22,20 +22,20 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        r.creator_id,
-        r.create_time,
-        r.del_flag,
-        r.version,
-        r.id,
-        r.updater_id,
-        r.update_time,
-        r.name,
-        r.content,
-        r.marker_list,
-        r.hidden_flag,
-        r.video,
-        r.extra,
-        r.creator_nickname
+        route.creator_id,
+        route.create_time,
+        route.del_flag,
+        route.version,
+        route.id,
+        route.updater_id,
+        route.update_time,
+        route.name,
+        route.content,
+        route.marker_list,
+        route.hidden_flag,
+        route.video,
+        route.extra,
+        route.creator_nickname
     </sql>
 
 </mapper>

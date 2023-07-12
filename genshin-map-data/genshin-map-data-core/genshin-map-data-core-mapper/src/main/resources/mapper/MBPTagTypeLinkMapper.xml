@@ -4,28 +4,28 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="site.yuanshen.data.entity.TagTypeLink">
-        <id column="id" property="id"/>
         <id column="type_id" property="typeId"/>
         <id column="tag_name" property="tagName"/>
         <result column="creator_id" property="creatorId"/>
         <result column="create_time" property="createTime"/>
         <result column="del_flag" property="delFlag"/>
         <result column="version" property="version"/>
+        <result column="id" property="id"/>
         <result column="updater_id" property="updaterId"/>
         <result column="update_time" property="updateTime"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        ttl.creator_id,
-        ttl.create_time,
-        ttl.del_flag,
-        ttl.version,
-        ttl.id,
-        ttl.updater_id,
-        ttl.update_time,
-        ttl.type_id,
-        ttl.tag_name
+        tag_type_link.creator_id,
+        tag_type_link.create_time,
+        tag_type_link.del_flag,
+        tag_type_link.version,
+        tag_type_link.id,
+        tag_type_link.updater_id,
+        tag_type_link.update_time,
+        tag_type_link.type_id,
+        tag_type_link.tag_name
     </sql>
 
 </mapper>

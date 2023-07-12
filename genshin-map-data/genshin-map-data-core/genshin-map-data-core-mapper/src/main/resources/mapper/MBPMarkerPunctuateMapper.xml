@@ -4,12 +4,12 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="site.yuanshen.data.entity.MarkerPunctuate">
-        <id column="id" property="id"/>
         <id column="original_marker_id" property="originalMarkerId"/>
         <result column="creator_id" property="creatorId"/>
         <result column="create_time" property="createTime"/>
         <result column="del_flag" property="delFlag"/>
         <result column="version" property="version"/>
+        <result column="id" property="id"/>
         <result column="updater_id" property="updaterId"/>
         <result column="update_time" property="updateTime"/>
         <result column="punctuate_id" property="punctuateId"/>
@@ -17,45 +17,45 @@
         <result column="item_list" property="itemList"/>
         <result column="position" property="position"/>
         <result column="content" property="content"/>
-        <result column="extra" property="extra" typeHandler="site.yuanshen.handler.MybatisPlusJsonObjectTypeHandler"/>
         <result column="picture" property="picture"/>
         <result column="marker_creator_id" property="markerCreatorId"/>
         <result column="picture_creator_id" property="pictureCreatorId"/>
         <result column="video_path" property="videoPath"/>
-        <result column="hidden_flag" property="hiddenFlag"/>
         <result column="author" property="author"/>
         <result column="status" property="status"/>
         <result column="audit_remark" property="auditRemark"/>
         <result column="method_type" property="methodType"/>
         <result column="refresh_time" property="refreshTime"/>
+        <result column="hidden_flag" property="hiddenFlag"/>
+        <result column="extra" property="extra" typeHandler="site.yuanshen.handler.MybatisPlusJsonObjectTypeHandler"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        mp.creator_id,
-        mp.create_time,
-        mp.del_flag,
-        mp.version,
-        mp.id,
-        mp.updater_id,
-        mp.update_time,
-        mp.punctuate_id,
-        mp.original_marker_id,
-        mp.marker_title,
-        mp.item_list,
-        mp.position,
-        mp.content,
-        mp.extra,
-        mp.picture,
-        mp.marker_creator_id,
-        mp.picture_creator_id,
-        mp.video_path,
-        mp.hidden_flag,
-        mp.author,
-        mp.status,
-        mp.audit_remark,
-        mp.method_type,
-        mp.refresh_time
+        marker_punctuate.creator_id,
+        marker_punctuate.create_time,
+        marker_punctuate.del_flag,
+        marker_punctuate.version,
+        marker_punctuate.id,
+        marker_punctuate.updater_id,
+        marker_punctuate.update_time,
+        marker_punctuate.punctuate_id,
+        marker_punctuate.original_marker_id,
+        marker_punctuate.marker_title,
+        marker_punctuate.item_list,
+        marker_punctuate.position,
+        marker_punctuate.content,
+        marker_punctuate.picture,
+        marker_punctuate.marker_creator_id,
+        marker_punctuate.picture_creator_id,
+        marker_punctuate.video_path,
+        marker_punctuate.author,
+        marker_punctuate.status,
+        marker_punctuate.audit_remark,
+        marker_punctuate.method_type,
+        marker_punctuate.refresh_time,
+        marker_punctuate.hidden_flag,
+        marker_punctuate.extra
     </sql>
 
 </mapper>

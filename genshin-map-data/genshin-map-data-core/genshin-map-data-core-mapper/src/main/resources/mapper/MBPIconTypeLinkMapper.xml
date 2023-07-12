@@ -4,28 +4,28 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="site.yuanshen.data.entity.IconTypeLink">
-        <id column="id" property="id"/>
         <id column="type_id" property="typeId"/>
         <id column="icon_id" property="iconId"/>
         <result column="creator_id" property="creatorId"/>
         <result column="create_time" property="createTime"/>
         <result column="del_flag" property="delFlag"/>
         <result column="version" property="version"/>
+        <result column="id" property="id"/>
         <result column="updater_id" property="updaterId"/>
         <result column="update_time" property="updateTime"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        itl.creator_id,
-        itl.create_time,
-        itl.del_flag,
-        itl.version,
-        itl.id,
-        itl.updater_id,
-        itl.update_time,
-        itl.type_id,
-        itl.icon_id
+        icon_type_link.creator_id,
+        icon_type_link.create_time,
+        icon_type_link.del_flag,
+        icon_type_link.version,
+        icon_type_link.id,
+        icon_type_link.updater_id,
+        icon_type_link.update_time,
+        icon_type_link.type_id,
+        icon_type_link.icon_id
     </sql>
 
 </mapper>
