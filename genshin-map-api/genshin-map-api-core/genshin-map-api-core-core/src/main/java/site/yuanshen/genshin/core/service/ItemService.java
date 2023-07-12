@@ -70,8 +70,6 @@ public class ItemService {
                                 .withTypeIdList(typeMap.getOrDefault(item.getId(), new ArrayList<>())))
                 .sorted(Comparator.comparing(ItemDto::getSortIndex).reversed())
                 .collect(Collectors.toList());
-        UserAppenderService.appendUser(result, ItemDto::getCreatorId, ItemDto::getCreatorId, ItemDto::setCreator);
-        UserAppenderService.appendUser(result, ItemDto::getUpdaterId, ItemDto::getUpdaterId, ItemDto::setUpdater);
         return result;
     }
 
@@ -131,8 +129,6 @@ public class ItemService {
                 .map(dto -> dto.withTypeIdList((itemToTypeMap.get(dto.getId()))))
                 .map(ItemDto::getVo)
                 .sorted(Comparator.comparing(ItemVo::getSortIndex).thenComparing(ItemVo::getId).reversed()).collect(Collectors.toList());
-        UserAppenderService.appendUser(result, ItemVo::getCreatorId, ItemVo::getCreatorId, ItemVo::setCreator);
-        UserAppenderService.appendUser(result, ItemVo::getUpdaterId, ItemVo::getUpdaterId, ItemVo::setUpdater);
         return new PageListVo<ItemVo>()
                 .setRecord(result)
                 .setTotal(itemPage.getTotal())

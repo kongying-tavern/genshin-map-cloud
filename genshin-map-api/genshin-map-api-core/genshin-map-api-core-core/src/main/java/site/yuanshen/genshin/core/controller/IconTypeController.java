@@ -12,6 +12,7 @@ import site.yuanshen.data.vo.IconTypeVo;
 import site.yuanshen.data.vo.helper.PageAndTypeSearchVo;
 import site.yuanshen.data.vo.helper.PageListVo;
 import site.yuanshen.genshin.core.service.IconTypeService;
+import site.yuanshen.genshin.core.service.UserAppenderService;
 
 /**
  * 图标库类别 Controller 层
@@ -32,9 +33,12 @@ public class IconTypeController {
     @Operation(summary = "列出分类", description = "列出图标的分类，parentID为-1的时候为列出所有的根分类，isTraverse为1时遍历所有子分类，默认为1，可分页")
     @PostMapping("/get/list")
     public R<PageListVo<IconTypeVo>> listIconType(@RequestBody PageAndTypeSearchVo searchVo) {
-        return RUtils.create(
+        R<PageListVo<IconTypeVo>> result = RUtils.create(
                 iconTypeService.listIconType(new PageAndTypeSearchDto(searchVo))
         );
+        UserAppenderService.appendUser(result, result.getData().getRecord(), true, IconTypeVo::getCreatorId);
+        UserAppenderService.appendUser(result, result.getData().getRecord(), true, IconTypeVo::getUpdaterId);
+        return result;
     }
 
     @Operation(summary = "新增分类", description = "类型id在创建后返回")

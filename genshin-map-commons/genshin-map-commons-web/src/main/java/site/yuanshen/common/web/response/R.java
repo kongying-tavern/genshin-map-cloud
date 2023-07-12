@@ -4,9 +4,12 @@ import cn.hutool.core.util.StrUtil;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import site.yuanshen.data.vo.SysUserSmallVo;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 接口统一返回对象
@@ -41,6 +44,11 @@ public class R<T> implements Serializable {
      * 数据部分
      */
     private T data;
+
+    /**
+     * 用户数据映射
+     */
+    private Map<Long, SysUserSmallVo> users = new HashMap<>();
 
     private LocalDateTime time;
 

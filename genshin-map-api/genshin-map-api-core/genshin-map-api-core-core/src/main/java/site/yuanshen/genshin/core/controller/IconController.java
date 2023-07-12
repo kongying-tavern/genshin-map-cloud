@@ -11,6 +11,7 @@ import site.yuanshen.data.vo.IconSearchVo;
 import site.yuanshen.data.vo.IconVo;
 import site.yuanshen.data.vo.helper.PageListVo;
 import site.yuanshen.genshin.core.service.IconService;
+import site.yuanshen.genshin.core.service.UserAppenderService;
 
 /**
  * 图标库 Controller 层
@@ -31,17 +32,23 @@ public class IconController {
     @Operation(summary = "列出图标", description = "可按照分类和上传者进行查询，也可根据ID批量查询，可分页")
     @PostMapping("/get/list")
     public R<PageListVo<IconVo>> listIcon(@RequestBody IconSearchVo iconSearchVo) {
-        return RUtils.create(
+        R<PageListVo<IconVo>> result = RUtils.create(
                 iconService.listIcon(new IconSearchDto(iconSearchVo))
         );
+        UserAppenderService.appendUser(result, result.getData().getRecord(), true, IconVo::getCreatorId);
+        UserAppenderService.appendUser(result, result.getData().getRecord(), true, IconVo::getUpdaterId);
+        return result;
     }
 
     @Operation(summary = "获取单个图标信息", description = "获取单个图标信息")
     @PostMapping("/get/single/{iconId}")
     public R<IconVo> getIcon(@PathVariable("iconId") Long iconId) {
-        return RUtils.create(
+        R<IconVo> result = RUtils.create(
                 iconService.getIcon(iconId)
         );
+        UserAppenderService.appendUser(result, result.getData(), false, IconVo::getCreatorId);
+        UserAppenderService.appendUser(result, result.getData(), false, IconVo::getUpdaterId);
+        return result;
     }
 
     @Operation(summary = "修改图标信息", description = "由icon_id定位修改一个icon")

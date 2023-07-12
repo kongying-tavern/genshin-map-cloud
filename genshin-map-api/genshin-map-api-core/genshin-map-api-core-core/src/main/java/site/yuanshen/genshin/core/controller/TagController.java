@@ -13,6 +13,7 @@ import site.yuanshen.data.vo.TagVo;
 import site.yuanshen.data.vo.helper.PageListVo;
 import site.yuanshen.genshin.core.service.CacheService;
 import site.yuanshen.genshin.core.service.TagService;
+import site.yuanshen.genshin.core.service.UserAppenderService;
 
 /**
  * 图标标签 Controller 层
@@ -34,17 +35,23 @@ public class TagController {
     @Operation(summary = "列出标签", description = "可按照分类进行查询，也可给出需要查询url的tag名称列表，可分页")
     @PostMapping("/get/list")
     public R<PageListVo<TagVo>> listTag(@RequestBody TagSearchVo tagSearchVo) {
-        return RUtils.create(
+        R<PageListVo<TagVo>> result = RUtils.create(
                 tagService.listTag(new TagSearchDto(tagSearchVo))
         );
+        UserAppenderService.appendUser(result, result.getData().getRecord(), true, TagVo::getCreatorId);
+        UserAppenderService.appendUser(result, result.getData().getRecord(), true, TagVo::getUpdaterId);
+        return result;
     }
 
     @Operation(summary = "获取单个标签信息", description = "获取单个标签信息")
     @PostMapping("/get/single/{name}")
     public R<TagVo> getTag(@PathVariable("name") String name) {
-        return RUtils.create(
+        R<TagVo> result = RUtils.create(
                 tagService.getTag(name)
         );
+        UserAppenderService.appendUser(result, result.getData(), false, TagVo::getCreatorId);
+        UserAppenderService.appendUser(result, result.getData(), false, TagVo::getUpdaterId);
+        return result;
     }
 
     @Operation(summary = "修改标签关联", description = "将标签关联到另一个图标上")

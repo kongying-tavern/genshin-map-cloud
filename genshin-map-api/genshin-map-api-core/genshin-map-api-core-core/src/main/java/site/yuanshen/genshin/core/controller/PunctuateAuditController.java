@@ -14,6 +14,7 @@ import site.yuanshen.data.vo.helper.PageListVo;
 import site.yuanshen.data.vo.helper.PageSearchVo;
 import site.yuanshen.genshin.core.service.CacheService;
 import site.yuanshen.genshin.core.service.PunctuateAuditService;
+import site.yuanshen.genshin.core.service.UserAppenderService;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -48,27 +49,36 @@ public class PunctuateAuditController {
             description = "支持根据末端地区、末端类型、物品、提交者来进行查询，地区、类型、物品查询不能同时生效，同时存在时报错")
     @PostMapping("/get/list_byinfo")
     public R<List<MarkerPunctuateVo>> searchPunctuate(@RequestBody PunctuateSearchVo punctuateSearchVo) {
-        return RUtils.create(
+        R<List<MarkerPunctuateVo>> result = RUtils.create(
                 punctuateAuditService.searchPunctuate(punctuateSearchVo).stream()
                         .map(MarkerPunctuateDto::getVo).collect(Collectors.toList())
         );
+        UserAppenderService.appendUser(result, result.getData(), true, MarkerPunctuateVo::getCreatorId);
+        UserAppenderService.appendUser(result, result.getData(), true, MarkerPunctuateVo::getUpdaterId);
+        return result;
     }
 
     @Operation(summary = "通过打点ID列表查询打点信息", description = "通过打点ID列表查询打点信息")
     @PostMapping("/get/list_byid")
     public R<List<MarkerPunctuateVo>> listPunctuateById(@RequestBody List<Long> punctuateIdList) {
-        return RUtils.create(
+        R<List<MarkerPunctuateVo>> result = RUtils.create(
                 punctuateAuditService.listPunctuateById(punctuateIdList).stream()
                         .map(MarkerPunctuateDto::getVo).collect(Collectors.toList())
         );
+        UserAppenderService.appendUser(result, result.getData(), true, MarkerPunctuateVo::getCreatorId);
+        UserAppenderService.appendUser(result, result.getData(), true, MarkerPunctuateVo::getUpdaterId);
+        return result;
     }
 
     @Operation(summary = "分页查询所有打点信息（包括暂存）", description = "分页查询所有打点信息（包括暂存）")
     @PostMapping("/get/page/all")
     public R<PageListVo<MarkerPunctuateVo>> listAllPunctuatePage(@RequestBody PageSearchVo pageSearchVo) {
-        return RUtils.create(
+        R<PageListVo<MarkerPunctuateVo>> result = RUtils.create(
                 punctuateAuditService.listAllPunctuatePage(new PageSearchDto(pageSearchVo))
         );
+        UserAppenderService.appendUser(result, result.getData().getRecord(), true, MarkerPunctuateVo::getCreatorId);
+        UserAppenderService.appendUser(result, result.getData().getRecord(), true, MarkerPunctuateVo::getUpdaterId);
+        return result;
     }
 
     @Operation(summary = "通过点位审核",

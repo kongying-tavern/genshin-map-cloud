@@ -13,6 +13,7 @@ import site.yuanshen.data.vo.helper.PageAndTypeSearchVo;
 import site.yuanshen.data.vo.helper.PageListVo;
 import site.yuanshen.genshin.core.service.CacheService;
 import site.yuanshen.genshin.core.service.TagTypeService;
+import site.yuanshen.genshin.core.service.UserAppenderService;
 
 /**
  * 图标标签分类 Controller 层
@@ -34,9 +35,12 @@ public class TagTypeController {
     @Operation(summary = "列出分类", description = "列出标签的分类，parentID为-1的时候为列出所有的根分类，isTraverse为1时遍历所有子分类，默认为1，可分页")
     @PostMapping("/get/list")
     public R<PageListVo<TagTypeVo>> listTagType(@RequestBody PageAndTypeSearchVo searchVo) {
-        return RUtils.create(
+        R<PageListVo<TagTypeVo>> result = RUtils.create(
                 tagTypeService.listTagType(new PageAndTypeSearchDto(searchVo))
         );
+        UserAppenderService.appendUser(result, result.getData().getRecord(), true, TagTypeVo::getCreatorId);
+        UserAppenderService.appendUser(result, result.getData().getRecord(), true, TagTypeVo::getUpdaterId);
+        return result;
     }
 
     @Operation(summary = "新增分类", description = "类型id在创建后返回")

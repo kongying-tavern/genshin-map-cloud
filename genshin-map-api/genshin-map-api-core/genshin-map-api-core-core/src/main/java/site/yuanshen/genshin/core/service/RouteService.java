@@ -46,10 +46,6 @@ public class RouteService {
                 .setRecord(routePage.getRecords().parallelStream().map(RouteDto::new).map(RouteDto::getVo).collect(Collectors.toList()))
                 .setSize(routePage.getSize())
                 .setTotal(routePage.getTotal());
-        List<RouteVo> result = page.getRecord();
-        UserAppenderService.appendUser(result, RouteVo::getCreatorId, RouteVo::getCreatorId, RouteVo::setCreator);
-        UserAppenderService.appendUser(result, RouteVo::getUpdaterId, RouteVo::getUpdaterId, RouteVo::setUpdater);
-        page.setRecord(result);
         return page;
     }
 
@@ -78,10 +74,6 @@ public class RouteService {
                         .collect(Collectors.toList()))
                 .setSize(routePage.getSize())
                 .setTotal(routePage.getTotal());
-        List<RouteVo> result = page.getRecord();
-        UserAppenderService.appendUser(result, RouteVo::getCreatorId, RouteVo::getCreatorId, RouteVo::setCreator);
-        UserAppenderService.appendUser(result, RouteVo::getUpdaterId, RouteVo::getUpdaterId, RouteVo::setUpdater);
-        page.setRecord(result);
         return page;
     }
 
@@ -97,8 +89,6 @@ public class RouteService {
                 .filter(route -> hiddenFlagList.contains(route.getHiddenFlag()))
                 .map(RouteDto::new)
                 .collect(Collectors.toList());
-        UserAppenderService.appendUser(result, RouteDto::getCreatorId, RouteDto::getCreatorId, RouteDto::setCreator);
-        UserAppenderService.appendUser(result, RouteDto::getUpdaterId, RouteDto::getUpdaterId, RouteDto::setUpdater);
         return result;
     }
 

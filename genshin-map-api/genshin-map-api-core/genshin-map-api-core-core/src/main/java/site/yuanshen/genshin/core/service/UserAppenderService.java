@@ -1,6 +1,8 @@
 package site.yuanshen.genshin.core.service;
 
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import site.yuanshen.common.core.utils.BeanUtils;
+import site.yuanshen.common.web.response.R;
 import site.yuanshen.common.web.utils.ApplicationUtils;
 import site.yuanshen.data.dto.SysUserDto;
 import site.yuanshen.data.entity.SysUser;
@@ -8,10 +10,7 @@ import site.yuanshen.data.mapper.SysUserMapper;
 import site.yuanshen.data.vo.SysUserSmallVo;
 import site.yuanshen.data.vo.SysUserVo;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -30,30 +29,9 @@ public class UserAppenderService {
             Function<T, Long> getterTarget,
             BiConsumer<T, SysUserSmallVo> setterTarget
     ) {
-        final List<Long> userIds = list.stream()
-                .filter(Objects::nonNull)
-                .map(v -> {
-                    try {
-                        return getterSrc.apply(v);
-                    } catch (Exception e) {
-                        return null;
-                    }
-                })
-                .filter(Objects::nonNull)
-                .distinct()
-                .collect(Collectors.toList());
 
-        final SysUserMapper sysUserMapper = ApplicationUtils.getBean(SysUserMapper.class);
+        final Map<Long, SysUserSmallVo> userVoMap = getUserMap(list, getterSrc);
 
-        final List<SysUser> userList = sysUserMapper.selectUserWithDelete(userIds);
-        final Map<Long, SysUserVo> userVos = userList.stream()
-                .filter(Objects::nonNull)
-                .map(o -> (new SysUserDto(o)).getVo())
-                .collect(Collectors.toMap(
-                        SysUserVo::getId,
-                        v -> v,
-                        (o, n) -> n
-                ));
 
         for(T item : list) {
             Long userId = 0L;
@@ -62,10 +40,9 @@ public class UserAppenderService {
             } catch (Exception e) {
                 // nothing to do
             }
-            final SysUserVo user = userVos.getOrDefault(userId, new SysUserVo());
-            final SysUserSmallVo userVo = BeanUtils.copy(user, SysUserSmallVo.class);
+            final SysUserSmallVo user = userVoMap.getOrDefault(userId, new SysUserSmallVo());
             try {
-                setterTarget.accept(item, userVo);
+                setterTarget.accept(item, user);
             } catch (Exception e) {
                 // nothing to do
             }
@@ -98,5 +75,68 @@ public class UserAppenderService {
                 return null;
             }
         }
+    }
+
+    public static <D, T> R appendUser(
+            R resultData,
+            D data,
+            boolean isList,
+            Function<T, Long> idGetter
+    ) {
+        List<T> list = new ArrayList<>();
+        try {
+            if(isList) {
+                list = (List<T>) data;
+            } else {
+                list = Arrays.asList((T) data);
+            }
+        } catch (Exception e) {
+            // nothing to do
+        }
+
+        final Map<Long, SysUserSmallVo> newUserMap = getUserMap(list, idGetter);
+        final Map<Long, SysUserSmallVo> oldUserMap = resultData.getUsers() == null ? new HashMap<>() : resultData.getUsers();
+        oldUserMap.putAll(newUserMap);
+        resultData.setUsers(oldUserMap);
+
+        return resultData;
+    }
+
+    /**
+     * 获取用户数据映射
+     * @param list      列表
+     * @param getterSrc 从原列表获取用户ID的 get 方法
+     */
+    public static <T> Map<Long, SysUserSmallVo> getUserMap(List<T> list, Function<T, Long> getterSrc) {
+        final List<Long> userIds = list.stream()
+                .filter(Objects::nonNull)
+                .map(v -> {
+                    try {
+                        return getterSrc.apply(v);
+                    } catch (Exception e) {
+                        return null;
+                    }
+                })
+                .filter(Objects::nonNull)
+                .distinct()
+                .collect(Collectors.toList());
+
+        if(CollectionUtils.isEmpty(userIds)) {
+            return new HashMap<>();
+        }
+
+        final SysUserMapper sysUserMapper = ApplicationUtils.getBean(SysUserMapper.class);
+
+        final List<SysUser> userList = sysUserMapper.selectUserWithDelete(userIds);
+        final Map<Long, SysUserSmallVo> userVoMap = userList.stream()
+                .filter(Objects::nonNull)
+                .map(o -> new SysUserDto(o).getVo())
+                .collect(Collectors.toMap(
+                        SysUserVo::getId,
+                        v -> BeanUtils.copy(v, SysUserSmallVo.class),
+                        (o, n) -> n
+                ));
+
+        return userVoMap;
     }
 }

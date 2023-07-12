@@ -46,11 +46,6 @@ public class MarkerPunctuateDto {
     private Long creatorId;
 
     /**
-     * 创建人人信息
-     */
-    private SysUserSmallVo creator;
-
-    /**
      * 创建时间
      */
     private LocalDateTime createTime;
@@ -59,11 +54,6 @@ public class MarkerPunctuateDto {
      * 更新人
      */
     private Long updaterId;
-
-    /**
-     * 更新人信息
-     */
-    private SysUserSmallVo updater;
 
     /**
      * 更新时间

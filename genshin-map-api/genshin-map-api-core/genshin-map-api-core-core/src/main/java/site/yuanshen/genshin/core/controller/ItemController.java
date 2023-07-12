@@ -15,6 +15,7 @@ import site.yuanshen.data.vo.ItemVo;
 import site.yuanshen.data.vo.helper.PageListVo;
 import site.yuanshen.genshin.core.service.CacheService;
 import site.yuanshen.genshin.core.service.ItemService;
+import site.yuanshen.genshin.core.service.UserAppenderService;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,18 +40,24 @@ public class ItemController {
     @Operation(summary = "根据物品ID查询物品", description = "输入ID列表查询，单个查询也用此API")
     @PostMapping("/get/list_byid")
     public R<List<ItemVo>> listItemById(@RequestHeader(value = "userDataLevel",required = false) String userDataLevel,@RequestBody List<Long> itemIdList) {
-        return RUtils.create(
-                itemService.listItemById(itemIdList,HiddenFlagEnum.getFlagList(userDataLevel))
+        R<List<ItemVo>> result = RUtils.create(
+                itemService.listItemById(itemIdList, HiddenFlagEnum.getFlagList(userDataLevel))
                         .stream().map(ItemDto::getVo).collect(Collectors.toList())
         );
+        UserAppenderService.appendUser(result, result.getData(), true, ItemVo::getCreatorId);
+        UserAppenderService.appendUser(result, result.getData(), true, ItemVo::getUpdaterId);
+        return result;
     }
 
     @Operation(summary = "根据筛选条件列出物品信息", description = "传入的物品类型ID和地区ID列表，必须为末端的类型或地区")
     @PostMapping("/get/list")
     public R<PageListVo<ItemVo>> listItemIdByType(@RequestHeader(value = "userDataLevel",required = false) String userDataLevel,@RequestBody ItemSearchVo itemSearchVo) {
-        return RUtils.create(
+        R<PageListVo<ItemVo>> result = RUtils.create(
                 itemService.listItem(new ItemSearchDto(itemSearchVo).setHiddenFlagList(HiddenFlagEnum.getFlagList(userDataLevel)))
         );
+        UserAppenderService.appendUser(result, result.getData().getRecord(), true, ItemVo::getCreatorId);
+        UserAppenderService.appendUser(result, result.getData().getRecord(), true, ItemVo::getUpdaterId);
+        return result;
     }
 
     @Operation(summary = "修改物品", description = "提供修改同名物品功能，默认关闭")

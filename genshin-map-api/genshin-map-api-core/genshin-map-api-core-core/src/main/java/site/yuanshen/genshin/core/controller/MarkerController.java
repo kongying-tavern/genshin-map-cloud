@@ -15,6 +15,7 @@ import site.yuanshen.data.vo.helper.PageListVo;
 import site.yuanshen.data.vo.helper.PageSearchVo;
 import site.yuanshen.genshin.core.service.CacheService;
 import site.yuanshen.genshin.core.service.MarkerService;
+import site.yuanshen.genshin.core.service.UserAppenderService;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -49,25 +50,34 @@ public class MarkerController {
             description = "支持根据末端地区、末端类型、物品来进行查询，三种查询不能同时生效，同时存在时报错，同时支持测试点位获取")
     @PostMapping("/get/list_byinfo")
     public R<List<MarkerVo>> searchMarker(@RequestHeader(value = "userDataLevel", required = false) String userDataLevel, @RequestBody MarkerSearchVo markerSearchVo) {
-        return RUtils.create(
+        R<List<MarkerVo>> result = RUtils.create(
                 markerService.searchMarker(markerSearchVo, HiddenFlagEnum.getFlagList(userDataLevel))
         );
+        UserAppenderService.appendUser(result, result.getData(), true, MarkerVo::getCreatorId);
+        UserAppenderService.appendUser(result, result.getData(), true, MarkerVo::getUpdaterId);
+        return result;
     }
 
     @Operation(summary = "通过ID列表查询点位信息", description = "通过ID列表来进行查询点位信息")
     @PostMapping("/get/list_byid")
     public R<List<MarkerVo>> listMarkerById(@RequestHeader(value = "userDataLevel", required = false) String userDataLevel, @RequestBody List<Long> markerIdList) {
-        return RUtils.create(
-                markerService.listMarkerById(markerIdList,HiddenFlagEnum.getFlagList(userDataLevel))
+        R<List<MarkerVo>> result = RUtils.create(
+                markerService.listMarkerById(markerIdList, HiddenFlagEnum.getFlagList(userDataLevel))
         );
+        UserAppenderService.appendUser(result, result.getData(), true, MarkerVo::getCreatorId);
+        UserAppenderService.appendUser(result, result.getData(), true, MarkerVo::getUpdaterId);
+        return result;
     }
 
     @Operation(summary = "分页查询所有点位信息", description = "分页查询所有点位信息")
     @PostMapping("/get/page")
     public R<PageListVo<MarkerVo>> listMarkerPage(@RequestHeader(value = "userDataLevel", required = false) String userDataLevel, @RequestBody PageSearchVo pageSearchVo) {
-        return RUtils.create(
+        R<PageListVo<MarkerVo>> result = RUtils.create(
                 markerService.listMarkerPage(new PageSearchDto(pageSearchVo), HiddenFlagEnum.getFlagList(userDataLevel))
         );
+        UserAppenderService.appendUser(result, result.getData().getRecord(), true, MarkerVo::getCreatorId);
+        UserAppenderService.appendUser(result, result.getData().getRecord(), true, MarkerVo::getUpdaterId);
+        return result;
     }
 
     @Operation(summary = "新增点位（不包括额外字段）", description = "新增完成后返回点位ID")

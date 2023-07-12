@@ -14,6 +14,7 @@ import site.yuanshen.data.vo.helper.PageAndTypeSearchVo;
 import site.yuanshen.data.vo.helper.PageListVo;
 import site.yuanshen.genshin.core.service.CacheService;
 import site.yuanshen.genshin.core.service.ItemTypeService;
+import site.yuanshen.genshin.core.service.UserAppenderService;
 
 import java.util.List;
 
@@ -37,17 +38,23 @@ public class ItemTypeController {
     @Operation(summary = "列出物品类型", description = "不递归遍历，只遍历子级；{self}表示查询自身还是查询子级，0为查询自身，1为查询子级")
     @PostMapping("/get/list/{self}")
     public R<PageListVo<ItemTypeVo>> listItemType(@RequestHeader(value = "userDataLevel",required = false) String userDataLevel, @RequestBody PageAndTypeSearchVo pageAndTypeSearchVo, @PathVariable("self") Integer self) {
-        return RUtils.create(
+        R<PageListVo<ItemTypeVo>> result = RUtils.create(
                 itemTypeService.listItemType(new PageAndTypeSearchDto(pageAndTypeSearchVo), self, HiddenFlagEnum.getFlagList(userDataLevel))
         );
+        UserAppenderService.appendUser(result, result.getData().getRecord(), true, ItemTypeVo::getCreatorId);
+        UserAppenderService.appendUser(result, result.getData().getRecord(), true, ItemTypeVo::getUpdaterId);
+        return result;
     }
 
     @Operation(summary = "列出所有物品类型", description = "返回所有可访问的物品类型")
     @PostMapping("/get/list_all")
     public R<List<ItemTypeVo>> listItemType(@RequestHeader(value = "userDataLevel",required = false) String userDataLevel) {
-        return RUtils.create(
+        R<List<ItemTypeVo>> result = RUtils.create(
                 itemTypeService.listAllItemType(HiddenFlagEnum.getFlagList(userDataLevel))
         );
+        UserAppenderService.appendUser(result, result.getData(), true, ItemTypeVo::getCreatorId);
+        UserAppenderService.appendUser(result, result.getData(), true, ItemTypeVo::getUpdaterId);
+        return result;
     }
 
     @Operation(summary = "添加物品类型", description = "成功后返回新的类型ID")

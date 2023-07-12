@@ -56,8 +56,6 @@ public class AreaService {
                     .stream().map(AreaDto::new)
                     .sorted(Comparator.comparing(AreaDto::getSortIndex).reversed())
                     .collect(Collectors.toList());
-            UserAppenderService.appendUser(result, AreaDto::getCreatorId, AreaDto::getCreatorId, AreaDto::setCreator);
-            UserAppenderService.appendUser(result, AreaDto::getUpdaterId, AreaDto::getUpdaterId, AreaDto::setUpdater);
             return result;
         }
         //递归用的临时ID列表
@@ -70,8 +68,6 @@ public class AreaService {
             nowAreaIdList = areaList.parallelStream().map(Area::getId).collect(Collectors.toList());
             result.addAll(areaList.stream().map(AreaDto::new).collect(Collectors.toList()));
         }
-        UserAppenderService.appendUser(result, AreaDto::getCreatorId, AreaDto::getCreatorId, AreaDto::setCreator);
-        UserAppenderService.appendUser(result, AreaDto::getUpdaterId, AreaDto::getUpdaterId, AreaDto::setUpdater);
         return result.stream().sorted(Comparator.comparing(AreaDto::getSortIndex).reversed()).collect(Collectors.toList());
     }
 
@@ -84,9 +80,8 @@ public class AreaService {
      */
     @Cacheable(value = "area",key = "#areaId+'*'+#hiddenFlagList")
     public AreaDto getArea(Long areaId, List<Integer> hiddenFlagList) {
-        AreaDto result = new AreaDto(areaMapper.selectOne(Wrappers.<Area>lambdaQuery().in(!hiddenFlagList.isEmpty(),Area::getHiddenFlag,hiddenFlagList)
+        return new AreaDto(areaMapper.selectOne(Wrappers.<Area>lambdaQuery().in(!hiddenFlagList.isEmpty(),Area::getHiddenFlag,hiddenFlagList)
                 .eq(Area::getId, areaId)));
-        return UserAppenderService.appendUser(AreaDto.class, result, AreaDto::getUpdaterId, AreaDto::getUpdaterId, AreaDto::setUpdater);
     }
 
     /**

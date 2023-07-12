@@ -74,6 +74,12 @@
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-crypto</artifactId>
         </dependency>
+        <dependency>
+            <groupId>site.yuanshen</groupId>
+            <artifactId>genshin-map-data-system-model</artifactId>
+            <version>1.0</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
 </project>

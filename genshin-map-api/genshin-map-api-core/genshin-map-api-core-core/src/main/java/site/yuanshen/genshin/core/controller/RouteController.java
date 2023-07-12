@@ -17,6 +17,7 @@ import site.yuanshen.data.vo.RouteVo;
 import site.yuanshen.data.vo.helper.PageListVo;
 import site.yuanshen.data.vo.helper.PageSearchVo;
 import site.yuanshen.genshin.core.service.RouteService;
+import site.yuanshen.genshin.core.service.UserAppenderService;
 
 import java.util.Collections;
 import java.util.List;
@@ -39,9 +40,12 @@ public class RouteController {
     @Operation(summary = "分页查询所有路线信息", description = "分页查询所有路线信息，会根据当前角色决定不同的显隐等级")
     @PostMapping("/get/page")
     public R<PageListVo<RouteVo>> listRoutePage(@RequestBody PageSearchVo pageSearchVo, @RequestHeader(value = "userDataLevel", required = false) String userDataLevel) {
-        return RUtils.create(
-                routeService.listRoutePage(new PageSearchDto(pageSearchVo),HiddenFlagEnum.getFlagList(userDataLevel))
+        R<PageListVo<RouteVo>> result = RUtils.create(
+                routeService.listRoutePage(new PageSearchDto(pageSearchVo), HiddenFlagEnum.getFlagList(userDataLevel))
         );
+        UserAppenderService.appendUser(result, result.getData().getRecord(), true, RouteVo::getCreatorId);
+        UserAppenderService.appendUser(result, result.getData().getRecord(), true, RouteVo::getUpdaterId);
+        return result;
     }
 
     @Operation(summary = "根据条件筛选分页查询路线信息", description = "根据条件筛选分页查询路线信息，会根据当前角色决定不同的显隐等级")
@@ -49,18 +53,24 @@ public class RouteController {
     public R<PageListVo<RouteVo>> listRoutePageSearch(@RequestBody RouteSearchVo searchVo, @RequestHeader(value = "userDataLevel", required = false) String userDataLevel) {
         RouteSearchDto searchDto = new RouteSearchDto(searchVo);
         searchDto.checkParams();
-        return RUtils.create(
+        R<PageListVo<RouteVo>> result = RUtils.create(
                 routeService.listRoutePageSearch(searchDto, HiddenFlagEnum.getFlagList(userDataLevel))
         );
+        UserAppenderService.appendUser(result, result.getData().getRecord(), true, RouteVo::getCreatorId);
+        UserAppenderService.appendUser(result, result.getData().getRecord(), true, RouteVo::getUpdaterId);
+        return result;
     }
 
     @Operation(summary = "根据id列表查询路线信息", description = "根据id列表查询路线信息，会根据当前角色决定不同的显隐等级")
     @PostMapping("/get/list_byid")
     public R<List<RouteVo>> listRouteById(@RequestBody List<Long> idList, @RequestHeader(value = "userDataLevel", required = false) String userDataLevel) {
-        return RUtils.create(
+        R<List<RouteVo>> result = RUtils.create(
                 routeService.listRouteById(idList, HiddenFlagEnum.getFlagList(userDataLevel))
                         .parallelStream().map(RouteDto::getVo).collect(Collectors.toList())
         );
+        UserAppenderService.appendUser(result, result.getData(), true, RouteVo::getCreatorId);
+        UserAppenderService.appendUser(result, result.getData(), true, RouteVo::getUpdaterId);
+        return result;
     }
 
     @Operation(summary = "新增路线", description = "返回新增路线ID")

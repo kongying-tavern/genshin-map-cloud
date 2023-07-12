@@ -20,6 +20,7 @@ import site.yuanshen.data.vo.ItemVo;
 import site.yuanshen.data.vo.helper.PageListVo;
 import site.yuanshen.genshin.core.manager.HistoryManager;
 import site.yuanshen.genshin.core.service.HistoryService;
+import site.yuanshen.genshin.core.service.UserAppenderService;
 
 /**
  * 历史记录
@@ -50,9 +51,12 @@ public class HistoryController {
     @Operation(summary = "历史记录分页", description = "历史记录分页")
     @PostMapping("/get/list")
     public R<PageListVo<HistoryVo>> getList(@RequestBody HistorySearchVo historySearchVo) {
-        return RUtils.create(
+        R<PageListVo<HistoryVo>> result = RUtils.create(
                 historyService.listPage(new HistorySearchDto(historySearchVo))
         );
+        UserAppenderService.appendUser(result, result.getData().getRecord(), true, HistoryVo::getCreatorId);
+        UserAppenderService.appendUser(result, result.getData().getRecord(), true, HistoryVo::getUpdaterId);
+        return result;
     }
 
     /**

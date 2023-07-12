@@ -41,12 +41,6 @@ public class RouteVo {
     private Long creatorId;
 
     /**
-     * 创建人信息
-     */
-    @Schema(title = "创建人信息")
-    private SysUserSmallVo creator;
-
-    /**
      * 创建时间
      */
     @Schema(title = "创建时间")
@@ -57,12 +51,6 @@ public class RouteVo {
      */
     @Schema(title = "更新人")
     private Long updaterId;
-
-    /**
-     * 更新人信息
-     */
-    @Schema(title = "更新人信息")
-    private SysUserSmallVo updater;
 
     /**
      * 更新时间

@@ -15,6 +15,7 @@ import site.yuanshen.data.enums.HiddenFlagEnum;
 import site.yuanshen.data.vo.AreaSearchVo;
 import site.yuanshen.data.vo.AreaVo;
 import site.yuanshen.genshin.core.service.AreaService;
+import site.yuanshen.genshin.core.service.UserAppenderService;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -38,18 +39,24 @@ public class AreaController {
     public R<List<AreaVo>> listArea(@RequestHeader(value = "userDataLevel",required = false) String userDataLevel, @RequestBody AreaSearchVo areaSearchVo) {
         //todo userDataLevel应该作为参数传入，vo作为前端传值不应该加userDataLevel
         areaSearchVo.setHiddenFlagList(HiddenFlagEnum.getFlagList(userDataLevel));
-        return RUtils.create(
+        R<List<AreaVo>> result = RUtils.create(
                 areaService.listArea(areaSearchVo)
                         .stream().map(AreaDto::getVo).collect(Collectors.toList())
         );
+        UserAppenderService.appendUser(result, result.getData(), true, AreaVo::getCreatorId);
+        UserAppenderService.appendUser(result, result.getData(), true, AreaVo::getUpdaterId);
+        return result;
     }
 
     @Operation(summary = "获取单个地区信息", description = "获取单个地区信息")
     @PostMapping("/get/{areaId}")
     public R<AreaVo> getArea(@RequestHeader(value = "userDataLevel",required = false) String userDataLevel,@PathVariable("areaId") Long areaId) {
-        return RUtils.create(
-                areaService.getArea(areaId,HiddenFlagEnum.getFlagList(userDataLevel)).getVo()
+        R<AreaVo> result = RUtils.create(
+                areaService.getArea(areaId, HiddenFlagEnum.getFlagList(userDataLevel)).getVo()
         );
+        UserAppenderService.appendUser(result, result.getData(), false, AreaVo::getCreatorId);
+        UserAppenderService.appendUser(result, result.getData(), false, AreaVo::getUpdaterId);
+        return result;
     }
 
     @Operation(summary = "新增地区", description = "返回新增地区ID")

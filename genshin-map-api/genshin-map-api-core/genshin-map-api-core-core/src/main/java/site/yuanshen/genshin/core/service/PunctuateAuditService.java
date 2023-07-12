@@ -110,8 +110,6 @@ public class PunctuateAuditService {
     public List<MarkerPunctuateDto> searchPunctuate(PunctuateSearchVo punctuateSearchVo) {
         List<Long> punctuateIdList = searchPunctuateId(punctuateSearchVo);
         List<MarkerPunctuateDto> result = listPunctuateById(punctuateIdList);
-        UserAppenderService.appendUser(result, MarkerPunctuateDto::getCreatorId, MarkerPunctuateDto::getCreatorId, MarkerPunctuateDto::setCreator);
-        UserAppenderService.appendUser(result, MarkerPunctuateDto::getUpdaterId, MarkerPunctuateDto::getUpdaterId, MarkerPunctuateDto::setUpdater);
         return result;
     }
 
@@ -128,8 +126,6 @@ public class PunctuateAuditService {
         List<MarkerPunctuateDto> result = markerPunctuateMapper.selectList(Wrappers.<MarkerPunctuate>lambdaQuery().in(MarkerPunctuate::getPunctuateId, punctuateIdList))
                 .parallelStream().map(MarkerPunctuateDto::new)
                 .collect(Collectors.toList());
-        UserAppenderService.appendUser(result, MarkerPunctuateDto::getCreatorId, MarkerPunctuateDto::getCreatorId, MarkerPunctuateDto::setCreator);
-        UserAppenderService.appendUser(result, MarkerPunctuateDto::getUpdaterId, MarkerPunctuateDto::getUpdaterId, MarkerPunctuateDto::setUpdater);
         return result;
     }
 
@@ -149,10 +145,6 @@ public class PunctuateAuditService {
                         .collect(Collectors.toList()))
                 .setSize(punctuatePage.getSize())
                 .setTotal(punctuatePage.getTotal());
-        List<MarkerPunctuateVo> result = page.getRecord();
-        UserAppenderService.appendUser(result, MarkerPunctuateVo::getCreatorId, MarkerPunctuateVo::getCreatorId, MarkerPunctuateVo::setCreator);
-        UserAppenderService.appendUser(result, MarkerPunctuateVo::getUpdaterId, MarkerPunctuateVo::getUpdaterId, MarkerPunctuateVo::setUpdater);
-        page.setRecord(result);
         return page;
     }
 

@@ -106,8 +106,6 @@ public class MarkerService {
     public List<MarkerVo> searchMarker(MarkerSearchVo markerSearchVo, List<Integer> hiddenFlagList) {
         List<Long> markerIdList = searchMarkerId(markerSearchVo, hiddenFlagList);
         List<MarkerVo> result = listMarkerById(markerIdList, hiddenFlagList);
-        UserAppenderService.appendUser(result, MarkerVo::getCreatorId, MarkerVo::getCreatorId, MarkerVo::setCreator);
-        UserAppenderService.appendUser(result, MarkerVo::getUpdaterId, MarkerVo::getUpdaterId, MarkerVo::setUpdater);
         return result;
     }
 
@@ -122,8 +120,6 @@ public class MarkerService {
         //为空直接返回
         if (markerIdList.isEmpty()) return new ArrayList<>();
         List<MarkerVo> result = markerDao.listMarkerById(markerIdList, hiddenFlagList);
-        UserAppenderService.appendUser(result, MarkerVo::getCreatorId, MarkerVo::getCreatorId, MarkerVo::setCreator);
-        UserAppenderService.appendUser(result, MarkerVo::getUpdaterId, MarkerVo::getUpdaterId, MarkerVo::setUpdater);
         return result;
     }
 
@@ -137,10 +133,6 @@ public class MarkerService {
      */
     public PageListVo<MarkerVo> listMarkerPage(PageSearchDto pageSearchDto,List<Integer> hiddenFlagList) {
         PageListVo<MarkerVo> page = markerDao.listMarkerPage(pageSearchDto, hiddenFlagList);
-        List<MarkerVo> result = page.getRecord();
-        UserAppenderService.appendUser(result, MarkerVo::getCreatorId, MarkerVo::getCreatorId, MarkerVo::setCreator);
-        UserAppenderService.appendUser(result, MarkerVo::getUpdaterId, MarkerVo::getUpdaterId, MarkerVo::setUpdater);
-        page.setRecord(result);
         return page;
     }
 
