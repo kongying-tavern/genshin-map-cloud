@@ -126,9 +126,9 @@ public class IconService {
                     .eq(IconTypeLink::getId, iconDto.getId()));
             iconTypeLinkMBPService.saveBatch(
                     newTypeIds.stream()
-                    .map(id -> new IconTypeLink()
+                    .map(typeId -> new IconTypeLink()
                             .withIconId(iconDto.getId())
-                            .withId(id))
+                            .withTypeId(typeId))
                             .collect(Collectors.toList())
             );
         }
@@ -164,7 +164,7 @@ public class IconService {
                 throw new RuntimeException("类型ID错误");
             iconTypeLinkMBPService.saveBatch(
                     typeIdList.stream()
-                            .map(id -> new IconTypeLink().withId(id).withIconId(icon.getId()))
+                            .map(typeId -> new IconTypeLink().withTypeId(typeId).withIconId(icon.getId()))
                             .collect(Collectors.toList())
             );
         }
