@@ -127,7 +127,7 @@ public class TagService {
     public Boolean updateTag(String tagName, Long iconId) {
         boolean isUpdate = tagMapper.update(null, Wrappers.<Tag>lambdaUpdate()
                 .eq(Tag::getTag, tagName)
-                .set(Tag::getId, iconId)) == 1;
+                .set(Tag::getIconId, iconId)) == 1;
         if (!isUpdate) throw new RuntimeException("未进行实质修改");
         return true;
     }

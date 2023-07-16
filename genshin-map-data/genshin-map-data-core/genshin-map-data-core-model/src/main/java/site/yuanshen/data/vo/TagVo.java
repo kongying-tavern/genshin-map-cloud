@@ -25,12 +25,6 @@ public class TagVo {
     private Long version;
 
     /**
-     * ID
-     */
-    @Schema(title = "ID")
-    private Long id;
-
-    /**
      * 创建人
      */
     @Schema(title = "创建人")
