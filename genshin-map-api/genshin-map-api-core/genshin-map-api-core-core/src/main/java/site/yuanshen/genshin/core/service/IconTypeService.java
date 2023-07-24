@@ -1,5 +1,6 @@
 package site.yuanshen.genshin.core.service;
 
+import cn.hutool.core.util.ObjUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
@@ -102,6 +103,11 @@ public class IconTypeService {
         //获取图标分类实体
         IconType iconType = iconTypeMapper.selectOne(Wrappers.<IconType>lambdaQuery()
                 .eq(IconType::getId, iconTypeDto.getId()));
+
+        if(ObjUtil.isNull(iconType)){
+            return false;
+        }
+
         //更改名称
         iconType.setName(iconTypeDto.getName());
         //判断是否是末端分类
