@@ -7,10 +7,9 @@ import site.yuanshen.data.mapper.ItemAreaPublicMapper;
 import site.yuanshen.genshin.core.service.mbp.ItemAreaPublicMBPService;
 
 /**
- * 地区公用物品记录表;创建新地区时直接作为基础关联 Mybatis Plus CRUD服务实现类
+ * 地区公用物品记录表 Mybatis Plus CRUD服务实现类
  *
- * @author Moment
- * @since 2022-06-25 12:17:27
+ * @author Mybatis Plus generator
  */
 @Service
 public class ItemAreaPublicMBPServiceImpl extends ServiceImpl<ItemAreaPublicMapper, ItemAreaPublic> implements ItemAreaPublicMBPService {

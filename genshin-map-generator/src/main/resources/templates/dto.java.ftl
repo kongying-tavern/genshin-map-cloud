@@ -14,7 +14,7 @@ import ${pkg};
 
 
 /**
- * ${table.comment}路数据封装
+ * ${table.comment}数据封装
  *
  * @since ${date}
  */

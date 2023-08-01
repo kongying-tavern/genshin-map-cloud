@@ -6,8 +6,7 @@ import site.yuanshen.data.entity.MarkerItemLink;
 /**
  * 点位-物品关联表 Mybatis Plus CRUD服务类
  *
- * @author Moment
- * @since 2022-06-25 12:17:27
+ * @author Mybatis Plus generator
  */
 public interface MarkerItemLinkMBPService extends IService<MarkerItemLink> {
 

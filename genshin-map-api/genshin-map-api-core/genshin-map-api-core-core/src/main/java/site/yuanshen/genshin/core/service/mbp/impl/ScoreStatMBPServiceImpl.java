@@ -9,10 +9,9 @@ import site.yuanshen.genshin.core.service.mbp.ScoreStatMBPService;
 /**
  * 评分统计 Mybatis Plus CRUD服务实现类
  *
- * @author Alex Fang
- * @since 2023-01-15 10:30:22
+ * @author Mybatis Plus generator
  */
 @Service
-public class ScoreStatMBPServiceImpl extends ServiceImpl<ScoreStatMapper, ScoreStat>implements ScoreStatMBPService {
+public class ScoreStatMBPServiceImpl extends ServiceImpl<ScoreStatMapper, ScoreStat> implements ScoreStatMBPService {
 
 }

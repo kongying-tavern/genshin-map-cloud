@@ -36,7 +36,7 @@ public class MBPGenerator {
                 .xmlPackage("mapper")
                 .voPackage("site.yuanshen.data.vo")
                 .dtoPackage("site.yuanshen.data.dto")
-                .apiPackageName("site.yuanshen.api")
+                .apiPackageName("site.yuanshen.genshin")
                 .apiModuleName("core")
                 .servicePackageAfterApi("service.mbp")
                 .serviceImplPackageAfterApi("service.mbp.impl")

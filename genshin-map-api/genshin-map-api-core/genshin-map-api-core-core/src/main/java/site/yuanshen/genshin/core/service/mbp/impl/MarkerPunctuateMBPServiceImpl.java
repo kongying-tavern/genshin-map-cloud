@@ -9,8 +9,7 @@ import site.yuanshen.genshin.core.service.mbp.MarkerPunctuateMBPService;
 /**
  * 点位提交表 Mybatis Plus CRUD服务实现类
  *
- * @author Moment
- * @since 2022-06-25 12:17:27
+ * @author Mybatis Plus generator
  */
 @Service
 public class MarkerPunctuateMBPServiceImpl extends ServiceImpl<MarkerPunctuateMapper, MarkerPunctuate> implements MarkerPunctuateMBPService {

@@ -1,12 +1,12 @@
 package ${package.Service};
 
-import ${package.Entity}.${entity};
 import ${superServiceClassPackage};
+import ${package.Entity}.${entity};
 
 /**
  * ${table.comment!} Mybatis Plus CRUD服务类
  *
- * @since ${date}
+ * @author Mybatis Plus generator
  */
 public interface ${table.serviceName} extends ${superServiceClass}<${entity}> {
 

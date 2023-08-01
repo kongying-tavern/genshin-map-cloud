@@ -9,8 +9,7 @@ import site.yuanshen.genshin.core.service.mbp.IconMBPService;
 /**
  * 图标主表 Mybatis Plus CRUD服务实现类
  *
- * @author Moment
- * @since 2022-06-25 12:17:27
+ * @author Mybatis Plus generator
  */
 @Service
 public class IconMBPServiceImpl extends ServiceImpl<IconMapper, Icon> implements IconMBPService {

@@ -6,8 +6,7 @@ import site.yuanshen.data.entity.TagTypeLink;
 /**
  * 图标标签分类关联表 Mybatis Plus CRUD服务类
  *
- * @author Moment
- * @since 2022-06-25 12:17:27
+ * @author Mybatis Plus generator
  */
 public interface TagTypeLinkMBPService extends IService<TagTypeLink> {
 
