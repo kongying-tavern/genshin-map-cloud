@@ -63,7 +63,7 @@ public class IconTagDaoImpl implements IconTagDao {
                     typeMap.put(typeLink.getTagName(), tempList);
                 });
         //收集图标信息
-        List<Long> iconIdList = tagDtoList.stream().map(TagDto::getId).distinct().collect(Collectors.toList());
+        List<Long> iconIdList = tagDtoList.stream().map(TagDto::getIconId).distinct().collect(Collectors.toList());
         Map<Long, String> urlMap = iconMapper.selectList(Wrappers.<Icon>lambdaQuery().in(Icon::getId, iconIdList))
                 .stream().collect(Collectors.toMap(Icon::getId, Icon::getUrl));
         return tagDtoList.stream().map(dto ->
