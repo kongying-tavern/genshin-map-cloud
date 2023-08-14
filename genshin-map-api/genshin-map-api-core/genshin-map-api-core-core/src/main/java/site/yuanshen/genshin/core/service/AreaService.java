@@ -125,7 +125,7 @@ public class AreaService {
     @Transactional
     @Caching(
             evict = {
-                    @CacheEvict(value = "area", key = "#areaDto.areaId"),
+                    @CacheEvict(value = "area", key = "#areaDto.id"),
                     @CacheEvict(value = "listArea", allEntries = true)
             }
     )
