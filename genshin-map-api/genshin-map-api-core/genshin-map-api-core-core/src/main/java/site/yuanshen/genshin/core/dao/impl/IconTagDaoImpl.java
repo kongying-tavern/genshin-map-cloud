@@ -69,7 +69,7 @@ public class IconTagDaoImpl implements IconTagDao {
         return tagDtoList.stream().map(dto ->
                                 dto.getVo()
                                         .withTypeIdList(typeMap.getOrDefault(dto.getTag(), new ArrayList<>()))
-                                        .withUrl(urlMap.getOrDefault(dto.getId(), "")))
+                                        .withUrl(urlMap.getOrDefault(dto.getIconId(), "")))
                         .collect(Collectors.toList());
     }
 
