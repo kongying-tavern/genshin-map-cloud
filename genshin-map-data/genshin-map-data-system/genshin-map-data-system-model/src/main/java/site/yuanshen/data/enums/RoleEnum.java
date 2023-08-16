@@ -9,12 +9,12 @@ import site.yuanshen.data.entity.SysRole;
 @Getter
 public enum RoleEnum {
 
-    ADMIN("ADMIN", "系统管理员", 2,1+2+4, 1),
-    MAP_MANAGER("MAP_MANAGER", "地图管理者", 3,1+2+4, 2),
-    MAP_NEIGUI("MAP_NEIGUI", "测试打点员", 4,1+2+4, 6),
-    MAP_PUNCTUATE("MAP_PUNCTUATE", "地图打点员", 5,1+2, 3),
-    MAP_USER("MAP_USER", "地图用户", 6,1, 4),
-    VISITOR("VISITOR", "匿名用户", 100,1, 5),
+    ADMIN("ADMIN", "系统管理员", 2, 1|2|4|8, 1),
+    MAP_MANAGER("MAP_MANAGER", "地图管理者", 3, 1|2|4|8, 2),
+    MAP_NEIGUI("MAP_NEIGUI", "测试打点员", 4,1|2|4|8, 6),
+    MAP_PUNCTUATE("MAP_PUNCTUATE", "地图打点员", 5, 1|2|8, 3),
+    MAP_USER("MAP_USER", "地图用户", 6, 1|8, 4),
+    VISITOR("VISITOR", "匿名用户", 100, 1|8, 5),
     ;
 
     /**

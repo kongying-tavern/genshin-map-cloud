@@ -16,8 +16,8 @@ import java.util.List;
 public enum HiddenFlagEnum {
     NORMAL(0,"正常点位"),
     INVISIBLE(1,"隐藏点位"),
-    TEST(2,"内鬼点位")
-
+    TEST(2,"内鬼点位"),
+    EASTER_EGG(3,"彩蛋点位")
     ;
 
     @Getter
