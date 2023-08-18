@@ -1,5 +1,6 @@
 package site.yuanshen.genshin.core.service;
 
+import cn.hutool.core.collection.CollUtil;
 import com.alibaba.fastjson2.JSON;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -164,8 +165,8 @@ public class SysUserService {
      */
     public PageListVo<SysUserVo> searchPage(SysUserSearchVo searchVo) {
         SysUserSearchDto searchDto = new SysUserSearchDto(searchVo);
-        
-        List<String> sort = searchDto.getSort();
+
+        List<String> sort = CollUtil.emptyIfNull(searchDto.getSort());
         boolean nickNameSortIsAcs = false;
         boolean createTimeIsAcs = false;
         for (String s : sort) {
