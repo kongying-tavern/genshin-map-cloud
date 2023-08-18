@@ -8,6 +8,11 @@ package site.yuanshen.genshin.core.service;
 public interface CacheService {
 
     /**
+     * 删除地区缓存
+     */
+    void cleanAreaCache();
+
+    /**
      * 删除所有标签缓存
      * @param tagName 标签名，为空时清除iconTag的所有缓存
      */

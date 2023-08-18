@@ -36,6 +36,16 @@ public class CacheServiceImpl implements CacheService {
     ThreadPoolExecutor executor = new ThreadPoolExecutor(10, 20, 200, TimeUnit.MILLISECONDS,
             new ArrayBlockingQueue<>(5));
 
+    @Override
+    @Caching(
+            evict = {
+                    @CacheEvict(value = "area", allEntries = true, beforeInvocation = true),
+                    @CacheEvict(value = "listArea", allEntries = true, beforeInvocation = true)
+            }
+    )
+    public void cleanAreaCache() {
+    }
+
     /**
      * 删除所有标签缓存
      */

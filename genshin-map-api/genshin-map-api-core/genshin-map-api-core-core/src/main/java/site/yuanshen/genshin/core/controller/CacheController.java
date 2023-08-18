@@ -28,6 +28,13 @@ public class CacheController {
 
     private final CacheService cacheService;
 
+    @Operation(summary = "删除地区缓存",description = "删除地区缓存")
+    @DeleteMapping("/area")
+    public R<Boolean> cleanAreaCache(){
+        cacheService.cleanAreaCache();
+        return RUtils.create(true);
+    }
+
     @Operation(summary = "删除标签缓存",description = "list为空则删除所有标签缓存")
     @DeleteMapping("/iconTag")
     public R<Boolean> cleanIconTagCache(@RequestBody List<String> nameList){
