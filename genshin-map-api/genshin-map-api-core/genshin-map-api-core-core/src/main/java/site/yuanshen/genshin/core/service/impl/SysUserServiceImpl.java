@@ -1,5 +1,6 @@
 package site.yuanshen.genshin.core.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
@@ -189,8 +190,8 @@ public class SysUserServiceImpl implements SysUserService {
     public PageListVo<SysUserVo> listPage(SysUserSearchDto sysUserSearchDto) {
         Boolean nickNameSortIsAcs = null;
         Boolean createTimeIsAcs = null;
-        List<String> sort = sysUserSearchDto.getSort();
-        for (String s :sort){
+        List<String> sort = CollUtil.emptyIfNull(sysUserSearchDto.getSort());
+        for (String s : sort){
             if (s.startsWith("createTime")){
                 if (s.endsWith("-")){
                     createTimeIsAcs = false;
