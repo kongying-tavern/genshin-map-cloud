@@ -4,15 +4,12 @@ import com.alibaba.fastjson.JSON;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import site.yuanshen.common.web.response.R;
 import site.yuanshen.common.web.response.RUtils;
-import site.yuanshen.data.dto.SysUserDto;
 import site.yuanshen.data.dto.SysUserPasswordUpdateDto;
 import site.yuanshen.data.dto.SysUserSearchDto;
 import site.yuanshen.data.dto.SysUserUpdateDto;
-import site.yuanshen.data.entity.SysUser;
 import site.yuanshen.data.enums.RoleEnum;
 import site.yuanshen.data.vo.SysUserRegisterVo;
 import site.yuanshen.data.vo.SysUserSearchVo;
@@ -65,18 +62,20 @@ public class SysUserController {
 
     @PostMapping("/update")
     public R<Boolean> updateUser(@RequestBody SysUserUpdateDto updateDto,
-                                 @RequestHeader("userId") Long headerUserId, @RequestHeader("Authorities") String authoritiesString) {
+                                 @RequestHeader("userId") String headerUserId, @RequestHeader("Authorities") String authoritiesString) {
         List<RoleEnum> userRoleList = JSON.parseArray(authoritiesString).toJavaList(String.class).stream().map(RoleEnum::valueOf).collect(Collectors.toList());
-        if (!(updateDto.getUserId().equals(headerUserId) || userRoleList.contains(RoleEnum.ADMIN)))
+        Long headerUserIdVal = Long.valueOf(headerUserId);
+        if (!(updateDto.getUserId().equals(headerUserIdVal) || userRoleList.contains(RoleEnum.ADMIN)))
             throw new RuntimeException("权限不足，无法更改其他用户信息");
         return RUtils.create(userService.updateUser(updateDto));
     }
 
     @PostMapping("/update_password")
     public R<Boolean> updateUserPassword(@RequestBody SysUserPasswordUpdateDto passwordUpdateDto,
-                                         @RequestHeader("userId") Long headerUserId, @RequestHeader("Authorities") String authoritiesString) {
+                                         @RequestHeader("userId") String headerUserId, @RequestHeader("Authorities") String authoritiesString) {
         List<RoleEnum> userRoleList = JSON.parseArray(authoritiesString).toJavaList(String.class).stream().map(RoleEnum::valueOf).collect(Collectors.toList());
-        if (!(passwordUpdateDto.getUserId().equals(headerUserId) || userRoleList.contains(RoleEnum.ADMIN)))
+        Long headerUserIdVal = Long.valueOf(headerUserId);
+        if (!(passwordUpdateDto.getUserId().equals(headerUserIdVal) || userRoleList.contains(RoleEnum.ADMIN)))
             throw new RuntimeException("权限不足，无法更改其他用户信息");
         return RUtils.create(userService.updatePassword(passwordUpdateDto));
     }
