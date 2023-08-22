@@ -37,49 +37,60 @@
     </select>
 
     <select id="selectPageFilterByHiddenFlag" resultType="site.yuanshen.data.entity.Marker">
+        with valid_id_list as (
+            select distinct mil.marker_id as "id"
+            from marker_item_link mil
+                join item i on i.id = mil.item_id and i.del_flag = false
+                join area a on a.id = i.area_id and a.del_flag = false
+            where
+                i.hidden_flag in
+                <foreach collection="hiddenFlags" item="hiddenFlag" open="(" close=")" separator=",">
+                    #{hiddenFlag}
+                </foreach>
+                and a.hidden_flag in
+                <foreach collection="hiddenFlags" item="hiddenFlag" open="(" close=")" separator=",">
+                    #{hiddenFlag}
+                </foreach>
+        )
         select
         <include refid="Base_Column_List"/>
         from marker
-        inner join marker_item_link mil on marker.id = mil.marker_id and mil.del_flag = false
-        inner join item i on i.id = mil.item_id and i.del_flag = false
-        inner join area a on a.id = i.area_id and a.del_flag = false
+            join valid_id_list on marker.id = valid_id_list.id
         <if test="ew.customSqlSegment ==null or ew.customSqlSegment == ''">
             where true and
         </if>
         ${ew.customSqlSegment}
-        i.hidden_flag in
-        <foreach collection="hiddenFlags" item="hiddenFlag" open="(" close=")" separator=",">
-            #{hiddenFlag}
-        </foreach>
-        and a.hidden_flag in
-        <foreach collection="hiddenFlags" item="hiddenFlag" open="(" close=")" separator=",">
-            #{hiddenFlag}
-        </foreach>
-        and marker.del_flag = false
+        marker.del_flag = false
     </select>
 
     <select id="selectListWithLargeInFilterByHiddenFlag" resultType="site.yuanshen.data.entity.Marker">
-        with id_list as (select unnest(${unnest}::bigint[]) "id")
+        with
+            id_list as (select unnest(${unnest}::bigint[]) "id"),
+            valid_id_list as (
+                select distinct mil.marker_id as "id"
+                from marker_item_link mil
+                    join id_list il on il.id = mil.marker_id
+                    join item i on i.id = mil.item_id and i.del_flag = false
+                    join area a on a.id = i.area_id and a.del_flag = false
+                where
+                    i.hidden_flag in
+                    <foreach collection="hiddenFlags" item="hiddenFlag" open="(" close=")" separator=",">
+                        #{hiddenFlag}
+                    </foreach>
+                    and a.hidden_flag in
+                    <foreach collection="hiddenFlags" item="hiddenFlag" open="(" close=")" separator=",">
+                        #{hiddenFlag}
+                    </foreach>
+            )
         select
         <include refid="Base_Column_List"/>
         from marker
-        inner join id_list on marker.id=id_list.id
-        inner join marker_item_link mil on marker.id = mil.marker_id and mil.del_flag = false
-        inner join item i on i.id = mil.item_id and i.del_flag = false
-        inner join area a on a.id = i.area_id and a.del_flag = false
+            join valid_id_list on marker.id = valid_id_list.id
         <if test="ew.customSqlSegment ==null or ew.customSqlSegment == ''">
             where true and
         </if>
         ${ew.customSqlSegment}
-        i.hidden_flag in
-        <foreach collection="hiddenFlags" item="hiddenFlag" open="(" close=")" separator=",">
-            #{hiddenFlag}
-        </foreach>
-        and a.hidden_flag in
-        <foreach collection="hiddenFlags" item="hiddenFlag" open="(" close=")" separator=",">
-            #{hiddenFlag}
-        </foreach>
-        and marker.del_flag = false
+        marker.del_flag = false
     </select>
 
 </mapper>

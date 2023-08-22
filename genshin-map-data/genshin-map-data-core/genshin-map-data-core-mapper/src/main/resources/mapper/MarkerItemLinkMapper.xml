@@ -7,7 +7,7 @@
         select unnest(${unnest}::bigint[]) "id2")
         select *
         from
-        marker_item_link as mil left join id_list on mil.id = id_list.id2
+        marker_item_link as mil join id_list on mil.id = id_list.id2
         <if test="ew.customSqlSegment ==null or ew.customSqlSegment == ''">
             where true
         </if>
@@ -19,7 +19,7 @@
         select unnest(${unnest}::bigint[]) "${column}2")
         select *
         from
-        marker_item_link as mil left join id_list on mil.${column} = id_list."${column}2"
+        marker_item_link as mil join id_list on mil.${column} = id_list."${column}2"
         <if test="ew.customSqlSegment ==null or ew.customSqlSegment == ''">
             where true
         </if>
