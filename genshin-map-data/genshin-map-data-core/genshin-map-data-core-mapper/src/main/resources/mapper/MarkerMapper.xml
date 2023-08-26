@@ -63,7 +63,7 @@
         marker.del_flag = false
     </select>
 
-    <select id="selectListWithLargeInFilterByHiddenFlag" resultType="site.yuanshen.data.entity.Marker">
+    <select id="selectListWithLargeInFilterByHiddenFlag" resultMap="BaseResultMap">
         with
             id_list as (select unnest(${unnest}::bigint[]) "id"),
             valid_id_list as (
