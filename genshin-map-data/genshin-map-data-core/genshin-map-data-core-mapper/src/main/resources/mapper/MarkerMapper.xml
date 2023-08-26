@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="site.yuanshen.data.mapper.MarkerMapper">
 
-    <select id="selectListWithLargeIn" resultType="site.yuanshen.data.entity.Marker">
+    <select id="selectListWithLargeIn" resultMap="BaseResultMap">
         with id_list as (
             select unnest(${unnest}::bigint[]) "id2")
         select *
@@ -13,7 +13,7 @@
          ${ew.customSqlSegment} del_flag = false
     </select>
 
-    <select id="selectWithLargeCustomIn" resultType="site.yuanshen.data.entity.Marker">
+    <select id="selectWithLargeCustomIn" resultMap="BaseResultMap">
         with id_list as (select unnest(${unnest}::bigint[]) "${column}2")
         select * from
         marker inner join id_list on marker.${column}=id_list."${column}2"
@@ -23,7 +23,7 @@
         ${ew.customSqlSegment}  del_flag = false
     </select>
 
-    <select id="selectListByMarkerItemLink" resultType="site.yuanshen.data.entity.Marker">
+    <select id="selectListByMarkerItemLink" resultMap="BaseResultMap">
         with id_list as (select unnest(${unnest}::bigint[]) "${column}2")
         select
         <include refid="Base_Column_List"/>
@@ -36,7 +36,7 @@
         where m.del_flag = false
     </select>
 
-    <select id="selectPageFilterByHiddenFlag" resultType="site.yuanshen.data.entity.Marker">
+    <select id="selectPageFilterByHiddenFlag" resultMap="BaseResultMap">
         with valid_id_list as (
             select distinct mil.marker_id as "id"
             from marker_item_link mil
