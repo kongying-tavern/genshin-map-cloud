@@ -172,6 +172,9 @@ public class MarkerServiceImpl implements MarkerService {
                 Collectors.collectingAndThen(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(o -> o.getItemId() + ";" + o.getMarkerId()))), ArrayList::new));
         markerItemLinkMBPService.saveBatch(itemLinkList);
 
+        //保存历史记录
+        saveHistoryMarker(buildMarkerDto(marker.getId(), new MarkerExtra()));
+
         return marker.getId();
     }
 
@@ -184,8 +187,11 @@ public class MarkerServiceImpl implements MarkerService {
     @Override
     @Transactional
     public Boolean addMarkerExtra(MarkerExtraDto markerExtraDto) {
+        MarkerExtra markerExtra = markerExtraDto.getEntity();
         boolean added = markerExtraMapper.insert(markerExtraDto.getEntity()) == 1;
 
+        //保存历史记录
+        saveHistoryMarker(buildMarkerDto(markerExtraDto.getMarkerId(), markerExtra));
 
         return added;
     }
