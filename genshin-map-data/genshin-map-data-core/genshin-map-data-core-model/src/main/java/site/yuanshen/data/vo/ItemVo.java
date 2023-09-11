@@ -120,4 +120,10 @@ public class ItemVo {
     @Schema(title = "物品类型ID列表")
     private List<Long> typeIdList;
 
+    /**
+     * 查询条件下物品总数
+     */
+    @Schema(title = "查询条件下物品总数")
+    private Integer count;
+
 }

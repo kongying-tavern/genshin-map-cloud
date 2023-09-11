@@ -110,6 +110,11 @@ public class ItemDto {
      */
     private List<Long> typeIdList;
 
+    /**
+     * 查询条件下物品总数
+     */
+    private Integer count;
+
     public ItemDto(Item item) {
         BeanUtils.copy(item, this);
     }

@@ -126,7 +126,10 @@ public class ItemService {
 
         List<ItemVo> result = itemPage.getRecords().stream()
                 .map(ItemDto::new)
-                .map(dto -> dto.withTypeIdList((itemToTypeMap.get(dto.getId()))))
+                .map(dto -> dto
+                    .withCount(markerItemLinkCount.getOrDefault(dto.getId(), 0))
+                    .withTypeIdList((itemToTypeMap.get(dto.getId())))
+                )
                 .map(ItemDto::getVo)
                 .sorted(Comparator.comparing(ItemVo::getSortIndex).thenComparing(ItemVo::getId).reversed()).collect(Collectors.toList());
         return new PageListVo<ItemVo>()
