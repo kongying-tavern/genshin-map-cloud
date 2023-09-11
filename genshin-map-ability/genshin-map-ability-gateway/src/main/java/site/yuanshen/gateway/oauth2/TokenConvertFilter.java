@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
@@ -33,6 +34,9 @@ public class TokenConvertFilter implements GlobalFilter, Ordered {
 
     private final NimbusJwtDecoder jwtDecoder;
     private final GenshinGatewayProperties genshinGatewayProperties;
+
+    @Value("${env:prd}")
+    private String env;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
@@ -77,9 +81,18 @@ public class TokenConvertFilter implements GlobalFilter, Ordered {
         String userName = userNameClaim.toString();
         String authorities = decode.getClaim("authorities").toString();
         String userId = decode.getClaim("userId").toString();
+        String env = decode.getClaim("env").toString();
+        log.debug("env: {}", env);
         log.debug("userName: " + userName);
         log.debug("authorities: " + authorities);
         log.debug("userId: " + userId);
+
+        if (!this.env.equals(env)) {
+            ServerHttpResponse response = exchange.getResponse();
+            response.setStatusCode(HttpStatus.FORBIDDEN);
+            return response.setComplete();
+        }
+
         final boolean isTestUser = JSONArray.parseArray(authorities, RoleEnum.class).stream().anyMatch(role -> role.getSort() <= RoleEnum.MAP_NEIGUI.getSort());
         ServerHttpRequest request = exchange.getRequest().mutate()
                 .headers(httpHeaders -> httpHeaders.remove("Authorization"))

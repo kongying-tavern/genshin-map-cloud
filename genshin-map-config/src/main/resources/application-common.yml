@@ -1,3 +1,5 @@
+env: prd-old
+
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
