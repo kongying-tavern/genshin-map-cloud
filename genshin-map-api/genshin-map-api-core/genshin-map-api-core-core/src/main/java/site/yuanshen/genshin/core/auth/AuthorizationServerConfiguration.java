@@ -1,6 +1,7 @@
 package site.yuanshen.genshin.core.auth;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
@@ -42,6 +43,9 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
     @Autowired
     private ClientDetailsServiceImpl clientDetailsServiceImpl;
 
+    @Value("${env:prd}")
+    private String env;
+
     @Bean
     public TokenStore tokenStore() {
         return jwtTokenStore();
@@ -61,6 +65,7 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
                 List<String> roleCodeList = Optional.of(roleList).orElse(new ArrayList<>()).stream().map(RoleEnum::getCode).collect(Collectors.toList());
                 additionalInfo.put("userId", userPrincipal.getUserId());
                 additionalInfo.put("userRoles", roleCodeList);
+                additionalInfo.put("env", env);
             }
             ((DefaultOAuth2AccessToken) oAuth2AccessToken).setAdditionalInformation(additionalInfo);
             return oAuth2AccessToken;
