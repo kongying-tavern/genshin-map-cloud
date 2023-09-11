@@ -81,13 +81,13 @@ public class TagService {
                     typeMap.put(typeLink.getTagName(), tempList);
                 });
         //收集图标信息
-        List<Long> iconIdList = tagDtoList.stream().map(TagDto::getId).distinct().collect(Collectors.toList());
+        List<Long> iconIdList = tagDtoList.stream().map(TagDto::getIconId).distinct().collect(Collectors.toList());
         Map<Long, String> urlMap = iconMapper.selectList(Wrappers.<Icon>lambdaQuery().in(Icon::getId, iconIdList))
                 .stream().collect(Collectors.toMap(Icon::getId, Icon::getUrl));
         PageListVo<TagVo> page = new PageListVo<TagVo>()
                 .setRecord(tagDtoList.stream().map(dto ->
                                 dto.getVo().withTypeIdList(typeMap.getOrDefault(dto.getTag(), new ArrayList<>()))
-                                        .withUrl(urlMap.getOrDefault(dto.getId(), "")))
+                                        .withUrl(urlMap.getOrDefault(dto.getIconId(), "")))
                         .collect(Collectors.toList()))
                 .setTotal(tagPage.getTotal())
                 .setSize(tagPage.getSize());
