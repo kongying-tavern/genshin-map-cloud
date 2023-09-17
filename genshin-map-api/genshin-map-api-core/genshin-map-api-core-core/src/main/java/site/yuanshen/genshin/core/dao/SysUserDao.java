@@ -1,5 +1,6 @@
 package site.yuanshen.genshin.core.dao;
 
+import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -80,6 +81,7 @@ public class SysUserDao {
         LambdaQueryWrapper<SysUser> wrapper = Wrappers.<SysUser>lambdaQuery()
                 .like(isNotBlank(searchDto.getNickname()), SysUser::getNickname, searchDto.getNickname())
                 .like(isNotBlank(searchDto.getUsername()), SysUser::getUsername, searchDto.getUsername())
+                .in(CollUtil.isNotEmpty(searchDto.getRoleIds()), SysUser::getRoleId, searchDto.getRoleIds())
                 .orderBy(createTimeIsAcs, Boolean.TRUE.equals(createTimeIsAcs), BaseEntity::getCreateTime);
 
         //此处mbp的分页优化有问题，关闭分页优化，减少报错日志
