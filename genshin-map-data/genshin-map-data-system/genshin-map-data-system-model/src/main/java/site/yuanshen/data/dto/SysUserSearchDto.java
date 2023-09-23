@@ -49,10 +49,16 @@ public class SysUserSearchDto {
     @Schema(title = "昵称")
     private String nickname;
 
+    /**
+     * 角色ID
+     */
+    @Schema(title = "角色ID")
+    private List<String> roleIds;
 
     /**
      * 排序条件
      */
+    @Schema(title = "排序条件")
     private List<String> sort;
 
 

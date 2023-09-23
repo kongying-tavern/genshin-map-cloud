@@ -33,7 +33,12 @@
         </if>
         ${ew.customSqlSegment} marker_item_link.${column}=id_list."${column}2" ) marker_id_list
         on m.id = marker_id_list.marker_id
-        where m.del_flag = false
+        where
+        m.hidden_flag in
+        <foreach collection="hiddenFlags" item="hiddenFlag" open="(" close=")" separator=",">
+            #{hiddenFlag}
+        </foreach>
+        and m.del_flag = false
     </select>
 
     <select id="selectPageFilterByHiddenFlag" resultMap="BaseResultMap">
@@ -60,7 +65,11 @@
             where true and
         </if>
         ${ew.customSqlSegment}
-        marker.del_flag = false
+        marker.hidden_flag in
+        <foreach collection="hiddenFlags" item="hiddenFlag" open="(" close=")" separator=",">
+            #{hiddenFlag}
+        </foreach>
+        and marker.del_flag = false
     </select>
 
     <select id="selectListWithLargeInFilterByHiddenFlag" resultMap="BaseResultMap">
@@ -90,7 +99,11 @@
             where true and
         </if>
         ${ew.customSqlSegment}
-        marker.del_flag = false
+        marker.hidden_flag in
+        <foreach collection="hiddenFlags" item="hiddenFlag" open="(" close=")" separator=",">
+            #{hiddenFlag}
+        </foreach>
+        and marker.del_flag = false
     </select>
 
 </mapper>
