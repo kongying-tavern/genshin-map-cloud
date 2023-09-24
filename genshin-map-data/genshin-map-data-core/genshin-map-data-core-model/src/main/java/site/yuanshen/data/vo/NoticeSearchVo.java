@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -16,7 +18,7 @@ public class NoticeSearchVo {
      * 频道
      */
     @Schema(title = "频道")
-    private String channel;
+    private List<String> channels;
 
     /**
      * 标题

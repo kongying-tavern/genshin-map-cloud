@@ -12,6 +12,8 @@ import site.yuanshen.data.dto.helper.PageSearchDto;
 import site.yuanshen.data.entity.Notice;
 import site.yuanshen.data.vo.NoticeSearchVo;
 
+import java.util.List;
+
 @Data
 @With
 @NoArgsConstructor
@@ -21,7 +23,7 @@ public class NoticeSearchDto extends PageSearchDto {
     /**
      * 频道
      */
-    private String channel;
+    private List<String> channels;
 
     /**
      * 标题
