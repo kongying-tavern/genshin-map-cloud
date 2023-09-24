@@ -39,6 +39,13 @@ public class CacheController {
         return RUtils.create(true);
     }
 
+    @Operation(summary = "删除地区缓存",description = "删除地区缓存")
+    @DeleteMapping("/area")
+    public R<Boolean> cleanAreaCache(){
+        cacheService.cleanAreaCache();
+        return RUtils.create(true);
+    }
+
     @Operation(summary = "删除全部物品缓存",description = "删除物品缓存")
     @DeleteMapping("/item")
     public R<Boolean> cleanItemCache(){

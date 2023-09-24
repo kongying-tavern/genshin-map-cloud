@@ -69,6 +69,15 @@ public class CacheService {
 
     @Caching(
             evict = {
+                    @CacheEvict(value = "area", allEntries = true, beforeInvocation = true),
+                    @CacheEvict(value = "listArea", allEntries = true, beforeInvocation = true)
+            }
+    )
+    public void cleanAreaCache() {
+    }
+
+    @Caching(
+            evict = {
                     @CacheEvict(value = "listItem", allEntries = true, beforeInvocation = true),
                     @CacheEvict(value = "listItemType", allEntries = true, beforeInvocation = true),
                     @CacheEvict(value = "listAllItemType", allEntries = true, beforeInvocation = true),
