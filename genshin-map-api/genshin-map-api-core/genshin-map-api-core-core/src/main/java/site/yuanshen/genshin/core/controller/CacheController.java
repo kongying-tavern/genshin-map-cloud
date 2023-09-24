@@ -66,4 +66,11 @@ public class CacheController {
         cacheService.cleanMarkerCache();
         return RUtils.create(true);
     }
+
+    @Operation(summary = "删除公告缓存",description = "删除公告缓存")
+    @DeleteMapping("/notice")
+    public R<Boolean> cleanNoticeCache(){
+        cacheService.cleanNoticeCache();
+        return RUtils.create(true);
+    }
 }

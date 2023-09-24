@@ -74,6 +74,7 @@ public class CacheService {
             }
     )
     public void cleanAreaCache() {
+        log.info("cleanAreaCache");
     }
 
     @Caching(
@@ -155,5 +156,14 @@ public class CacheService {
         } else { // 当前不存在事务
             executor.execute(r);
         }
+    }
+
+    @Caching(
+            evict = {
+                    @CacheEvict(value = "listNotice", allEntries = true, beforeInvocation = true)
+            }
+    )
+    public void cleanNoticeCache() {
+        log.info("cleanNoticeCache");
     }
 }
