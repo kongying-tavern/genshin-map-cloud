@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="site.yuanshen.data.mapper.NoticeMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="site.yuanshen.data.entity.Notice">
+        <id column="id" property="id"/>
+        <result column="creator_id" property="creatorId"/>
+        <result column="create_time" property="createTime"/>
+        <result column="del_flag" property="delFlag"/>
+        <result column="version" property="version"/>
+        <result column="updater_id" property="updaterId"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="channel" property="channel"/>
+        <result column="title" property="title"/>
+        <result column="content" property="content"/>
+        <result column="valid_time_start" property="validTimeStart"/>
+        <result column="valid_time_end" property="validTimeEnd"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        n.creator_id,
+        n.create_time,
+        n.del_flag,
+        n.version,
+        n.id,
+        n.updater_id,
+        n.update_time,
+        n.channel,
+        n.title,
+        n.content,
+        n.valid_time_start,
+        n.valid_time_end
+    </sql>
+
+</mapper>
