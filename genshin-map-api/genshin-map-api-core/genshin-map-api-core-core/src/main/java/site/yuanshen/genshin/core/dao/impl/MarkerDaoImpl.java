@@ -1,5 +1,6 @@
 package site.yuanshen.genshin.core.dao.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -196,7 +197,7 @@ public class MarkerDaoImpl implements MarkerDao {
                 .collect(Collectors.toList());
 
         //获取item_id,得到item合集
-        Map<Long, Item> itemMap = itemMapper.selectList(Wrappers.<Item>lambdaQuery().eq(Item::getHiddenFlag, 0).notIn(Item::getAreaId,hideAreas))
+        Map<Long, Item> itemMap = itemMapper.selectList(Wrappers.<Item>lambdaQuery().eq(Item::getHiddenFlag, 0).notIn(CollUtil.isNotEmpty(hideAreas), Item::getAreaId,hideAreas))
                 .stream().collect(Collectors.toMap(Item::getId, Item -> Item));
 
         ConcurrentHashMap<Long, List<MarkerItemLink>> itemLinkMap = new ConcurrentHashMap<>();

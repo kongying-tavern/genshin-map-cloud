@@ -69,6 +69,16 @@ public class CacheService {
 
     @Caching(
             evict = {
+                    @CacheEvict(value = "area", allEntries = true, beforeInvocation = true),
+                    @CacheEvict(value = "listArea", allEntries = true, beforeInvocation = true)
+            }
+    )
+    public void cleanAreaCache() {
+        log.info("cleanAreaCache");
+    }
+
+    @Caching(
+            evict = {
                     @CacheEvict(value = "listItem", allEntries = true, beforeInvocation = true),
                     @CacheEvict(value = "listItemType", allEntries = true, beforeInvocation = true),
                     @CacheEvict(value = "listAllItemType", allEntries = true, beforeInvocation = true),
@@ -146,5 +156,14 @@ public class CacheService {
         } else { // 当前不存在事务
             executor.execute(r);
         }
+    }
+
+    @Caching(
+            evict = {
+                    @CacheEvict(value = "listNotice", allEntries = true, beforeInvocation = true)
+            }
+    )
+    public void cleanNoticeCache() {
+        log.info("cleanNoticeCache");
     }
 }
