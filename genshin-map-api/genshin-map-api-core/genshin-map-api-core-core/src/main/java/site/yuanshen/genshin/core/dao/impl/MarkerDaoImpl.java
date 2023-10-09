@@ -1,6 +1,7 @@
 package site.yuanshen.genshin.core.dao.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -142,7 +143,12 @@ public class MarkerDaoImpl implements MarkerDao {
                 itemMapper.selectListWithLargeIn(PgsqlUtils.unnestStr(itemIdList),Wrappers.lambdaQuery())
                 .stream().collect(Collectors.toMap(Item::getId, Item -> Item))
         );
-        itemLinkMap.forEach((markerId,linkVoList)-> linkVoList.forEach(link->link.setIconTag(itemMap.get(link.getItemId()).getIconTag())));
+        itemLinkMap.forEach((markerId,linkVoList) ->
+            linkVoList.forEach(link -> {
+                final String iconTag = StrUtil.blankToDefault(itemMap.getOrDefault(link.getItemId(), new Item()).getIconTag(), "");
+                link.setIconTag(iconTag);
+            })
+        );
     }
 
     /**
