@@ -49,7 +49,7 @@ public class RestException {
             Arrays.stream(t.getStackTrace())
                 .map(StackTraceElement::toString)
                 .limit(8)
-                .collect(Collectors.joining())
+                .collect(Collectors.toList())
         );
     }
 
