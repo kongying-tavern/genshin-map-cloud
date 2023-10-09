@@ -15,6 +15,7 @@ import site.yuanshen.common.web.utils.RequestUtils;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -42,7 +43,14 @@ public class RestException {
             log.error("[Rest-Exception]-message: {}", t.getMessage());
             log.debug("[Rest-Exception]-debug error message:: {} - cause {}", t.getMessage(), t.getStackTrace());
         }
-        return RUtils.create(Codes.FAIL, Optional.ofNullable(t.getMessage()).orElse(t.toString()), null);
+        return RUtils.create(
+            Codes.FAIL,
+            "请求失败",
+            Arrays.stream(t.getStackTrace())
+                .map(StackTraceElement::toString)
+                .limit(8)
+                .collect(Collectors.joining())
+        );
     }
 
     /**

@@ -1,5 +1,6 @@
 package site.yuanshen.genshin.core.service;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
@@ -91,11 +92,9 @@ public class IconService {
         List<Long> typeIdList = iconTypeLinkMapper.selectList(Wrappers.<IconTypeLink>lambdaQuery()
                         .eq(IconTypeLink::getId, iconId)).stream()
                 .map(IconTypeLink::getTypeId).collect(Collectors.toList());
-        IconDto result = new IconDto(
-                iconMapper.selectOne(Wrappers.<Icon>lambdaQuery()
-                        .eq(Icon::getId, iconId))
-        );
-        return result == null ? null : result.getVo().withTypeIdList(typeIdList);
+        Icon iconEntity = iconMapper.selectOne(Wrappers.<Icon>lambdaQuery()
+            .eq(Icon::getId, iconId));
+        return iconEntity == null ? null : new IconDto(iconEntity).getVo().withTypeIdList(typeIdList);
     }
 
     /**
@@ -154,7 +153,7 @@ public class IconService {
         Icon icon = iconDto.getEntity();
         iconMapper.insert(icon);
         //处理类型信息
-        if (typeIdList != null) {
+        if (CollectionUtil.isNotEmpty(typeIdList)) {
             //判断是否有不存在的类型ID
             if (typeIdList.size() != iconTypeMapper.selectCount(Wrappers.<IconType>lambdaQuery().in(IconType::getId, typeIdList)))
                 throw new RuntimeException("类型ID错误");
