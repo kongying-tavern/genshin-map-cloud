@@ -47,4 +47,8 @@ application-datasource-dev.yml
 application-datasource-prod.yml
 application-datasource-uat.yml
 
-
+### Docker ###
+docker/.env
+docker/.env.*
+!docker/.env.example
+docker/**/.data

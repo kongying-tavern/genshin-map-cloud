@@ -1,0 +1,28 @@
+services:
+  postgresql:
+    container_name: gsapi-postgres
+    image: postgres:15
+    networks:
+      - gsapi
+    environment:
+      - POSTGRES_USER=${PGSQL_USER}
+      - POSTGRES_PASSWORD=${PGSQL_PASS}
+    volumes:
+      - ${DATA_DIR}/postgresql:/var/lib/postgresql
+    ports:
+      - ${PGSQL_PORT:-5432}:5432
+    restart: always
+  nacos:
+    container_name: gsapi-nacos
+    image: nacos/nacos-server:v2.0.4
+    networks:
+      - gsapi
+    environment:
+      - MODE=standalone
+    ports:
+      - ${NACOS_PORT_HTTP:-8848}:8848
+      - ${NACOS_PORT_GRPC_CLIENT:-9848}:9848
+      - ${NACOS_PORT_GRPC_SERVER:-9849}:9849
+networks:
+  gsapi:
+    name: gsapi
