@@ -31,6 +31,7 @@ genshin:
       - /api/marker/get/**
       - /api/marker_doc/**
     MAP_USER:
+      - /system/role/list
       - /system/user/info/**
       - /system/user/update
       - /system/user/update_password
