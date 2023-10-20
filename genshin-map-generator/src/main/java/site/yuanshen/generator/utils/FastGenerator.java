@@ -140,8 +140,8 @@ public class FastGenerator {
         pathMap.put(OutputFile.entity, outputBase + File.separator + "genshin-map-data/genshin-map-data-core/genshin-map-data-core-model/src/main/java");
         pathMap.put(OutputFile.service, outputBase + File.separator + "genshin-map-api/genshin-map-api-core/genshin-map-api-core-core/src/main/java");
         pathMap.put(OutputFile.serviceImpl, outputBase + File.separator + "genshin-map-api/genshin-map-api-core/genshin-map-api-core-core/src/main/java");
-        pathMap.put(OutputFile.mapper, outputBase + File.separator + "genshin-map-data/genshin-map-data-core/genshin-map-data-core-mapper/src/main/java");
-        pathMap.put(OutputFile.xml, outputBase + File.separator + "genshin-map-data/genshin-map-data-core/genshin-map-data-core-mapper/src/main/resources");
+        pathMap.put(OutputFile.mapper, outputBase + File.separator + "genshin-map-data/genshin-map-data-core/genshin-map-data-core-mapper/src/main/java/site/yuanshen/data/mapper");
+        pathMap.put(OutputFile.xml, outputBase + File.separator + "genshin-map-data/genshin-map-data-core/genshin-map-data-core-mapper/src/main/resources/mapper");
 
         return pathMap;
     }
