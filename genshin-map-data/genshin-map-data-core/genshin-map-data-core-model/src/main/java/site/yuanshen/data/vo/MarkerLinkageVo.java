@@ -1,9 +1,14 @@
 package site.yuanshen.data.vo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.With;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 
 /**
 * 点位关联前端封装
@@ -75,12 +80,12 @@ public class MarkerLinkageVo {
      * 路线
      */
     @Schema(title = "路线")
-    private String path;
+    private List<Object> path;
 
     /**
      * 额外数据
      */
     @Schema(title = "额外数据")
-    private String extra;
+    private Map<String, Object> extra;
 
 }

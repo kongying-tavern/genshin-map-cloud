@@ -1,12 +1,18 @@
 package site.yuanshen.data.dto;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
 import com.alibaba.fastjson2.annotation.JSONField;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.With;
 import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.entity.MarkerLinkage;
 import site.yuanshen.data.vo.MarkerLinkageVo;
+
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -69,12 +75,12 @@ public class MarkerLinkageDto {
     /**
      * 路线
      */
-    private String path;
+    private List<Object> path;
 
     /**
      * 额外数据
      */
-    private String extra;
+    private Map<String, Object> extra;
 
     public MarkerLinkageDto(MarkerLinkage markerLinkage) {
         BeanUtils.copy(markerLinkage, this);

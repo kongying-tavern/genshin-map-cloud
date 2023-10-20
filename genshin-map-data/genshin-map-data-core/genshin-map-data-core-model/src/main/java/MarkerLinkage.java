@@ -1,14 +1,14 @@
 package site.yuanshen.data.entity;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.annotation.Version;
-import java.time.LocalDateTime;
-import site.yuanshen.data.base.BaseEntity;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.*;
+import site.yuanshen.data.base.BaseEntity;
+import site.yuanshen.handler.MybatisPlusJsonArrayTypeHandler;
+import site.yuanshen.handler.MybatisPlusJsonObjectTypeHandler;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 点位关联
@@ -81,13 +81,13 @@ public class MarkerLinkage extends BaseEntity {
     /**
      * 路线
      */
-    @TableField("path")
-    private String path;
+    @TableField(value = "path", typeHandler = MybatisPlusJsonArrayTypeHandler.class)
+    private List<Object> path;
 
     /**
      * 额外数据
      */
-    @TableField("extra")
-    private String extra;
+    @TableField(value = "extra", typeHandler = MybatisPlusJsonObjectTypeHandler.class)
+    private Map<String, Object> extra;
 
 }
