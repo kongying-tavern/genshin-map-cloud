@@ -54,6 +54,16 @@ public class RestException {
     }
 
     /**
+     * 运行时错误处理方法
+     * @param e
+     * @return
+     */
+    @ExceptionHandler(RuntimeException.class)
+    public R runtimeExceptionHandler(RuntimeException r) {
+        return RUtils.create(Codes.FAIL, r.getMessage(), null);
+    }
+
+    /**
      * 对象数据校验异常处理方法
      */
     @ExceptionHandler({

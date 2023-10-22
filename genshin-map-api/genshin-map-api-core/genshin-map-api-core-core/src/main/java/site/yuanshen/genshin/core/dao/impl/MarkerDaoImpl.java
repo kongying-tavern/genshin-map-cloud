@@ -106,7 +106,7 @@ public class MarkerDaoImpl implements MarkerDao {
     @Override
     @Cacheable(value = "listMarkerById")
     public List<MarkerVo> listMarkerById(List<Long> markerIdList, List<Integer> hiddenFlagList) {
-        List<Marker> markerList = markerMapper.selectListWithLargeInFilterByHiddenFlag(PgsqlUtils.unnestStr(markerIdList),hiddenFlagList, Wrappers.lambdaQuery());
+        List<Marker> markerList = markerMapper.selectListWithLargeInFilterByHiddenFlag(PgsqlUtils.unnestLongStr(markerIdList),hiddenFlagList, Wrappers.lambdaQuery());
 
         markerIdList = markerList.stream().map(Marker::getId).collect(Collectors.toList());
 
@@ -126,7 +126,7 @@ public class MarkerDaoImpl implements MarkerDao {
      * @param itemMap 物品链接Map  key:item_id, value:item
      */
     public void getAllItemRelateInfoById(List<Long> markerIdList, ConcurrentHashMap<Long, List<MarkerItemLinkVo>> itemLinkMap, Map<Long, Item> itemMap) {
-        List<Long> itemIdList = markerItemLinkMapper.selectWithLargeCustomIn("marker_id", PgsqlUtils.unnestStr(markerIdList), Wrappers.lambdaQuery())
+        List<Long> itemIdList = markerItemLinkMapper.selectWithLargeCustomIn("marker_id", PgsqlUtils.unnestLongStr(markerIdList), Wrappers.lambdaQuery())
                 .parallelStream().map(markerItemLink -> {
                     itemLinkMap.compute(markerItemLink.getMarkerId(),
                             (markerId, linkList) -> {
@@ -140,7 +140,7 @@ public class MarkerDaoImpl implements MarkerDao {
                 .distinct().collect(Collectors.toList());
         //获取item_id,得到item合集
         itemMap.putAll(
-                itemMapper.selectListWithLargeIn(PgsqlUtils.unnestStr(itemIdList),Wrappers.lambdaQuery())
+                itemMapper.selectListWithLargeIn(PgsqlUtils.unnestLongStr(itemIdList),Wrappers.lambdaQuery())
                 .stream().collect(Collectors.toMap(Item::getId, Item -> Item))
         );
         itemLinkMap.forEach((markerId,linkVoList) ->

@@ -1,6 +1,8 @@
 package site.yuanshen.data.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import site.yuanshen.data.base.BaseEntity;
 import site.yuanshen.handler.MybatisPlusJsonArrayTypeHandler;

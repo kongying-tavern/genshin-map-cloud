@@ -38,4 +38,34 @@
         marker_linkage.extra
     </sql>
 
+    <select id="selectWithLargeCustomIn" resultType="site.yuanshen.data.entity.MarkerLinkage">
+        with id_list as ( select unnest(${unnest}::${type}[]) "${column}2")
+        select
+        <if test="ew.SqlSelect == null or ew.SqlSelect == ''">
+            <include refid="Base_Column_List"/>
+        </if>
+        ${ew.SqlSelect}
+        from
+        marker_linkage, id_list
+        <if test="ew.customSqlSegment ==null or ew.customSqlSegment == ''">
+            where true
+        </if>
+        ${ew.customSqlSegment} and marker_linkage.${column} = id_list."${column}2"
+    </select>
+
+    <select id="selectWithLargeMarkerIdIn" resultType="site.yuanshen.data.entity.MarkerLinkage">
+        WITH id_list AS (
+            SELECT UNNEST(${unnest}::bigint[]) "marker_id2"
+        )
+        SELECT ml.* FROM marker_linkage AS ml
+        JOIN id_list ON
+            ml.from_id = id_list.marker_id2 OR
+            ml.to_id = id_list.marker_id2
+        <if test="ew.customSqlSegment == null or ew.customSqlSegment == ''">
+            WHERE true
+        </if>
+        ${ew.customSqlSegment}
+        GROUP BY ml.id
+    </select>
+
 </mapper>
