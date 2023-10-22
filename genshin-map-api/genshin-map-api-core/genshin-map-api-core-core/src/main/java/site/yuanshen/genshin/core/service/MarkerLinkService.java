@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
+import site.yuanshen.common.core.exception.GenshinApiException;
 import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.entity.MarkerLinkage;
 import site.yuanshen.data.vo.MarkerLinkageVo;
@@ -58,13 +59,13 @@ public class MarkerLinkService {
             final Long fromId = linkageVo.getFromId();
             final Long toId = linkageVo.getToId();
             if(fromId == null || fromId.compareTo(0L) <= 0 || toId == null || toId.compareTo(0L) <= 0) {
-                throw new RuntimeException("无效的关联节点ID");
+                throw new GenshinApiException("无效的关联节点ID");
             } else if(fromId.compareTo(toId) == 0) {
-                throw new RuntimeException("不能将点位关联到自身");
+                throw new GenshinApiException("不能将点位关联到自身");
             }
         }
         if(CollUtil.isEmpty(linkageVos)) {
-            throw new RuntimeException("关联数据不可为空");
+            throw new GenshinApiException("关联数据不可为空");
         }
     }
 
