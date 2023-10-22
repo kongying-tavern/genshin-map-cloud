@@ -2,6 +2,7 @@ package site.yuanshen.genshin.core.utils;
 
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson2.JSON;
+import site.yuanshen.common.core.exception.GenshinApiException;
 import site.yuanshen.data.enums.RoleEnum;
 import site.yuanshen.data.vo.SysUserPasswordUpdateVo;
 import site.yuanshen.data.vo.SysUserRegisterVo;
@@ -71,7 +72,7 @@ public class UserUtils {
      */
     public static boolean checkRole(List<RoleEnum> roleEnumsList, RoleEnum role) {
         if (roleEnumsList.size() != 1 && !roleEnumsList.contains(RoleEnum.ADMIN))
-            throw new RuntimeException("目标权限异常，请联系管理员处理");
+            throw new GenshinApiException("目标权限异常，请联系管理员处理");
         for (RoleEnum roleEnum : roleEnumsList) {
             if (roleEnum.getSort() <= role.getSort()) return true;
         }

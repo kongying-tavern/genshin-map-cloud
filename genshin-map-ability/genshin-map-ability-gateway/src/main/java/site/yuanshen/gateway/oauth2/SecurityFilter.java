@@ -48,7 +48,7 @@ public class SecurityFilter implements GlobalFilter, Ordered {
         List<RoleEnum> userRoleList = authorities.toJavaList(String.class).stream().map(RoleEnum::valueOf).collect(Collectors.toList());
         //请求url
         String path = exchange.getRequest().getHeaders().getFirst("originalPath");
-        if (path == null) throw new RuntimeException("请求url拦截失败，请联系管理员");
+        if (path == null) throw new GenshinApiException("请求url拦截失败，请联系管理员");
         //配置文件中的url身份配置
         Map<String, List<String>> authoritiesFilter = genshinGatewayProperties.getAuthoritiesFilter();
         log.debug("Try to match security url map: {}", authoritiesFilter.toString());

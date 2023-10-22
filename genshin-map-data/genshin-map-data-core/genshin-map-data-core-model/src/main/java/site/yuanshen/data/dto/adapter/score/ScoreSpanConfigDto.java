@@ -2,6 +2,7 @@ package site.yuanshen.data.dto.adapter.score;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
+import site.yuanshen.common.core.exception.GenshinApiException;
 import site.yuanshen.common.core.utils.TimeUtils;
 import site.yuanshen.common.core.utils.TimeWrapper;
 import site.yuanshen.data.enums.ScoreSpanEnum;
@@ -57,10 +58,10 @@ public class ScoreSpanConfigDto {
      */
     private void validateData() {
         if(this.startTime == null || this.endTime == null) {
-            throw new RuntimeException("无效的时间范围");
+            throw new GenshinApiException("无效的时间范围");
         }
         if(this.span == null) {
-            throw new RuntimeException("无效的时间颗粒度");
+            throw new GenshinApiException("无效的时间颗粒度");
         }
     }
 

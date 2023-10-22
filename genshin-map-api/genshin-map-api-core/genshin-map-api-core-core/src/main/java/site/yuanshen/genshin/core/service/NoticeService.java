@@ -10,6 +10,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import site.yuanshen.common.core.exception.GenshinApiException;
 import site.yuanshen.common.core.utils.TimeUtils;
 import site.yuanshen.data.base.BaseEntity;
 import site.yuanshen.data.dto.NoticeDto;
@@ -68,7 +69,7 @@ public class NoticeService {
     )
     public Long createNotice(NoticeDto noticeDto) {
         if(StrUtil.isBlank(noticeDto.getChannel())) {
-            throw new RuntimeException("公告频道不能为空");
+            throw new GenshinApiException("公告频道不能为空");
         }
 
         Notice notice = noticeDto.getEntity();
@@ -84,7 +85,7 @@ public class NoticeService {
     )
     public Boolean updateNotice(NoticeDto noticeDto) {
         if(StrUtil.isBlank(noticeDto.getChannel())) {
-            throw new RuntimeException("公告频道不能为空");
+            throw new GenshinApiException("公告频道不能为空");
         }
 
         return 1 == noticeMapper.update(

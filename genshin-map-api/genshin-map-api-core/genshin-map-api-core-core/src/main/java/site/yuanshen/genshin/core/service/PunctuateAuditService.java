@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import site.yuanshen.common.core.exception.GenshinApiException;
 import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.dto.MarkerPunctuateDto;
 import site.yuanshen.data.dto.helper.PageSearchDto;
@@ -60,7 +61,7 @@ public class PunctuateAuditService {
 
 
         if (countTrue(isArea, isItem, isType) > 1)
-            throw new RuntimeException("条件冲突");
+            throw new GenshinApiException("条件冲突");
         List<Long> itemIdList = new ArrayList<>();
         //根据地区，类型来筛选出需要的物品id，如果直接是物品id则直接使用提交的物品id
         if (isArea) {
@@ -199,7 +200,7 @@ public class PunctuateAuditService {
                 return originalMarkerId;
             }
             default:
-                throw new RuntimeException("这是一条不可能的报错，如果你看到了这条报错，请立刻联系开发者");
+                throw new GenshinApiException("这是一条不可能的报错，如果你看到了这条报错，请立刻联系开发者");
         }
     }
 

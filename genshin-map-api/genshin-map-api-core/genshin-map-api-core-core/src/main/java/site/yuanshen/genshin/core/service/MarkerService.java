@@ -7,6 +7,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import site.yuanshen.common.core.exception.GenshinApiException;
 import site.yuanshen.common.core.utils.JsonUtils;
 import site.yuanshen.data.dto.MarkerDto;
 import site.yuanshen.data.dto.MarkerItemLinkDto;
@@ -57,7 +58,7 @@ public class MarkerService {
         boolean isItem = !(searchVo.getItemIdList() == null || searchVo.getItemIdList().isEmpty());
         boolean isType = !(searchVo.getTypeIdList() == null || searchVo.getTypeIdList().isEmpty());
         if (isArea && isItem || isArea && isType || isType && isItem)
-            throw new RuntimeException("条件冲突");
+            throw new GenshinApiException("条件冲突");
         List<Long> itemIdList = new ArrayList<>();
         if (isArea) {
             itemIdList = itemMapper.selectList(Wrappers.<Item>lambdaQuery()

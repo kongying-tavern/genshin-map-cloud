@@ -11,6 +11,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.caffeine.CaffeineCache;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
+import site.yuanshen.common.core.exception.GenshinApiException;
 import site.yuanshen.common.core.utils.CompressUtils;
 import site.yuanshen.common.core.utils.PgsqlUtils;
 import site.yuanshen.data.dto.ItemDto;
@@ -107,7 +108,7 @@ public class ItemDaoImpl implements ItemDao {
     @Cacheable(value = "listAllItemBz2", cacheManager = "neverRefreshCacheManager")
     public byte[] listAllItemBz2() {
         //通过refreshAllItemBz2()刷新失败
-        throw new RuntimeException("缓存未创建");
+        throw new GenshinApiException("缓存未创建");
     }
 
     /**
@@ -123,7 +124,7 @@ public class ItemDaoImpl implements ItemDao {
             byte[] result = JSON.toJSONString(itemList).getBytes(StandardCharsets.UTF_8);
             return CompressUtils.compress(result);
         } catch (Exception e) {
-            throw new RuntimeException("创建压缩失败", e);
+            throw new GenshinApiException("创建压缩失败", e);
         }
     }
 }

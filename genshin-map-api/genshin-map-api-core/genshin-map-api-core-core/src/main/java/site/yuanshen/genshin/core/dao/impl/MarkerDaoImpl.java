@@ -12,6 +12,7 @@ import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import site.yuanshen.common.core.exception.GenshinApiException;
 import site.yuanshen.common.core.utils.CompressUtils;
 import site.yuanshen.common.core.utils.PgsqlUtils;
 import site.yuanshen.data.dto.MarkerDto;
@@ -160,7 +161,7 @@ public class MarkerDaoImpl implements MarkerDao {
     @Override
     @Cacheable(value = "listPageMarkerByBz2", cacheManager = "neverRefreshCacheManager")
     public byte[] listPageMarkerByBz2(Integer index) {
-        throw new RuntimeException("缓存未创建或超出索引范围");
+        throw new GenshinApiException("缓存未创建或超出索引范围");
     }
 
     /**
@@ -177,7 +178,7 @@ public class MarkerDaoImpl implements MarkerDao {
             int totalPages = (int) ((lastId + 3000 - 1) / 3000);
             List<byte[]> result = new ArrayList<>();
             Cache bz2Cache = neverRefreshCacheManager.getCache("listPageMarkerByBz2");
-            if (bz2Cache == null) throw new RuntimeException("缓存未初始化");
+            if (bz2Cache == null) throw new GenshinApiException("缓存未初始化");
             for (int i = 0; i < totalPages; i++) {
                 int finalI = i;
                 byte[] page = JSON.toJSONString(
@@ -191,7 +192,7 @@ public class MarkerDaoImpl implements MarkerDao {
             }
             return result;
         } catch (Exception e) {
-            throw new RuntimeException("创建压缩失败", e);
+            throw new GenshinApiException("创建压缩失败", e);
         }
     }
 

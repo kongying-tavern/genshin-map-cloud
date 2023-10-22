@@ -7,6 +7,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import site.yuanshen.common.core.exception.GenshinApiException;
 import site.yuanshen.common.web.response.Codes;
 import site.yuanshen.common.web.response.R;
 import site.yuanshen.common.web.response.RUtils;
@@ -51,6 +52,16 @@ public class RestException {
                 .limit(8)
                 .collect(Collectors.toList())
         );
+    }
+
+    /**
+     * 运行时错误处理方法
+     * @param e
+     * @return
+     */
+    @ExceptionHandler(GenshinApiException.class)
+    public R runtimeExceptionHandler(RuntimeException r) {
+        return RUtils.create(Codes.FAIL, r.getMessage(), null);
     }
 
     /**
