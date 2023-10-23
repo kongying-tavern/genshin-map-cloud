@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import site.yuanshen.common.core.exception.GenshinApiException;
 import site.yuanshen.common.web.response.R;
 import site.yuanshen.common.web.response.RUtils;
 import site.yuanshen.data.dto.RouteDto;
@@ -106,7 +107,7 @@ public class RouteController {
         for (RoleEnum role : userRoleList) {
             if (role.compareTo(RoleEnum.MAP_MANAGER)>=0) return;
         }
-        if (!userId.equals(headerUserId)) throw new RuntimeException("无权限进行此路线操作，请检查路线所有者是否为当前用户");
+        if (!userId.equals(headerUserId)) throw new GenshinApiException("无权限进行此路线操作，请检查路线所有者是否为当前用户");
     }
 
 

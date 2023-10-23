@@ -8,6 +8,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import site.yuanshen.common.core.exception.GenshinApiException;
 import site.yuanshen.data.dto.MarkerPunctuateDto;
 import site.yuanshen.data.dto.helper.PageSearchDto;
 import site.yuanshen.data.entity.Marker;
@@ -116,7 +117,7 @@ public class PunctuateService {
                 .eq(MarkerPunctuate::getAuthor, authorId)
                 .in(MarkerPunctuate::getStatus, Arrays.asList(PunctuateStatusEnum.STAGE, PunctuateStatusEnum.REJECT)))
                 <= 0)
-            throw new RuntimeException("无可提交点位");
+            throw new GenshinApiException("无可提交点位");
         markerPunctuateMapper.update(null, Wrappers.<MarkerPunctuate>lambdaUpdate()
                 .eq(MarkerPunctuate::getAuthor, authorId)
                 .in(MarkerPunctuate::getStatus, Arrays.asList(PunctuateStatusEnum.STAGE, PunctuateStatusEnum.REJECT))

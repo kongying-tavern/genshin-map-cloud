@@ -9,6 +9,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import site.yuanshen.common.core.exception.GenshinApiException;
 import site.yuanshen.data.dto.IconDto;
 import site.yuanshen.data.dto.IconSearchDto;
 import site.yuanshen.data.entity.Icon;
@@ -156,7 +157,7 @@ public class IconService {
         if (CollectionUtil.isNotEmpty(typeIdList)) {
             //判断是否有不存在的类型ID
             if (typeIdList.size() != iconTypeMapper.selectCount(Wrappers.<IconType>lambdaQuery().in(IconType::getId, typeIdList)))
-                throw new RuntimeException("类型ID错误");
+                throw new GenshinApiException("类型ID错误");
             iconTypeLinkMBPService.saveBatch(
                     typeIdList.stream()
                             .map(typeId -> new IconTypeLink().withTypeId(typeId).withIconId(icon.getId()))

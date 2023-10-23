@@ -7,6 +7,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import site.yuanshen.common.core.exception.GenshinApiException;
 import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.dto.AreaDto;
 import site.yuanshen.data.entity.Area;
@@ -148,7 +149,7 @@ public class AreaService {
             }
         }
         if (areaDto.getId().equals(areaDto.getParentId())) {
-            throw new RuntimeException("地区ID不允许与父ID相同，会造成自身父子");
+            throw new GenshinApiException("地区ID不允许与父ID相同，会造成自身父子");
         }
         //更新实体
         BeanUtils.copyNotNull(areaDto.getEntity(),area);

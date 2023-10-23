@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import site.yuanshen.common.core.exception.GenshinApiException;
 import site.yuanshen.data.dto.TagDto;
 import site.yuanshen.data.dto.TagSearchDto;
 import site.yuanshen.data.entity.Icon;
@@ -128,7 +129,7 @@ public class TagService {
         boolean isUpdate = tagMapper.update(null, Wrappers.<Tag>lambdaUpdate()
                 .eq(Tag::getTag, tagName)
                 .set(Tag::getIconId, iconId)) == 1;
-        if (!isUpdate) throw new RuntimeException("与原数据一致，未进行实质修改");
+        if (!isUpdate) throw new GenshinApiException("与原数据一致，未进行实质修改");
         return true;
     }
 
@@ -147,7 +148,7 @@ public class TagService {
                 .eq(TagTypeLink::getTagName, tagDto.getTag()));
         //检验并插入新类型
         if (typeIdList.size() != tagTypeMapper.selectList(Wrappers.<TagType>lambdaQuery().in(TagType::getId, typeIdList)).size())
-            throw new RuntimeException("类型ID错误");
+            throw new GenshinApiException("类型ID错误");
         tagTypeLinkMBPService.saveBatch(
                 typeIdList.stream()
                         .map(id -> new TagTypeLink().withTagName(tagVo.getTag()).withTypeId(id))
@@ -185,7 +186,7 @@ public class TagService {
                 .eq(TagTypeLink::getTagName, tagName));
         if (tagMapper.delete(Wrappers.<Tag>lambdaQuery()
                 .eq(Tag::getTag, tagName)) != 1) {
-            throw new RuntimeException("无删除的标签");
+            throw new GenshinApiException("无删除的标签");
         }
         return true;
     }

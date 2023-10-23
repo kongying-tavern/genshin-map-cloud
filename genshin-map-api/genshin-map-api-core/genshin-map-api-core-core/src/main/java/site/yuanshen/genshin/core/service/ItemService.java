@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import site.yuanshen.common.core.exception.GenshinApiException;
 import site.yuanshen.data.dto.ItemDto;
 import site.yuanshen.data.dto.ItemSearchDto;
 import site.yuanshen.data.entity.*;
@@ -223,9 +224,9 @@ public class ItemService {
     @Transactional
     public Boolean joinItemsInType(List<Long> itemIdList, Long typeId) {
         if (itemTypeMapper.selectOne(Wrappers.<ItemType>lambdaQuery().eq(ItemType::getId, typeId)) == null)
-            throw new RuntimeException("类型ID错误");
+            throw new GenshinApiException("类型ID错误");
         if (!itemMapper.selectCount(Wrappers.<Item>lambdaQuery().in(Item::getId, itemIdList)).equals((long) itemIdList.size()))
-            throw new RuntimeException("物品ID存在错误");
+            throw new GenshinApiException("物品ID存在错误");
         boolean res = itemTypeLinkMBPService.saveBatch(
                 itemIdList.stream()
                         .map(id -> new ItemTypeLink()
@@ -251,7 +252,7 @@ public class ItemService {
         if (typeIdList != null) {
             //判断是否有不存在的类型ID
             if (typeIdList.size() != itemTypeMapper.selectCount(Wrappers.<ItemType>lambdaQuery().in(ItemType::getId, typeIdList)))
-                throw new RuntimeException("类型ID错误");
+                throw new GenshinApiException("类型ID错误");
             //批量保存
             itemTypeLinkMBPService.saveBatch(
                     typeIdList.stream()
@@ -305,7 +306,7 @@ public class ItemService {
         ItemAreaPublic itemAreaPublic = itemAreaPublicMapper.selectOne(Wrappers.<ItemAreaPublic>lambdaQuery()
                 .eq(ItemAreaPublic::getItemId, itemId));
         if (ObjUtil.isNotNull(itemAreaPublic)){
-            throw new RuntimeException("不允许删除公共物品");
+            throw new GenshinApiException("不允许删除公共物品");
         }
 
 

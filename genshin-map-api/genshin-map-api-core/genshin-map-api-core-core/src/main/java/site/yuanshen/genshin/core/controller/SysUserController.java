@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import site.yuanshen.common.core.exception.GenshinApiException;
 import site.yuanshen.common.web.response.R;
 import site.yuanshen.common.web.response.RUtils;
 import site.yuanshen.data.enums.RoleEnum;
@@ -32,15 +33,15 @@ public class SysUserController {
     @Operation(summary = "用户注册(管理员权限)", description = "用户注册(管理员权限)，可以注册任意用户名密码的用户")
     @PostMapping("/register")
     public R<Long> registerUser(@RequestBody SysUserRegisterVo registerVo) {
-        if (!UserUtils.checkRegisterParamEmpty(registerVo)) throw new RuntimeException("请检查注册参数，不允许空用户名或者空密码");
+        if (!UserUtils.checkRegisterParamEmpty(registerVo)) throw new GenshinApiException("请检查注册参数，不允许空用户名或者空密码");
         return RUtils.create(userService.register(registerVo));
     }
 
     @Operation(summary = "qq用户注册", description = "qq用户注册，会对qq的有效性进行验证，并且会关联qq机器人进行验证码验证")
     @PostMapping("/register/qq")
     public R<Long> registerUserByQQ(@RequestBody SysUserRegisterVo registerVo) {
-        if (!checkRegisterParamEmpty(registerVo)) throw new RuntimeException("请检查注册参数，不允许空qq号或者空密码");
-        if (!checkRegisterQQParam(registerVo)) throw new RuntimeException("qq号为空或格式不匹配");
+        if (!checkRegisterParamEmpty(registerVo)) throw new GenshinApiException("请检查注册参数，不允许空qq号或者空密码");
+        if (!checkRegisterQQParam(registerVo)) throw new GenshinApiException("qq号为空或格式不匹配");
         return RUtils.create(userService.registerByQQ(registerVo));
     }
 
@@ -51,7 +52,7 @@ public class SysUserController {
                                     @Parameter(hidden = true)
                                         @RequestHeader("Authorities") String rolesString) {
         if (!userId.equals(headerUserId) && !checkRole(rolesString, RoleEnum.MAP_MANAGER))
-            throw new RuntimeException("权限不足，无法查看其他用户信息");
+            throw new GenshinApiException("权限不足，无法查看其他用户信息");
         return RUtils.create(userService.getUserInfo(userId));
     }
 
@@ -70,7 +71,7 @@ public class SysUserController {
                                  @Parameter(hidden = true)
                                      @RequestHeader("Authorities") String rolesString) {
         if (!ObjUtil.equals(headerUserId, updateVo.getUserId()) && !checkRole(rolesString, RoleEnum.ADMIN))
-            throw new RuntimeException("权限不足，无法更新其他用户信息");
+            throw new GenshinApiException("权限不足，无法更新其他用户信息");
         return RUtils.create(userService.updateUser(updateVo));
     }
 
@@ -79,10 +80,10 @@ public class SysUserController {
     public R<Boolean> updateUserPassword(@RequestBody SysUserPasswordUpdateVo updateVo,
                                          @RequestHeader("userId") Long headerUserId) {
         if (!updateVo.getUserId().equals(headerUserId))
-            throw new RuntimeException("无法更改其他用户的密码！");
+            throw new GenshinApiException("无法更改其他用户的密码！");
         //todo ip加入风控链
         if (checkPasswordParamEmpty(updateVo, true)) {
-            throw new RuntimeException("密码不允许为空");
+            throw new GenshinApiException("密码不允许为空");
         }
         return RUtils.create(userService.updatePassword(updateVo));
     }
@@ -92,7 +93,7 @@ public class SysUserController {
     @PostMapping("/update_password_by_admin")
     public R<Boolean> updateUserPasswordByAdmin(@RequestBody SysUserPasswordUpdateVo updateVo) {
         if (checkPasswordParamEmpty(updateVo, false)) {
-            throw new RuntimeException("密码不允许为空");
+            throw new GenshinApiException("密码不允许为空");
         }
         return RUtils.create(userService.updatePasswordByAdmin(updateVo));
     }

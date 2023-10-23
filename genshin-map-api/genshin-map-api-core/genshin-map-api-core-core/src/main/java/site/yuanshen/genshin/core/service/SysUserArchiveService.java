@@ -4,6 +4,7 @@ import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import site.yuanshen.common.core.exception.GenshinApiException;
 import site.yuanshen.data.dto.SysUserArchiveDto;
 import site.yuanshen.data.dto.SysUserArchiveSlotDto;
 import site.yuanshen.data.entity.SysUserArchive;
@@ -76,7 +77,7 @@ public class SysUserArchiveService {
      * @return 是否成功
      */
     public Boolean createSlotAndSaveArchive(int slotIndex, String archive, Long userId, String name) {
-        if (this.getSlotEntity(slotIndex, userId) != null) throw new RuntimeException("槽位下标冲突，请重新选择下标");
+        if (this.getSlotEntity(slotIndex, userId) != null) throw new GenshinApiException("槽位下标冲突，请重新选择下标");
         return sysUserArchiveMapper.insert(
                 new SysUserArchive()
                         .withSlotIndex(slotIndex)
@@ -114,7 +115,7 @@ public class SysUserArchiveService {
      */
     public boolean renameSlot(int slotIndex, Long userId, String newName) {
         SysUserArchive archive = getSlotEntity(slotIndex, userId);
-        if (archive == null) throw new RuntimeException("槽位不存在");
+        if (archive == null) throw new GenshinApiException("槽位不存在");
         return sysUserArchiveMapper.updateById(archive.withName(newName)) == 1;
     }
 
@@ -141,7 +142,7 @@ public class SysUserArchiveService {
      * @return 是否成功
      */
     public Boolean removeArchive(int slotIndex, Long userId) {
-        if (this.getSlotEntity(slotIndex, userId) == null) throw new RuntimeException("槽位不存在");
+        if (this.getSlotEntity(slotIndex, userId) == null) throw new GenshinApiException("槽位不存在");
         return sysUserArchiveMapper.delete(
                 Wrappers.<SysUserArchive>lambdaQuery()
                         .eq(SysUserArchive::getUserId, userId)

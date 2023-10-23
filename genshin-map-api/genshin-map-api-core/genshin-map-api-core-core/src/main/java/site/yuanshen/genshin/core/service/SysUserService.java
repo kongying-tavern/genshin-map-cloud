@@ -10,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
+import site.yuanshen.common.core.exception.GenshinApiException;
 import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.dto.SysUserDto;
 import site.yuanshen.data.dto.SysUserSearchDto;
@@ -46,7 +47,7 @@ public class SysUserService {
     public Long register(SysUserRegisterVo registerVo) {
         String username = registerVo.getUsername();
         String password = registerVo.getPassword();
-        if (userDao.getUser(username).isPresent()) throw new RuntimeException("用户已存在，请检查是否输入正确");
+        if (userDao.getUser(username).isPresent()) throw new GenshinApiException("用户已存在，请检查是否输入正确");
         SysUserDto userDto = new SysUserDto(registerVo)
                 .withPassword(PasswordEncoderFactories.createDelegatingPasswordEncoder().encode(password))
                 .withRoleId(RoleEnum.MAP_USER.ordinal());
@@ -61,12 +62,12 @@ public class SysUserService {
     public Long registerByQQ(SysUserRegisterVo registerVo) {
         String qq = registerVo.getUsername();
         String password = registerVo.getPassword();
-        if (userDao.getUser(qq).isPresent()) throw new RuntimeException("qq号已被注册，请联系管理员");
+        if (userDao.getUser(qq).isPresent()) throw new GenshinApiException("qq号已被注册，请联系管理员");
 
         ResponseEntity<String> response = gbkRestTemplate.getForEntity("https://r.qzone.qq.com/fcg-bin/cgi_get_portrait.fcg?uins=" + qq, String.class);
         String qqInfo = response.getBody();
         if (!response.getStatusCode().equals(HttpStatus.OK) || qqInfo == null || !qqInfo.contains("portraitCallBack")) {
-            throw new RuntimeException("服务器无法连接qq服务器，请先检查使用的qq号是否正确");
+            throw new GenshinApiException("服务器无法连接qq服务器，请先检查使用的qq号是否正确");
         }
         String qqName;
         try {
@@ -75,7 +76,7 @@ public class SysUserService {
                     .getJSONArray(qq)
                     .getString(6);
         } catch (Exception e) {
-            throw new RuntimeException("QQ号有误，请使用真实的QQ号进行注册");
+            throw new GenshinApiException("QQ号有误，请使用真实的QQ号进行注册");
         }
         String qqLogo = "https://q1.qlogo.cn/g?b=qq&nk=" + qq + "&s=640";
 
@@ -135,7 +136,7 @@ public class SysUserService {
         SysUserDto userDto = userDao.getUserNotNull(userId);
         PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
         if (!passwordEncoder.matches(oldPassword, userDto.getPassword())) {
-            throw new RuntimeException("密码错误");
+            throw new GenshinApiException("密码错误");
         }
         userDto.setPassword(passwordEncoder.encode(password));
         return userDao.updateUser(userDto);
