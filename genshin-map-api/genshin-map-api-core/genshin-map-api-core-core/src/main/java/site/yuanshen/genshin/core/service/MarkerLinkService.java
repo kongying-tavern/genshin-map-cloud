@@ -1,9 +1,9 @@
 package site.yuanshen.genshin.core.service;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.IdUtil;
-import cn.hutool.core.util.StrUtil;
+import cn.hutool.core.util.*;
 import cn.hutool.crypto.SecureUtil;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import site.yuanshen.common.core.exception.GenshinApiException;
 import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.entity.MarkerLinkage;
+import site.yuanshen.data.vo.MarkerLinkageSearchVo;
 import site.yuanshen.data.vo.MarkerLinkageVo;
 import site.yuanshen.genshin.core.dao.MarkerLinkageDao;
+import site.yuanshen.genshin.core.service.mbp.MarkerLinkageMBPService;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -28,6 +30,21 @@ import java.util.stream.Collectors;
 public class MarkerLinkService {
 
     private final MarkerLinkageDao markerLinkageDao;
+    private final MarkerLinkageMBPService markerLinkageMBPService;
+
+    public Map<String, List<MarkerLinkageVo>> listLinkage(MarkerLinkageSearchVo markerLinkageSearchVo) {
+        List<String> groupIds = markerLinkageSearchVo.getGroupIds();
+        if(CollUtil.isEmpty(groupIds)) {
+            return new HashMap<>();
+        }
+
+        List<MarkerLinkageVo> linkageList = markerLinkageMBPService.list(Wrappers.<MarkerLinkage>lambdaQuery().in(MarkerLinkage::getGroupId, groupIds)).stream()
+            .map(markerLinkage -> BeanUtils.copy(markerLinkage, MarkerLinkageVo.class)).collect(Collectors.toList());
+        reverseLinkageIds(linkageList);
+        Map<String, List<MarkerLinkageVo>> linkageMap = linkageList.parallelStream().collect(Collectors.groupingBy(MarkerLinkageVo::getGroupId));
+
+        return linkageMap;
+    }
 
     @Transactional
     public String linkMarker(List<MarkerLinkageVo> linkageVos) {
@@ -53,6 +70,20 @@ public class MarkerLinkService {
         // 更新数据
         boolean linkSuccess = markerLinkageDao.saveOrUpdateBatch(linkageList);
         return linkSuccess ? groupId : "";
+    }
+
+    private void reverseLinkageIds(List<MarkerLinkageVo> linkageVos) {
+        for(MarkerLinkageVo linkageVo : linkageVos) {
+            final Long fromId = ObjectUtil.defaultIfNull(linkageVo.getFromId(), 0L);
+            final Long toId = ObjectUtil.defaultIfNull(linkageVo.getToId(), 0L);
+            final Boolean linkReverse = ObjectUtil.defaultIfNull(linkageVo.getLinkReverse(), false);
+
+            if(linkReverse) {
+                linkageVo.setFromId(toId);
+                linkageVo.setToId(fromId);
+                linkageVo.setLinkReverse(false);
+            }
+        }
     }
 
     private void checkLinkList(List<MarkerLinkageVo> linkageVos) {

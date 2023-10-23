@@ -9,10 +9,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import site.yuanshen.common.web.response.R;
 import site.yuanshen.common.web.response.RUtils;
+import site.yuanshen.data.vo.MarkerLinkageSearchVo;
 import site.yuanshen.data.vo.MarkerLinkageVo;
 import site.yuanshen.genshin.core.service.MarkerLinkService;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 点位关联 Controller 层
@@ -27,6 +29,14 @@ import java.util.List;
 public class MarkerLinkageController {
 
     private final MarkerLinkService markerLinkService;
+
+    @Operation(summary = "关联点位列表", description = "关联点位列表")
+    @PostMapping("/get/list")
+    public R<Map<String, List<MarkerLinkageVo>>> getList(@RequestBody MarkerLinkageSearchVo markerLinkageSearchVo) {
+        return RUtils.create(
+                markerLinkService.listLinkage(markerLinkageSearchVo)
+        );
+    }
 
     @Operation(summary = "关联点位", description = "关联点位数据")
     @PostMapping("/link")
