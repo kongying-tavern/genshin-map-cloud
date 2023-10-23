@@ -5,6 +5,7 @@ import cn.hutool.core.util.*;
 import cn.hutool.crypto.SecureUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,6 +33,7 @@ public class MarkerLinkService {
     private final MarkerLinkageDao markerLinkageDao;
     private final MarkerLinkageMBPService markerLinkageMBPService;
 
+    @Cacheable(value = "listMarkerLinkage")
     public Map<String, List<MarkerLinkageVo>> listLinkage(MarkerLinkageSearchVo markerLinkageSearchVo) {
         List<String> groupIds = markerLinkageSearchVo.getGroupIds();
         if(CollUtil.isEmpty(groupIds)) {

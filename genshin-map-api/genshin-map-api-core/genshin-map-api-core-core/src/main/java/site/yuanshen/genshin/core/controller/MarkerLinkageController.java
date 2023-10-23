@@ -11,6 +11,7 @@ import site.yuanshen.common.web.response.R;
 import site.yuanshen.common.web.response.RUtils;
 import site.yuanshen.data.vo.MarkerLinkageSearchVo;
 import site.yuanshen.data.vo.MarkerLinkageVo;
+import site.yuanshen.genshin.core.service.CacheService;
 import site.yuanshen.genshin.core.service.MarkerLinkService;
 
 import java.util.List;
@@ -29,6 +30,7 @@ import java.util.Map;
 public class MarkerLinkageController {
 
     private final MarkerLinkService markerLinkService;
+    private final CacheService cacheService;
 
     @Operation(summary = "关联点位列表", description = "关联点位列表")
     @PostMapping("/get/list")
@@ -41,8 +43,8 @@ public class MarkerLinkageController {
     @Operation(summary = "关联点位", description = "关联点位数据")
     @PostMapping("/link")
     public R<String> linkMarker(@RequestBody List<MarkerLinkageVo> markerLinkageVoList) {
-        return RUtils.create(
-                markerLinkService.linkMarker(markerLinkageVoList)
-        );
+        String groupId = markerLinkService.linkMarker(markerLinkageVoList);
+        cacheService.cleanMarkerLinkageCache();
+        return RUtils.create(groupId);
     }
 }
