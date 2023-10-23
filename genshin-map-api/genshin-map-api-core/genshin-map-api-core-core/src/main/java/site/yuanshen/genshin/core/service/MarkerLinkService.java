@@ -30,7 +30,7 @@ public class MarkerLinkService {
     private final MarkerLinkageDao markerLinkageDao;
 
     @Transactional
-    public boolean linkMarker(List<MarkerLinkageVo> linkageVos) {
+    public String linkMarker(List<MarkerLinkageVo> linkageVos) {
         // 校验数据可用性
         if(linkageVos == null) linkageVos = new ArrayList<>();
         linkageVos = linkageVos.parallelStream().filter(Objects::nonNull).collect(Collectors.toList());
@@ -51,7 +51,8 @@ public class MarkerLinkService {
         List<MarkerLinkage> linkageList = new ArrayList<>(linkageMap.values());
 
         // 更新数据
-        return markerLinkageDao.saveOrUpdateBatch(linkageList);
+        boolean linkSuccess = markerLinkageDao.saveOrUpdateBatch(linkageList);
+        return linkSuccess ? groupId : "";
     }
 
     private void checkLinkList(List<MarkerLinkageVo> linkageVos) {

@@ -30,7 +30,7 @@ public class MarkerLinkageController {
 
     @Operation(summary = "关联点位", description = "关联点位数据")
     @PostMapping("/link")
-    public R<Boolean> linkMarker(@RequestBody List<MarkerLinkageVo> markerLinkageVoList) {
+    public R<String> linkMarker(@RequestBody List<MarkerLinkageVo> markerLinkageVoList) {
         return RUtils.create(
                 markerLinkService.linkMarker(markerLinkageVoList)
         );
