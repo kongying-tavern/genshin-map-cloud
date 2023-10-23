@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
+import site.yuanshen.common.core.exception.GenshinApiException;
 import site.yuanshen.data.enums.RoleEnum;
 import site.yuanshen.gateway.config.GenshinGatewayProperties;
 
