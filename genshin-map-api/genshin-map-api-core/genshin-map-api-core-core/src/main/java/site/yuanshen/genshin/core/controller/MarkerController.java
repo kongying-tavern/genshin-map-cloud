@@ -104,6 +104,7 @@ public class MarkerController {
         Boolean result = markerService.deleteMarker(markerId);
         cacheService.cleanItemCache();
         cacheService.cleanMarkerCache();
+        cacheService.cleanMarkerLinkageCache();
         return RUtils.create(result);
     }
 

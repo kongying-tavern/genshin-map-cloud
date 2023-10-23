@@ -19,9 +19,11 @@ import site.yuanshen.data.vo.MarkerVo;
 import site.yuanshen.data.vo.helper.PageListVo;
 import site.yuanshen.genshin.core.convert.HistoryConvert;
 import site.yuanshen.genshin.core.dao.MarkerDao;
+import site.yuanshen.genshin.core.dao.MarkerLinkageDao;
 import site.yuanshen.genshin.core.service.mbp.MarkerItemLinkMBPService;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -39,6 +41,7 @@ public class MarkerService {
 
     private final MarkerMapper markerMapper;
     private final MarkerDao markerDao;
+    private final MarkerLinkageDao markerLinkageDao;
     private final MarkerItemLinkMapper markerItemLinkMapper;
     private final MarkerItemLinkMBPService markerItemLinkMBPService;
     private final MarkerPunctuateMapper markerPunctuateMapper;
@@ -197,6 +200,7 @@ public class MarkerService {
     public Boolean deleteMarker(Long markerId) {
         markerMapper.delete(Wrappers.<Marker>lambdaQuery().eq(Marker::getId, markerId));
         markerItemLinkMapper.delete(Wrappers.<MarkerItemLink>lambdaQuery().eq(MarkerItemLink::getMarkerId, markerId));
+        markerLinkageDao.removeRelatedLinkageList(Collections.singletonList(markerId), true);
         return true;
     }
 

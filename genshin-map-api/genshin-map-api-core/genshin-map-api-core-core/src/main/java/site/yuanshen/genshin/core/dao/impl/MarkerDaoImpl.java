@@ -18,14 +18,9 @@ import site.yuanshen.common.core.utils.PgsqlUtils;
 import site.yuanshen.data.dto.MarkerDto;
 import site.yuanshen.data.dto.MarkerItemLinkDto;
 import site.yuanshen.data.dto.helper.PageSearchDto;
-import site.yuanshen.data.entity.Area;
-import site.yuanshen.data.entity.Item;
-import site.yuanshen.data.entity.Marker;
-import site.yuanshen.data.entity.MarkerItemLink;
-import site.yuanshen.data.mapper.AreaMapper;
-import site.yuanshen.data.mapper.ItemMapper;
-import site.yuanshen.data.mapper.MarkerItemLinkMapper;
-import site.yuanshen.data.mapper.MarkerMapper;
+import site.yuanshen.data.entity.*;
+import site.yuanshen.data.entity.MarkerLinkage;
+import site.yuanshen.data.mapper.*;
 import site.yuanshen.data.vo.MarkerItemLinkVo;
 import site.yuanshen.data.vo.MarkerVo;
 import site.yuanshen.data.vo.helper.PageListVo;
@@ -47,6 +42,7 @@ public class MarkerDaoImpl implements MarkerDao {
 
     private final MarkerMapper markerMapper;
     private final MarkerItemLinkMapper markerItemLinkMapper;
+    private final MarkerLinkageMapper markerLinkageMapper;
     private final ItemMapper itemMapper;
     private final AreaMapper areaMapper;
     private final CacheManager neverRefreshCacheManager;
@@ -54,12 +50,14 @@ public class MarkerDaoImpl implements MarkerDao {
     @Autowired
     public MarkerDaoImpl(MarkerMapper markerMapper,
                          MarkerItemLinkMapper markerItemLinkMapper,
+                         MarkerLinkageMapper markerLinkageMapper,
                          ItemMapper itemMapper,
                          AreaMapper areaMapper,
                          @Qualifier("neverRefreshCacheManager")
                          CacheManager neverRefreshCacheManager) {
         this.markerMapper = markerMapper;
         this.markerItemLinkMapper = markerItemLinkMapper;
+        this.markerLinkageMapper = markerLinkageMapper;
         this.itemMapper = itemMapper;
         this.areaMapper = areaMapper;
         this.neverRefreshCacheManager = neverRefreshCacheManager;
@@ -89,9 +87,15 @@ public class MarkerDaoImpl implements MarkerDao {
         Map<Long, Item> itemMap = new HashMap<>();
         getAllItemRelateInfoById(markerIdList, itemLinkMap, itemMap);
 
+        ConcurrentHashMap<Long, String> markerLinkageMap = new ConcurrentHashMap<>();
+        getAllLinkageRelateInfoById(markerIdList, markerLinkageMap);
+
         return new PageListVo<MarkerVo>()
                 .setRecord(markerPage.getRecords().parallelStream()
-                        .map(marker -> new MarkerDto(marker).withItemList(itemLinkMap.get(marker.getId())).getVo())
+                        .map(marker -> new MarkerDto(marker)
+                            .withItemList(itemLinkMap.get(marker.getId()))
+                            .withLinkageId(markerLinkageMap.getOrDefault(marker.getId(), ""))
+                            .getVo())
                         .collect(Collectors.toList()))
                 .setTotal(markerPage.getTotal())
                 .setSize(markerPage.getSize());
@@ -107,7 +111,7 @@ public class MarkerDaoImpl implements MarkerDao {
     @Override
     @Cacheable(value = "listMarkerById")
     public List<MarkerVo> listMarkerById(List<Long> markerIdList, List<Integer> hiddenFlagList) {
-        List<Marker> markerList = markerMapper.selectListWithLargeInFilterByHiddenFlag(PgsqlUtils.unnestStr(markerIdList),hiddenFlagList, Wrappers.lambdaQuery());
+        List<Marker> markerList = markerMapper.selectListWithLargeInFilterByHiddenFlag(PgsqlUtils.unnestLongStr(markerIdList),hiddenFlagList, Wrappers.lambdaQuery());
 
         markerIdList = markerList.stream().map(Marker::getId).collect(Collectors.toList());
 
@@ -115,8 +119,14 @@ public class MarkerDaoImpl implements MarkerDao {
         Map<Long, Item> itemMap = new HashMap<>();
         getAllItemRelateInfoById(markerIdList, itemLinkMap, itemMap);
 
+        ConcurrentHashMap<Long, String> markerLinkageMap = new ConcurrentHashMap<>();
+        getAllLinkageRelateInfoById(markerIdList, markerLinkageMap);
+
         return markerList.parallelStream()
-                        .map(marker -> new MarkerDto(marker).withItemList(itemLinkMap.get(marker.getId())).getVo())
+                        .map(marker -> new MarkerDto(marker)
+                            .withItemList(itemLinkMap.get(marker.getId()))
+                            .withLinkageId(markerLinkageMap.getOrDefault(marker.getId(), ""))
+                            .getVo())
                         .collect(Collectors.toList());
     }
 
@@ -127,7 +137,7 @@ public class MarkerDaoImpl implements MarkerDao {
      * @param itemMap 物品链接Map  key:item_id, value:item
      */
     public void getAllItemRelateInfoById(List<Long> markerIdList, ConcurrentHashMap<Long, List<MarkerItemLinkVo>> itemLinkMap, Map<Long, Item> itemMap) {
-        List<Long> itemIdList = markerItemLinkMapper.selectWithLargeCustomIn("marker_id", PgsqlUtils.unnestStr(markerIdList), Wrappers.lambdaQuery())
+        List<Long> itemIdList = markerItemLinkMapper.selectWithLargeCustomIn("marker_id", PgsqlUtils.unnestLongStr(markerIdList), Wrappers.lambdaQuery())
                 .parallelStream().map(markerItemLink -> {
                     itemLinkMap.compute(markerItemLink.getMarkerId(),
                             (markerId, linkList) -> {
@@ -141,7 +151,7 @@ public class MarkerDaoImpl implements MarkerDao {
                 .distinct().collect(Collectors.toList());
         //获取item_id,得到item合集
         itemMap.putAll(
-                itemMapper.selectListWithLargeIn(PgsqlUtils.unnestStr(itemIdList),Wrappers.lambdaQuery())
+                itemMapper.selectListWithLargeIn(PgsqlUtils.unnestLongStr(itemIdList),Wrappers.lambdaQuery())
                 .stream().collect(Collectors.toMap(Item::getId, Item -> Item))
         );
         itemLinkMap.forEach((markerId,linkVoList) ->
@@ -150,6 +160,28 @@ public class MarkerDaoImpl implements MarkerDao {
                 link.setIconTag(iconTag);
             })
         );
+    }
+
+    public void getAllLinkageRelateInfoById(List<Long> markerIdList, ConcurrentHashMap<Long, String> markerLinkageMap) {
+        if(CollUtil.isEmpty(markerIdList)) {
+            return;
+        }
+        List<MarkerLinkage> markerLinkageList = markerLinkageMapper.selectWithLargeMarkerIdIn(PgsqlUtils.unnestLongStr(markerIdList), Wrappers.<MarkerLinkage>lambdaQuery().eq(MarkerLinkage::getDelFlag, false));
+        markerLinkageList.parallelStream()
+            .forEach(markerLinkage -> {
+                final Long fromId = markerLinkage.getFromId();
+                final Long toId = markerLinkage.getToId();
+                final String groupId = StrUtil.blankToDefault(markerLinkage.getGroupId(), "");
+                if(StrUtil.isBlank(groupId)) {
+                    return;
+                }
+                if(!markerLinkageMap.containsKey(fromId)) {
+                    markerLinkageMap.put(fromId, groupId);
+                }
+                if(!markerLinkageMap.containsKey(toId)) {
+                    markerLinkageMap.put(toId, groupId);
+                }
+            });
     }
 
     /**
@@ -223,6 +255,24 @@ public class MarkerDaoImpl implements MarkerDao {
                         }
                 );
 
+        // 获取marker_linkage关联
+        ConcurrentHashMap<Long, String> markerLinkageMap = new ConcurrentHashMap<>();
+        markerLinkageMapper.selectList(Wrappers.<MarkerLinkage>lambdaQuery())
+            .parallelStream().forEach(markerLinkage -> {
+                final Long fromId = markerLinkage.getFromId();
+                final Long toId = markerLinkage.getToId();
+                final String groupId = StrUtil.blankToDefault(markerLinkage.getGroupId(), "");
+                if(StrUtil.isBlank(groupId)) {
+                    return;
+                }
+                if(!markerLinkageMap.containsKey(fromId)) {
+                    markerLinkageMap.put(fromId, groupId);
+                }
+                if(!markerLinkageMap.containsKey(toId)) {
+                    markerLinkageMap.put(toId, groupId);
+                }
+            });
+
 
         return markerList.parallelStream()
                 .map(MarkerDto::new)
@@ -240,7 +290,9 @@ public class MarkerDaoImpl implements MarkerDao {
                                         })
                                         .filter(Objects::nonNull)
                                         .collect(Collectors.toList())
-                        ))
+                        )
+                        .withLinkageId(markerLinkageMap.getOrDefault(dto.getId(),""))
+                )
                 .map(MarkerDto::getVo)
                 .collect(Collectors.toList());
     }

@@ -30,6 +30,8 @@ genshin:
       - /api/item_doc/**
       - /api/marker/get/**
       - /api/marker_doc/**
+      - /api/marker_linkage/get/**
+      - /api/marker_linkage_doc/get/**
       - /api/notice/get/**
     MAP_USER:
       - /system/role/list
@@ -41,6 +43,7 @@ genshin:
     MAP_PUNCTUATE:
       - /api/punctuate/**
       - /api/marker/**
+      - /api/marker_linkage/**
     MAP_MANAGER:
       - /api/punctuate_audit/**
       - /api/tag/**

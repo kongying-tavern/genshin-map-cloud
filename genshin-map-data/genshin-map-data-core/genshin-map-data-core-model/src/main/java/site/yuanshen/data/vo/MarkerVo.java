@@ -130,4 +130,10 @@ public class MarkerVo {
     @Schema(title = "额外特殊字段")
     private Map<String, Object> extra;
 
+    /**
+     * 点位关联组ID
+     */
+    @Schema(title = "点位关联组ID")
+    private String linkageId;
+
 }
