@@ -13,5 +13,7 @@ public interface MarkerLinkageDao {
 
     List<MarkerLinkage> getRelatedLinkageList(List<Long> idList, boolean includeDeleted);
 
+    boolean removeRelatedLinkageList(List<Long> idList, boolean includeDeleted);
+
     boolean saveOrUpdateBatch(List<MarkerLinkage> markerLinkageList);
 }

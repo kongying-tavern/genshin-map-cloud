@@ -12,7 +12,6 @@ import site.yuanshen.genshin.core.dao.MarkerLinkageDao;
 import site.yuanshen.genshin.core.service.mbp.MarkerLinkageMBPService;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -65,6 +64,16 @@ public class MarkerLinkageDaoImpl implements MarkerLinkageDao {
                 .values());
 
         return list;
+    }
+
+    @Override
+    public boolean removeRelatedLinkageList(List<Long> idList, boolean includeDeleted) {
+        List<MarkerLinkage> linkageList = this.getRelatedLinkageList(idList, includeDeleted);
+        if(CollUtil.isEmpty(linkageList)) {
+            return true;
+        }
+        int deletedCount = markerLinkageMapper.deleteBatchIds(linkageList.stream().map(MarkerLinkage::getId).collect(Collectors.toList()));
+        return deletedCount >= 0;
     }
 
     @Override
