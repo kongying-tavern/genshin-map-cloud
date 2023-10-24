@@ -9,6 +9,7 @@ import lombok.With;
 import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.entity.MarkerLinkage;
 import site.yuanshen.data.vo.MarkerLinkageVo;
+import site.yuanshen.data.vo.adapter.markerLinkage.MarkerLinkagePathEdgeVo;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -75,7 +76,7 @@ public class MarkerLinkageDto {
     /**
      * 路线
      */
-    private List<Object> path;
+    private List<MarkerLinkagePathEdgeVo> path;
 
     /**
      * 额外数据

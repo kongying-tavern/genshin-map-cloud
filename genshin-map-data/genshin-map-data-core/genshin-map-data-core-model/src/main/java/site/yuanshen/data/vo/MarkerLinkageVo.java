@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.With;
+import site.yuanshen.data.vo.adapter.markerLinkage.MarkerLinkagePathEdgeVo;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -80,7 +81,7 @@ public class MarkerLinkageVo {
      * 路线
      */
     @Schema(title = "路线")
-    private List<Object> path;
+    private List<MarkerLinkagePathEdgeVo> path;
 
     /**
      * 额外数据

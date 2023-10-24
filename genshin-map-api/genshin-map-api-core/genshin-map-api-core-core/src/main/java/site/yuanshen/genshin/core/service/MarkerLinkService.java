@@ -149,6 +149,7 @@ public class MarkerLinkService {
             linkageItem.setToId(toId);
             linkageItem.setLinkAction(StrUtil.blankToDefault(linkageVo.getLinkAction(), ""));
             linkageItem.setLinkReverse(dirReverse);
+            linkageItem.setPath(CollUtil.defaultIfEmpty(linkageVo.getPath(), List.of()));
             linkageItem.setDelFlag(false);
 
             linkageMap.put(idHash, linkageItem);
