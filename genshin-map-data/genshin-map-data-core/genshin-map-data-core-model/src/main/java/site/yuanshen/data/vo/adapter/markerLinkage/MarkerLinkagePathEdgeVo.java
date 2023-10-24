@@ -1,10 +1,15 @@
 package site.yuanshen.data.vo.adapter.markerLinkage;
 
+import com.baomidou.mybatisplus.annotation.EnumValue;
+import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
+
+import java.io.Serializable;
 
 @Data
-public class MarkerLinkagePathEdgeVo {
+public class MarkerLinkagePathEdgeVo implements Serializable {
 
     @Schema(title = "起始点位ID", description = "输出时会转换为 X1 & Y1")
     private Long id1;
@@ -45,15 +50,26 @@ public class MarkerLinkagePathEdgeVo {
     @Schema(title = "线条样式")
     private LineType lineType;
 
+    @RequiredArgsConstructor
     public enum LineType {
-        SOLID,
-        DASHED
+        SOLID("SOLID"),
+        DASHED("DASHED"),
+        DOTTED("DOTTED");
+
+        @JsonValue
+        @EnumValue
+        public final String code;
     }
 
+    @RequiredArgsConstructor
     public enum ArrowType {
-        NONE,
-        ARROW,
-        CIRCLE,
-        DOT
+        NONE("NONE"),
+        ARROW("ARROW"),
+        CIRCLE("CIRCLE"),
+        DOT("DOT");
+
+        @JsonValue
+        @EnumValue
+        public final String code;
     }
 }

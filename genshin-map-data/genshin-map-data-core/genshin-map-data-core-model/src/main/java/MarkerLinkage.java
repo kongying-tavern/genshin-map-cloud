@@ -23,7 +23,7 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-@TableName("marker_linkage")
+@TableName(value = "marker_linkage", autoResultMap = true)
 public class MarkerLinkage extends BaseEntity {
 
     /**
