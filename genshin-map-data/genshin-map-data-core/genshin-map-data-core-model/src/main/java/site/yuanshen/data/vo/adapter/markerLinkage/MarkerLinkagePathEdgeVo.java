@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import java.io.Serializable;
 
 @Data
+@Schema(title = "点位关联路径线段前端封装")
 public class MarkerLinkagePathEdgeVo implements Serializable {
 
     @Schema(title = "起始点位ID", description = "输出时会转换为 X1 & Y1")
