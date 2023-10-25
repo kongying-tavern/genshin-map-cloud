@@ -17,6 +17,7 @@ import site.yuanshen.data.vo.MarkerLinkageVo;
 import site.yuanshen.genshin.core.dao.MarkerLinkageDao;
 import site.yuanshen.genshin.core.service.mbp.MarkerLinkageMBPService;
 
+import java.nio.ByteBuffer;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -116,7 +117,7 @@ public class MarkerLinkService {
     private Map<String, MarkerLinkage> getLinkSearchMap(List<MarkerLinkage> linkageVos) {
         final Map<String, MarkerLinkage> searchMap = new HashMap<>();
         for(MarkerLinkage linkageEntity : linkageVos) {
-            final String idHash = getIdHash(linkageEntity.getFromId(), linkageEntity.getToId());
+            final String idHash = getIdHash(Arrays.asList(linkageEntity.getFromId(), linkageEntity.getToId()));
             searchMap.put(idHash, linkageEntity);
         }
         return searchMap;
@@ -142,7 +143,7 @@ public class MarkerLinkService {
                 fromId = fromId ^ toId;
                 dirReverse = true;
             }
-            final String idHash = this.getIdHash(linkageVo.getFromId(), linkageVo.getToId());
+            final String idHash = this.getIdHash(Arrays.asList(linkageVo.getFromId(), linkageVo.getToId()));
             final MarkerLinkage linkageItem = linkageMap.getOrDefault(idHash, new MarkerLinkage());
             linkageItem.setGroupId(groupId);
             linkageItem.setFromId(fromId);
@@ -158,17 +159,10 @@ public class MarkerLinkService {
         return linkageMap;
     }
 
-    private String getIdHash(Long id1, Long id2) {
-        id1 = id1 == null ? 0L : id1;
-        id2 = id2 == null ? 0L : id2;
-        ByteBuffer buffer = ByteBuffer.allocate(Long.SIZE / Byte.SIZE * 2);
-        if(id1.compareTo(id2) > 0) {
-            buffer.putLong(id2);
-            buffer.putLong(id1);
-        } else {
-            buffer.putLong(id1);
-            buffer.putLong(id2);
-        }
+    private String getIdHash(Collection<Long> idList) {
+        idList = idList.stream().map(id -> ObjectUtil.defaultIfNull(id, 0L)).sorted().collect(Collectors.toList());
+        ByteBuffer buffer = ByteBuffer.allocate(Long.SIZE / Byte.SIZE * idList.size());
+        idList.forEach(buffer::putLong);
         final String idHash = SecureUtil.md5(buffer.toString());
         return idHash;
     }
