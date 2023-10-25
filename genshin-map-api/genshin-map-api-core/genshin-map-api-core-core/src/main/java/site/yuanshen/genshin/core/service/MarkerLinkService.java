@@ -161,10 +161,15 @@ public class MarkerLinkService {
     private String getIdHash(Long id1, Long id2) {
         id1 = id1 == null ? 0L : id1;
         id2 = id2 == null ? 0L : id2;
-        final String idStr1 = Long.toBinaryString(id1);
-        final String idStr2 = Long.toBinaryString(id2);
-        final String idStrHash = id1.compareTo(id2) > 0 ? idStr2 + idStr1 : idStr1 + idStr2;
-        final String idHash = SecureUtil.md5(idStrHash);
+        ByteBuffer buffer = ByteBuffer.allocate(Long.SIZE / Byte.SIZE * 2);
+        if(id1.compareTo(id2) > 0) {
+            buffer.putLong(id2);
+            buffer.putLong(id1);
+        } else {
+            buffer.putLong(id1);
+            buffer.putLong(id2);
+        }
+        final String idHash = SecureUtil.md5(buffer.toString());
         return idHash;
     }
 }
