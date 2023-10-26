@@ -1,6 +1,7 @@
 package site.yuanshen.data.vo.adapter.markerLinkage;
 
 import com.baomidou.mybatisplus.annotation.EnumValue;
+import com.baomidou.mybatisplus.annotation.IEnum;
 import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -52,25 +53,27 @@ public class MarkerLinkagePathEdgeVo implements Serializable {
     private LineType lineType;
 
     @RequiredArgsConstructor
-    public enum LineType {
-        SOLID("SOLID"),
-        DASHED("DASHED"),
-        DOTTED("DOTTED");
+    public enum LineType implements IEnum<String> {
+        SOLID,
+        DASHED,
+        DOTTED;
 
-        @JsonValue
-        @EnumValue
-        public final String code;
+        @Override
+        public String getValue() {
+            return this.name();
+        }
     }
 
     @RequiredArgsConstructor
-    public enum ArrowType {
-        NONE("NONE"),
-        ARROW("ARROW"),
-        CIRCLE("CIRCLE"),
-        DOT("DOT");
+    public enum ArrowType implements IEnum<String> {
+        NONE,
+        ARROW,
+        CIRCLE,
+        DOT;
 
-        @JsonValue
-        @EnumValue
-        public final String code;
+        @Override
+        public String getValue() {
+            return this.name();
+        }
     }
 }
