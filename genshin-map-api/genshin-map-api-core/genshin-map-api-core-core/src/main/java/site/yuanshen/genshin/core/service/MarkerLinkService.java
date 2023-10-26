@@ -1,7 +1,9 @@
 package site.yuanshen.genshin.core.service;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.*;
+import cn.hutool.core.util.ByteUtil;
+import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.crypto.SecureUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +19,7 @@ import site.yuanshen.data.vo.MarkerLinkageVo;
 import site.yuanshen.genshin.core.dao.MarkerLinkageDao;
 import site.yuanshen.genshin.core.service.mbp.MarkerLinkageMBPService;
 
-import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -114,9 +116,9 @@ public class MarkerLinkService {
         return idSet.parallelStream().filter(Objects::nonNull).collect(Collectors.toList());
     }
 
-    private Map<String, MarkerLinkage> getLinkSearchMap(List<MarkerLinkage> linkageVos) {
+    private Map<String, MarkerLinkage> getLinkSearchMap(List<MarkerLinkage> linkageList) {
         final Map<String, MarkerLinkage> searchMap = new HashMap<>();
-        for(MarkerLinkage linkageEntity : linkageVos) {
+        for(MarkerLinkage linkageEntity : linkageList) {
             final String idHash = getIdHash(Arrays.asList(linkageEntity.getFromId(), linkageEntity.getToId()));
             searchMap.put(idHash, linkageEntity);
         }
@@ -159,11 +161,17 @@ public class MarkerLinkService {
         return linkageMap;
     }
 
-    private String getIdHash(Collection<Long> idList) {
+    private String getIdHash(List<Long> idList) {
         idList = idList.stream().map(id -> ObjectUtil.defaultIfNull(id, 0L)).sorted().collect(Collectors.toList());
-        ByteBuffer buffer = ByteBuffer.allocate(Long.SIZE / Byte.SIZE * idList.size());
-        idList.forEach(buffer::putLong);
-        final String idHash = SecureUtil.md5(buffer.toString());
+        int byteSize = Long.BYTES * idList.size();
+        byte[] bytes = new byte[byteSize];
+
+        for(int i = 0; i < idList.size(); i++) {
+            Long id = idList.get(i);
+            byte[] idBytes = ByteUtil.longToBytes(id, ByteOrder.BIG_ENDIAN);
+            System.arraycopy(idBytes, 0, bytes, i * Long.BYTES, Long.BYTES);
+        }
+        final String idHash = SecureUtil.md5(Arrays.toString(bytes));
         return idHash;
     }
 }
