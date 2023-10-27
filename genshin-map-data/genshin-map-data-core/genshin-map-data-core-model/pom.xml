@@ -28,6 +28,10 @@
             <artifactId>genshin-map-data-system-model</artifactId>
             <version>${gsapi.version}</version>
         </dependency>
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-crypto</artifactId>
+        </dependency>
     </dependencies>
 
 </project>
