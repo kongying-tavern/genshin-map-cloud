@@ -13,6 +13,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class MarkerLinkageDataHelper {
+    //////////////START:通用方法//////////////
+
     public static void reverseLinkageIds(List<MarkerLinkageVo> linkageVos) {
         for(MarkerLinkageVo linkageVo : linkageVos) {
             final Long fromId = ObjectUtil.defaultIfNull(linkageVo.getFromId(), 0L);
@@ -27,7 +29,6 @@ public class MarkerLinkageDataHelper {
         }
     }
 
-
     public static List<Long> getLinkIdList(List<MarkerLinkageVo> linkageVos) {
         // 生成用到的 ID
         final Set<Long> idSet = new HashSet<>();
@@ -37,6 +38,24 @@ public class MarkerLinkageDataHelper {
         }
         return idSet.parallelStream().filter(Objects::nonNull).collect(Collectors.toList());
     }
+
+    public static String getIdHash(List<Long> idList) {
+        idList = idList.stream().map(id -> ObjectUtil.defaultIfNull(id, 0L)).sorted().collect(Collectors.toList());
+        int byteSize = Long.BYTES * idList.size();
+        byte[] bytes = new byte[byteSize];
+
+        for(int i = 0; i < idList.size(); i++) {
+            Long id = idList.get(i);
+            byte[] idBytes = ByteUtil.longToBytes(id, ByteOrder.BIG_ENDIAN);
+            System.arraycopy(idBytes, 0, bytes, i * Long.BYTES, Long.BYTES);
+        }
+        final String idHash = SecureUtil.md5(Arrays.toString(bytes));
+        return idHash;
+    }
+
+    //////////////END:通用方法//////////////
+
+    //////////////START:关联点位方法//////////////
 
     public static Map<String, MarkerLinkage> getLinkSearchMap(List<MarkerLinkage> linkageList) {
         final Map<String, MarkerLinkage> searchMap = new HashMap<>();
@@ -83,18 +102,6 @@ public class MarkerLinkageDataHelper {
         return linkageMap;
     }
 
-    public static String getIdHash(List<Long> idList) {
-        idList = idList.stream().map(id -> ObjectUtil.defaultIfNull(id, 0L)).sorted().collect(Collectors.toList());
-        int byteSize = Long.BYTES * idList.size();
-        byte[] bytes = new byte[byteSize];
-
-        for(int i = 0; i < idList.size(); i++) {
-            Long id = idList.get(i);
-            byte[] idBytes = ByteUtil.longToBytes(id, ByteOrder.BIG_ENDIAN);
-            System.arraycopy(idBytes, 0, bytes, i * Long.BYTES, Long.BYTES);
-        }
-        final String idHash = SecureUtil.md5(Arrays.toString(bytes));
-        return idHash;
-    }
+    //////////////END:关联点位方法//////////////
 
 }
