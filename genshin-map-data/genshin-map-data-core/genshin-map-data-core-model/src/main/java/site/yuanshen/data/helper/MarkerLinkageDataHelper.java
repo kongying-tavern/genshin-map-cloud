@@ -58,12 +58,11 @@ public class MarkerLinkageDataHelper {
     //////////////START:关联点位方法//////////////
 
     public static Map<String, MarkerLinkage> getLinkSearchMap(List<MarkerLinkage> linkageList) {
-        final Map<String, MarkerLinkage> searchMap = new HashMap<>();
-        for(MarkerLinkage linkageEntity : linkageList) {
-            final String idHash = MarkerLinkageDataHelper.getIdHash(Arrays.asList(linkageEntity.getFromId(), linkageEntity.getToId()));
-            searchMap.put(idHash, linkageEntity);
-        }
-        return searchMap;
+        return linkageList.parallelStream().collect(Collectors.toConcurrentMap(
+            linkageEntity -> MarkerLinkageDataHelper.getIdHash(Arrays.asList(linkageEntity.getFromId(), linkageEntity.getToId())),
+            linkageEntity -> linkageEntity,
+            (o, n) -> n
+        ));
     }
 
     public static Map<String, MarkerLinkage> patchLinkSearchMap(Map<String, MarkerLinkage> linkageMap, List<MarkerLinkageVo> linkageVos, String groupId) {
