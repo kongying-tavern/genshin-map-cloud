@@ -35,7 +35,7 @@ public class MarkerLinkService {
     private final MarkerLinkageMBPService markerLinkageMBPService;
 
     @Cacheable(value = "listMarkerLinkage")
-    public Map<String, List<MarkerLinkageVo>> listLinkage(MarkerLinkageSearchVo markerLinkageSearchVo) {
+    public Map<String, List<MarkerLinkageVo>> listMarkerLinkage(MarkerLinkageSearchVo markerLinkageSearchVo) {
         List<String> groupIds = markerLinkageSearchVo.getGroupIds();
         if(CollUtil.isEmpty(groupIds)) {
             return new HashMap<>();

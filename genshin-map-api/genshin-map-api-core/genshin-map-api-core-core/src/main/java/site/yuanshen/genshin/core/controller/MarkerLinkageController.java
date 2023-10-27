@@ -36,7 +36,7 @@ public class MarkerLinkageController {
     @PostMapping("/get/list")
     public R<Map<String, List<MarkerLinkageVo>>> getList(@RequestBody MarkerLinkageSearchVo markerLinkageSearchVo) {
         return RUtils.create(
-                markerLinkService.listLinkage(markerLinkageSearchVo)
+                markerLinkService.listMarkerLinkage(markerLinkageSearchVo)
         );
     }
 
