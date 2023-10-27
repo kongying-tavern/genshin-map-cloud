@@ -47,6 +47,16 @@ public class IconSearchDto {
     private List<Long> typeIdList;
 
     /**
+     * 图标名
+     */
+    @Schema(title = "图标名")
+    private String name;
+
+    public String getName() {
+        return "%" + name + "%";
+    }
+
+    /**
      * 当前页，从0开始
      */
     @Schema(title = "当前页，从0开始")
