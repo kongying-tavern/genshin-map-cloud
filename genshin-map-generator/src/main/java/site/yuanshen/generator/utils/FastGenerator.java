@@ -23,6 +23,8 @@ import java.io.File;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -133,15 +135,57 @@ public class FastGenerator {
                 .execute();
     }
 
+    private String getPathLocation(String base, String pathTag, boolean expandPackage) {
+        if(StrUtil.isBlank(base))
+            throw new IllegalArgumentException("base path cannot be blank");
+        else if(StrUtil.isBlank(pathTag))
+            throw new IllegalArgumentException("path tag cannot be empty");
+        else if(!StrUtil.startWithAny(pathTag, "R.", "J."))
+            throw new IllegalArgumentException("path tag start with an unexpected prefix");
+
+        final Map<String, String> prefixMap = new LinkedHashMap<>(){{
+            put("mapper", "genshin-map-data/genshin-map-data-core/genshin-map-data-core-mapper");
+            put("site.yuanshen.genshin.core", "genshin-map-api/genshin-map-api-core/genshin-map-api-core-core");
+            put("site.yuanshen.data.mapper", "genshin-map-data/genshin-map-data-core/genshin-map-data-core-mapper");
+            put("site.yuanshen.data", "genshin-map-data/genshin-map-data-core/genshin-map-data-core-model");
+        }};
+        final Map<String, String> slotMap = new HashMap<>(){{
+            put("J", "src/main/java");
+            put("R", "src/main/resources");
+        }};
+
+        final List<String> tagChunks = StrUtil.split(pathTag, '.', 2);
+        if(tagChunks.size() < 2)
+            throw new IllegalArgumentException("path tag does not match a valid path");
+        final String tagClassifier = tagChunks.get(0);
+        final String tagPackageName = tagChunks.get(1);
+
+        // Iterate to find match module base path
+        String pathPrefix = "";
+        for(Map.Entry<String, String> prefixEntry : prefixMap.entrySet()) {
+            if(StrUtil.startWith(tagPackageName,  prefixEntry.getKey())) {
+                pathPrefix = prefixEntry.getValue();
+                break;
+            }
+        }
+        if(StrUtil.isBlank(pathPrefix))
+            throw new IllegalArgumentException("unable to find module base path from path tag: " + tagPackageName);
+
+        final String pathSlot = slotMap.getOrDefault(tagClassifier, "");
+        final String pathPackage = expandPackage ? StrUtil.replace(tagPackageName, ".", File.separator) : "";
+        final String pathFull = base + File.separator + pathPrefix + File.separator + pathSlot + File.separator + pathPackage;
+        return pathFull;
+    }
+
     private Map<OutputFile, String> getPathMap() {
         final String outputBase = System.getProperty("user.dir") + outputDir;
         Map<OutputFile, String> pathMap = new HashMap<>();
 
-        pathMap.put(OutputFile.entity, outputBase + File.separator + "genshin-map-data/genshin-map-data-core/genshin-map-data-core-model/src/main/java");
-        pathMap.put(OutputFile.service, outputBase + File.separator + "genshin-map-api/genshin-map-api-core/genshin-map-api-core-core/src/main/java");
-        pathMap.put(OutputFile.serviceImpl, outputBase + File.separator + "genshin-map-api/genshin-map-api-core/genshin-map-api-core-core/src/main/java");
-        pathMap.put(OutputFile.mapper, outputBase + File.separator + "genshin-map-data/genshin-map-data-core/genshin-map-data-core-mapper/src/main/java/site/yuanshen/data/mapper");
-        pathMap.put(OutputFile.xml, outputBase + File.separator + "genshin-map-data/genshin-map-data-core/genshin-map-data-core-mapper/src/main/resources/mapper");
+        pathMap.put(OutputFile.entity, getPathLocation(outputBase, "J.site.yuanshen.data.entity", true));
+        pathMap.put(OutputFile.service, getPathLocation(outputBase, "J.site.yuanshen.genshin.core.service.mbp", true));
+        pathMap.put(OutputFile.serviceImpl, getPathLocation(outputBase, "J.site.yuanshen.genshin.core.service.mbp.impl", true));
+        pathMap.put(OutputFile.mapper, getPathLocation(outputBase, "J.site.yuanshen.data.mapper", true));
+        pathMap.put(OutputFile.xml, getPathLocation(outputBase, "R.mapper", true));
 
         return pathMap;
     }
@@ -150,8 +194,8 @@ public class FastGenerator {
         final String outputBase = System.getProperty("user.dir") + outputDir;
         Map<String, String> pathMap = new HashMap<>();
 
-        pathMap.put("dto", outputBase + File.separator + "genshin-map-data/genshin-map-data-core/genshin-map-data-core-model/src/main/java");
-        pathMap.put("vo", outputBase + File.separator + "genshin-map-data/genshin-map-data-core/genshin-map-data-core-model/src/main/java");
+        pathMap.put("dto", getPathLocation(outputBase, "J.site.yuanshen.data.dto", false));
+        pathMap.put("vo", getPathLocation(outputBase, "J.site.yuanshen.data.vo", false));
 
         return pathMap;
     }
