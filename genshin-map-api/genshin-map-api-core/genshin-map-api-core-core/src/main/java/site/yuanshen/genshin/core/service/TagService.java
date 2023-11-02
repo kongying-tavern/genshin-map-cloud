@@ -109,7 +109,7 @@ public class TagService {
                 .map(TagTypeLink::getTypeId).collect(Collectors.toList());
         Tag tag = tagMapper.selectOne(Wrappers.<Tag>lambdaQuery()
                 .eq(Tag::getTag, name));
-        Icon icon = iconMapper.selectOne(Wrappers.<Icon>lambdaQuery().eq(Icon::getId, tag.getId()));
+        Icon icon = iconMapper.selectOne(Wrappers.<Icon>lambdaQuery().eq(Icon::getId, tag.getIconId()));
         TagVo result = new TagDto(tag)
                 .getVo()
                 .withTypeIdList(typeIdList)
