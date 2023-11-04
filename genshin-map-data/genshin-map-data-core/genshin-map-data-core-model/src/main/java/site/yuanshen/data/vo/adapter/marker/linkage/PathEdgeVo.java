@@ -1,8 +1,6 @@
-package site.yuanshen.data.vo.adapter.markerLinkage;
+package site.yuanshen.data.vo.adapter.marker.linkage;
 
-import com.baomidou.mybatisplus.annotation.EnumValue;
 import com.baomidou.mybatisplus.annotation.IEnum;
-import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +9,7 @@ import java.io.Serializable;
 
 @Data
 @Schema(title = "点位关联路径线段前端封装")
-public class MarkerLinkagePathEdgeVo implements Serializable {
+public class PathEdgeVo implements Serializable {
 
     @Schema(title = "起始点位ID", description = "输出时会转换为 X1 & Y1")
     private Long id1;
