@@ -149,6 +149,13 @@ public class TagService {
         //删除旧类型链接
         tagTypeLinkMapper.delete(Wrappers.<TagTypeLink>lambdaQuery()
                 .eq(TagTypeLink::getTagName, tagDto.getTag()));
+
+        //更新标签信息
+        tagMapper.update(null, Wrappers.<Tag>lambdaUpdate()
+               .eq(Tag::getTag, tagDto.getTag())
+               .set(Tag::getUpdateTime, LocalDateTime.now())
+               .set(Tag::getUpdaterId, UserUtils.getUserId()));
+
         if(CollUtil.isEmpty(typeIdList)) {
             return true;
         }
