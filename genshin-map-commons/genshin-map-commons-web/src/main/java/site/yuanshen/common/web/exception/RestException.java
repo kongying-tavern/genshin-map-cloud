@@ -1,5 +1,6 @@
 package site.yuanshen.common.web.exception;
 
+import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
@@ -17,7 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import java.util.Arrays;
-import java.util.Optional;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -28,6 +29,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @RestControllerAdvice
 public class RestException {
+    private static final String PROJECT_PACKAGE_PREFIX = "site.yuanshen";
 
     /**
      * 统一异常处理方法
@@ -44,19 +46,28 @@ public class RestException {
             log.error("[Rest-Exception]-message: {}", t.getMessage());
             log.debug("[Rest-Exception]-debug error message:: {} - cause {}", t.getMessage(), t.getStackTrace());
         }
+
+        List<String> stl = Arrays.stream(t.getStackTrace())
+                .filter(v -> {
+                    try {
+                        final String className = v.getClassName();
+                        return StrUtil.startWith(className, PROJECT_PACKAGE_PREFIX);
+                    } catch(Throwable err) {
+                        return false;
+                    }
+                })
+                .map(StackTraceElement::toString)
+                .collect(Collectors.toList());
         return RUtils.create(
             Codes.FAIL,
             "请求失败",
-            Arrays.stream(t.getStackTrace())
-                .map(StackTraceElement::toString)
-                .limit(8)
-                .collect(Collectors.toList())
+            stl
         );
     }
 
     /**
      * 运行时错误处理方法
-     * @param e
+     * @param r
      * @return
      */
     @ExceptionHandler(GenshinApiException.class)
