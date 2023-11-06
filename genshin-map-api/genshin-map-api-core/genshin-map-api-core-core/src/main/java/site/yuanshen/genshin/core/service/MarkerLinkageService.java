@@ -2,7 +2,6 @@ package site.yuanshen.genshin.core.service;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.IdUtil;
-import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
@@ -15,6 +14,7 @@ import site.yuanshen.data.entity.MarkerLinkage;
 import site.yuanshen.data.helper.MarkerLinkageDataHelper;
 import site.yuanshen.data.vo.MarkerLinkageSearchVo;
 import site.yuanshen.data.vo.MarkerLinkageVo;
+import site.yuanshen.data.vo.adapter.marker.linkage.graph.GraphVo;
 import site.yuanshen.genshin.core.dao.MarkerLinkageDao;
 import site.yuanshen.genshin.core.service.mbp.MarkerLinkageMBPService;
 
@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 @Service
 @RequestMapping
 @RequiredArgsConstructor
-public class MarkerLinkService {
+public class MarkerLinkageService {
 
     private final MarkerLinkageDao markerLinkageDao;
     private final MarkerLinkageMBPService markerLinkageMBPService;
@@ -47,6 +47,23 @@ public class MarkerLinkService {
         Map<String, List<MarkerLinkageVo>> linkageMap = linkageList.parallelStream().collect(Collectors.groupingBy(MarkerLinkageVo::getGroupId));
 
         return linkageMap;
+    }
+
+    @Cacheable(value = "graphMarkerLinkage")
+    public Map<String, GraphVo> graphMarkerLinkage(MarkerLinkageSearchVo markerLinkageSearchVo) {
+        List<String> groupIds = markerLinkageSearchVo.getGroupIds();
+        if(CollUtil.isEmpty(groupIds)) {
+            return new HashMap<>();
+        }
+
+        // 获取关联列表
+        List<MarkerLinkageVo> linkageList = markerLinkageMBPService.list(Wrappers.<MarkerLinkage>lambdaQuery().in(MarkerLinkage::getGroupId, groupIds)).parallelStream()
+            .map(markerLinkage -> BeanUtils.copy(markerLinkage, MarkerLinkageVo.class)).collect(Collectors.toList());
+        MarkerLinkageDataHelper.reverseLinkageIds(linkageList);
+
+        // 获取有向图数据
+        Map<String, GraphVo> linkageGraph = MarkerLinkageDataHelper.buildLinkageGraph(linkageList);
+        return linkageGraph;
     }
 
     @Transactional
