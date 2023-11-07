@@ -1,9 +1,11 @@
 package site.yuanshen.generator.utils;
 
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.generator.FastAutoGenerator;
 import com.baomidou.mybatisplus.generator.config.DataSourceConfig;
+import com.baomidou.mybatisplus.generator.config.OutputFile;
 import com.baomidou.mybatisplus.generator.config.TemplateType;
 import com.baomidou.mybatisplus.generator.config.converts.PostgreSqlTypeConvert;
 import com.baomidou.mybatisplus.generator.config.querys.PostgreSqlQuery;
@@ -17,8 +19,11 @@ import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 import site.yuanshen.data.base.BaseEntity;
 
+import java.io.File;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 
@@ -46,6 +51,7 @@ public class FastGenerator {
 
     public void build() {
         System.out.println("Output Dir: " + outputDir);
+        final Map<String, String> customPathMap = this.getCustomPathMap();
 
         FastAutoGenerator.create(new DataSourceConfig.Builder(url,userName,password)
                         //3.5.3之后，默认为DefaultQuery，会使得pg的json数据被识别为object，且无法被mbp的转化器转化
@@ -67,7 +73,9 @@ public class FastGenerator {
                         .service(servicePackage)
                         .serviceImpl(serviceImplPackage)
                         .mapper(mapperPackage)
-                        .xml(xmlPackage))
+                        .xml(xmlPackage)
+                        .pathInfo(this.getPathMap())
+                )
                 .strategyConfig(builder -> builder
                         // 添加需要生成模块的白名单列表
                         .addInclude(StrUtil.split(entity, ","))
@@ -113,14 +121,39 @@ public class FastGenerator {
                                 .fileName("Dto.java")
                                 .templatePath("/templates/dto.java.ftl")
                                 .packageName(dtoPackage)
+                                .filePath(customPathMap.get("dto"))
                                 .enableFileOverride())
                         .customFile(fileBuilder -> fileBuilder
                                 .fileName("Vo.java")
                                 .templatePath("/templates/vo.java.ftl")
                                 .packageName(voPackage)
+                                .filePath(customPathMap.get("vo"))
                                 .enableFileOverride()))
                 .templateEngine(new FreemarkerTemplateEngine())
                 .execute();
+    }
+
+    private Map<OutputFile, String> getPathMap() {
+        final String outputBase = System.getProperty("user.dir") + outputDir;
+        Map<OutputFile, String> pathMap = new HashMap<>();
+
+        pathMap.put(OutputFile.entity, outputBase + File.separator + "genshin-map-data/genshin-map-data-core/genshin-map-data-core-model/src/main/java");
+        pathMap.put(OutputFile.service, outputBase + File.separator + "genshin-map-api/genshin-map-api-core/genshin-map-api-core-core/src/main/java");
+        pathMap.put(OutputFile.serviceImpl, outputBase + File.separator + "genshin-map-api/genshin-map-api-core/genshin-map-api-core-core/src/main/java");
+        pathMap.put(OutputFile.mapper, outputBase + File.separator + "genshin-map-data/genshin-map-data-core/genshin-map-data-core-mapper/src/main/java/site/yuanshen/data/mapper");
+        pathMap.put(OutputFile.xml, outputBase + File.separator + "genshin-map-data/genshin-map-data-core/genshin-map-data-core-mapper/src/main/resources/mapper");
+
+        return pathMap;
+    }
+
+    private Map<String, String> getCustomPathMap() {
+        final String outputBase = System.getProperty("user.dir") + outputDir;
+        Map<String, String> pathMap = new HashMap<>();
+
+        pathMap.put("dto", outputBase + File.separator + "genshin-map-data/genshin-map-data-core/genshin-map-data-core-model/src/main/java");
+        pathMap.put("vo", outputBase + File.separator + "genshin-map-data/genshin-map-data-core/genshin-map-data-core-model/src/main/java");
+
+        return pathMap;
     }
 
     public static FastGenerator getFastGenerator() {
@@ -135,12 +168,18 @@ public class FastGenerator {
 
     private String getUrlSchema() {
         try {
-            URI uri = new URI(this.url);
-            UriComponents uriComponents = UriComponentsBuilder
-                    .fromUri(uri)
+            URI jdbcUri = new URI(this.url);
+            UriComponents jdbcUriComponents = UriComponentsBuilder
+                    .fromUri(jdbcUri)
                     .encode(StandardCharsets.UTF_8)
                     .build();
-            MultiValueMap<String, String> queryMap = uriComponents.getQueryParams();
+            String jdbcUriSsp = StrUtil.blankToDefault(jdbcUriComponents.getSchemeSpecificPart(), "");
+            UriComponents dbUriComponents = UriComponentsBuilder
+                    .fromUriString(jdbcUriSsp)
+                    .encode(StandardCharsets.UTF_8)
+                    .build();
+
+            MultiValueMap<String, String> queryMap = dbUriComponents.getQueryParams();
             String querySchema = queryMap.getFirst("currentSchema");
             String querySchemaStr = StrUtil.blankToDefault(querySchema, defaultSchema);
             return querySchemaStr;

@@ -4,6 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
+import site.yuanshen.common.core.exception.GenshinApiException;
 import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.entity.Route;
 import site.yuanshen.data.vo.RouteSearchVo;
@@ -62,6 +63,6 @@ public class RouteSearchDto {
 
     public void checkParams() {
         if (StrUtil.hasBlank(this.creatorId,this.creatorNicknamePart))
-            throw new RuntimeException("创建人id不能与创建人昵称模糊搜索字段共存");
+            throw new GenshinApiException("创建人id不能与创建人昵称模糊搜索字段共存");
     }
 }

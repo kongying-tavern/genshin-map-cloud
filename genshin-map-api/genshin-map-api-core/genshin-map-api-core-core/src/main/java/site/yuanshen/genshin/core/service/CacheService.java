@@ -114,6 +114,24 @@ public class CacheService {
 
     @Caching(
             evict = {
+                    @CacheEvict(value = "listMarkerLinkage", allEntries = true, beforeInvocation = true)
+            }
+    )
+    public void cleanMarkerLinkageCache() {
+        log.info("cleanMarkerLinkageCache");
+    }
+
+    @Caching(
+            evict = {
+                    @CacheEvict(value = "listNotice", allEntries = true, beforeInvocation = true)
+            }
+    )
+    public void cleanNoticeCache() {
+        log.info("cleanNoticeCache");
+    }
+
+    @Caching(
+            evict = {
                     @CacheEvict(value = "listAllTagBz2", allEntries = true, beforeInvocation = true),
                     @CacheEvict(value = "listAllTagBz2Md5", allEntries = true, beforeInvocation = true)
             }
@@ -156,14 +174,5 @@ public class CacheService {
         } else { // 当前不存在事务
             executor.execute(r);
         }
-    }
-
-    @Caching(
-            evict = {
-                    @CacheEvict(value = "listNotice", allEntries = true, beforeInvocation = true)
-            }
-    )
-    public void cleanNoticeCache() {
-        log.info("cleanNoticeCache");
     }
 }

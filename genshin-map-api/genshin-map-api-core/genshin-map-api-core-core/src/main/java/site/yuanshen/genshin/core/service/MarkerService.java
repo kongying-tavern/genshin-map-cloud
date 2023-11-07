@@ -7,6 +7,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import site.yuanshen.common.core.exception.GenshinApiException;
 import site.yuanshen.common.core.utils.JsonUtils;
 import site.yuanshen.data.dto.MarkerDto;
 import site.yuanshen.data.dto.MarkerItemLinkDto;
@@ -18,9 +19,11 @@ import site.yuanshen.data.vo.MarkerVo;
 import site.yuanshen.data.vo.helper.PageListVo;
 import site.yuanshen.genshin.core.convert.HistoryConvert;
 import site.yuanshen.genshin.core.dao.MarkerDao;
+import site.yuanshen.genshin.core.dao.MarkerLinkageDao;
 import site.yuanshen.genshin.core.service.mbp.MarkerItemLinkMBPService;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -38,6 +41,7 @@ public class MarkerService {
 
     private final MarkerMapper markerMapper;
     private final MarkerDao markerDao;
+    private final MarkerLinkageDao markerLinkageDao;
     private final MarkerItemLinkMapper markerItemLinkMapper;
     private final MarkerItemLinkMBPService markerItemLinkMBPService;
     private final MarkerPunctuateMapper markerPunctuateMapper;
@@ -57,7 +61,7 @@ public class MarkerService {
         boolean isItem = !(searchVo.getItemIdList() == null || searchVo.getItemIdList().isEmpty());
         boolean isType = !(searchVo.getTypeIdList() == null || searchVo.getTypeIdList().isEmpty());
         if (isArea && isItem || isArea && isType || isType && isItem)
-            throw new RuntimeException("条件冲突");
+            throw new GenshinApiException("条件冲突");
         List<Long> itemIdList = new ArrayList<>();
         if (isArea) {
             itemIdList = itemMapper.selectList(Wrappers.<Item>lambdaQuery()
@@ -196,6 +200,7 @@ public class MarkerService {
     public Boolean deleteMarker(Long markerId) {
         markerMapper.delete(Wrappers.<Marker>lambdaQuery().eq(Marker::getId, markerId));
         markerItemLinkMapper.delete(Wrappers.<MarkerItemLink>lambdaQuery().eq(MarkerItemLink::getMarkerId, markerId));
+        markerLinkageDao.removeRelatedLinkageList(Collections.singletonList(markerId), true);
         return true;
     }
 

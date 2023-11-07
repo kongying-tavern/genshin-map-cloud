@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.With;
+import site.yuanshen.common.core.exception.GenshinApiException;
 import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.entity.SysUserArchive;
 import site.yuanshen.data.vo.SysArchiveSlotVo;
@@ -118,7 +119,7 @@ public class SysUserArchiveSlotDto {
      * 恢复上次存档（删除最近一次存档）
      */
     public SysArchiveVo restoreHistory() {
-        if (archiveHistory.isEmpty()) throw new RuntimeException("存档为空，无历史存档");
+        if (archiveHistory.isEmpty()) throw new GenshinApiException("存档为空，无历史存档");
         return archiveHistory.removeFirst().getVo(1);
     }
 }

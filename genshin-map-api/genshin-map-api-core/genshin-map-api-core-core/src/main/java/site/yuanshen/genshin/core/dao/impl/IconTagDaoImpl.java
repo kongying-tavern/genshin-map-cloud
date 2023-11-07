@@ -8,6 +8,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.caffeine.CaffeineCache;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
+import site.yuanshen.common.core.exception.GenshinApiException;
 import site.yuanshen.common.core.utils.CompressUtils;
 import site.yuanshen.data.dto.TagDto;
 import site.yuanshen.data.entity.Icon;
@@ -84,7 +85,7 @@ public class IconTagDaoImpl implements IconTagDao {
                             listAllTag())
                     .getBytes(StandardCharsets.UTF_8));
         } catch (Exception e) {
-            throw new RuntimeException("创建压缩失败" + e);
+            throw new GenshinApiException("创建压缩失败" + e);
         }
     }
 

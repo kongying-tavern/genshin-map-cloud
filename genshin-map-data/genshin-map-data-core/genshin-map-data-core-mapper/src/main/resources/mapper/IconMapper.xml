@@ -4,7 +4,7 @@
 
     <select id="selectPageIcon"
             resultType="site.yuanshen.data.entity.Icon"
-            parameterType="site.yuanshen.data.dto.TagSearchDto">
+            parameterType="site.yuanshen.data.dto.IconSearchDto">
         select i.*
         from icon i
         <if test="searchDto.typeIdList != null and searchDto.typeIdList.size > 0">
@@ -28,7 +28,10 @@
                 </foreach>
             </if>
             <if test="searchDto.creator != null">
-                and i.creator = #{creator}
+                and i.creator = #{searchDto.creator}
+            </if>
+            <if test="searchDto.name != null and searchDto.name != ''">
+                and i.name LIKE #{searchDto.name}
             </if>
         </where>
     </select>

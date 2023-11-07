@@ -67,6 +67,13 @@ public class CacheController {
         return RUtils.create(true);
     }
 
+    @Operation(summary = "删除全部点位关联缓存",description = "删除点位关联缓存")
+    @DeleteMapping("/marker_linkage")
+    public R<Boolean> cleanMarkerLinkageCache(){
+        cacheService.cleanMarkerLinkageCache();
+        return RUtils.create(true);
+    }
+
     @Operation(summary = "删除公告缓存",description = "删除公告缓存")
     @DeleteMapping("/notice")
     public R<Boolean> cleanNoticeCache(){

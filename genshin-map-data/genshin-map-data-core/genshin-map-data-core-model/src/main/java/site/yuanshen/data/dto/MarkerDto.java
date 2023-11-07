@@ -117,6 +117,11 @@ public class MarkerDto {
      */
     private Map<String, Object> extra;
 
+    /**
+     * 点位关联组ID
+     */
+    private String linkageId;
+
     public MarkerDto(Marker marker) {
         BeanUtils.copy(marker, this);
     }

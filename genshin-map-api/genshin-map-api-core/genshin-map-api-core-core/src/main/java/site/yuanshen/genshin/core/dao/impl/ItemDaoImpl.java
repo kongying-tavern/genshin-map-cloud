@@ -3,14 +3,10 @@ package site.yuanshen.genshin.core.dao.impl;
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.cache.Cache;
-import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.caffeine.CaffeineCache;
 import org.springframework.stereotype.Service;
-import org.springframework.util.DigestUtils;
+import site.yuanshen.common.core.exception.GenshinApiException;
 import site.yuanshen.common.core.utils.CompressUtils;
 import site.yuanshen.common.core.utils.PgsqlUtils;
 import site.yuanshen.data.dto.ItemDto;
@@ -66,7 +62,7 @@ public class ItemDaoImpl implements ItemDao {
         if (itemList.size() == 0)
             return new ArrayList<>();
         //获取分类数据
-        List<ItemTypeLink> typeLinkList = itemTypeLinkMapper.selectWithLargeCustomIn("item_id", PgsqlUtils.unnestStr(itemList.stream()
+        List<ItemTypeLink> typeLinkList = itemTypeLinkMapper.selectWithLargeCustomIn("item_id", PgsqlUtils.unnestLongStr(itemList.stream()
                                 .map(Item::getId).distinct().collect(Collectors.toList())),Wrappers.lambdaQuery());
         Map<Long, List<Long>> itemToTypeMap = new HashMap<>();
         for (ItemTypeLink typeLink : typeLinkList) {
@@ -77,7 +73,7 @@ public class ItemDaoImpl implements ItemDao {
         }
 
         //获取点位数据
-        List<MarkerItemLink> markerItemLinkList = markerItemLinkMapper.selectWithLargeCustomIn("item_id", PgsqlUtils.unnestStr(itemList.stream()
+        List<MarkerItemLink> markerItemLinkList = markerItemLinkMapper.selectWithLargeCustomIn("item_id", PgsqlUtils.unnestLongStr(itemList.stream()
                                 .map(Item::getId).distinct().collect(Collectors.toList())),Wrappers.<MarkerItemLink>lambdaQuery());
 
         List<Long> markerIdList = markerMapper.selectList(Wrappers.<Marker>lambdaQuery()
@@ -107,7 +103,7 @@ public class ItemDaoImpl implements ItemDao {
     @Cacheable(value = "listAllItemBz2", cacheManager = "neverRefreshCacheManager")
     public byte[] listAllItemBz2() {
         //通过refreshAllItemBz2()刷新失败
-        throw new RuntimeException("缓存未创建");
+        throw new GenshinApiException("缓存未创建");
     }
 
     /**
@@ -123,7 +119,7 @@ public class ItemDaoImpl implements ItemDao {
             byte[] result = JSON.toJSONString(itemList).getBytes(StandardCharsets.UTF_8);
             return CompressUtils.compress(result);
         } catch (Exception e) {
-            throw new RuntimeException("创建压缩失败", e);
+            throw new GenshinApiException("创建压缩失败", e);
         }
     }
 }

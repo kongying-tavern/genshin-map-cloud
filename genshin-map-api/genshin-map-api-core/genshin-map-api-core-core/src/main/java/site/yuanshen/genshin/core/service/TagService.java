@@ -1,11 +1,14 @@
 package site.yuanshen.genshin.core.service;
 
+import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import site.yuanshen.common.core.exception.GenshinApiException;
+import site.yuanshen.common.web.utils.UserUtils;
 import site.yuanshen.data.dto.TagDto;
 import site.yuanshen.data.dto.TagSearchDto;
 import site.yuanshen.data.entity.Icon;
@@ -18,12 +21,11 @@ import site.yuanshen.data.mapper.TagTypeLinkMapper;
 import site.yuanshen.data.mapper.TagTypeMapper;
 import site.yuanshen.data.vo.TagVo;
 import site.yuanshen.data.vo.helper.PageListVo;
-import site.yuanshen.genshin.core.service.CacheService;
-import site.yuanshen.genshin.core.service.TagService;
 import site.yuanshen.genshin.core.service.mbp.TagMBPService;
 import site.yuanshen.genshin.core.service.mbp.TagTypeLinkMBPService;
 import site.yuanshen.genshin.core.service.mbp.TagTypeMBPService;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -108,7 +110,7 @@ public class TagService {
                 .map(TagTypeLink::getTypeId).collect(Collectors.toList());
         Tag tag = tagMapper.selectOne(Wrappers.<Tag>lambdaQuery()
                 .eq(Tag::getTag, name));
-        Icon icon = iconMapper.selectOne(Wrappers.<Icon>lambdaQuery().eq(Icon::getId, tag.getId()));
+        Icon icon = iconMapper.selectOne(Wrappers.<Icon>lambdaQuery().eq(Icon::getId, tag.getIconId()));
         TagVo result = new TagDto(tag)
                 .getVo()
                 .withTypeIdList(typeIdList)
@@ -127,8 +129,10 @@ public class TagService {
     public Boolean updateTag(String tagName, Long iconId) {
         boolean isUpdate = tagMapper.update(null, Wrappers.<Tag>lambdaUpdate()
                 .eq(Tag::getTag, tagName)
-                .set(Tag::getIconId, iconId)) == 1;
-        if (!isUpdate) throw new RuntimeException("与原数据一致，未进行实质修改");
+                .set(Tag::getIconId, iconId)
+                .set(Tag::getUpdateTime, LocalDateTime.now())
+                .set(Tag::getUpdaterId, UserUtils.getUserId())) == 1;
+        if (!isUpdate) throw new GenshinApiException("与原数据一致，未进行实质修改");
         return true;
     }
 
@@ -145,9 +149,19 @@ public class TagService {
         //删除旧类型链接
         tagTypeLinkMapper.delete(Wrappers.<TagTypeLink>lambdaQuery()
                 .eq(TagTypeLink::getTagName, tagDto.getTag()));
+
+        //更新标签信息
+        tagMapper.update(null, Wrappers.<Tag>lambdaUpdate()
+               .eq(Tag::getTag, tagDto.getTag())
+               .set(Tag::getUpdateTime, LocalDateTime.now())
+               .set(Tag::getUpdaterId, UserUtils.getUserId()));
+
+        if(CollUtil.isEmpty(typeIdList)) {
+            return true;
+        }
         //检验并插入新类型
         if (typeIdList.size() != tagTypeMapper.selectList(Wrappers.<TagType>lambdaQuery().in(TagType::getId, typeIdList)).size())
-            throw new RuntimeException("类型ID错误");
+            throw new GenshinApiException("类型ID错误");
         tagTypeLinkMBPService.saveBatch(
                 typeIdList.stream()
                         .map(id -> new TagTypeLink().withTagName(tagVo.getTag()).withTypeId(id))
@@ -185,7 +199,7 @@ public class TagService {
                 .eq(TagTypeLink::getTagName, tagName));
         if (tagMapper.delete(Wrappers.<Tag>lambdaQuery()
                 .eq(Tag::getTag, tagName)) != 1) {
-            throw new RuntimeException("无删除的标签");
+            throw new GenshinApiException("无删除的标签");
         }
         return true;
     }

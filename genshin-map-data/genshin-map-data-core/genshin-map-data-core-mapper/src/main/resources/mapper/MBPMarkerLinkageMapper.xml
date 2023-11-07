@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="site.yuanshen.data.mapper.MarkerLinkageMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="site.yuanshen.data.entity.MarkerLinkage">
+        <id column="id" property="id"/>
+        <result column="creator_id" property="creatorId"/>
+        <result column="create_time" property="createTime"/>
+        <result column="del_flag" property="delFlag"/>
+        <result column="version" property="version"/>
+        <result column="updater_id" property="updaterId"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="group_id" property="groupId"/>
+        <result column="from_id" property="fromId"/>
+        <result column="to_id" property="toId"/>
+        <result column="link_action" property="linkAction"/>
+        <result column="link_reverse" property="linkReverse"/>
+        <result column="path" property="path" typeHandler="site.yuanshen.handler.MybatisPlusJsonArrayTypeHandler"/>
+        <result column="extra" property="extra" typeHandler="site.yuanshen.handler.MybatisPlusJsonObjectTypeHandler"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        marker_linkage.creator_id,
+        marker_linkage.create_time,
+        marker_linkage.del_flag,
+        marker_linkage.version,
+        marker_linkage.id,
+        marker_linkage.updater_id,
+        marker_linkage.update_time,
+        marker_linkage.group_id,
+        marker_linkage.from_id,
+        marker_linkage.to_id,
+        marker_linkage.link_action,
+        marker_linkage.link_reverse,
+        marker_linkage.path,
+        marker_linkage.extra
+    </sql>
+
+    <select id="selectWithLargeCustomIn" resultType="site.yuanshen.data.entity.MarkerLinkage">
+        with id_list as ( select unnest(${unnest}::${type}[]) "${column}2")
+        select
+        <if test="ew.SqlSelect == null or ew.SqlSelect == ''">
+            <include refid="Base_Column_List"/>
+        </if>
+        ${ew.SqlSelect}
+        from
+        marker_linkage, id_list
+        <if test="ew.customSqlSegment ==null or ew.customSqlSegment == ''">
+            where true
+        </if>
+        ${ew.customSqlSegment} and marker_linkage.${column} = id_list."${column}2"
+    </select>
+
+    <select id="selectWithLargeMarkerIdIn" resultType="site.yuanshen.data.entity.MarkerLinkage">
+        WITH id_list AS (
+            SELECT UNNEST(${unnest}::bigint[]) "marker_id2"
+        )
+        SELECT ml.* FROM marker_linkage AS ml
+        JOIN id_list ON
+            ml.from_id = id_list.marker_id2 OR
+            ml.to_id = id_list.marker_id2
+        <if test="ew.customSqlSegment == null or ew.customSqlSegment == ''">
+            WHERE true
+        </if>
+        ${ew.customSqlSegment}
+        GROUP BY ml.id
+    </select>
+
+</mapper>
