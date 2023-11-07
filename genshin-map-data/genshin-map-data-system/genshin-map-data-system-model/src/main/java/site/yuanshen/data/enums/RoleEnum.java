@@ -9,7 +9,7 @@ import lombok.Getter;
 public enum RoleEnum {
 
     ADMIN("ADMIN", "系统管理员", 2,1|2|4|8),
-    MAP_MANAGER("MAP_MANAGER", "地图管理者", 3,1|2|4|8),
+    MAP_MANAGER("MAP_MANAGER", "地图管理员", 3,1|2|8),
     MAP_NEIGUI("MAP_NEIGUI", "测试打点员", 4,1|2|4|8),
     MAP_PUNCTUATE("MAP_PUNCTUATE", "地图打点员", 5,1|2|8),
     MAP_USER("MAP_USER", "地图用户", 6,1|8),
