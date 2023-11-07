@@ -1,5 +1,6 @@
 package site.yuanshen.data.dto;
 
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson2.annotation.JSONField;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -53,7 +54,7 @@ public class IconSearchDto {
     private String name;
 
     public String getName() {
-        return "%" + name + "%";
+        return StrUtil.isBlank(this.name) ? "" : "%" + name + "%";
     }
 
     /**
