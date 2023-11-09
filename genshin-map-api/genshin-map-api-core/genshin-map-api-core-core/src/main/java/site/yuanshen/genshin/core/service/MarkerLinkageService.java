@@ -34,35 +34,26 @@ public class MarkerLinkageService {
     private final MarkerLinkageDao markerLinkageDao;
     private final MarkerLinkageMBPService markerLinkageMBPService;
 
-    @Cacheable(value = "listMarkerLinkage")
     public Map<String, List<MarkerLinkageVo>> listMarkerLinkage(MarkerLinkageSearchVo markerLinkageSearchVo) {
         List<String> groupIds = markerLinkageSearchVo.getGroupIds();
         if(CollUtil.isEmpty(groupIds)) {
             return new HashMap<>();
         }
 
-        List<MarkerLinkageVo> linkageList = markerLinkageMBPService.list(Wrappers.<MarkerLinkage>lambdaQuery().in(MarkerLinkage::getGroupId, groupIds)).parallelStream()
-            .map(markerLinkage -> BeanUtils.copy(markerLinkage, MarkerLinkageVo.class)).collect(Collectors.toList());
-        MarkerLinkageDataHelper.reverseLinkageIds(linkageList);
-        Map<String, List<MarkerLinkageVo>> linkageMap = linkageList.parallelStream().collect(Collectors.groupingBy(MarkerLinkageVo::getGroupId));
-
+        // 获取关联列表
+        final List<MarkerLinkageVo> linkageList = this.getLinkageList(groupIds);
+        final Map<String, List<MarkerLinkageVo>> linkageMap = linkageList.parallelStream().collect(Collectors.groupingBy(MarkerLinkageVo::getGroupId));
         return linkageMap;
     }
 
-    @Cacheable(value = "graphMarkerLinkage")
     public Map<String, GraphVo> graphMarkerLinkage(MarkerLinkageSearchVo markerLinkageSearchVo) {
         List<String> groupIds = markerLinkageSearchVo.getGroupIds();
         if(CollUtil.isEmpty(groupIds)) {
             return new HashMap<>();
         }
 
-        // 获取关联列表
-        List<MarkerLinkageVo> linkageList = markerLinkageMBPService.list(Wrappers.<MarkerLinkage>lambdaQuery().in(MarkerLinkage::getGroupId, groupIds)).parallelStream()
-            .map(markerLinkage -> BeanUtils.copy(markerLinkage, MarkerLinkageVo.class)).collect(Collectors.toList());
-        MarkerLinkageDataHelper.reverseLinkageIds(linkageList);
-
-        // 获取有向图数据
-        Map<String, GraphVo> linkageGraph = MarkerLinkageDataHelper.buildLinkageGraph(linkageList);
+        // 获取关联绘图数据
+        final Map<String, GraphVo> linkageGraph = this.getLinkageGraph(groupIds);
         return linkageGraph;
     }
 
@@ -93,6 +84,31 @@ public class MarkerLinkageService {
     }
 
     // -------------------------------------------
+    @Cacheable(value = "getMarkerLinkageList")
+    private List<MarkerLinkageVo> getLinkageList(List<String> groupIds) {
+        if(CollUtil.isEmpty(groupIds)) {
+            return new ArrayList<>();
+        }
+
+        // 获取关联列表
+        final List<MarkerLinkageVo> linkageList = markerLinkageMBPService.list(Wrappers.<MarkerLinkage>lambdaQuery().in(MarkerLinkage::getGroupId, groupIds)).parallelStream()
+            .map(markerLinkage -> BeanUtils.copy(markerLinkage, MarkerLinkageVo.class)).collect(Collectors.toList());
+        MarkerLinkageDataHelper.reverseLinkageIds(linkageList);
+        return linkageList;
+    }
+
+    @Cacheable(value = "getMarkerLinkageGraph")
+    private Map<String, GraphVo> getLinkageGraph(List<String> groupIds) {
+        if(CollUtil.isEmpty(groupIds)) {
+            return new HashMap<>();
+        }
+
+        // 获取关联绘图数据
+        final List<MarkerLinkageVo> linkageList = this.getLinkageList(groupIds);
+        final Map<String, GraphVo> linkageGraph = MarkerLinkageDataHelper.buildLinkageGraph(linkageList);
+        return linkageGraph;
+    }
+
     private void checkLinkList(List<MarkerLinkageVo> linkageVos) {
         for(MarkerLinkageVo linkageVo : linkageVos) {
             final Long fromId = linkageVo.getFromId();

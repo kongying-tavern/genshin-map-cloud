@@ -114,8 +114,8 @@ public class CacheService {
 
     @Caching(
             evict = {
-                    @CacheEvict(value = "listMarkerLinkage", allEntries = true, beforeInvocation = true),
-                    @CacheEvict(value = "graphMarkerLinkage", allEntries = true, beforeInvocation = true)
+                    @CacheEvict(value = "getMarkerLinkageList", allEntries = true, beforeInvocation = true),
+                    @CacheEvict(value = "getMarkerLinkageGraph", allEntries = true, beforeInvocation = true)
             }
     )
     public void cleanMarkerLinkageCache() {
