@@ -1,10 +1,9 @@
 package site.yuanshen.data.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import site.yuanshen.data.base.BaseEntity;
+import site.yuanshen.data.vo.adapter.marker.linkage.PathEdgeVo;
 import site.yuanshen.handler.MybatisPlusJsonArrayTypeHandler;
 import site.yuanshen.handler.MybatisPlusJsonObjectTypeHandler;
 
@@ -22,7 +21,7 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-@TableName("marker_linkage")
+@TableName(value = "marker_linkage", autoResultMap = true)
 public class MarkerLinkage extends BaseEntity {
 
     /**
@@ -84,7 +83,7 @@ public class MarkerLinkage extends BaseEntity {
      * 路线
      */
     @TableField(value = "path", typeHandler = MybatisPlusJsonArrayTypeHandler.class)
-    private List<Object> path;
+    private List<PathEdgeVo> path;
 
     /**
      * 额外数据
