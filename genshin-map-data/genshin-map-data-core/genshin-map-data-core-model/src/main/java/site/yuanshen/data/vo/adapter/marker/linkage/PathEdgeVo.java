@@ -1,9 +1,9 @@
 package site.yuanshen.data.vo.adapter.marker.linkage;
 
-import com.baomidou.mybatisplus.annotation.IEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import site.yuanshen.data.enums.marker.linkage.PathArrowTypeEnum;
+import site.yuanshen.data.enums.marker.linkage.PathLineTypeEnum;
 
 import java.io.Serializable;
 
@@ -27,7 +27,7 @@ public class PathEdgeVo implements Serializable {
     private Double handleY1;
 
     @Schema(title = "起点箭头形状")
-    private ArrowType arrowType1;
+    private PathArrowTypeEnum arrowType1;
 
     @Schema(title = "终止点位ID", description = "输出时会转换为 X2 & Y2")
     private Long id2;
@@ -45,33 +45,9 @@ public class PathEdgeVo implements Serializable {
     private Double handleY2;
 
     @Schema(title = "终点箭头形状")
-    private ArrowType arrowType2;
+    private PathArrowTypeEnum arrowType2;
 
     @Schema(title = "线条样式")
-    private LineType lineType;
+    private PathLineTypeEnum lineType;
 
-    @RequiredArgsConstructor
-    public enum LineType implements IEnum<String> {
-        SOLID,
-        DASHED,
-        DOTTED;
-
-        @Override
-        public String getValue() {
-            return this.name();
-        }
-    }
-
-    @RequiredArgsConstructor
-    public enum ArrowType implements IEnum<String> {
-        NONE,
-        ARROW,
-        CIRCLE,
-        DOT;
-
-        @Override
-        public String getValue() {
-            return this.name();
-        }
-    }
 }

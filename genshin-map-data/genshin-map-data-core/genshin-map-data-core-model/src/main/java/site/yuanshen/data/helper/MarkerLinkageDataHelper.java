@@ -5,14 +5,22 @@ import cn.hutool.core.util.ByteUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
+import org.apache.logging.log4j.util.TriConsumer;
+import site.yuanshen.data.dto.adapter.marker.linkage.graph.*;
 import site.yuanshen.data.entity.MarkerLinkage;
+import site.yuanshen.data.enums.marker.linkage.IdTypeEnum;
+import site.yuanshen.data.enums.marker.linkage.LinkActionEnum;
+import site.yuanshen.data.enums.marker.linkage.RelationTypeEnum;
 import site.yuanshen.data.vo.MarkerLinkageVo;
+import site.yuanshen.data.vo.adapter.marker.linkage.graph.GraphVo;
 
 import java.nio.ByteOrder;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
-public class MarkerLinkageDataHelper {
+public final class MarkerLinkageDataHelper {
     //////////////START:通用方法//////////////
 
     public static void reverseLinkageIds(List<MarkerLinkageVo> linkageVos) {
@@ -53,7 +61,170 @@ public class MarkerLinkageDataHelper {
         return idHash;
     }
 
+    public static AccumulatorKey getAccumulateKey(MarkerLinkageVo linkage) {
+        final String groupId = StrUtil.blankToDefault(linkage.getGroupId(), "");
+        final String linkAction = StrUtil.blankToDefault(linkage.getLinkAction(), "");
+        final LinkActionEnum linkActionEnum = LinkActionEnum.find(linkAction);
+        return new AccumulatorKey()
+            .withGroupId(groupId)
+            .withLinkAction(linkActionEnum);
+    }
+
+    public static LinkRefDto getLinkRef(MarkerLinkageVo linkage) {
+        final Long linkId = ObjectUtil.defaultIfNull(linkage.getId(), 0L);
+        final Long fromId = ObjectUtil.defaultIfNull(linkage.getFromId(), 0L);
+        final Long toId = ObjectUtil.defaultIfNull(linkage.getToId(), 0L);
+
+        return new LinkRefDto()
+                .withFromId(fromId)
+                .withToId(toId)
+                .withPathRefId(linkId);
+    }
+
+    public static DistributorKey getDistributeKey(AccumulatorKey accumulatorKey, String linkGroupId, Long id) {
+        final String groupId = StrUtil.blankToDefault(accumulatorKey.getGroupId(), "");
+        final LinkActionEnum linkAction = accumulatorKey.getLinkAction();
+        final String linkActionName = linkAction == null ? "" : StrUtil.blankToDefault(linkAction.getValue(), "");
+        final Long markerId = ObjectUtil.defaultIfNull(id, 0L);
+        return new DistributorKey()
+                .withGroupId(groupId)
+                .withLinkGroupId(linkGroupId)
+                .withLinkAction(linkActionName)
+                .withMarkerId(markerId);
+    }
+
+    public static RelationDto getRelationGroup(Set<LinkRefDto> linkRefs, LinkActionEnum linkAction) {
+        linkRefs = CollUtil.defaultIfEmpty(linkRefs, new HashSet<>());
+        final RelationDto relation = new RelationDto();
+
+        switch (linkAction) {
+            case TRIGGER:
+            case TRIGGER_ALL:
+            case TRIGGER_ANY:
+                for(LinkRefDto linkRef : linkRefs) {
+                    relation.addRelation(RelationTypeEnum.TRIGGER, IdTypeEnum.FROM, linkRef);
+                    relation.addRelation(RelationTypeEnum.TARGET, IdTypeEnum.TO, linkRef);
+                }
+                break;
+            case RELATED:
+            case EQUIVALENT:
+                for(LinkRefDto linkRef : linkRefs) {
+                    relation.addRelation(RelationTypeEnum.GROUP, IdTypeEnum.FROM, linkRef);
+                    relation.addRelation(RelationTypeEnum.GROUP, IdTypeEnum.TO, linkRef);
+                }
+                break;
+            default:
+        }
+        return relation;
+    }
+
     //////////////END:通用方法//////////////
+
+    //////////////START:绘图数据方法//////////////
+    public static Map<String, GraphVo> buildLinkageGraph(List<MarkerLinkageVo> linkageVos) {
+        ConcurrentHashMap<AccumulatorKey, List<MarkerLinkageVo>> graphSearchMap = getGraphSearchMap(linkageVos);
+
+        // 聚合数据为行为分组
+        ConcurrentHashMap<AccumulatorKey, List<AccumulatorCache>> accumulateMap = new ConcurrentHashMap<>();
+        accumulateGraphData(accumulateMap, graphSearchMap);
+
+        // 分散分组为与点位关联的数据
+        ConcurrentHashMap<DistributorKey, DistributorDto> graphDistributeMap = new ConcurrentHashMap<>();
+        distributeGraphData(graphDistributeMap, accumulateMap);
+
+        // 聚合点位关联数据为 API 数据
+        Map<String, GraphVo> graphData = restructureGraphData(graphDistributeMap);
+
+        return graphData;
+    }
+
+    private static ConcurrentHashMap<AccumulatorKey, List<MarkerLinkageVo>> getGraphSearchMap(List<MarkerLinkageVo> linkageVos) {
+        return linkageVos.parallelStream()
+            .filter(Objects::nonNull)
+            .map(linkage -> {
+                final String groupId = StrUtil.blankToDefault(linkage.getGroupId(), "");
+                final Long fromId = ObjectUtil.defaultIfNull(linkage.getFromId(), 0L);
+                final Long toId = ObjectUtil.defaultIfNull(linkage.getToId(), 0L);
+                final LinkActionEnum linkAction = LinkActionEnum.find(linkage.getLinkAction());
+                if(StrUtil.isBlank(groupId) || fromId.compareTo(0L) <= 0 || toId.compareTo(0L) <= 0 || linkAction == null) {
+                    return null;
+                }
+                return linkage
+                    .withGroupId(groupId)
+                    .withFromId(fromId)
+                    .withToId(toId);
+            })
+            .filter(Objects::nonNull)
+            .collect(
+                Collectors.groupingByConcurrent(MarkerLinkageDataHelper::getAccumulateKey, ConcurrentHashMap::new, Collectors.toList())
+            );
+    }
+
+    private static void accumulateGraphData(
+        Map<AccumulatorKey, List<AccumulatorCache>> accumulateMap,
+        ConcurrentHashMap<AccumulatorKey, List<MarkerLinkageVo>> graphSearchMap
+    ) {
+        graphSearchMap.forEachEntry(2, markerLinkageEntity -> {
+            final AccumulatorKey key = markerLinkageEntity.getKey();
+            final List<MarkerLinkageVo> valList = markerLinkageEntity.getValue();
+
+            final LinkActionEnum linkAction = key.getLinkAction();
+            if(linkAction == null) {
+                return;
+            }
+
+            final BiConsumer<List<AccumulatorCache>, MarkerLinkageVo> linkAccumulator = linkAction.getAccumulator();
+            if(linkAccumulator != null && CollUtil.isNotEmpty(valList)) {
+                accumulateMap.putIfAbsent(key, new ArrayList<>());
+                List<AccumulatorCache> accumulateList = accumulateMap.get(key);
+                valList.parallelStream().forEach(linkage -> linkAccumulator.accept(accumulateList, linkage));
+            }
+        });
+    }
+
+    private static void distributeGraphData(
+            Map<DistributorKey, DistributorDto> graphDistributeMap,
+            ConcurrentHashMap<AccumulatorKey, List<AccumulatorCache>> accumulateMap
+    ) {
+        accumulateMap.forEachEntry(2, accEntry -> {
+            final AccumulatorKey key = accEntry.getKey();
+            final LinkActionEnum linkAction = key.getLinkAction();
+            if(linkAction == null) {
+                return;
+            }
+
+            final TriConsumer<Map<DistributorKey, DistributorDto>, AccumulatorKey, AccumulatorCache> linkDistributor = linkAction.getDistributor();
+            if(linkDistributor != null) {
+                final List<AccumulatorCache> cacheList = accEntry.getValue();
+                cacheList.parallelStream().forEach(cache -> {
+                    linkDistributor.accept(graphDistributeMap, key, cache);
+                });
+            }
+        });
+    }
+
+    private static Map<String, GraphVo> restructureGraphData(ConcurrentHashMap<DistributorKey, DistributorDto> graphDistributeMap) {
+        final ConcurrentHashMap<String, GraphDto> graphMap = new ConcurrentHashMap<>();
+        graphDistributeMap.forEachEntry(2, distEntry -> {
+            final DistributorKey distKey = distEntry.getKey();
+            final DistributorDto distDto = distEntry.getValue();
+            final String groupId = StrUtil.blankToDefault(distKey.getGroupId(), "");
+
+            graphMap.putIfAbsent(groupId, new GraphDto());
+            GraphDto gm = graphMap.get(groupId);
+            gm.addRel(distKey.getMarkerId(), distDto.getRelationId(), distDto.getRelation());
+            gm.addPaths(distDto.getPathRefs());
+        });
+
+        final ConcurrentHashMap<String, GraphVo> graphData = new ConcurrentHashMap<>();
+        graphMap.forEachEntry(2, graphEntry -> {
+            graphData.putIfAbsent(graphEntry.getKey(), graphEntry.getValue().toVo());
+        });
+
+        return graphData;
+    }
+
+    //////////////END:绘图数据方法//////////////
 
     //////////////START:关联点位方法//////////////
 

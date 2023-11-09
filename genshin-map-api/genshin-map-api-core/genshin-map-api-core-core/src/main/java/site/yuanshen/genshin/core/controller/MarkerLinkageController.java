@@ -11,6 +11,7 @@ import site.yuanshen.common.web.response.R;
 import site.yuanshen.common.web.response.RUtils;
 import site.yuanshen.data.vo.MarkerLinkageSearchVo;
 import site.yuanshen.data.vo.MarkerLinkageVo;
+import site.yuanshen.data.vo.adapter.marker.linkage.graph.GraphVo;
 import site.yuanshen.genshin.core.service.CacheService;
 import site.yuanshen.genshin.core.service.MarkerLinkageService;
 
@@ -37,6 +38,14 @@ public class MarkerLinkageController {
     public R<Map<String, List<MarkerLinkageVo>>> getList(@RequestBody MarkerLinkageSearchVo markerLinkageSearchVo) {
         return RUtils.create(
                 markerLinkageService.listMarkerLinkage(markerLinkageSearchVo)
+        );
+    }
+
+    @Operation(summary = "关联点位图数据", description = "关联点位图数据")
+    @PostMapping("/get/graph")
+    public R<Map<String, GraphVo>> getGraph(@RequestBody MarkerLinkageSearchVo markerLinkageSearchVo) {
+        return RUtils.create(
+                markerLinkageService.graphMarkerLinkage(markerLinkageSearchVo)
         );
     }
 
