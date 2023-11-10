@@ -19,6 +19,7 @@ import site.yuanshen.data.vo.adapter.marker.linkage.graph.GraphVo;
 import site.yuanshen.genshin.core.dao.MarkerLinkageDao;
 import site.yuanshen.genshin.core.service.mbp.MarkerLinkageMBPService;
 
+import java.awt.geom.Point2D;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -43,6 +44,11 @@ public class MarkerLinkageService {
 
         // 获取关联列表
         final List<MarkerLinkageVo> linkageList = markerLinkageHelperService.getLinkageList(groupIds);
+        // 关联路线点位数据
+        final List<Long> pathMarkerIds = MarkerLinkageDataHelper.getPathMarkerIdsFromList(linkageList);
+        final Map<Long, Point2D.Double> pathMarkerCoords = markerLinkageHelperService.getPathCoords(pathMarkerIds);
+        MarkerLinkageDataHelper.patchPathMarkerCoordsInList(linkageList, pathMarkerCoords);
+
         final Map<String, List<MarkerLinkageVo>> linkageMap = linkageList.parallelStream().collect(Collectors.groupingBy(MarkerLinkageVo::getGroupId));
         return linkageMap;
     }
