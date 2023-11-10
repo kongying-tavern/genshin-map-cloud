@@ -5,7 +5,7 @@ import lombok.*;
 import site.yuanshen.data.base.BaseEntity;
 import site.yuanshen.data.enums.PunctuateMethodEnum;
 import site.yuanshen.data.enums.PunctuateStatusEnum;
-import site.yuanshen.handler.MybatisPlusJsonObjectTypeHandler;
+import site.yuanshen.handler.MBPJsonObjectTypeHandler;
 
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -87,7 +87,7 @@ public class MarkerPunctuate extends BaseEntity {
     /**
      * 额外特殊字段
      */
-    @TableField(value = "extra", typeHandler = MybatisPlusJsonObjectTypeHandler.class)
+    @TableField(value = "extra", typeHandler = MBPJsonObjectTypeHandler.class)
     private Map<String, Object> extra;
 
     /**

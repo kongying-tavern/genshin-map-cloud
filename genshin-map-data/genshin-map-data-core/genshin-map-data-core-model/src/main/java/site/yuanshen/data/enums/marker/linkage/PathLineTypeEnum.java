@@ -13,4 +13,9 @@ public enum PathLineTypeEnum implements IEnum<String> {
     public String getValue() {
         return this.name();
     }
+
+    @Override
+    public String toString() {
+        return this.name();
+    }
 }

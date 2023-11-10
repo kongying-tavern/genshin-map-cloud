@@ -3,7 +3,7 @@ package site.yuanshen.data.entity;
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.*;
 import site.yuanshen.data.base.BaseEntity;
-import site.yuanshen.handler.MybatisPlusJsonObjectTypeHandler;
+import site.yuanshen.handler.MBPJsonObjectTypeHandler;
 
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -109,7 +109,7 @@ public class Marker extends BaseEntity {
     /**
      * 额外特殊字段
      */
-    @TableField(value = "extra", typeHandler = MybatisPlusJsonObjectTypeHandler.class)
+    @TableField(value = "extra", typeHandler = MBPJsonObjectTypeHandler.class)
     private Map<String, Object> extra;
 
 }

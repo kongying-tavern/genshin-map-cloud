@@ -3,8 +3,8 @@ package site.yuanshen.data.entity;
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.*;
 import site.yuanshen.data.base.BaseEntity;
-import site.yuanshen.handler.MybatisPlusJsonArrayTypeHandler;
-import site.yuanshen.handler.MybatisPlusJsonObjectTypeHandler;
+import site.yuanshen.handler.MBPJsonArrayTypeHandler;
+import site.yuanshen.handler.MBPJsonObjectTypeHandler;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -63,7 +63,7 @@ public class Route extends BaseEntity {
     /**
      * 点位顺序数组
      */
-    @TableField(value = "marker_list", typeHandler = MybatisPlusJsonArrayTypeHandler.class)
+    @TableField(value = "marker_list", typeHandler = MBPJsonArrayTypeHandler.class)
     private List<Object> markerList;
 
     /**
@@ -81,7 +81,7 @@ public class Route extends BaseEntity {
     /**
      * 额外信息
      */
-    @TableField(value = "extra", typeHandler = MybatisPlusJsonObjectTypeHandler.class)
+    @TableField(value = "extra", typeHandler = MBPJsonObjectTypeHandler.class)
     private Map<String, Object> extra;
 
     /**
