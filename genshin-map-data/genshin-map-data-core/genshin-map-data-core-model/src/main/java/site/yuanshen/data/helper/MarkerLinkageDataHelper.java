@@ -1,12 +1,10 @@
 package site.yuanshen.data.helper;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.collection.ConcurrentHashSet;
 import cn.hutool.core.util.ByteUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
-import com.alibaba.fastjson2.JSON;
 import org.apache.logging.log4j.util.TriConsumer;
 import site.yuanshen.data.dto.adapter.marker.linkage.graph.*;
 import site.yuanshen.data.entity.MarkerLinkage;
@@ -14,7 +12,6 @@ import site.yuanshen.data.enums.marker.linkage.IdTypeEnum;
 import site.yuanshen.data.enums.marker.linkage.LinkActionEnum;
 import site.yuanshen.data.enums.marker.linkage.RelationTypeEnum;
 import site.yuanshen.data.vo.MarkerLinkageVo;
-import site.yuanshen.data.vo.adapter.marker.linkage.PathEdgeVo;
 import site.yuanshen.data.vo.adapter.marker.linkage.graph.GraphVo;
 
 import java.awt.geom.Point2D;
@@ -245,6 +242,23 @@ public final class MarkerLinkageDataHelper {
                 .collect(Collectors.toList());
     }
 
+    public static List<Long> getPathMarkerIdsFromGraph(Map<String, GraphVo> linkageMap) {
+        if(CollUtil.isEmpty(linkageMap)) {
+            return new ArrayList<>();
+        }
+        return linkageMap.values().parallelStream()
+                .filter(Objects::nonNull)
+                .map(GraphVo::getPathRefs)
+                .map(Map::values)
+                .flatMap(Collection::stream)
+                .flatMap(List::stream)
+                .map(path -> new Long[]{path.getId1(), path.getId2()})
+                .flatMap(Stream::of)
+                .filter(id -> id != null && id.compareTo(0L) > 0)
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
     public static void patchPathMarkerCoordsInList(
             List<MarkerLinkageVo> linkageVos,
             Map<Long, Point2D.Double> markerCoords
@@ -266,6 +280,32 @@ public final class MarkerLinkageDataHelper {
                     }
                 });
             }
+        });
+    }
+
+    public static void patchPathMarkerCoordsInGraph(
+            Map<String, GraphVo> linkageMap,
+            Map<Long, Point2D.Double> markerCoords
+    ) {
+        linkageMap.forEach((groupId, graphVo) -> {
+            graphVo.getPathRefs().forEach((refId, refPaths) -> {
+                synchronized (refPaths) {
+                    refPaths.forEach(path -> {
+                        final Long id1 = path.getId1();
+                        final Point2D.Double coord1 = markerCoords.get(id1);
+                        if(coord1 != null) {
+                            path.setX1(coord1.getX());
+                            path.setY1(coord1.getY());
+                        }
+                        final Long id2 = path.getId2();
+                        final Point2D.Double coord2 = markerCoords.get(id2);
+                        if(coord2 != null) {
+                            path.setX2(coord2.getX());
+                            path.setY2(coord2.getY());
+                        }
+                    });
+                }
+            });
         });
     }
     //////////////END:路线相关数据方法//////////////

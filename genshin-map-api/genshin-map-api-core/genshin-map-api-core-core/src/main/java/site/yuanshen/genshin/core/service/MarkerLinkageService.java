@@ -2,14 +2,10 @@ package site.yuanshen.genshin.core.service;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.IdUtil;
-import cn.hutool.extra.cglib.CglibUtil;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
-import site.yuanshen.common.core.exception.GenshinApiException;
 import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.entity.MarkerLinkage;
 import site.yuanshen.data.helper.MarkerLinkageDataHelper;
@@ -17,7 +13,6 @@ import site.yuanshen.data.vo.MarkerLinkageSearchVo;
 import site.yuanshen.data.vo.MarkerLinkageVo;
 import site.yuanshen.data.vo.adapter.marker.linkage.graph.GraphVo;
 import site.yuanshen.genshin.core.dao.MarkerLinkageDao;
-import site.yuanshen.genshin.core.service.mbp.MarkerLinkageMBPService;
 
 import java.awt.geom.Point2D;
 import java.util.*;
@@ -61,6 +56,11 @@ public class MarkerLinkageService {
 
         // 获取关联绘图数据
         final Map<String, GraphVo> linkageGraph = markerLinkageHelperService.getLinkageGraph(groupIds);
+        // 关联路线点位数据
+        final List<Long> pathMarkerIds = MarkerLinkageDataHelper.getPathMarkerIdsFromGraph(linkageGraph);
+        final Map<Long, Point2D.Double> pathMarkerCoords = markerLinkageHelperService.getPathCoords(pathMarkerIds);
+        MarkerLinkageDataHelper.patchPathMarkerCoordsInGraph(linkageGraph, pathMarkerCoords);
+
         return linkageGraph;
     }
 
