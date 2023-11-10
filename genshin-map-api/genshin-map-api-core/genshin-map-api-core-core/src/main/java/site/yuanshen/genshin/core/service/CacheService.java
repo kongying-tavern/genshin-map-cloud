@@ -124,6 +124,15 @@ public class CacheService {
 
     @Caching(
             evict = {
+                    @CacheEvict(value = "getMarkerLinkagePathCoords", allEntries = true, beforeInvocation = true)
+            }
+    )
+    public void cleanMarkerLinkageMarkerCache() {
+        log.info("cleanMarkerLinkageMarkerCache");
+    }
+
+    @Caching(
+            evict = {
                     @CacheEvict(value = "listNotice", allEntries = true, beforeInvocation = true)
             }
     )
