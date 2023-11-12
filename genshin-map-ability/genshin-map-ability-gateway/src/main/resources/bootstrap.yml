@@ -31,7 +31,7 @@ genshin:
       - /api/marker/get/**
       - /api/marker_doc/**
       - /api/marker_linkage/get/**
-      - /api/marker_linkage_doc/get/**
+      - /api/marker_linkage_doc/**
       - /api/notice/get/**
     MAP_USER:
       - /system/role/list

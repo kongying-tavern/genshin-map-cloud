@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import site.yuanshen.genshin.core.dao.IconTagDao;
 import site.yuanshen.genshin.core.service.ItemDocService;
 import site.yuanshen.genshin.core.service.MarkerDocService;
+import site.yuanshen.genshin.core.service.MarkerLinkageDocService;
 
 /**
  * 监听应用启动完成后，写入缓存
@@ -20,6 +21,7 @@ import site.yuanshen.genshin.core.service.MarkerDocService;
 public class CacheInitListener implements ApplicationListener<ApplicationReadyEvent> {
 
     private final MarkerDocService markerDocService;
+    private final MarkerLinkageDocService markerLinkageDocService;
     private final ItemDocService itemDocService;
     private final IconTagDao iconTagDao;
 
@@ -33,6 +35,8 @@ public class CacheInitListener implements ApplicationListener<ApplicationReadyEv
         long startTime = System.currentTimeMillis();
         markerDocService.refreshMarkerBz2MD5();
         markerDocService.listMarkerBz2MD5();
+        markerLinkageDocService.refreshMarkerLinkageListBz2MD5();
+        markerLinkageDocService.listMarkerLinkageListBz2MD5();
         itemDocService.refreshItemBz2MD5();
         itemDocService.listItemBz2MD5();
         iconTagDao.listAllTagBz2Md5();

@@ -41,6 +41,9 @@ public class MarkerLinkageHelperService {
     private final MarkerMBPService markerMBPService;
     private final MarkerLinkageMBPService markerLinkageMBPService;
 
+    /**
+     * 校验关联列表是否合法
+     */
     public void checkLinkList(List<MarkerLinkageVo> linkageVos) {
         for(MarkerLinkageVo linkageVo : linkageVos) {
             final Long fromId = linkageVo.getFromId();
@@ -56,6 +59,9 @@ public class MarkerLinkageHelperService {
         }
     }
 
+    /**
+     * 根据组ID获取关联列表
+     */
     @Cacheable(value = "getMarkerLinkageList")
     public List<MarkerLinkageVo> getLinkageList(List<String> groupIds) {
         if(CollUtil.isEmpty(groupIds)) {
@@ -69,6 +75,9 @@ public class MarkerLinkageHelperService {
         return linkageList;
     }
 
+    /**
+     * 根据组ID获取关联绘图数据
+     */
     @Cacheable(value = "getMarkerLinkageGraph")
     public Map<String, GraphVo> getLinkageGraph(List<String> groupIds) {
         if(CollUtil.isEmpty(groupIds)) {
@@ -82,7 +91,9 @@ public class MarkerLinkageHelperService {
         return linkageGraph;
     }
 
-
+    /**
+     * 获取路线相关点位坐标
+     */
     @Cacheable(value = "getMarkerLinkagePathCoords")
     public Map<Long, Point2D.Double> getPathCoords(List<Long> markerIds) {
         if(CollUtil.isEmpty(markerIds)) {
