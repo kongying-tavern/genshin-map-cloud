@@ -2,11 +2,27 @@ package site.yuanshen.common.core.utils;
 
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONReader;
+import com.alibaba.fastjson2.JSONWriter;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class JsonUtils {
+
+    public static final JSONReader.Feature[] defaultReadFeatures = new JSONReader.Feature[]{
+            JSONReader.Feature.UseBigDecimalForFloats,
+            JSONReader.Feature.UseBigDecimalForDoubles,
+            JSONReader.Feature.UseNativeObject
+    };
+
+    public static final JSONWriter.Feature[] defaultWriteFeatures = new JSONWriter.Feature[]{
+            JSONWriter.Feature.BrowserCompatible,
+            JSONWriter.Feature.WriteEnumUsingToString,
+            JSONWriter.Feature.WriteBigDecimalAsPlain,
+            JSONWriter.Feature.WriteEnumUsingToString,
+            JSONWriter.Feature.WriteNonStringKeyAsString
+    };
 
     /**
      * 修补合并 JSON，新数据中为 null 的键会被删除，其余值会被替换
@@ -17,7 +33,7 @@ public class JsonUtils {
     public static String merge(String oldJsonStr, String newJsonStr) {
         Map<String, Object> oldJsonObj = jsonToMap(oldJsonStr);
         Map<String, Object> newJsonObj = jsonToMap(newJsonStr);
-        return JSON.toJSONString(merge(oldJsonObj, newJsonObj));
+        return JSON.toJSONString(merge(oldJsonObj, newJsonObj), defaultWriteFeatures);
     }
 
     public static Map<String, Object> merge(Map<String, Object> oldJsonObject, Map<String, Object> newJsonObject) {
@@ -55,7 +71,7 @@ public class JsonUtils {
         }
 
         try {
-            jsonObj = JSON.parseObject(jsonString, Map.class);
+            jsonObj = JSON.parseObject(jsonString, Map.class, defaultReadFeatures);
         } catch (Exception e) {
             // do nothing
         }
@@ -65,7 +81,7 @@ public class JsonUtils {
 
     public static <T> T jsonToObject(String jsonString, Class<T> clazz) {
         try {
-            return (T) JSON.parseObject(jsonString, clazz);
+            return (T) JSON.parseObject(jsonString, clazz, defaultReadFeatures);
         } catch (Exception e) {
             return null;
         }

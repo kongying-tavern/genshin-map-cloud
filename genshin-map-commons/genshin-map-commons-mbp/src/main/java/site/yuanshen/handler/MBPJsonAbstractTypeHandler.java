@@ -24,7 +24,8 @@ public abstract class MBPJsonAbstractTypeHandler<U> extends BaseTypeHandler<U> {
             JSONWriter.Feature.BrowserCompatible,
             JSONWriter.Feature.WriteEnumUsingToString,
             JSONWriter.Feature.WriteBigDecimalAsPlain,
-            JSONWriter.Feature.WriteEnumUsingToString
+            JSONWriter.Feature.WriteEnumUsingToString,
+            JSONWriter.Feature.WriteNonStringKeyAsString
     };
 
     @Override

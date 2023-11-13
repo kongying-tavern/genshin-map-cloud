@@ -10,6 +10,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import site.yuanshen.common.core.exception.GenshinApiException;
 import site.yuanshen.common.core.utils.CompressUtils;
+import site.yuanshen.common.core.utils.JsonUtils;
 import site.yuanshen.common.core.utils.PgsqlUtils;
 import site.yuanshen.common.core.utils.SpringContextUtils;
 import site.yuanshen.data.dto.MarkerLinkageDto;
@@ -182,7 +183,7 @@ public class MarkerLinkageDaoImpl implements MarkerLinkageDao {
     public byte[] refreshAllMarkerLinkageListBz2() {
         try {
             final Map<String, List<MarkerLinkageVo>> linkageList = listAllMarkerLinkage();
-            final byte[] result = JSON.toJSONString(linkageList).getBytes(StandardCharsets.UTF_8);
+            final byte[] result = JSON.toJSONString(linkageList, JsonUtils.defaultWriteFeatures).getBytes(StandardCharsets.UTF_8);
             return CompressUtils.compress(result);
         } catch (Exception e) {
             throw new GenshinApiException("创建压缩失败", e);
@@ -206,7 +207,7 @@ public class MarkerLinkageDaoImpl implements MarkerLinkageDao {
     public byte[] refreshAllMarkerLinkageGraphBz2() {
         try {
             final Map<String, GraphVo> linkageGraph = graphAllMarkerLinkage();
-            final byte[] result = JSON.toJSONString(linkageGraph).getBytes(StandardCharsets.UTF_8);
+            final byte[] result = JSON.toJSONString(linkageGraph, JsonUtils.defaultWriteFeatures).getBytes(StandardCharsets.UTF_8);
             return CompressUtils.compress(result);
         } catch (Exception e) {
             throw new GenshinApiException("创建压缩失败", e);
