@@ -97,7 +97,7 @@ public class MarkerController {
         Boolean result = markerService.updateMarker(new MarkerDto(markerVo));
         cacheService.cleanItemCache();
         cacheService.cleanMarkerCache();
-        cacheService.cleanMarkerLinkageMarkerCache();
+        cacheService.cleanMarkerLinkageCache();
         return RUtils.create(result);
     }
 
@@ -108,7 +108,6 @@ public class MarkerController {
         cacheService.cleanItemCache();
         cacheService.cleanMarkerCache();
         cacheService.cleanMarkerLinkageCache();
-        cacheService.cleanMarkerLinkageMarkerCache();
         return RUtils.create(result);
     }
 

@@ -131,10 +131,13 @@ public class CacheService {
     )
     public void cleanMarkerLinkageCache() {
         log.info("cleanMarkerLinkageCache");
-        runAfterTransactionDebounceByKey(markerLinkageDocService::refreshMarkerLinkageListBz2MD5,
-                FunctionKeyEnum.refreshMarkerLinkageBz2, 5);
-        runAfterTransactionDebounceByKey(markerLinkageDocService::refreshMarkerLinkageGraphBz2MD5,
-                FunctionKeyEnum.refreshMarkerLinkageBz2, 5);
+        runAfterTransactionDebounceByKey(
+                () -> {
+                    markerLinkageDocService.refreshMarkerLinkageListBz2MD5();
+                    markerLinkageDocService.refreshMarkerLinkageGraphBz2MD5();
+                },
+                FunctionKeyEnum.refreshMarkerLinkageBz2, 5
+        );
     }
 
     @Caching(
