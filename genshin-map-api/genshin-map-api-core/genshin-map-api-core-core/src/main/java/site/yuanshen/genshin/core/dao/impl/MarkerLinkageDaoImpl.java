@@ -17,6 +17,7 @@ import site.yuanshen.data.entity.MarkerLinkage;
 import site.yuanshen.data.helper.MarkerLinkageDataHelper;
 import site.yuanshen.data.mapper.MarkerLinkageMapper;
 import site.yuanshen.data.vo.MarkerLinkageVo;
+import site.yuanshen.data.vo.adapter.marker.linkage.graph.GraphVo;
 import site.yuanshen.genshin.core.dao.MarkerLinkageDao;
 import site.yuanshen.genshin.core.service.MarkerLinkageHelperService;
 import site.yuanshen.genshin.core.service.mbp.MarkerLinkageMBPService;
@@ -110,12 +111,12 @@ public class MarkerLinkageDaoImpl implements MarkerLinkageDao {
     }
 
     /**
-     * 所有的点位关联信息列表
+     * 所有的点位关联元数据
      */
     @Override
-    @Cacheable("listAllMarkerLinkage")
-    public List<MarkerLinkageVo> listAllMarkerLinkage() {
-        List<MarkerLinkage> linkageList = markerLinkageMBPService.list();
+    @Cacheable("getAllMarkerLinkage")
+    public List<MarkerLinkageVo> getAllMarkerLinkage() {
+        final List<MarkerLinkage> linkageList = markerLinkageMBPService.list();
         if(CollUtil.isEmpty(linkageList)) {
             return new ArrayList<>();
         }
@@ -136,6 +137,29 @@ public class MarkerLinkageDaoImpl implements MarkerLinkageDao {
     }
 
     /**
+     * 所有的点位关联列表
+     */
+    @Override
+    public Map<String, List<MarkerLinkageVo>> listAllMarkerLinkage() {
+        return null;
+    }
+
+    /**
+     * 所有的点位关联有向图
+     */
+    @Override
+    @Cacheable("graphAllMarkerLinkage")
+    public Map<String, GraphVo> graphAllMarkerLinkage() {
+        // Allow cache with `FastClassBySpringCGLIB`
+        MarkerLinkageDao markerLinkageDao = (MarkerLinkageDao) SpringContextUtils.getBean("markerLinkageDaoImpl");
+
+        // 获取关联绘图数据
+        final List<MarkerLinkageVo> linkageList = markerLinkageDao.getAllMarkerLinkage();
+        final Map<String, GraphVo> linkageGraph = MarkerLinkageDataHelper.buildLinkageGraph(linkageList);
+        return linkageGraph;
+    }
+
+    /**
      * 所有的点位关联列表的Bz2压缩
      */
     @Override
@@ -151,8 +175,32 @@ public class MarkerLinkageDaoImpl implements MarkerLinkageDao {
     @CachePut(value = "listAllMarkerLinkageBz2", cacheManager = "neverRefreshCacheManager")
     public byte[] refreshAllMarkerLinkageListBz2() {
         try {
-            final List<MarkerLinkageVo> itemList = listAllMarkerLinkage();
-            byte[] result = JSON.toJSONString(itemList).getBytes(StandardCharsets.UTF_8);
+            final List<MarkerLinkageVo> linkageList = getAllMarkerLinkage();
+            final byte[] result = JSON.toJSONString(linkageList).getBytes(StandardCharsets.UTF_8);
+            return CompressUtils.compress(result);
+        } catch (Exception e) {
+            throw new GenshinApiException("创建压缩失败", e);
+        }
+    }
+
+    /**
+     * 所有的点位关联有向图的Bz2压缩
+     */
+    @Override
+    @Cacheable(value = "graphAllMarkerLinkageBz2", cacheManager = "neverRefreshCacheManager")
+    public byte[] graphAllMarkerLinkageBz2() {
+        throw new GenshinApiException("缓存未创建");
+    }
+
+    /**
+     * 刷新点位关联有向图压缩缓存并返回压缩文档
+     */
+    @Override
+    @CachePut(value = "graphAllMarkerLinkageBz2", cacheManager = "neverRefreshCacheManager")
+    public byte[] refreshAllMarkerLinkageGraphBz2() {
+        try {
+            final Map<String, GraphVo> linkageGraph = graphAllMarkerLinkage();
+            final byte[] result = JSON.toJSONString(linkageGraph).getBytes(StandardCharsets.UTF_8);
             return CompressUtils.compress(result);
         } catch (Exception e) {
             throw new GenshinApiException("创建压缩失败", e);

@@ -36,5 +36,16 @@ public class MarkerLinkageDocController {
     public R<String> listAllMarkerLinkageBz2MD5() {
         return RUtils.create(markerLinkageDocService.listMarkerLinkageBz2MD5());
     }
+
+    @Operation(summary = "通过bz2返回所有点位关联有向图数据", description = "查询所有点位关联有向图数据，返回bz2压缩格式的byte数组")
+    @GetMapping("/all_graph_bz2")
+    public byte[] graphAllMarkerLinkageBz2() {
+        return markerLinkageDao.graphAllMarkerLinkageBz2();
+    }
+
+    @Operation(summary = "返回所有点位关联有向图数据bz2的md5", description = "返回所有点位关联有向图数据bz2的md5")
+    @GetMapping("/all_graph_bz2_md5")
+    public R<String> graphAllMarkerLinkageBz2MD5() {
+        return RUtils.create(markerLinkageDocService.graphMarkerLinkageBz2MD5());
     }
 }

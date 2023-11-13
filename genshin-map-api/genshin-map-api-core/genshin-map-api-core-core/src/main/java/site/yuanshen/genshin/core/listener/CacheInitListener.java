@@ -37,6 +37,8 @@ public class CacheInitListener implements ApplicationListener<ApplicationReadyEv
         markerDocService.listMarkerBz2MD5();
         markerLinkageDocService.refreshMarkerLinkageListBz2MD5();
         markerLinkageDocService.listMarkerLinkageBz2MD5();
+        markerLinkageDocService.refreshMarkerLinkageGraphBz2MD5();
+        markerLinkageDocService.graphMarkerLinkageBz2MD5();
         itemDocService.refreshItemBz2MD5();
         itemDocService.listItemBz2MD5();
         iconTagDao.listAllTagBz2Md5();
