@@ -21,21 +21,21 @@ public class MarkerLinkageDocService {
     private final MarkerLinkageDao markerLinkageDao;
 
     /**
-     * 生成点位关联的bz2压缩字节数组
+     * 生成点位关联列表的bz2压缩字节数组
      *
      * @return 字节数组的md5
      */
-    @Cacheable(value = "listMarkerLinkageListBz2MD5", cacheManager = "neverRefreshCacheManager")
-    public String listMarkerLinkageListBz2MD5() {
+    @Cacheable(value = "listMarkerLinkageBz2MD5", cacheManager = "neverRefreshCacheManager")
+    public String listMarkerLinkageBz2MD5() {
         return "缓存未生成或生成失败";
     }
 
     /**
-     * 刷新点位关联分页bz2和对应的md5数组
+     * 刷新点位关联列表的bz2和对应的md5数组
      *
      * @return 字节数组的md5
      */
-    @CachePut(value = "listMarkerLinkageListBz2MD5", cacheManager = "neverRefreshCacheManager")
+    @CachePut(value = "listMarkerLinkageBz2MD5", cacheManager = "neverRefreshCacheManager")
     public String refreshMarkerLinkageListBz2MD5() {
         long startTime = System.currentTimeMillis();
         String result = DigestUtils.md5DigestAsHex(markerLinkageDao.refreshAllMarkerLinkageListBz2());
