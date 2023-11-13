@@ -53,6 +53,7 @@ public class MarkerLinkageController {
     @PostMapping("/link")
     public R<String> linkMarker(@RequestBody List<MarkerLinkageVo> markerLinkageVoList) {
         String groupId = markerLinkageService.linkMarker(markerLinkageVoList);
+        cacheService.cleanMarkerCache();
         cacheService.cleanMarkerLinkageCache();
         return RUtils.create(groupId);
     }
