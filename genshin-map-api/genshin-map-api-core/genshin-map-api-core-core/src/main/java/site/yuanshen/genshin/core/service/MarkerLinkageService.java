@@ -2,13 +2,12 @@ package site.yuanshen.genshin.core.service;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.IdUtil;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
+import org.checkerframework.checker.units.qual.C;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
-import site.yuanshen.common.core.exception.GenshinApiException;
 import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.entity.MarkerLinkage;
 import site.yuanshen.data.helper.MarkerLinkageDataHelper;
@@ -16,8 +15,8 @@ import site.yuanshen.data.vo.MarkerLinkageSearchVo;
 import site.yuanshen.data.vo.MarkerLinkageVo;
 import site.yuanshen.data.vo.adapter.marker.linkage.graph.GraphVo;
 import site.yuanshen.genshin.core.dao.MarkerLinkageDao;
-import site.yuanshen.genshin.core.service.mbp.MarkerLinkageMBPService;
 
+import java.awt.geom.Point2D;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -32,7 +31,7 @@ import java.util.stream.Collectors;
 public class MarkerLinkageService {
 
     private final MarkerLinkageDao markerLinkageDao;
-    private final MarkerLinkageMBPService markerLinkageMBPService;
+    private final MarkerLinkageHelperService markerLinkageHelperService;
 
     @Cacheable(value = "listMarkerLinkage")
     public Map<String, List<MarkerLinkageVo>> listMarkerLinkage(MarkerLinkageSearchVo markerLinkageSearchVo) {
@@ -41,11 +40,14 @@ public class MarkerLinkageService {
             return new HashMap<>();
         }
 
-        List<MarkerLinkageVo> linkageList = markerLinkageMBPService.list(Wrappers.<MarkerLinkage>lambdaQuery().in(MarkerLinkage::getGroupId, groupIds)).parallelStream()
-            .map(markerLinkage -> BeanUtils.copy(markerLinkage, MarkerLinkageVo.class)).collect(Collectors.toList());
-        MarkerLinkageDataHelper.reverseLinkageIds(linkageList);
-        Map<String, List<MarkerLinkageVo>> linkageMap = linkageList.parallelStream().collect(Collectors.groupingBy(MarkerLinkageVo::getGroupId));
+        // 获取关联列表
+        final List<MarkerLinkageVo> linkageList = markerLinkageHelperService.getLinkageList(groupIds);
+        // 关联路线点位数据
+        final List<Long> pathMarkerIds = MarkerLinkageDataHelper.getPathMarkerIdsFromList(linkageList);
+        final Map<Long, Point2D.Double> pathMarkerCoords = markerLinkageHelperService.getPathCoords(pathMarkerIds);
+        MarkerLinkageDataHelper.patchPathMarkerCoordsInList(linkageList, pathMarkerCoords);
 
+        final Map<String, List<MarkerLinkageVo>> linkageMap = linkageList.parallelStream().collect(Collectors.groupingBy(MarkerLinkageVo::getGroupId));
         return linkageMap;
     }
 
@@ -56,13 +58,13 @@ public class MarkerLinkageService {
             return new HashMap<>();
         }
 
-        // 获取关联列表
-        List<MarkerLinkageVo> linkageList = markerLinkageMBPService.list(Wrappers.<MarkerLinkage>lambdaQuery().in(MarkerLinkage::getGroupId, groupIds)).parallelStream()
-            .map(markerLinkage -> BeanUtils.copy(markerLinkage, MarkerLinkageVo.class)).collect(Collectors.toList());
-        MarkerLinkageDataHelper.reverseLinkageIds(linkageList);
+        // 获取关联绘图数据
+        final Map<String, GraphVo> linkageGraph = markerLinkageHelperService.getLinkageGraph(groupIds);
+        // 关联路线点位数据
+        final List<Long> pathMarkerIds = MarkerLinkageDataHelper.getPathMarkerIdsFromGraph(linkageGraph);
+        final Map<Long, Point2D.Double> pathMarkerCoords = markerLinkageHelperService.getPathCoords(pathMarkerIds);
+        MarkerLinkageDataHelper.patchPathMarkerCoordsInGraph(linkageGraph, pathMarkerCoords);
 
-        // 获取有向图数据
-        Map<String, GraphVo> linkageGraph = MarkerLinkageDataHelper.buildLinkageGraph(linkageList);
         return linkageGraph;
     }
 
@@ -71,7 +73,7 @@ public class MarkerLinkageService {
         // 校验数据可用性
         if(linkageVos == null) linkageVos = new ArrayList<>();
         linkageVos = linkageVos.parallelStream().filter(Objects::nonNull).collect(Collectors.toList());
-        checkLinkList(linkageVos);
+        markerLinkageHelperService.checkLinkList(linkageVos);
 
         final String groupId = IdUtil.fastSimpleUUID();
 
@@ -92,19 +94,4 @@ public class MarkerLinkageService {
         return linkSuccess ? groupId : "";
     }
 
-    // -------------------------------------------
-    private void checkLinkList(List<MarkerLinkageVo> linkageVos) {
-        for(MarkerLinkageVo linkageVo : linkageVos) {
-            final Long fromId = linkageVo.getFromId();
-            final Long toId = linkageVo.getToId();
-            if(fromId == null || fromId.compareTo(0L) <= 0 || toId == null || toId.compareTo(0L) <= 0) {
-                throw new GenshinApiException("无效的关联节点ID");
-            } else if(fromId.compareTo(toId) == 0) {
-                throw new GenshinApiException("不能将点位关联到自身");
-            }
-        }
-        if(CollUtil.isEmpty(linkageVos)) {
-            throw new GenshinApiException("关联数据不可为空");
-        }
-    }
 }

@@ -16,8 +16,8 @@
         <result column="to_id" property="toId"/>
         <result column="link_action" property="linkAction"/>
         <result column="link_reverse" property="linkReverse"/>
-        <result column="path" property="path" typeHandler="site.yuanshen.handler.MybatisPlusJsonArrayTypeHandler"/>
-        <result column="extra" property="extra" typeHandler="site.yuanshen.handler.MybatisPlusJsonObjectTypeHandler"/>
+        <result column="path" property="path" typeHandler="site.yuanshen.data.helper.MarkerLinkagePathTypeHandler"/>
+        <result column="extra" property="extra" typeHandler="site.yuanshen.handler.MBPJsonObjectTypeHandler"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->

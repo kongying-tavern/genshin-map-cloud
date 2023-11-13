@@ -21,7 +21,7 @@
         <result column="video_path" property="videoPath"/>
         <result column="refresh_time" property="refreshTime"/>
         <result column="hidden_flag" property="hiddenFlag"/>
-        <result column="extra" property="extra" typeHandler="site.yuanshen.handler.MybatisPlusJsonObjectTypeHandler"/>
+        <result column="extra" property="extra" typeHandler="site.yuanshen.handler.MBPJsonObjectTypeHandler"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->

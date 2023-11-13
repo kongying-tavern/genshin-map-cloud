@@ -86,6 +86,8 @@ public class MarkerController {
         Long newId = markerService.createMarker(new MarkerDto(markerVo));
         cacheService.cleanItemCache();
         cacheService.cleanMarkerCache();
+        // For new marker, no need to clean marker linkage related path cache
+        // since new marker will not be linked in path list.
         return RUtils.create(newId);
     }
 
@@ -95,6 +97,7 @@ public class MarkerController {
         Boolean result = markerService.updateMarker(new MarkerDto(markerVo));
         cacheService.cleanItemCache();
         cacheService.cleanMarkerCache();
+        cacheService.cleanMarkerLinkageCache();
         return RUtils.create(result);
     }
 

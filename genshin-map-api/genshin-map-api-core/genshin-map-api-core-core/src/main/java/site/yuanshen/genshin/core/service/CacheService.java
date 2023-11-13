@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionSynchronizationAdapter;
@@ -26,6 +27,7 @@ import java.util.concurrent.*;
 public class CacheService {
 
     private final MarkerDocService markerDocService;
+    private final MarkerLinkageDocService markerLinkageDocService;
     private final ItemDocService itemDocService;
     private final IconTagDao iconTagDao;
     private final CacheManager cacheManager;
@@ -114,12 +116,28 @@ public class CacheService {
 
     @Caching(
             evict = {
+                    // Evict cache from `MarkerLinkageService`
                     @CacheEvict(value = "listMarkerLinkage", allEntries = true, beforeInvocation = true),
-                    @CacheEvict(value = "graphMarkerLinkage", allEntries = true, beforeInvocation = true)
+                    @CacheEvict(value = "graphMarkerLinkage", allEntries = true, beforeInvocation = true),
+                    // Evict cache from `MarkerLinkageHelperService`
+                    @CacheEvict(value = "getMarkerLinkageList", allEntries = true, beforeInvocation = true),
+                    @CacheEvict(value = "getMarkerLinkageGraph", allEntries = true, beforeInvocation = true),
+                    @CacheEvict(value = "getMarkerLinkagePathCoords", allEntries = true, beforeInvocation = true),
+                    // Evict cache from `MarkerLinkageDaoImpl`
+                    @CacheEvict(value = "getAllMarkerLinkage", allEntries = true, beforeInvocation = true),
+                    @CacheEvict(value = "listAllMarkerLinkage", allEntries = true, beforeInvocation = true),
+                    @CacheEvict(value = "graphAllMarkerLinkage", allEntries = true, beforeInvocation = true)
             }
     )
     public void cleanMarkerLinkageCache() {
         log.info("cleanMarkerLinkageCache");
+        runAfterTransactionDebounceByKey(
+                () -> {
+                    markerLinkageDocService.refreshMarkerLinkageListBz2MD5();
+                    markerLinkageDocService.refreshMarkerLinkageGraphBz2MD5();
+                },
+                FunctionKeyEnum.refreshMarkerLinkageBz2, 5
+        );
     }
 
     @Caching(
@@ -146,6 +164,7 @@ public class CacheService {
         refreshIconTagBz2,
         refreshItemBz2,
         refreshMarkerBz2,
+        refreshMarkerLinkageBz2,
     }
 
     enum Status {

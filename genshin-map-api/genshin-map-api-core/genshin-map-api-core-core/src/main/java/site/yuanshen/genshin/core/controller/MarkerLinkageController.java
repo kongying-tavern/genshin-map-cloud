@@ -27,7 +27,7 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/marker_linkage")
-@Tag(name = "area", description = "点位关联API")
+@Tag(name = "marker_linkage", description = "点位关联API")
 public class MarkerLinkageController {
 
     private final MarkerLinkageService markerLinkageService;
@@ -53,6 +53,7 @@ public class MarkerLinkageController {
     @PostMapping("/link")
     public R<String> linkMarker(@RequestBody List<MarkerLinkageVo> markerLinkageVoList) {
         String groupId = markerLinkageService.linkMarker(markerLinkageVoList);
+        cacheService.cleanMarkerCache();
         cacheService.cleanMarkerLinkageCache();
         return RUtils.create(groupId);
     }

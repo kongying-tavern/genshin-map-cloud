@@ -14,15 +14,16 @@ import site.yuanshen.data.enums.marker.linkage.RelationTypeEnum;
 import site.yuanshen.data.vo.MarkerLinkageVo;
 import site.yuanshen.data.vo.adapter.marker.linkage.graph.GraphVo;
 
+import java.awt.geom.Point2D;
 import java.nio.ByteOrder;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public final class MarkerLinkageDataHelper {
     //////////////START:通用方法//////////////
-
     public static void reverseLinkageIds(List<MarkerLinkageVo> linkageVos) {
         for(MarkerLinkageVo linkageVo : linkageVos) {
             final Long fromId = ObjectUtil.defaultIfNull(linkageVo.getFromId(), 0L);
@@ -117,7 +118,6 @@ public final class MarkerLinkageDataHelper {
         }
         return relation;
     }
-
     //////////////END:通用方法//////////////
 
     //////////////START:绘图数据方法//////////////
@@ -223,11 +223,94 @@ public final class MarkerLinkageDataHelper {
 
         return graphData;
     }
-
     //////////////END:绘图数据方法//////////////
 
-    //////////////START:关联点位方法//////////////
+    //////////////START:路线相关数据方法//////////////
+    public static List<Long> getPathMarkerIdsFromList(List<MarkerLinkageVo> linkageVos) {
+        if(CollUtil.isEmpty(linkageVos)) {
+            return new ArrayList<>();
+        }
+        return linkageVos.parallelStream()
+                .filter(Objects::nonNull)
+                .map(MarkerLinkageVo::getPath)
+                .filter(Objects::nonNull)
+                .flatMap(List::stream)
+                .map(path -> new Long[]{path.getId1(), path.getId2()})
+                .flatMap(Stream::of)
+                .filter(id -> id != null && id.compareTo(0L) > 0)
+                .distinct()
+                .collect(Collectors.toList());
+    }
 
+    public static List<Long> getPathMarkerIdsFromGraph(Map<String, GraphVo> linkageMap) {
+        if(CollUtil.isEmpty(linkageMap)) {
+            return new ArrayList<>();
+        }
+        return linkageMap.values().parallelStream()
+                .filter(Objects::nonNull)
+                .map(GraphVo::getPathRefs)
+                .map(Map::values)
+                .flatMap(Collection::stream)
+                .flatMap(List::stream)
+                .map(path -> new Long[]{path.getId1(), path.getId2()})
+                .flatMap(Stream::of)
+                .filter(id -> id != null && id.compareTo(0L) > 0)
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
+    public static void patchPathMarkerCoordsInList(
+            List<MarkerLinkageVo> linkageVos,
+            Map<Long, Point2D.Double> markerCoords
+    ) {
+        linkageVos.parallelStream().forEach(linkage -> {
+            synchronized (linkage) {
+                linkage.getPath().forEach(path -> {
+                    final Long id1 = path.getId1();
+                    final Point2D.Double coord1 = markerCoords.get(id1);
+                    if(coord1 != null) {
+                        path.setX1(coord1.getX());
+                        path.setY1(coord1.getY());
+                    }
+                    final Long id2 = path.getId2();
+                    final Point2D.Double coord2 = markerCoords.get(id2);
+                    if(coord2 != null) {
+                        path.setX2(coord2.getX());
+                        path.setY2(coord2.getY());
+                    }
+                });
+            }
+        });
+    }
+
+    public static void patchPathMarkerCoordsInGraph(
+            Map<String, GraphVo> linkageMap,
+            Map<Long, Point2D.Double> markerCoords
+    ) {
+        linkageMap.forEach((groupId, graphVo) -> {
+            graphVo.getPathRefs().forEach((refId, refPaths) -> {
+                synchronized (refPaths) {
+                    refPaths.forEach(path -> {
+                        final Long id1 = path.getId1();
+                        final Point2D.Double coord1 = markerCoords.get(id1);
+                        if(coord1 != null) {
+                            path.setX1(coord1.getX());
+                            path.setY1(coord1.getY());
+                        }
+                        final Long id2 = path.getId2();
+                        final Point2D.Double coord2 = markerCoords.get(id2);
+                        if(coord2 != null) {
+                            path.setX2(coord2.getX());
+                            path.setY2(coord2.getY());
+                        }
+                    });
+                }
+            });
+        });
+    }
+    //////////////END:路线相关数据方法//////////////
+
+    //////////////START:关联点位方法//////////////
     public static Map<String, MarkerLinkage> getLinkSearchMap(List<MarkerLinkage> linkageList) {
         return linkageList.parallelStream().collect(Collectors.toConcurrentMap(
             linkageEntity -> MarkerLinkageDataHelper.getIdHash(Arrays.asList(linkageEntity.getFromId(), linkageEntity.getToId())),
@@ -271,7 +354,6 @@ public final class MarkerLinkageDataHelper {
 
         return linkageMap;
     }
-
     //////////////END:关联点位方法//////////////
 
 }
