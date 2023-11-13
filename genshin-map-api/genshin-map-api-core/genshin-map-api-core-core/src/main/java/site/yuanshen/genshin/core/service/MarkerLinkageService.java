@@ -3,6 +3,8 @@ package site.yuanshen.genshin.core.service;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.IdUtil;
 import lombok.RequiredArgsConstructor;
+import org.checkerframework.checker.units.qual.C;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,6 +33,7 @@ public class MarkerLinkageService {
     private final MarkerLinkageDao markerLinkageDao;
     private final MarkerLinkageHelperService markerLinkageHelperService;
 
+    @Cacheable(value = "listMarkerLinkage")
     public Map<String, List<MarkerLinkageVo>> listMarkerLinkage(MarkerLinkageSearchVo markerLinkageSearchVo) {
         List<String> groupIds = markerLinkageSearchVo.getGroupIds();
         if(CollUtil.isEmpty(groupIds)) {
@@ -48,6 +51,7 @@ public class MarkerLinkageService {
         return linkageMap;
     }
 
+    @Cacheable(value = "graphMarkerLinkage")
     public Map<String, GraphVo> graphMarkerLinkage(MarkerLinkageSearchVo markerLinkageSearchVo) {
         List<String> groupIds = markerLinkageSearchVo.getGroupIds();
         if(CollUtil.isEmpty(groupIds)) {

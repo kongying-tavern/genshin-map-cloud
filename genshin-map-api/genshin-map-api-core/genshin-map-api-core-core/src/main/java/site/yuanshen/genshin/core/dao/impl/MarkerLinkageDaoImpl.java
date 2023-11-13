@@ -115,7 +115,7 @@ public class MarkerLinkageDaoImpl implements MarkerLinkageDao {
      * 所有的点位关联元数据
      */
     @Override
-    @Cacheable("getAllMarkerLinkage")
+    @Cacheable(value = "getAllMarkerLinkage")
     public List<MarkerLinkageVo> getAllMarkerLinkage() {
         final List<MarkerLinkage> linkageList = markerLinkageMBPService.list();
         if(CollUtil.isEmpty(linkageList)) {
@@ -141,6 +141,7 @@ public class MarkerLinkageDaoImpl implements MarkerLinkageDao {
      * 所有的点位关联列表
      */
     @Override
+    @Cacheable(value = "listAllMarkerLinkage")
     public Map<String, List<MarkerLinkageVo>> listAllMarkerLinkage() {
         // Allow cache with `FastClassBySpringCGLIB`
         MarkerLinkageDao markerLinkageDao = (MarkerLinkageDao) SpringContextUtils.getBean("markerLinkageDaoImpl");
@@ -155,7 +156,7 @@ public class MarkerLinkageDaoImpl implements MarkerLinkageDao {
      * 所有的点位关联有向图
      */
     @Override
-    @Cacheable("graphAllMarkerLinkage")
+    @Cacheable(value = "graphAllMarkerLinkage")
     public Map<String, GraphVo> graphAllMarkerLinkage() {
         // Allow cache with `FastClassBySpringCGLIB`
         MarkerLinkageDao markerLinkageDao = (MarkerLinkageDao) SpringContextUtils.getBean("markerLinkageDaoImpl");
