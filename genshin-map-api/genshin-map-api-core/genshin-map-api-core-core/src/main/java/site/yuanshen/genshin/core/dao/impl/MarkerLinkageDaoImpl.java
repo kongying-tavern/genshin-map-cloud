@@ -136,7 +136,7 @@ public class MarkerLinkageDaoImpl implements MarkerLinkageDao {
     }
 
     /**
-     * 所有的点位关联信息的Bz2压缩
+     * 所有的点位关联列表的Bz2压缩
      */
     @Override
     @Cacheable(value = "listAllMarkerLinkageBz2", cacheManager = "neverRefreshCacheManager")
@@ -145,14 +145,13 @@ public class MarkerLinkageDaoImpl implements MarkerLinkageDao {
     }
 
     /**
-     * 刷新点位关联压缩缓存并返回压缩文档
+     * 刷新点位关联列表压缩缓存并返回压缩文档
      */
     @Override
     @CachePut(value = "listAllMarkerLinkageBz2", cacheManager = "neverRefreshCacheManager")
     public byte[] refreshAllMarkerLinkageListBz2() {
         try {
-            final MarkerLinkageDao markerLinkageDao = (MarkerLinkageDao) SpringContextUtils.getBean("markerLinkageDaoImpl");
-            final List<MarkerLinkageVo> itemList = markerLinkageDao.listAllMarkerLinkage();
+            final List<MarkerLinkageVo> itemList = listAllMarkerLinkage();
             byte[] result = JSON.toJSONString(itemList).getBytes(StandardCharsets.UTF_8);
             return CompressUtils.compress(result);
         } catch (Exception e) {
