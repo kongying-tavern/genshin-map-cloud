@@ -141,7 +141,13 @@ public class MarkerLinkageDaoImpl implements MarkerLinkageDao {
      */
     @Override
     public Map<String, List<MarkerLinkageVo>> listAllMarkerLinkage() {
-        return null;
+        // Allow cache with `FastClassBySpringCGLIB`
+        MarkerLinkageDao markerLinkageDao = (MarkerLinkageDao) SpringContextUtils.getBean("markerLinkageDaoImpl");
+
+        // 获取关联列表数据
+        final List<MarkerLinkageVo> linkageList = markerLinkageDao.getAllMarkerLinkage();
+        final Map<String, List<MarkerLinkageVo>> linkageMap = linkageList.parallelStream().collect(Collectors.groupingBy(MarkerLinkageVo::getGroupId));
+        return linkageMap;
     }
 
     /**
@@ -175,7 +181,7 @@ public class MarkerLinkageDaoImpl implements MarkerLinkageDao {
     @CachePut(value = "listAllMarkerLinkageBz2", cacheManager = "neverRefreshCacheManager")
     public byte[] refreshAllMarkerLinkageListBz2() {
         try {
-            final List<MarkerLinkageVo> linkageList = getAllMarkerLinkage();
+            final Map<String, List<MarkerLinkageVo>> linkageList = listAllMarkerLinkage();
             final byte[] result = JSON.toJSONString(linkageList).getBytes(StandardCharsets.UTF_8);
             return CompressUtils.compress(result);
         } catch (Exception e) {
