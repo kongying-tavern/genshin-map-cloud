@@ -11,6 +11,9 @@ import java.util.Set;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @Schema(title = "关联组数据前端封装")
 public class RelationVo implements Serializable {
+    @Schema(title = "关联组类型")
+    private String type = "";
+
     @Schema(title = "触发关联数据")
     private Set<LinkRefVo> triggers;
 

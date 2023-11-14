@@ -102,6 +102,7 @@ public final class MarkerLinkageDataHelper {
             case TRIGGER:
             case TRIGGER_ALL:
             case TRIGGER_ANY:
+                relation.setType(linkAction.getValue());
                 for(LinkRefDto linkRef : linkRefs) {
                     relation.addRelation(RelationTypeEnum.TRIGGER, IdTypeEnum.FROM, linkRef);
                     relation.addRelation(RelationTypeEnum.TARGET, IdTypeEnum.TO, linkRef);
@@ -109,6 +110,7 @@ public final class MarkerLinkageDataHelper {
                 break;
             case RELATED:
             case EQUIVALENT:
+                relation.setType(linkAction.getValue());
                 for(LinkRefDto linkRef : linkRefs) {
                     relation.addRelation(RelationTypeEnum.GROUP, IdTypeEnum.FROM, linkRef);
                     relation.addRelation(RelationTypeEnum.GROUP, IdTypeEnum.TO, linkRef);
