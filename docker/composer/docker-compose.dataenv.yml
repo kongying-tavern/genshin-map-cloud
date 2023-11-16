@@ -23,6 +23,7 @@ services:
       - ${NACOS_PORT_HTTP:-8848}:8848
       - ${NACOS_PORT_GRPC_CLIENT:-9848}:9848
       - ${NACOS_PORT_GRPC_SERVER:-9849}:9849
+    restart: always
 networks:
   gsapi:
     name: gsapi
