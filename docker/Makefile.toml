@@ -12,8 +12,8 @@ check_env
 
 ENV_FILE = get_env ENV_FILE
 PROJECT_NAME = get_env PROJECT_NAME
-docker_down "${ENV_FILE}" "${PROJECT_NAME}" "./composer/docker-compose.dataenv.yml"
-docker_up "${ENV_FILE}" "${PROJECT_NAME}" "./composer/docker-compose.dataenv.yml"
+docker_down "${PROJECT_NAME}" "${ENV_FILE}" "./composer/docker-compose.dataenv.yml"
+docker_up "${PROJECT_NAME}" "${ENV_FILE}" "./composer/docker-compose.dataenv.yml"
 '''
 
 # help
