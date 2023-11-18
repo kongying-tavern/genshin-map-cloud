@@ -39,7 +39,7 @@ RUN ln -s /usr/local/openjdk-11/bin/java /bin/java && \
     apt update && \
     apt install -y systemctl
 
-VOLUME ["/data"]
+VOLUME ["/data/logs"]
 EXPOSE 8101
 
 ENTRYPOINT ["/bin/sh", "/data/startup.sh"]

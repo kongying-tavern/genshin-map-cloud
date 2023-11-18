@@ -1,0 +1,20 @@
+include:
+  - docker-compose.network.yml
+  - docker-compose.dataenv.yml
+
+services:
+  api:
+    container_name: gsapi-api
+    image: gsapi/api
+    depends_on:
+      postgresql:
+        condition: service_healthy
+      nacos:
+        condition: service_healthy
+    networks:
+      - gsapi
+    volumes:
+      - ${DATA_DIR}/api/logs:/data/logs
+    ports:
+      - ${API_PORT:-8101}:8101
+    restart: always
