@@ -28,11 +28,14 @@ FROM openjdk:11 AS api
 WORKDIR /data
 COPY --from=builder /data/dist .
 ADD docker/config/apt.list /etc/apt/sources.list
-ADD --chmod=+x docker/config/startup.sh startup.sh
-ADD --chmod=+x docker/config/api-gateway.service /etc/systemd/system/genshin-map-ability-gateway.service
-ADD --chmod=+x docker/config/api-core.service /etc/systemd/system/genshin-map-api-core.service
+ADD docker/config/startup.sh startup.sh
+ADD docker/config/api-gateway.service /etc/systemd/system/genshin-map-ability-gateway.service
+ADD docker/config/api-core.service /etc/systemd/system/genshin-map-api-core.service
 
 RUN ln -s /usr/local/openjdk-11/bin/java /bin/java && \
+    chmod +x /data/startup.sh && \
+    chmod +x /etc/systemd/system/genshin-map-ability-gateway.service && \
+    chmod +x /etc/systemd/system/genshin-map-api-core.service && \
     apt update && \
     apt install -y systemctl
 
