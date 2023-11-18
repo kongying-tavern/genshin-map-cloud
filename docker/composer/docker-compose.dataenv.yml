@@ -1,3 +1,6 @@
+include:
+  - docker-compose.network.yml
+
 services:
   postgresql:
     container_name: gsapi-postgres
@@ -24,6 +27,3 @@ services:
       - ${NACOS_PORT_GRPC_CLIENT:-9848}:9848
       - ${NACOS_PORT_GRPC_SERVER:-9849}:9849
     restart: always
-networks:
-  gsapi:
-    name: gsapi

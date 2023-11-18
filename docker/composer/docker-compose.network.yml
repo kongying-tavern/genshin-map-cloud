@@ -1,0 +1,4 @@
+networks:
+  gsapi:
+    name: gsapi
+    driver: bridge
