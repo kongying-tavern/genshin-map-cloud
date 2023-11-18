@@ -74,6 +74,10 @@ ribbon:
 #      enabled: true
 
 spring:
+  profiles:
+    include:
+      - nacos
+
   application:
     name: oauth2-gateway
 
@@ -85,10 +89,6 @@ spring:
           jwk-set-uri: http://localhost:8092/.well-known/jwks.json
 
   cloud:
-    nacos:
-      server-addr: http://localhost:8848
-      username: nacos
-      password: nacos
     gateway:
       discovery:
         locator:
