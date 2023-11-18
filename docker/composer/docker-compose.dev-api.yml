@@ -5,6 +5,7 @@ include:
 services:
   api:
     container_name: gsapi-api
+    hostname: gsapi-api
     image: gsapi/api
     depends_on:
       postgresql:

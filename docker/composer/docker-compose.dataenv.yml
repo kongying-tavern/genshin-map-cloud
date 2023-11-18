@@ -4,6 +4,7 @@ include:
 services:
   postgresql:
     container_name: gsapi-postgres
+    hostname: gsapi-postgres
     image: postgres:15
     networks:
       - gsapi
@@ -22,6 +23,7 @@ services:
       retries: 30
   nacos:
     container_name: gsapi-nacos
+    hostname: gsapi-nacos
     image: nacos/nacos-server:v2.0.4
     networks:
       - gsapi
