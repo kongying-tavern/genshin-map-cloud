@@ -59,6 +59,12 @@ docker_down "${ENV_FILE}" "${PROJECT_NAME}" "./composer/docker-compose.dev-api.y
 docker_up "${ENV_FILE}" "${PROJECT_NAME}" "./composer/docker-compose.dev-api.yml"
 '''
 
+[tasks.dev] # !! build & daemon dev api
+dependencies = [
+    { name = "dev-build" },
+    { name = "dev-api" }
+]
+
 # help
 [tasks.help]
 script = '''
