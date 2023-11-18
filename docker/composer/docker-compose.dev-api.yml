@@ -13,7 +13,9 @@ services:
       nacos:
         condition: service_healthy
     networks:
-      - gsapi
+      gsapi:
+        aliases:
+          - api.local
     volumes:
       - ${DATA_DIR}/api/logs:/data/logs
     ports:

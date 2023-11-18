@@ -1,5 +1,5 @@
 spring:
   datasource:
-    url: jdbc:postgresql://postgresql:5432/{{PGSQL_DB}}?currentSchema={{PGSQL_SCHEMA}}
+    url: jdbc:postgresql://pgsql.local:5432/{{PGSQL_DB}}?currentSchema={{PGSQL_SCHEMA}}
     username: {{PGSQL_USER}}
     password: {{PGSQL_PASS}}

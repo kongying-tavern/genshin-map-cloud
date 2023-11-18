@@ -7,7 +7,9 @@ services:
     hostname: gsapi-postgres
     image: postgres:15
     networks:
-      - gsapi
+      gsapi:
+        aliases:
+          - pgsql.local
     environment:
       - POSTGRES_USER=${PGSQL_USER}
       - POSTGRES_PASSWORD=${PGSQL_PASS}
@@ -26,7 +28,9 @@ services:
     hostname: gsapi-nacos
     image: nacos/nacos-server:v2.0.4
     networks:
-      - gsapi
+      gsapi:
+        aliases:
+          - nacos.local
     environment:
       - MODE=standalone
     ports:
