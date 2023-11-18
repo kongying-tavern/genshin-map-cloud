@@ -2,5 +2,7 @@ spring:
   cloud:
     nacos:
       server-addr: nacos:8848
+      username: {{NACOS_USER}}
+      password: {{NACOS_PASS}}
       config:
         file-extension: yaml

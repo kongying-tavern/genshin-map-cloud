@@ -14,11 +14,13 @@ ADD docker/config docker/config
 ADD docker/cache docker/cache
 
 RUN --mount=type=cache,target=/root/.m2,rw \
-    cp -f ./docker/cache/application.yml ./genshin-map-config/src/main/resources-dev/application-datasource-dev.yml && \
+    cp -f ./docker/cache/application-datasource.yml ./genshin-map-config/src/main/resources-dev/application-datasource-dev.yml && \
+    cp -f ./docker/cache/application-nacos.yml ./genshin-map-config/src/main/resources-dev/application-nacos-dev.yml && \
+    cp -f ./docker/cache/application-nacos.yml ./genshin-map-ability/genshin-map-ability-gateway/src/main/resources/bootstrap-nacos.yml && \
     mvn clean package -s ./docker/config/maven.xml -P dev -f pom.xml && \
     mkdir -p ./dist && \
-    cp ./genshin-map-ability/genshin-map-ability-gateway/target/genshin-map-ability-gateway-1.0.jar ./dist && \
-    cp ./genshin-map-api/genshin-map-api-core/genshin-map-api-core-core/target/genshin-map-api-core-core-1.0.jar ./dist
+    cp -f ./genshin-map-ability/genshin-map-ability-gateway/target/genshin-map-ability-gateway-1.0.jar ./dist && \
+    cp -f ./genshin-map-api/genshin-map-api-core/genshin-map-api-core-core/target/genshin-map-api-core-core-1.0.jar ./dist
 
 # API
 FROM openjdk:11 AS api
