@@ -17,6 +17,9 @@ services:
     restart: always
     healthcheck:
       test: ["CMD-SHELL", "pg_isready || exit 1"]
+      interval: 2s
+      timeout: 60s
+      retries: 30
   nacos:
     container_name: gsapi-nacos
     image: nacos/nacos-server:v2.0.4
@@ -30,4 +33,7 @@ services:
       - ${NACOS_PORT_GRPC_SERVER:-9849}:9849
     restart: always
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:8848/nacos || exit 1"]
+      test: ["CMD-SHELL", "curl -f 'http://localhost:8848/nacos' || exit 1"]
+      interval: 5s
+      timeout: 60s
+      retries: 12
