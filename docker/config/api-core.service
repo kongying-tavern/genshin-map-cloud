@@ -1,0 +1,19 @@
+[Unit]
+Description=Genshin-Map api-core-core Service
+Documentation=https://yuanshen.site
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/data/
+ExecStart=/bin/java -server -jar /data/genshin-map-api-core-core-1.0.jar
+ExecStop=/bin/kill -s QUIT $MAINPID
+Restart=always
+StandOutput=syslog
+
+StandError=inherit
+
+[Install]
+WantedBy=multi-user.target

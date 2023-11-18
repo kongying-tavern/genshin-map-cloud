@@ -1,0 +1,5 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://gsapi-postgres:5432/{{PGSQL_DB}}?currentSchema={{PGSQL_SCHEMA}}
+    username: {{PGSQL_USER}}
+    password: {{PGSQL_PASS}}

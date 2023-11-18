@@ -12,8 +12,29 @@ check_env
 
 ENV_FILE = get_env ENV_FILE
 PROJECT_NAME = get_env PROJECT_NAME
-docker_down "${PROJECT_NAME}" "${ENV_FILE}" "./composer/docker-compose.dataenv.yml"
-docker_up "${PROJECT_NAME}" "${ENV_FILE}" "./composer/docker-compose.dataenv.yml"
+
+docker_down "${ENV_FILE}" "${PROJECT_NAME}" "./composer/docker-compose.dataenv.yml"
+docker_up "${ENV_FILE}" "${PROJECT_NAME}" "./composer/docker-compose.dataenv.yml"
+'''
+
+# dev: development environment
+[tasks.dev-build] # !! build dev api
+script = '''
+#!@duckscript
+!include_files ./makefile/util.env.ds ./makefile/util.docker.ds
+prepare_envvars
+check_env
+
+ENV_FILE = get_env ENV_FILE
+PROJECT_NAME = get_env PROJECT_NAME
+
+app_yaml_tpl = readfile ./config/api-application-tpl.yml
+app_slots = json_parse --collection "[\"PGSQL_USER\", \"PGSQL_PASS\", \"PGSQL_DB\", \"PGSQL_SCHEMA\"]"
+app_yaml_content = replace_env_value ${app_yaml_tpl} ${app_slots}
+release ${app_slots}
+writefile ./cache/application.yml "${app_yaml_content}"
+
+docker_build "${ENV_FILE}" "${PROJECT_NAME}" "./composer/docker-compose.dev-build.yml"
 '''
 
 # help
