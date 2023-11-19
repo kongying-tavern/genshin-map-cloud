@@ -1,177 +1,90 @@
 [tasks.default]
 alias = "help"
 
-## Utility tasks
-[tasks.prepare-envvars]
-private = true
-script = '''
-#!@duckscript
-cur_dir = pwd
-
-env_file = get_env ENV_FILE
-if is_empty ${env_file}
-	env_file = set .env
-	env_file = join_path ${cur_dir} ${env_file}
-	set_env ENV_FILE ${env_file}
-end
-
-data_dir = get_env DATA_DIR
-if is_empty ${data_dir}
-	data_dir = set ./.data
-	data_dir = join_path ${cur_dir} ${data_dir}
-	set_env DATA_DIR ${data_dir}
-end
-
-project_name = get_env PROJECT_NAME
-if is_empty ${project_name}
-	set_env PROJECT_NAME gsapi
-end
-'''
-
-[tasks.check-env]
-private = true
-script = '''
-#!@duckscript
-# Check .env
-env_file = get_env ENV_FILE
-env_file_exist = is_file ${env_file}
-env_file_missing = not ${env_file_exist}
-if not ${env_file_exist}
-	error_msg = set "${env_file} does not exist. Please make `${env_file}` first."
-	echo ${error_msg}
-	trigger_error ${error_msg}
-end
-'''
-
-[tasks.docker-run]
-private = true
-command = "docker"
-args = []
-
 ## Sub-commands
 # dataenv: provide data environments
 [tasks.dataenv] # !! startup data environments
-dependencies = ["prepare-envvars", "check-env"]
-run_task = { name = ["dataenv-down", "dataenv-up"] }
-
-[tasks.dataenv-up]
-extend = "docker-run"
-args = [
-	"compose",
-	"--env-file",
-	"${ENV_FILE}",
-	"-p",
-	"${PROJECT_NAME}",
-	"-f",
-	"./composer/docker-compose.dataenv.yml",
-	"up",
-	"-d"
-]
-
-[tasks.dataenv-down]
-extend = "docker-run"
-args = [
-	"compose",
-	"--env-file",
-	"${ENV_FILE}",
-	"-p",
-	"${PROJECT_NAME}",
-	"-f",
-	"./composer/docker-compose.dataenv.yml",
-	"down"
-]
-
-[tasks.dataenv-volumes]
-private = true
 script = '''
 #!@duckscript
-data_dir = get_env DATA_DIR
-exec mkdir -p "${data_dir}/postgresql"
+!include_files ./makefile/util.env.ds ./makefile/util.docker.ds
+prepare_envvars
+check_env
+
+ENV_FILE = get_env ENV_FILE
+PROJECT_NAME = get_env PROJECT_NAME
+
+docker_down "${ENV_FILE}" "${PROJECT_NAME}" "./composer/docker-compose.dataenv.yml"
+docker_up "${ENV_FILE}" "${PROJECT_NAME}" "./composer/docker-compose.dataenv.yml"
 '''
+
+# dev: development environment
+[tasks.dev-build] # !! build dev api
+script = '''
+#!@duckscript
+!include_files ./makefile/util.env.ds ./makefile/util.docker.ds
+prepare_envvars
+check_env
+
+ENV_FILE = get_env ENV_FILE
+PROJECT_NAME = get_env PROJECT_NAME
+
+# Generate datasource YAML
+yaml_ds_tpl = readfile ./config/application-datasource-tpl.yml
+yaml_ds_slots = json_parse --collection "[\"PGSQL_USER\", \"PGSQL_PASS\", \"PGSQL_DB\", \"PGSQL_SCHEMA\"]"
+yaml_ds_content = replace_env_value ${yaml_ds_tpl} ${yaml_ds_slots}
+release ${yaml_ds_slots}
+writefile ./cache/application-datasource.yml "${yaml_ds_content}"
+
+# Generate nacos YAML
+yaml_nacos_tpl = readfile ./config/application-nacos-tpl.yml
+yaml_nacos_slots = json_parse --collection "[\"NACOS_USER\", \"NACOS_PASS\"]"
+yaml_nacos_content = replace_env_value ${yaml_nacos_tpl} ${yaml_nacos_slots}
+release ${yaml_nacos_slots}
+writefile ./cache/application-nacos.yml "${yaml_nacos_content}"
+
+docker_build "${ENV_FILE}" "${PROJECT_NAME}" "./composer/docker-compose.dev-build.yml"
+'''
+
+[tasks.dev-api] # !! start dev api
+script = '''
+#!@duckscript
+!include_files ./makefile/util.env.ds ./makefile/util.docker.ds
+prepare_envvars
+check_env
+
+ENV_FILE = get_env ENV_FILE
+PROJECT_NAME = get_env PROJECT_NAME
+
+docker_down "${ENV_FILE}" "${PROJECT_NAME}" "./composer/docker-compose.dev-api.yml"
+docker_up "${ENV_FILE}" "${PROJECT_NAME}" "./composer/docker-compose.dev-api.yml"
+'''
+
+[tasks.dev] # !! build & daemon dev api
+dependencies = [
+    { name = "dev-build" },
+    { name = "dev-api" }
+]
 
 # help
 [tasks.help]
-dependencies = ["prepare-envvars"]
 script = '''
 #!@duckscript
-## Util functions
-fn str_repeat
-	i = set 0
-	s = set ""
-	while less_than ${i} ${2}
-		s = concat ${s} ${1}
-		i = calc ${i} + 1
-	end
-	return ${s}
-end
-
-fn get_commands
-	commands = array
-	makefile = readfile ./Makefile.toml
-	lines = split ${makefile} "\n"
-
-
-	for line in ${lines}
-		exist_task = starts_with ${line} [tasks.
-		exist_desc = contains ${line} !!
-		if ${exist_task} and ${exist_desc}
-			# Get command name
-			name_start = indexof ${line} [tasks.
-			name_start = calc ${name_start} + 7 # 7 is length of `tasks.`
-			name_end = indexof ${line} ]
-			cmd_name = substring ${line} ${name_start} ${name_end}
-
-			# Get command desc
-			desc_start = indexof ${line} !!
-			desc_start = calc ${desc_start} + 2 # 2 is length of `!!`
-			cmd_desc = substring ${line} ${desc_start}
-			cmd_desc = trim_start ${cmd_desc}
-
-			# Get command gap
-			name_len = length ${cmd_name}
-			gap_len = calc 30 - ${name_len}
-			cmd_gap = str_repeat " " ${gap_len}
-
-			# Prepare entity map
-			cmd_map = map
-			map_put ${cmd_map} name ${cmd_name}
-			map_put ${cmd_map} gap ${cmd_gap}
-			map_put ${cmd_map} desc ${cmd_desc}
-
-			array_push ${commands} ${cmd_map}
-		end
-	end
-
-	release ${lines}
-	return ${commands}
-end
+!include_files  ./makefile/util.env.ds ./makefile/util.help.ds
+prepare_envvars
 
 ## Start script
-banner = readfile ./Makefile.banner.txt
+banner = readfile ./makefile/Makefile.banner.txt
 echo ${banner}
 
 # Generate commands
-cmds = get_commands
+cmds = get_help_commands
 
 env_file = get_env ENV_FILE
 echo Current env file:
-println -c magenta "  ${env_file}"
+println -c magenta " ${env_file}"
+
 echo Available commands:
-
-for cmd in ${cmds}
-	cmd_name = map_get ${cmd} name
-	cmd_gap = map_get ${cmd} gap
-	cmd_desc = map_get ${cmd} desc
-	print "  - "
-	print -c green ${cmd_name}
-	print ${cmd_gap}
-	print " "
-	print ${cmd_desc}
-	echo
-
-	release ${cmd}
-end
-release ${cmds}
+print_help_commands ${cmds}
 
 echo What do you want? >>>
 cmd_name = read

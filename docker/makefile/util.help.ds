@@ -1,0 +1,58 @@
+!include_files ./util.string.ds
+
+fn get_help_commands
+    commands = array
+    makefile = readfile ./Makefile.toml
+    lines = split ${makefile} "\n"
+
+    for line in ${lines}
+        exist_task = starts_with ${line} [tasks.
+        exist_desc = contains ${line} !!
+        if ${exist_task} and ${exist_desc}
+            # Get command name
+            name_start = indexof ${line} [tasks.
+            name_start = calc ${name_start} + 7 # 7 is length of `tasks.`
+            name_end = indexof ${line} ]
+            cmd_name = substring ${line} ${name_start} ${name_end}
+
+            # Get command desc
+            desc_start = indexof ${line} !!
+            desc_start = calc ${desc_start} + 2 # 2 is length of `!!`
+            cmd_desc = substring ${line} ${desc_start}
+            cmd_desc = trim_start ${cmd_desc}
+
+            # Get command gap
+            name_len = length ${cmd_name}
+            gap_len = calc 30 - ${name_len}
+            cmd_gap = str_repeat " " ${gap_len}
+
+            # Prepare entity map
+            cmd_map = map
+            map_put ${cmd_map} name ${cmd_name}
+            map_put ${cmd_map} gap ${cmd_gap}
+            map_put ${cmd_map} desc ${cmd_desc}
+
+            array_push ${commands} ${cmd_map}
+        end
+    end
+
+    release ${lines}
+    return ${commands}
+end
+
+fn print_help_commands
+    for cmd in ${1}
+        cmd_name = map_get ${cmd} name
+        cmd_gap = map_get ${cmd} gap
+        cmd_desc = map_get ${cmd} desc
+        print "  - "
+        print -c green ${cmd_name}
+        print ${cmd_gap}
+        print " "
+        print ${cmd_desc}
+        echo
+
+        release ${cmd}
+    end
+    release ${1}
+end

@@ -1,0 +1,11 @@
+fn docker_up
+    exec docker compose --env-file "${1}" -p "${2}" -f "${3}" up -d
+end
+
+fn docker_down
+    exec docker compose --env-file "${1}" -p "${2}" -f "${3}" down
+end
+
+fn docker_build
+    exec docker compose --env-file "${1}" -p "${2}" -f "${3}" build
+end

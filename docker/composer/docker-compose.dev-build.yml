@@ -1,0 +1,6 @@
+services:
+  builder:
+    image: gsapi/api
+    build:
+      context: ${PROJECT_BASE}
+      dockerfile: docker/composer/docker-compose.dev-build.Dockerfile

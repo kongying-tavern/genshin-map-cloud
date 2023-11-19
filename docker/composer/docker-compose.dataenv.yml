@@ -1,9 +1,15 @@
+include:
+  - docker-compose.network.yml
+
 services:
   postgresql:
     container_name: gsapi-postgres
+    hostname: gsapi-postgres
     image: postgres:15
     networks:
-      - gsapi
+      gsapi:
+        aliases:
+          - pgsql.local
     environment:
       - POSTGRES_USER=${PGSQL_USER}
       - POSTGRES_PASSWORD=${PGSQL_PASS}
@@ -12,17 +18,28 @@ services:
     ports:
       - ${PGSQL_PORT:-5432}:5432
     restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready || exit 1"]
+      interval: 2s
+      timeout: 60s
+      retries: 30
   nacos:
     container_name: gsapi-nacos
+    hostname: gsapi-nacos
     image: nacos/nacos-server:v2.0.4
     networks:
-      - gsapi
+      gsapi:
+        aliases:
+          - nacos.local
     environment:
       - MODE=standalone
     ports:
       - ${NACOS_PORT_HTTP:-8848}:8848
       - ${NACOS_PORT_GRPC_CLIENT:-9848}:9848
       - ${NACOS_PORT_GRPC_SERVER:-9849}:9849
-networks:
-  gsapi:
-    name: gsapi
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f 'http://localhost:8848/nacos' || exit 1"]
+      interval: 5s
+      timeout: 60s
+      retries: 12

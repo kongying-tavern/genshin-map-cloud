@@ -123,13 +123,6 @@
                 <runtime-profile>uat</runtime-profile>
             </properties>
         </profile>
-        <!-- docker -->
-        <profile>
-            <id>docker</id>
-            <properties>
-                <runtime-profile>docker</runtime-profile>
-            </properties>
-        </profile>
     </profiles>
 
 
