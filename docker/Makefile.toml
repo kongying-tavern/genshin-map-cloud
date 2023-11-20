@@ -65,6 +65,20 @@ dependencies = [
     { name = "dev-api" }
 ]
 
+# img-local: image local host
+[tasks.img-local-build] # !! build image local host
+script = '''
+#!@duckscript
+!include_files ./makefile/util.env.ds ./makefile/util.docker.ds
+prepare_envvars
+check_env
+
+ENV_FILE = get_env ENV_FILE
+PROJECT_NAME = get_env PROJECT_NAME
+
+docker_build "${ENV_FILE}" "${PROJECT_NAME}" "./composer/docker-compose.img-local-build.yml"
+'''
+
 # help
 [tasks.help]
 script = '''
