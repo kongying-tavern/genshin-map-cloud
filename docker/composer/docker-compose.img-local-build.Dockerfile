@@ -18,5 +18,5 @@ RUN apt update && \
         --with-freetype && \
     docker-php-ext-install gd
 
-VOLUME ["/var/www/html/"]
+VOLUME ["/var/www/html"]
 EXPOSE 80

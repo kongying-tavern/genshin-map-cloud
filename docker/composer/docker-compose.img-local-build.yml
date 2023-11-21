@@ -1,5 +1,5 @@
 services:
-  builder:
+  img-local:
     image: gsapi/img-local
     build:
       context: ${PROJECT_BASE}
