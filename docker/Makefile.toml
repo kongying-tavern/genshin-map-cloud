@@ -93,6 +93,12 @@ docker_down "${ENV_FILE}" "${PROJECT_NAME}" "./composer/docker-compose.img-local
 docker_up "${ENV_FILE}" "${PROJECT_NAME}" "./composer/docker-compose.img-local-run.yml"
 '''
 
+[tasks.img-local] # !! build & run image local host
+dependencies = [
+    { name = "img-local-build" },
+    { name = "img-local-run" }
+]
+
 # help
 [tasks.help]
 script = '''
