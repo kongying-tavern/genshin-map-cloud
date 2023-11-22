@@ -82,8 +82,9 @@ class Cache {
         if(empty($cache_dir)) {
             throw new CacheException('缓存目录不能为空');
         }
+        $cache_dir = realpath($cache_dir);
         Utils::mkdir($cache_dir, '无法创建缓存目录');
-        $this->cache_dir = realpath($cache_dir);
+        $this->cache_dir = $cache_dir;
         return $this;
     }
 
