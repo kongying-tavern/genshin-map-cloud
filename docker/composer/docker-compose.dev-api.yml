@@ -13,7 +13,7 @@ services:
       nacos:
         condition: service_healthy
     networks:
-      gsapi:
+      gsapi-api:
         aliases:
           - api.local
     volumes:
