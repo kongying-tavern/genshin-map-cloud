@@ -1,7 +1,8 @@
 FROM php:7.4-apache
 
-WORKDIR /var/www/html/
+WORKDIR /var/www/html
 ADD docker/config/apt.list /etc/apt/sources.list
+ADD docker/config/img-local-uploader .
 
 RUN apt update && \
     apt install -y \
@@ -18,5 +19,5 @@ RUN apt update && \
         --with-freetype && \
     docker-php-ext-install gd
 
-VOLUME ["/var/www/html"]
+VOLUME ["/var/www/html/cache", "/var/www/html/saved_img"]
 EXPOSE 80

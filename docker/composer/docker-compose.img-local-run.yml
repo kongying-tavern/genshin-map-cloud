@@ -11,7 +11,8 @@ services:
         aliases:
           - img-local.local
     volumes:
-      - ${DATA_DIR}/img-local:/var/www/html
+      - ${DATA_DIR}/img-local/cache:/var/www/html/cache
+      - ${DATA_DIR}/img-local/saved_img:/var/www/html/saved_img
     ports:
-      - ${IMG_LOCAL_PORT:-8888}:80
+      - ${IMG_LOCAL_PORT:-8070}:80
     restart: always
