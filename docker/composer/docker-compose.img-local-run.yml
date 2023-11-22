@@ -7,7 +7,7 @@ services:
     hostname: gsapi-img-local
     image: gsapi/img-local
     networks:
-      gsapi:
+      gsapi-img-local:
         aliases:
           - img-local.local
     volumes:

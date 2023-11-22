@@ -7,7 +7,7 @@ services:
     hostname: gsapi-postgres
     image: postgres:15
     networks:
-      gsapi:
+      gsapi-api:
         aliases:
           - pgsql.local
     environment:
@@ -28,7 +28,7 @@ services:
     hostname: gsapi-nacos
     image: nacos/nacos-server:v2.0.4
     networks:
-      gsapi:
+      gsapi-api:
         aliases:
           - nacos.local
     environment:
