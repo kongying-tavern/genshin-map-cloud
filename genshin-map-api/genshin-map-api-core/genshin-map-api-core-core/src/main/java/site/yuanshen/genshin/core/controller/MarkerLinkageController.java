@@ -26,8 +26,8 @@ import java.util.Map;
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/marker_linkage")
-@Tag(name = "marker_linkage", description = "点位关联API")
+@RequestMapping("/api/marker_link")
+@Tag(name = "marker_link", description = "点位关联API")
 public class MarkerLinkageController {
 
     private final MarkerLinkageService markerLinkageService;

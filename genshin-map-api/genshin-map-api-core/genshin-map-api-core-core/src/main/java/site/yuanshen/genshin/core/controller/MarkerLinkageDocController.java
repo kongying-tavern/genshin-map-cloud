@@ -19,8 +19,8 @@ import site.yuanshen.genshin.core.service.MarkerLinkageDocService;
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/marker_linkage_doc")
-@Tag(name = "marker_linkage_doc", description = "点位关联档案API")
+@RequestMapping("/api/marker_link_doc")
+@Tag(name = "marker_link_doc", description = "点位关联档案API")
 public class MarkerLinkageDocController {
     private final MarkerLinkageDao markerLinkageDao;
     private final MarkerLinkageDocService markerLinkageDocService;
