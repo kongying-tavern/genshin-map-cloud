@@ -161,8 +161,6 @@ public class ItemService {
             List<Long> itemIds = new ArrayList<>(Collections.singletonList(itemDto.getId()));
             itemIds.addAll(sameItems.parallelStream().map(Item::getId).collect(Collectors.toList()));
 
-            //在更新逻辑之前做历史信息记录
-            saveHistoryItem(itemIds, sameItems);
 
 
             //对比类型信息是否更改
@@ -209,6 +207,9 @@ public class ItemService {
                             .set(itemDto.getDefaultRefreshTime() != null, Item::getDefaultRefreshTime, itemDto.getDefaultRefreshTime())
                             .set(itemDto.getSortIndex() != null, Item::getSortIndex, itemDto.getSortIndex())
             );
+
+            //历史信息记录
+            saveHistoryItem(itemIds, sameItems);
         }
         return true;
     }

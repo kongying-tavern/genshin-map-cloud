@@ -169,8 +169,6 @@ public class MarkerService {
     @Transactional
     public Boolean updateMarker(MarkerDto markerDto) {
         MarkerDto markerRecord = buildMarkerDto(markerDto.getId());
-        //保存历史记录
-        saveHistoryMarker(markerRecord);
 
         Map<String, Object> mergeResult = JsonUtils.merge(markerRecord.getExtra(), markerDto.getExtra());
         markerDto.setExtra(mergeResult);
@@ -188,6 +186,10 @@ public class MarkerService {
         } else if (markerDto.getItemList() != null) {
             markerItemLinkMapper.delete(Wrappers.<MarkerItemLink>lambdaQuery().eq(MarkerItemLink::getMarkerId, markerDto.getId()));
         }
+
+        //保存历史记录
+        historyMapper.insert(HistoryConvert.convert(markerRecord));;
+
         return updated;
     }
 
@@ -216,12 +218,6 @@ public class MarkerService {
                         .map(MarkerItemLinkDto::new)
                         .map(MarkerItemLinkDto::getVo)
                         .collect(Collectors.toList()));
-    }
-
-    private void saveHistoryMarker(MarkerDto dto) {
-        History history = HistoryConvert.convert(dto);
-        //存储入库
-        historyMapper.insert(history);
     }
 
 }
