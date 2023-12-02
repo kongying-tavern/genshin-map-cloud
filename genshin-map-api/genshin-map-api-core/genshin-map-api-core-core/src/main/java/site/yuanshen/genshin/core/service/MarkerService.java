@@ -157,6 +157,7 @@ public class MarkerService {
                         .map(MarkerItemLinkDto::new).map(dto -> dto.withMarkerId(marker.getId()).getEntity())
                         .collect(Collectors.toMap(MarkerItemLink::getItemId, Function.identity())).values());
         markerItemLinkMBPService.saveBatch(itemLinkList);
+
         return marker.getId();
     }
 
@@ -168,7 +169,11 @@ public class MarkerService {
      */
     @Transactional
     public Boolean updateMarker(MarkerDto markerDto) {
+        //查询修改前的记录
         MarkerDto markerRecord = buildMarkerDto(markerDto.getId());
+
+        //将当前记录保存为历史记录
+        historyMapper.insert(HistoryConvert.convert(markerRecord));
 
         Map<String, Object> mergeResult = JsonUtils.merge(markerRecord.getExtra(), markerDto.getExtra());
         markerDto.setExtra(mergeResult);
@@ -186,9 +191,6 @@ public class MarkerService {
         } else if (markerDto.getItemList() != null) {
             markerItemLinkMapper.delete(Wrappers.<MarkerItemLink>lambdaQuery().eq(MarkerItemLink::getMarkerId, markerDto.getId()));
         }
-
-        //保存历史记录
-        historyMapper.insert(HistoryConvert.convert(markerRecord));;
 
         return updated;
     }
