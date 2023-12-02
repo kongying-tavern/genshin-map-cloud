@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.yuanshen.common.core.exception.GenshinApiException;
 import site.yuanshen.common.core.utils.JsonUtils;
+import site.yuanshen.common.core.utils.SpringContextUtils;
 import site.yuanshen.data.dto.MarkerDto;
 import site.yuanshen.data.dto.MarkerItemLinkDto;
 import site.yuanshen.data.dto.helper.PageSearchDto;
@@ -108,8 +109,9 @@ public class MarkerService {
      */
     //此处是两个方法的缝合，不需要加缓存
     public List<MarkerVo> searchMarker(MarkerSearchVo markerSearchVo, List<Integer> hiddenFlagList) {
-        List<Long> markerIdList = searchMarkerId(markerSearchVo, hiddenFlagList);
-        List<MarkerVo> result = listMarkerById(markerIdList, hiddenFlagList);
+        final MarkerService markerService = (MarkerService) SpringContextUtils.getBean("markerService");
+        List<Long> markerIdList = markerService.searchMarkerId(markerSearchVo, hiddenFlagList);
+        List<MarkerVo> result = markerService.listMarkerById(markerIdList, hiddenFlagList);
         return result;
     }
 
