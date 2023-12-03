@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.common.collect.Lists;
 import site.yuanshen.data.entity.History;
+import site.yuanshen.data.enums.HistoryEditType;
 import site.yuanshen.data.enums.HistoryType;
 
 import java.util.List;
@@ -28,9 +29,9 @@ public class HistoryConvert {
             new MarkerConvert()
     );
 
-    public static History convert(Object source) {
+    public static History convert(Object source, HistoryEditType editType) {
         return converts.stream().filter(convert -> convert.support(source)).findAny()
-                .orElseThrow(() -> new RuntimeException(source.getClass() + " not support")).convert(source);
+                .orElseThrow(() -> new RuntimeException(source.getClass() + " not support")).convert(source, editType);
     }
 
 

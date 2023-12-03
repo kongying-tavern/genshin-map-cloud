@@ -1,14 +1,12 @@
 package site.yuanshen.data.entity;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.annotation.Version;
-import java.time.LocalDateTime;
-import site.yuanshen.data.base.BaseEntity;
+import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.core.handlers.MybatisEnumTypeHandler;
 import lombok.*;
+import site.yuanshen.data.base.BaseEntity;
+import site.yuanshen.data.enums.HistoryEditType;
+
+import java.time.LocalDateTime;
 
 /**
  * 历史操作表
@@ -77,5 +75,11 @@ public class History extends BaseEntity {
      */
     @TableField("ipv4")
     private String ipv4;
+
+    /**
+     * 修改类型
+     */
+    @TableField(value = "edit_type", typeHandler = MybatisEnumTypeHandler.class)
+    private HistoryEditType editType;
 
 }

@@ -11,6 +11,7 @@ import site.yuanshen.common.core.exception.GenshinApiException;
 import site.yuanshen.data.dto.ItemDto;
 import site.yuanshen.data.dto.ItemSearchDto;
 import site.yuanshen.data.entity.*;
+import site.yuanshen.data.enums.HistoryEditType;
 import site.yuanshen.data.mapper.*;
 import site.yuanshen.data.vo.ItemVo;
 import site.yuanshen.data.vo.helper.PageListVo;
@@ -162,7 +163,7 @@ public class ItemService {
             itemIds.addAll(sameItems.parallelStream().map(Item::getId).collect(Collectors.toList()));
 
             //在更新逻辑之前做历史信息记录
-            saveHistoryItem(itemIds, sameItems);
+            saveHistoryItem(itemIds, sameItems, HistoryEditType.UPDATE);
 
             //对比类型信息是否更改
             HashSet<Long> oldTypeIds = itemTypeLinkMapper.selectList(Wrappers.<ItemTypeLink>lambdaQuery()
@@ -308,6 +309,8 @@ public class ItemService {
             throw new GenshinApiException("不允许删除公共物品");
         }
 
+        // 添加删除物品历史记录
+        saveHistoryItem(List.of(itemId), List.of(), HistoryEditType.DELETE);
 
         itemTypeLinkMapper.delete(Wrappers.<ItemTypeLink>lambdaQuery()
                 .eq(ItemTypeLink::getItemId, itemId));
@@ -323,8 +326,9 @@ public class ItemService {
      * 将当前点位信息存入历史记录表
      * @param itemIds 物品Id列表
      * @param sameItems 同名物品List(若无需同名则默认为空)
+     * @param editType 编辑类型
      */
-    private void saveHistoryItem(List<Long> itemIds, List<Item> sameItems) {
+    private void saveHistoryItem(List<Long> itemIds, List<Item> sameItems, HistoryEditType editType) {
         //根据itemId查询(按目前逻辑只有一个Id),加上同名物品
         List<Item> items = itemMapper.selectList(Wrappers.<Item>lambdaQuery()
                 .in(Item::getId, itemIds));
@@ -344,7 +348,7 @@ public class ItemService {
         //将DTO转为history
         itemDtoList.forEach(
                 dto -> {
-                    History history = HistoryConvert.convert(dto);
+                    History history = HistoryConvert.convert(dto, editType);
                     //存储入库
                     historyMapper.insert(history);
                 }

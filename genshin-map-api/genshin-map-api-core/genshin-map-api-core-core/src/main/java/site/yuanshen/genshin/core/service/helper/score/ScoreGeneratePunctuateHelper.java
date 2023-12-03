@@ -14,6 +14,7 @@ import site.yuanshen.data.base.BaseEntity;
 import site.yuanshen.data.dto.MarkerDto;
 import site.yuanshen.data.dto.adapter.score.ScoreSpanConfigDto;
 import site.yuanshen.data.entity.*;
+import site.yuanshen.data.enums.HistoryEditType;
 import site.yuanshen.data.enums.ScoreScopeEnum;
 import site.yuanshen.data.mapper.HistoryMapper;
 import site.yuanshen.data.mapper.ItemMapper;
@@ -204,7 +205,7 @@ public class ScoreGeneratePunctuateHelper {
                         o.setMarkerTitle(markerItemTitle);
                         o.setContent(markerItemContent);
                         // 生成历史数据
-                        final History history = HistoryConvert.convert(o);
+                        final History history = HistoryConvert.convert(o, HistoryEditType.NONE);
                         history.setCreatorId(marker.getCreatorId());
                         history.setCreateTime(marker.getCreateTime());
                         history.setUpdaterId(marker.getCreatorId());
@@ -272,7 +273,7 @@ public class ScoreGeneratePunctuateHelper {
 
                     if(history == null) {
                         MarkerDto o = BeanUtils.copy(marker, MarkerDto.class);
-                        history = HistoryConvert.convert(o);
+                        history = HistoryConvert.convert(o, HistoryEditType.NONE);
                         history.setCreatorId(marker.getUpdaterId());
                         history.setCreateTime(marker.getUpdateTime().plusSeconds(100L));
                         history.setUpdaterId(marker.getUpdaterId());

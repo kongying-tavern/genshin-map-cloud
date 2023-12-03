@@ -5,6 +5,7 @@ import lombok.*;
 import com.alibaba.fastjson2.annotation.JSONField;
 import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.entity.History;
+import site.yuanshen.data.enums.HistoryEditType;
 import site.yuanshen.data.vo.HistoryVo;
 import site.yuanshen.data.vo.SysUserSmallVo;
 import site.yuanshen.data.vo.SysUserVo;
@@ -78,6 +79,11 @@ public class HistoryDto {
      * IPv4
      */
     private String ipv4;
+
+    /**
+     * 修改类型
+     */
+    private HistoryEditType editType;
 
     public HistoryDto(History history) {
         BeanUtils.copy(history, this);

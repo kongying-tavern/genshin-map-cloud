@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.yuanshen.common.core.exception.GenshinApiException;
@@ -13,7 +12,11 @@ import site.yuanshen.common.core.utils.SpringContextUtils;
 import site.yuanshen.data.dto.MarkerDto;
 import site.yuanshen.data.dto.MarkerItemLinkDto;
 import site.yuanshen.data.dto.helper.PageSearchDto;
-import site.yuanshen.data.entity.*;
+import site.yuanshen.data.entity.Item;
+import site.yuanshen.data.entity.ItemTypeLink;
+import site.yuanshen.data.entity.Marker;
+import site.yuanshen.data.entity.MarkerItemLink;
+import site.yuanshen.data.enums.HistoryEditType;
 import site.yuanshen.data.mapper.*;
 import site.yuanshen.data.vo.MarkerSearchVo;
 import site.yuanshen.data.vo.MarkerVo;
@@ -173,7 +176,7 @@ public class MarkerService {
         MarkerDto markerRecord = buildMarkerDto(markerDto.getId());
 
         //将当前记录保存为历史记录
-        historyMapper.insert(HistoryConvert.convert(markerRecord));
+        historyMapper.insert(HistoryConvert.convert(markerRecord, HistoryEditType.UPDATE));
 
         Map<String, Object> mergeResult = JsonUtils.merge(markerRecord.getExtra(), markerDto.getExtra());
         markerDto.setExtra(mergeResult);
@@ -181,7 +184,7 @@ public class MarkerService {
         Boolean updated = markerMapper.update(markerDto.getEntity(), Wrappers.<Marker>lambdaUpdate()
                 .eq(Marker::getId, markerDto.getId())) == 1;
         if (!updated) {
-            throw new OptimisticLockingFailureException("该点位已更新，请重新提交");
+            throw new GenshinApiException("该点位已更新，请重新提交");
         }
 
         if (markerDto.getItemList() != null && !markerDto.getItemList().isEmpty()) {
@@ -204,6 +207,11 @@ public class MarkerService {
      */
     @Transactional
     public Boolean deleteMarker(Long markerId) {
+        //查询修改前的记录
+        MarkerDto markerRecord = buildMarkerDto(markerId);
+        //将当前记录保存为历史记录
+        historyMapper.insert(HistoryConvert.convert(markerRecord, HistoryEditType.DELETE));
+
         markerMapper.delete(Wrappers.<Marker>lambdaQuery().eq(Marker::getId, markerId));
         markerItemLinkMapper.delete(Wrappers.<MarkerItemLink>lambdaQuery().eq(MarkerItemLink::getMarkerId, markerId));
         markerLinkageDao.removeRelatedLinkageList(Collections.singletonList(markerId), true);
