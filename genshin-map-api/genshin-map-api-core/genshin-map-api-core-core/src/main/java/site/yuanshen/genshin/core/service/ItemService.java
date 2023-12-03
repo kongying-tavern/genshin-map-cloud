@@ -309,6 +309,8 @@ public class ItemService {
             throw new GenshinApiException("不允许删除公共物品");
         }
 
+        // 添加删除物品历史记录
+        saveHistoryItem(List.of(itemId), List.of(), HistoryEditType.DELETE);
 
         itemTypeLinkMapper.delete(Wrappers.<ItemTypeLink>lambdaQuery()
                 .eq(ItemTypeLink::getItemId, itemId));
