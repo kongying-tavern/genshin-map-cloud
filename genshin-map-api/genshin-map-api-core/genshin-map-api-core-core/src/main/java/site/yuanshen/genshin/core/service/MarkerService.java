@@ -14,6 +14,7 @@ import site.yuanshen.data.dto.MarkerDto;
 import site.yuanshen.data.dto.MarkerItemLinkDto;
 import site.yuanshen.data.dto.helper.PageSearchDto;
 import site.yuanshen.data.entity.*;
+import site.yuanshen.data.enums.HistoryEditType;
 import site.yuanshen.data.mapper.*;
 import site.yuanshen.data.vo.MarkerSearchVo;
 import site.yuanshen.data.vo.MarkerVo;
@@ -173,7 +174,7 @@ public class MarkerService {
         MarkerDto markerRecord = buildMarkerDto(markerDto.getId());
 
         //将当前记录保存为历史记录
-        historyMapper.insert(HistoryConvert.convert(markerRecord));
+        historyMapper.insert(HistoryConvert.convert(markerRecord, HistoryEditType.UPDATE));
 
         Map<String, Object> mergeResult = JsonUtils.merge(markerRecord.getExtra(), markerDto.getExtra());
         markerDto.setExtra(mergeResult);

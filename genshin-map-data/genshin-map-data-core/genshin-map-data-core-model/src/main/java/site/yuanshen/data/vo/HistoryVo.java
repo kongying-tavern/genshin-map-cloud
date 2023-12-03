@@ -2,6 +2,7 @@ package site.yuanshen.data.vo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
+import site.yuanshen.data.enums.HistoryEditType;
 
 import java.time.LocalDateTime;
 
@@ -82,5 +83,11 @@ public class HistoryVo {
      */
     @Schema(title = "IPv4")
     private String ipv4;
+
+    /**
+     * 修改类型
+     */
+    @Schema(title = "修改类型")
+    private HistoryEditType editType;
 
 }
