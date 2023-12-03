@@ -207,6 +207,11 @@ public class MarkerService {
      */
     @Transactional
     public Boolean deleteMarker(Long markerId) {
+        //查询修改前的记录
+        MarkerDto markerRecord = buildMarkerDto(markerId);
+        //将当前记录保存为历史记录
+        historyMapper.insert(HistoryConvert.convert(markerRecord, HistoryEditType.DELETE));
+
         markerMapper.delete(Wrappers.<Marker>lambdaQuery().eq(Marker::getId, markerId));
         markerItemLinkMapper.delete(Wrappers.<MarkerItemLink>lambdaQuery().eq(MarkerItemLink::getMarkerId, markerId));
         markerLinkageDao.removeRelatedLinkageList(Collections.singletonList(markerId), true);
