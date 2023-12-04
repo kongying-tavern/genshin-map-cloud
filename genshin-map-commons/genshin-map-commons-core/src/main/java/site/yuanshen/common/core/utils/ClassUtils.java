@@ -143,7 +143,7 @@ public class ClassUtils {
      * @param clazz 类
      * @return 字段列表
      */
-    public static  List<Field> getFields(Class clazz) {
+    public static List<Field> getFields(Class clazz) {
         return getFields(new ArrayList<>(), clazz);
     }
 

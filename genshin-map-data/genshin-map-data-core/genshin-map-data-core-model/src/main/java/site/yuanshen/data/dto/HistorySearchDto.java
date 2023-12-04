@@ -34,6 +34,11 @@ public class HistorySearchDto extends PageSearchDto {
     @Schema(title = "原ID(配合操作数据类型使用)")
     private List<Long> id = new ArrayList<>();
 
+    /**
+     * 排序条件
+     */
+    @Schema(title = "排序条件")
+    private List<String> sort = new ArrayList<>();
 
     public HistorySearchDto(HistorySearchVo historySearchVo) {
         BeanUtils.copyNotNull(historySearchVo, this);

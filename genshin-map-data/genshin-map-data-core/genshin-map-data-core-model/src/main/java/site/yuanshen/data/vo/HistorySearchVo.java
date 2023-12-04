@@ -37,4 +37,10 @@ public class HistorySearchVo {
      */
     @Schema(title = "类型ID(配合记录类型使用)")
     private List<Long> id;
+
+    /**
+     * 排序条件
+     */
+    @Schema(title = "排序条件")
+    private List<String> sort;
 }
