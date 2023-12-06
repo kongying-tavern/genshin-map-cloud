@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.yuanshen.common.core.exception.GenshinApiException;
 import site.yuanshen.common.core.utils.JsonUtils;
+import site.yuanshen.common.core.utils.PgsqlUtils;
 import site.yuanshen.common.core.utils.SpringContextUtils;
 import site.yuanshen.data.dto.MarkerDto;
 import site.yuanshen.data.dto.MarkerItemLinkDto;
@@ -18,6 +19,7 @@ import site.yuanshen.data.entity.Marker;
 import site.yuanshen.data.entity.MarkerItemLink;
 import site.yuanshen.data.enums.HistoryEditType;
 import site.yuanshen.data.mapper.*;
+import site.yuanshen.data.vo.MarkerItemLinkVo;
 import site.yuanshen.data.vo.MarkerSearchVo;
 import site.yuanshen.data.vo.MarkerVo;
 import site.yuanshen.data.vo.helper.PageListVo;
@@ -30,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -221,13 +224,29 @@ public class MarkerService {
     //--------------------储存历史信息-----------------------
 
     private MarkerDto buildMarkerDto(Long markerId) {
-        Marker marker = markerMapper.selectOne(Wrappers.<Marker>lambdaQuery().eq(Marker::getId, markerId));
-        return new MarkerDto(marker).withItemList(
-                markerItemLinkMapper.selectList(Wrappers.<MarkerItemLink>lambdaQuery().eq(MarkerItemLink::getMarkerId, markerId))
-                        .stream()
-                        .map(MarkerItemLinkDto::new)
-                        .map(MarkerItemLinkDto::getVo)
-                        .collect(Collectors.toList()));
+        final List<MarkerDto> markerList = buildMarkerDto(List.of(markerId));
+        return markerList.isEmpty() ? null : markerList.get(0);
+    }
+
+    private List<MarkerDto> buildMarkerDto(List<Long> markerId) {
+        final String markerIdListStr = PgsqlUtils.unnestLongStr(markerId);
+        final List<Marker> markerList = markerMapper.selectListWithLargeIn(markerIdListStr, Wrappers.<Marker>lambdaQuery());
+        final List<MarkerItemLink> markerItemLinkList = markerItemLinkMapper.selectWithLargeCustomIn("marker_id", markerIdListStr, Wrappers.<MarkerItemLink>lambdaQuery());
+
+        final Map<Long, List<MarkerItemLinkDto>> markerItemLinkGroup = markerItemLinkList.parallelStream()
+                .map(MarkerItemLinkDto::new)
+                .collect(Collectors.groupingBy(MarkerItemLinkDto::getMarkerId));
+
+        return markerList.stream()
+                .map(MarkerDto::new)
+                .map(marker -> marker.withItemList(
+                        markerItemLinkGroup
+                                .getOrDefault(marker.getId(), List.of())
+                                .stream()
+                                .map(MarkerItemLinkDto::getVo)
+                                .collect(Collectors.toList())
+                ))
+                .collect(Collectors.toList());
     }
 
 }
