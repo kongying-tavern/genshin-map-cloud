@@ -6,7 +6,7 @@
         with id_list as (
             select unnest(${unnest}::bigint[]) "id2")
         select *
-        from marker left join id_list on marker.id = id_list.id2
+        from marker inner join id_list on marker.id = id_list.id2
         <if test="ew.customSqlSegment ==null or ew.customSqlSegment == ''">
             where true and
         </if>

@@ -9,7 +9,7 @@
             <include refid="Base_Column_List"/>
         </if>
         ${ew.SqlSelect}
-        from item_type_link left join id_list on item_type_link.id = id_list.id2
+        from item_type_link inner join id_list on item_type_link.id = id_list.id2
         <if test="ew.customSqlSegment ==null or ew.customSqlSegment == ''">
             where true
         </if>
@@ -23,7 +23,7 @@
             <include refid="Base_Column_List"/>
         </if>
         ${ew.SqlSelect}
-        from item_type_link left join id_list on item_type_link.${column} = id_list."${column}2"
+        from item_type_link inner join id_list on item_type_link.${column} = id_list."${column}2"
         <if test="ew.customSqlSegment ==null or ew.customSqlSegment == ''">
             where true
         </if>

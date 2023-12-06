@@ -58,7 +58,7 @@
             SELECT UNNEST(${unnest}::bigint[]) "marker_id2"
         )
         SELECT ml.* FROM marker_linkage AS ml
-        JOIN id_list ON
+        INNER JOIN id_list ON
             ml.from_id = id_list.marker_id2 OR
             ml.to_id = id_list.marker_id2
         <if test="ew.customSqlSegment == null or ew.customSqlSegment == ''">
