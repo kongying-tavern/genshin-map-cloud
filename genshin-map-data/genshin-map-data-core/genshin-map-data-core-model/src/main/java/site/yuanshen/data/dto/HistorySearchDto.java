@@ -3,17 +3,17 @@ package site.yuanshen.data.dto;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
-import lombok.experimental.Accessors;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.With;
 import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.dto.helper.PageSearchDto;
 import site.yuanshen.data.entity.History;
-import site.yuanshen.data.entity.Icon;
 import site.yuanshen.data.vo.HistorySearchVo;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Data
 @With
@@ -32,8 +32,13 @@ public class HistorySearchDto extends PageSearchDto {
      * 记录类型,不传时默认查询全部数据
      */
     @Schema(title = "原ID(配合操作数据类型使用)")
-    private List<Integer> id = new ArrayList<>();
+    private List<Long> id = new ArrayList<>();
 
+    /**
+     * 排序条件
+     */
+    @Schema(title = "排序条件")
+    private List<String> sort = new ArrayList<>();
 
     public HistorySearchDto(HistorySearchVo historySearchVo) {
         BeanUtils.copyNotNull(historySearchVo, this);

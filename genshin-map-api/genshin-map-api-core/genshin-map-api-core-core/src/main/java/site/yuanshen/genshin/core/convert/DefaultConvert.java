@@ -6,6 +6,7 @@ import cn.hutool.extra.servlet.ServletUtil;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import site.yuanshen.data.entity.History;
+import site.yuanshen.data.enums.HistoryEditType;
 import site.yuanshen.data.enums.HistoryType;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,7 +15,7 @@ import java.util.Objects;
 public abstract class DefaultConvert implements Convert {
 
     @Override
-    public final History convert(Object o) {
+    public final History convert(Object o, HistoryEditType editType) {
         History history = new History();
 
         String ipv4 = "N/A";
@@ -34,6 +35,7 @@ public abstract class DefaultConvert implements Convert {
         history.setMd5(md5);
         history.setType(getType().getCode());
         history.setIpv4(ipv4);
+        history.setEditType(editType);
         return history;
     }
 

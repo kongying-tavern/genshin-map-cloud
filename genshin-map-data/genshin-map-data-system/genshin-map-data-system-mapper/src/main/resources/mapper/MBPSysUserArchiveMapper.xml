@@ -14,7 +14,7 @@
         <result column="update_time" property="updateTime"/>
         <result column="name" property="name"/>
         <result column="slot_index" property="slotIndex"/>
-        <result column="data" property="data" typeHandler="site.yuanshen.handler.MybatisPlusJsonArrayTypeHandler"/>
+        <result column="data" property="data" typeHandler="site.yuanshen.handler.MBPJsonArrayTypeHandler"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->

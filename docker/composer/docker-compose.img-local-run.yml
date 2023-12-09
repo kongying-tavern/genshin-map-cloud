@@ -1,0 +1,18 @@
+include:
+  - docker-compose.network.yml
+
+services:
+  img-local:
+    container_name: gsapi-img-local
+    hostname: gsapi-img-local
+    image: gsapi/img-local
+    networks:
+      gsapi-img-local:
+        aliases:
+          - img-local.local
+    volumes:
+      - ${DATA_DIR}/img-local/cache:/var/www/html/cache
+      - ${DATA_DIR}/img-local/saved_img:/var/www/html/saved_img
+    ports:
+      - ${IMG_LOCAL_PORT:-8070}:80
+    restart: always

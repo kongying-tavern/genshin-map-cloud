@@ -13,6 +13,7 @@
         <result column="t_id" property="tId"/>
         <result column="type" property="type"/>
         <result column="ipv4" property="ipv4"/>
+        <result column="edit_type" property="editType" typeHandler="com.baomidou.mybatisplus.core.handlers.MybatisEnumTypeHandler"/>
         <result column="version" property="version"/>
         <result column="updater_id" property="updaterId"/>
         <result column="update_time" property="updateTime"/>
@@ -29,6 +30,7 @@
         history.t_id,
         history.type,
         history.ipv4,
+        history.edit_type,
         history.version,
         history.updater_id,
         history.update_time

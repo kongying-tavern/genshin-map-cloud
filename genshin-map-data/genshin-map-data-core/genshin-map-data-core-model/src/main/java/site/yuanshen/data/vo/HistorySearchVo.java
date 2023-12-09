@@ -36,5 +36,11 @@ public class HistorySearchVo {
      * 记录类型,不传时默认查询全部数据
      */
     @Schema(title = "类型ID(配合记录类型使用)")
-    private List<Integer> id;
+    private List<Long> id;
+
+    /**
+     * 排序条件
+     */
+    @Schema(title = "排序条件")
+    private List<String> sort;
 }

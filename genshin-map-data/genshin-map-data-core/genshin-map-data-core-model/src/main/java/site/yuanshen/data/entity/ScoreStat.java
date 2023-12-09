@@ -3,7 +3,7 @@ package site.yuanshen.data.entity;
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.*;
 import site.yuanshen.data.base.BaseEntity;
-import site.yuanshen.handler.MybatisPlusJsonObjectTypeHandler;
+import site.yuanshen.handler.MBPJsonObjectTypeHandler;
 
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -79,7 +79,7 @@ public class ScoreStat extends BaseEntity {
     /**
      * 修改的字段JSON
      */
-    @TableField(value = "content", typeHandler = MybatisPlusJsonObjectTypeHandler.class)
+    @TableField(value = "content", typeHandler = MBPJsonObjectTypeHandler.class)
     private Map<String, Object> content;
 
 }

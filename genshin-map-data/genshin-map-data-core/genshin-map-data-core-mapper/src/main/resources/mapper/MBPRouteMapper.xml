@@ -13,10 +13,10 @@
         <result column="update_time" property="updateTime"/>
         <result column="name" property="name"/>
         <result column="content" property="content"/>
-        <result column="marker_list" property="markerList" typeHandler="site.yuanshen.handler.MybatisPlusJsonArrayTypeHandler"/>
+        <result column="marker_list" property="markerList" typeHandler="site.yuanshen.handler.MBPJsonArrayTypeHandler"/>
         <result column="hidden_flag" property="hiddenFlag"/>
         <result column="video" property="video"/>
-        <result column="extra" property="extra" typeHandler="site.yuanshen.handler.MybatisPlusJsonObjectTypeHandler"/>
+        <result column="extra" property="extra" typeHandler="site.yuanshen.handler.MBPJsonObjectTypeHandler"/>
         <result column="creator_nickname" property="creatorNickname"/>
     </resultMap>
 

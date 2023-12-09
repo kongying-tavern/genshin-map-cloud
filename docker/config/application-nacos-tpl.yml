@@ -1,0 +1,8 @@
+spring:
+  cloud:
+    nacos:
+      server-addr: nacos.local:8848
+      username: {{NACOS_USER}}
+      password: {{NACOS_PASS}}
+      config:
+        file-extension: yaml
