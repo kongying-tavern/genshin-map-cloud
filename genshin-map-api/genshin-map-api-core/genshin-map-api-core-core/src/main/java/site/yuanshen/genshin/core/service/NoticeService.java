@@ -36,16 +36,34 @@ public class NoticeService {
             Wrappers.<Notice>lambdaQuery()
                 .in(CollUtil.isNotEmpty(noticeSearchDto.getChannels()), Notice::getChannel, noticeSearchDto.getChannels())
                 .like(StrUtil.isNotBlank(noticeSearchDto.getTitle()), Notice::getTitle, noticeSearchDto.getTitle())
-                .nested(isValid != null, cw -> {
+                .nested(isValid != null, cwValid -> {
                     final Timestamp ts = TimeUtils.getCurrentTimestamp();
-                    if(isValid) {
-                        cw
-                            .le(Notice::getValidTimeStart, ts)
-                            .ge(Notice::getValidTimeEnd, ts);
+                    if(isValid != null) {
+                        cwValid
+                                .nested(cwST -> {
+                                    cwST
+                                            .nested(cwSTN -> {cwSTN.isNull(Notice::getValidTimeStart);}).or()
+                                            .nested(cwSTN -> {cwSTN.isNotNull(Notice::getValidTimeStart).le(Notice::getValidTimeStart, ts);});
+                                })
+                                .nested(cwET -> {
+                                    cwET
+                                            .nested(cwETN -> {cwETN.isNull(Notice::getValidTimeEnd);}).or()
+                                            .nested(cwETN -> {cwETN.isNotNull(Notice::getValidTimeEnd).ge(Notice::getValidTimeEnd, ts);});
+                                });
                     } else {
-                        cw
-                            .gt(Notice::getValidTimeStart, ts).or()
-                            .lt(Notice::getValidTimeEnd, ts);
+                        cwValid
+                                .nested(cwST -> {
+                                    cwST
+                                            .isNotNull(Notice::getValidTimeStart)
+                                            .gt(Notice::getValidTimeStart, ts);
+                                })
+                                .or()
+                                .nested(cwSE -> {
+                                    cwSE
+                                            .isNotNull(Notice::getValidTimeEnd)
+                                            .lt(Notice::getValidTimeEnd, ts);
+
+                                });
                     }
                 })
                 .orderByDesc(BaseEntity::getCreateTime)
