@@ -119,6 +119,7 @@ println -c magenta " ${env_file}"
 
 echo Available commands:
 print_help_commands ${cmds}
+release ${cmds}
 
 echo What do you want? >>>
 cmd_name = read

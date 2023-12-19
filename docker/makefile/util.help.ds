@@ -54,5 +54,4 @@ fn print_help_commands
 
         release ${cmd}
     end
-    release ${1}
 end
