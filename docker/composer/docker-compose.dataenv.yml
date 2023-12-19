@@ -11,8 +11,8 @@ services:
         aliases:
           - pgsql.local
     environment:
-      - POSTGRES_USER=${PGSQL_USER}
-      - POSTGRES_PASSWORD=${PGSQL_PASS}
+      POSTGRES_USER: ${PGSQL_USER}
+      POSTGRES_PASSWORD: ${PGSQL_PASS}
     volumes:
       - ${DATA_DIR}/postgresql:/var/lib/postgresql/data
     ports:
@@ -34,7 +34,7 @@ services:
         aliases:
           - nacos.local
     environment:
-      - MODE=standalone
+      MODE: standalone
     ports:
       - ${NACOS_PORT_HTTP:-8848}:8848
       - ${NACOS_PORT_GRPC_CLIENT:-9848}:9848
