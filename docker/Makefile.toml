@@ -99,6 +99,40 @@ dependencies = [
     { name = "img-local-run" }
 ]
 
+# img-alist: image alist host
+[tasks.img-alist-build] # !! build image alist host
+script = '''
+#!@duckscript
+!include_files ./makefile/util.env.ds ./makefile/util.docker.ds
+prepare_envvars
+check_env
+
+ENV_FILE = get_env ENV_FILE
+PROJECT_NAME = get_env PROJECT_NAME
+
+docker_build "${ENV_FILE}" "${PROJECT_NAME}" "./composer/docker-compose.img-alist-build.yml"
+'''
+
+[tasks.img-alist-run] # !! run image alist host
+script = '''
+#!@duckscript
+!include_files ./makefile/util.env.ds ./makefile/util.docker.ds
+prepare_envvars
+check_env
+
+ENV_FILE = get_env ENV_FILE
+PROJECT_NAME = get_env PROJECT_NAME
+
+docker_down "${ENV_FILE}" "${PROJECT_NAME}" "./composer/docker-compose.img-alist-run.yml"
+docker_up "${ENV_FILE}" "${PROJECT_NAME}" "./composer/docker-compose.img-alist-run.yml"
+'''
+
+[tasks.img-alist] # !! build & run image alist host
+dependencies = [
+    { name = "img-alist-build" },
+    { name = "img-alist-run" }
+]
+
 # help
 [tasks.help]
 script = '''

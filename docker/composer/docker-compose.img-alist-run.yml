@@ -1,0 +1,58 @@
+include:
+  - docker-compose.network.yml
+
+services:
+  redis:
+    container_name: gsapi-redis
+    hostname: gsapi-redis
+    image: redis
+    networks:
+      gsapi-img-alist:
+        aliases:
+          - redis.local
+    volumes:
+      - ${DATA_DIR}/redis/data:/data
+      - ${DATA_DIR}/redis/conf/redis.conf:/usr/local/etc/redis/redis.conf
+    ports:
+      - ${REDIS_PORT:-6379}:6379
+    restart: always
+  minio:
+    container_name: gsapi-minio
+    hostname: gsapi-minio
+    image: minio/minio
+    command: server /data --console-address '0.0.0.0:9999' --address '0.0.0.0:9000'
+    networks:
+      gsapi-img-alist:
+        aliases:
+          - minio.local
+    environment:
+      MINIO_ROOT_USER: ${MINIO_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_PASS}
+    volumes:
+      - ${DATA_DIR}/minio/data:/data
+      - ${DATA_DIR}/minio/config:/root/.minio
+    ports:
+      - ${MINIO_PORT:-9000}:9000
+      - ${MINIO_PORT_CONSOLE:-9001}:9999
+    restart: always
+  minio-img2webp:
+    container_name: gsapi-minio-img2webp
+    hostname: gsapi-minio-img2webp
+    image: gsapi/minio-img2webp
+    networks:
+      gsapi-img-alist:
+        aliases:
+          - minio-img2webp.local
+    environment:
+      TZ: ${MINIO_IMG2WEBP_TZ}
+      REDIS_ADDRESS: redis.local:6379
+      REDIS_PASSWORD:
+      REDIS_LIST: MINIO_BUCKET_NOTIFY:IMAGE
+      MINIO_BUCKET: ${MINIO_BUCKET}
+      MINIO_ADDRESS: minio.local:9000
+      MINIO_ACCESS_KEY_ID: ${MINIO_ACCESS_KEY_ID}
+      MINIO_SECRET_ACCESS_KEY: ${MINIO_ACCESS_KEY_SECRET}
+      MINIO_USE_SSL: false
+      WEBP_QUALITY: ${MINIO_IMG2WEBP_QUALITY:-80}
+      MODE: ${MINIO_IMG2WEBP_MODE:-0}
+    restart: always
