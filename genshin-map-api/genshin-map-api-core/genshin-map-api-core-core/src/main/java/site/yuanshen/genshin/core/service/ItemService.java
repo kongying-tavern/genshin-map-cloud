@@ -209,6 +209,12 @@ public class ItemService {
                             .set(itemDto.getDefaultRefreshTime() != null, Item::getDefaultRefreshTime, itemDto.getDefaultRefreshTime())
                             .set(itemDto.getSortIndex() != null, Item::getSortIndex, itemDto.getSortIndex())
             );
+            if(itemDto.getAreaId() != null) {
+                itemMapper.update(null,
+                        Wrappers.<Item>lambdaUpdate().eq(Item::getId, itemDto.getId())
+                                .set(itemDto.getAreaId() != null, Item::getAreaId, itemDto.getAreaId())
+                );
+            }
         }
         return true;
     }
