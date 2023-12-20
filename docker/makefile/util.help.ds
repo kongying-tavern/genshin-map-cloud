@@ -20,14 +20,28 @@ fn get_help_commands
             desc_start = calc ${desc_start} + 2 # 2 is length of `!!`
             cmd_desc = substring ${line} ${desc_start}
             cmd_desc = trim_start ${cmd_desc}
+            modifier_start = calc ${desc_start} - 3 # 3 is sum of 1 (offset) and 2 (length of `!!`)
+            modifier_end = calc ${modifier_start} + 1
+            desc_modifier = substring ${line} ${modifier_start} ${modifier_end}
+
+            if eq ${desc_modifier} ">"
+                indent_len = set 2
+                cmd_color = set green
+            else
+                indent_len = set 0
+                cmd_color = set blue
+            end
 
             # Get command gap
             name_len = length ${cmd_name}
-            gap_len = calc 30 - ${name_len}
+            gap_len = calc 30 - ${name_len} - ${indent_len}
+            cmd_indent = str_repeat " " ${indent_len}
             cmd_gap = str_repeat " " ${gap_len}
 
             # Prepare entity map
             cmd_map = map
+            map_put ${cmd_map} color ${cmd_color}
+            map_put ${cmd_map} indent ${cmd_indent}
             map_put ${cmd_map} name ${cmd_name}
             map_put ${cmd_map} gap ${cmd_gap}
             map_put ${cmd_map} desc ${cmd_desc}
@@ -42,11 +56,15 @@ end
 
 fn print_help_commands
     for cmd in ${1}
+        cmd_color = map_get ${cmd} color
+        cmd_indent = map_get ${cmd} indent
         cmd_name = map_get ${cmd} name
         cmd_gap = map_get ${cmd} gap
         cmd_desc = map_get ${cmd} desc
+
+        print ${cmd_indent}
         print "  - "
-        print -c green ${cmd_name}
+        print -c ${cmd_color} ${cmd_name}
         print ${cmd_gap}
         print " "
         print ${cmd_desc}
