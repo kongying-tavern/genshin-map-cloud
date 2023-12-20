@@ -2,6 +2,7 @@ include:
   - docker-compose.network.yml
 
 services:
+  # Main services
   redis:
     container_name: gsapi-redis
     hostname: gsapi-redis
@@ -16,29 +17,45 @@ services:
     ports:
       - ${REDIS_PORT:-6379}:6379
     restart: always
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 1m
+      timeout: 60s
+      retries: 5
+      start_period: 30s
+      start_interval: 5s
   minio:
     container_name: gsapi-minio
     hostname: gsapi-minio
-    image: minio/minio
-    command: server /data --console-address '0.0.0.0:9999' --address '0.0.0.0:9000'
+    image: gsapi/minio
     networks:
       gsapi-img-alist:
         aliases:
           - minio.local
     environment:
-      MINIO_ROOT_USER: ${MINIO_USER}
-      MINIO_ROOT_PASSWORD: ${MINIO_PASS}
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASS}
     volumes:
       - ${DATA_DIR}/minio/data:/data
       - ${DATA_DIR}/minio/config:/root/.minio
     ports:
-      - ${MINIO_PORT:-9000}:9000
+      - ${MINIO_PORT_API:-9000}:9000
       - ${MINIO_PORT_CONSOLE:-9001}:9999
     restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "bash /minio/set-alias.sh && /usr/bin/mc ping minio --count 5 || exit 1"]
+      interval: 1m
+      timeout: 60s
+      retries: 5
+      start_period: 30s
+      start_interval: 5s
   minio-img2webp:
     container_name: gsapi-minio-img2webp
     hostname: gsapi-minio-img2webp
     image: gsapi/minio-img2webp
+    depends_on:
+      minio-init:
+        condition: service_completed_successfully
     networks:
       gsapi-img-alist:
         aliases:
@@ -46,13 +63,36 @@ services:
     environment:
       TZ: ${MINIO_IMG2WEBP_TZ}
       REDIS_ADDRESS: redis.local:6379
-      REDIS_PASSWORD:
       REDIS_LIST: MINIO_BUCKET_NOTIFY:IMAGE
-      MINIO_BUCKET: ${MINIO_BUCKET}
+      MINIO_BUCKET: ${MINIO_BUCKET_IMAGE}
       MINIO_ADDRESS: minio.local:9000
-      MINIO_ACCESS_KEY_ID: ${MINIO_ACCESS_KEY_ID}
-      MINIO_SECRET_ACCESS_KEY: ${MINIO_ACCESS_KEY_SECRET}
+      MINIO_ACCESS_KEY_ID: ${MINIO_KEY}
+      MINIO_SECRET_ACCESS_KEY: ${MINIO_SECRET}
       MINIO_USE_SSL: false
       WEBP_QUALITY: ${MINIO_IMG2WEBP_QUALITY:-80}
       MODE: ${MINIO_IMG2WEBP_MODE:-0}
     restart: always
+
+  # Initialization services
+  minio-init:
+    container_name: gsapi-minio-init
+    hostname: gsapi-minio-init
+    image: gsapi/minio-init
+    depends_on:
+      redis:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    networks:
+      - gsapi-img-alist
+    environment:
+      MINIO_ROOT_USERNAME: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASS}
+      MINIO_USERNAME: ${MINIO_USER}
+      MINIO_PASSWORD: ${MINIO_PASS}
+      MINIO_BUCKET_IMAGE: ${MINIO_BUCKET_IMAGE}
+      MINIO_KEY: ${MINIO_KEY}
+      MINIO_SECRET: ${MINIO_SECRET}
+    volumes:
+      - ${DATA_DIR}/minio-init/data:/data/record
+    restart: no

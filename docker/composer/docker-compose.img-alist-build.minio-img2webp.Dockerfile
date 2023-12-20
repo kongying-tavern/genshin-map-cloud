@@ -2,7 +2,6 @@
 FROM golang:1.21-bullseye AS builder
 
 WORKDIR /data
-ENV GOPROXY=
 ADD docker/config/img-alist-builder/minio-image-to-webp .
 
 RUN \
@@ -13,4 +12,4 @@ RUN \
 FROM amd64/debian AS runner
 WORKDIR /data
 COPY --from=builder /data/minio-image-to-webp ./minio-image-to-webp
-CMD [ "/data/minio-image-to-webp" ]
+ENTRYPOINT ["/data/minio-image-to-webp"]
