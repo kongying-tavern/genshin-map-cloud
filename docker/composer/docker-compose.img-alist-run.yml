@@ -36,8 +36,8 @@ services:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASS}
     volumes:
-      - ${DATA_DIR}/minio/data:/data
       - ${DATA_DIR}/minio/config:/root/.minio
+      - ${DATA_DIR}/minio/data:/data
     ports:
       - ${MINIO_PORT_API:-9000}:9000
       - ${MINIO_PORT_CONSOLE:-9001}:9999
