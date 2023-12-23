@@ -43,7 +43,7 @@ services:
       - ${MINIO_PORT_CONSOLE:-9001}:9999
     restart: always
     healthcheck:
-      test: ["CMD-SHELL", "bash /minio/set-alias.sh && /usr/bin/mc ping minio --count 5 || exit 1"]
+      test: ["CMD", "bash", "/minio/healthcheck.sh"]
       interval: 1m
       timeout: 60s
       retries: 5
