@@ -10,6 +10,11 @@ services:
     build:
       context: ${PROJECT_BASE}
       dockerfile: docker/composer/docker-compose.img-alist-build.minio-img2webp.Dockerfile
+  alist:
+    image: gsapi/alist
+    build:
+      context: ${PROJECT_BASE}
+      dockerfile: docker/composer/docker-compose.img-alist-build.alist.Dockerfile
 
   # Initialization services
   minio-init:
@@ -17,3 +22,8 @@ services:
     build:
       context: ${PROJECT_BASE}
       dockerfile: docker/composer/docker-compose.img-alist-build.minio-init.Dockerfile
+  alist-init:
+    image: gsapi/alist-init
+    build:
+      context: ${PROJECT_BASE}
+      dockerfile: docker/composer/docker-compose.img-alist-build.alist-init.Dockerfile

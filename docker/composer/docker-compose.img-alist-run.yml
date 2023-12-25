@@ -72,6 +72,31 @@ services:
       WEBP_QUALITY: ${MINIO_IMG2WEBP_QUALITY:-80}
       MODE: ${MINIO_IMG2WEBP_MODE:-0}
     restart: always
+  alist:
+    container_name: gsapi-alist
+    hostname: gsapi-alist
+    image: gsapi/alist
+    networks:
+      gsapi-img-alist:
+        aliases:
+          - alist.local
+    environment:
+      PUID: ${ALIST_PUID:-0}
+      PGID: ${ALIST_PGID:-0}
+      UMASK: ${ALIST_UMASK:-022}
+      ADMIN_PASSWORD: ${ALIST_ROOT_PASSWORD}
+    volumes:
+      - ${DATA_DIR}/alist:/opt/alist/data
+    ports:
+      - ${ALIST_PORT:-5244}:5244
+    restart: always
+    healthcheck:
+      test: ["CMD", "bash", "/alist/healthcheck.sh"]
+      interval: 1m
+      timeout: 60s
+      retries: 5
+      start_period: 30s
+      start_interval: 5s
 
   # Initialization services
   minio-init:
@@ -95,4 +120,24 @@ services:
       MINIO_SECRET: ${MINIO_SECRET}
     volumes:
       - ${DATA_DIR}/init/minio-init:/data/record
+    restart: no
+  alist-init:
+    container_name: gsapi-alist-init
+    hostname: gsapi-alist-init
+    image: gsapi/alist-init
+    depends_on:
+      alist:
+        condition: service_healthy
+    networks:
+      - gsapi-img-alist
+    environment:
+      ALIST_ROOT_PASSWORD: ${ALIST_ROOT_PASSWORD}
+      ALIST_USERNAME: ${ALIST_USERNAME}
+      ALIST_PASSWORD: ${ALIST_PASSWORD}
+      ALIST_MOUNT_PATH: ${ALIST_MOUNT_PATH}
+      MINIO_BUCKET_IMAGE: ${MINIO_BUCKET_IMAGE}
+      MINIO_KEY: ${MINIO_KEY}
+      MINIO_SECRET: ${MINIO_SECRET}
+    volumes:
+      - ${DATA_DIR}/init/alist-init:/data/record
     restart: no
