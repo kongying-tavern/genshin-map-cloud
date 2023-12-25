@@ -10,6 +10,7 @@ ADD genshin-map-generator genshin-map-generator
 ADD genshin-map-ability genshin-map-ability
 ADD genshin-map-api genshin-map-api
 ADD pom.xml pom.xml
+ADD docker/config/apt/debian-bookworm.list /etc/apt/sources.list
 ADD docker/config/maven docker/config
 ADD docker/cache docker/cache
 
@@ -27,7 +28,7 @@ FROM openjdk:11 AS api
 
 WORKDIR /data
 COPY --from=builder /data/dist .
-ADD docker/config/apt/debian.list /etc/apt/sources.list
+ADD docker/config/apt/debian-bookworm.list /etc/apt/sources.list
 ADD docker/config/api/startup.sh startup.sh
 ADD docker/config/api/api-gateway.service /etc/systemd/system/genshin-map-ability-gateway.service
 ADD docker/config/api/api-core.service /etc/systemd/system/genshin-map-api-core.service

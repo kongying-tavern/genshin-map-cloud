@@ -1,7 +1,7 @@
-FROM php:7.4-apache
+FROM php:7.4-apache-bullseye
 
 WORKDIR /var/www/html
-ADD docker/config/apt/debian.list /etc/apt/sources.list
+ADD docker/config/apt/debian-bullseye.list /etc/apt/sources.list
 ADD docker/config/img-local-uploader .
 
 RUN apt-get update && \
