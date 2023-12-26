@@ -21,9 +21,9 @@ services:
       test: ["CMD", "redis-cli", "ping"]
       interval: 1m
       timeout: 60s
-      retries: 5
-      start_period: 30s
-      start_interval: 5s
+      retries: 3
+      start_period: 15s
+      start_interval: 10s
   minio:
     container_name: gsapi-minio
     hostname: gsapi-minio
@@ -49,6 +49,24 @@ services:
       retries: 5
       start_period: 30s
       start_interval: 5s
+  minio-proxy:
+    container_name: gsapi-minio-proxy
+    hostname: gsapi-minio-proxy
+    image: gsapi/minio-proxy
+    depends_on:
+      minio-init:
+        condition: service_completed_successfully
+    networks:
+      gsapi-img-alist:
+        aliases:
+          - minio-proxy.local
+    volumes:
+      - ${DATA_DIR}/minio-proxy/pid:/var/run
+      - ${DATA_DIR}/minio-proxy/cache:/var/cache/nginx
+      - ${DATA_DIR}/minio-proxy/log:/data/log
+    ports:
+      - ${MINIO_PORT_PROXY:-9010}:80
+    restart: always
   minio-img2webp:
     container_name: gsapi-minio-img2webp
     hostname: gsapi-minio-img2webp
@@ -94,9 +112,9 @@ services:
       test: ["CMD", "bash", "/alist/healthcheck.sh"]
       interval: 1m
       timeout: 60s
-      retries: 5
-      start_period: 30s
-      start_interval: 5s
+      retries: 3
+      start_period: 15s
+      start_interval: 10s
 
   # Initialization services
   minio-init:
