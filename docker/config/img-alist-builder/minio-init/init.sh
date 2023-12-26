@@ -7,12 +7,10 @@ LOCK_FILE=${DATA_DIR}/initialized.lock
 # Initialization steps
 function step_init_minio () {
   mc alias set minio http://minio.local:9000 "${MINIO_ROOT_USERNAME}" "${MINIO_ROOT_PASSWORD}"
-  mc admin user add minio "${MINIO_USERNAME}" "${MINIO_PASSWORD}"
-  mc admin policy attach minio consoleAdmin --user "${MINIO_USERNAME}"
   mc admin user svcacct add \
     --access-key "${MINIO_KEY}" \
     --secret-key "${MINIO_SECRET}" \
-    minio "${MINIO_USERNAME}"
+    minio "${MINIO_ROOT_USERNAME}"
 }
 
 function step_add_img2webp_trigger () {
@@ -25,7 +23,12 @@ function step_add_img2webp_trigger () {
     queue_dir="" \
     queue_limit="0"
   mc admin service restart minio
-  mc mb minio/${MINIO_BUCKET_IMAGE}
+  mc mb \
+    --ignore-existing \
+    --region "minio" \
+    --with-versioning \
+    minio/${MINIO_BUCKET_IMAGE}
+  mc anonymous set public minio/${MINIO_BUCKET_IMAGE}
   mc event add minio/${MINIO_BUCKET_IMAGE} arn:minio:sqs::1:redis --suffix .jpg --event put
   mc event add minio/${MINIO_BUCKET_IMAGE} arn:minio:sqs::1:redis --suffix .jpeg --event put
   mc event add minio/${MINIO_BUCKET_IMAGE} arn:minio:sqs::1:redis --suffix .jfif --event put

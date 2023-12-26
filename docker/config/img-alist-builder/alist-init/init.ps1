@@ -110,6 +110,23 @@ function Encrypt-Password {
     }
 }
 
+function ConvertTo-Integer {
+    param(
+        [Parameter(
+            Mandatory = $true,
+            ValueFromPipeline = $true,
+            ValueFromPipelineByPropertyName = $true
+        )]
+        [Object] $NumericString
+    )
+
+    process {
+        $numberStr = "{0}" -f $NumericString;
+        $number = [int] $numberStr;
+        return $number;
+    }
+}
+
 # Process steps
 function Step-Login {
     $loginRes = Fetch-Api Post "api/auth/login/hash" -Body @{
@@ -136,9 +153,9 @@ function Step-AddStorage {
         mount_path = ${Env:ALIST_MOUNT_PATH}
         order = 0
         remark = "Image MinIO Storage"
-        cache_expiration = ${Env:ALIST_CACHE_EXPIRE}
+        cache_expiration = ConvertTo-Integer ${Env:ALIST_CACHE_EXPIRE}
         web_proxy = $false
-        webdav_policy = "native_proxy"
+        webdav_policy = "302_redirect"
         down_proxy_url = ""
         extract_folder = ""
         enable_sign = $false
@@ -148,12 +165,12 @@ function Step-AddStorage {
         addition = ConvertTo-Json @{
             root_folder_path = "/"
             bucket = ${Env:MINIO_BUCKET_IMAGE}
-            endpoint = "http://minio.local:9000"
-            region = "alist"
+            endpoint = "http://minio-proxy.local:80"
+            region = "minio"
             access_key_id = ${Env:MINIO_KEY}
             secret_access_key = ${Env:MINIO_SECRET}
             session_token = ""
-            custom_host = "minio.local:9000"
+            custom_host = "minio-proxy.local:80"
             sign_url_expire = 4
             placeholder = ""
             force_path_style = $true

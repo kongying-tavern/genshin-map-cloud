@@ -35,6 +35,7 @@ services:
     environment:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASS}
+      MINIO_BROWSER_REDIRECT_URL: http://localhost:${MINIO_PORT_CONSOLE:-9001}
     volumes:
       - ${DATA_DIR}/minio/config:/root/.minio
       - ${DATA_DIR}/minio/data:/data
@@ -61,8 +62,7 @@ services:
         aliases:
           - minio-proxy.local
     volumes:
-      - ${DATA_DIR}/minio-proxy/pid:/var/run
-      - ${DATA_DIR}/minio-proxy/cache:/var/cache/nginx
+      - ${DATA_DIR}/minio-proxy/cache:/data/cache
       - ${DATA_DIR}/minio-proxy/log:/data/log
     ports:
       - ${MINIO_PORT_PROXY:-9010}:80
@@ -131,8 +131,6 @@ services:
     environment:
       MINIO_ROOT_USERNAME: ${MINIO_ROOT_USER}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASS}
-      MINIO_USERNAME: ${MINIO_USER}
-      MINIO_PASSWORD: ${MINIO_PASS}
       MINIO_BUCKET_IMAGE: ${MINIO_BUCKET_IMAGE}
       MINIO_KEY: ${MINIO_KEY}
       MINIO_SECRET: ${MINIO_SECRET}
@@ -153,6 +151,7 @@ services:
       ALIST_USERNAME: ${ALIST_USERNAME}
       ALIST_PASSWORD: ${ALIST_PASSWORD}
       ALIST_MOUNT_PATH: ${ALIST_MOUNT_PATH}
+      ALIST_CACHE_EXPIRE: ${ALIST_CACHE_EXPIRE}
       MINIO_BUCKET_IMAGE: ${MINIO_BUCKET_IMAGE}
       MINIO_KEY: ${MINIO_KEY}
       MINIO_SECRET: ${MINIO_SECRET}

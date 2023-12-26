@@ -5,6 +5,11 @@ services:
     build:
       context: ${PROJECT_BASE}
       dockerfile: docker/composer/docker-compose.img-alist-build.minio.Dockerfile
+  minio-proxy:
+    image: gsapi/minio-proxy
+    build:
+      context: ${PROJECT_BASE}
+      dockerfile: docker/composer/docker-compose.img-alist-build.minio-proxy.Dockerfile
   minio-img2webp:
     image: gsapi/minio-img2webp
     build:
