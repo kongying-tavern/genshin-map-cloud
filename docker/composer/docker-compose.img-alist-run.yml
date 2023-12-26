@@ -86,7 +86,7 @@ services:
       UMASK: ${ALIST_UMASK:-022}
       ADMIN_PASSWORD: ${ALIST_ROOT_PASSWORD}
     volumes:
-      - ${DATA_DIR}/alist:/opt/alist/data
+      - ${DATA_DIR}/alist:/alist/data
     ports:
       - ${ALIST_PORT:-5244}:5244
     restart: always
