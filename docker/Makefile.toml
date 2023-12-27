@@ -18,7 +18,13 @@ docker_up "${ENV_FILE}" "${PROJECT_NAME}" "./composer/docker-compose.dataenv.yml
 '''
 
 # dev: development environment
-[tasks.dev-build] # !! build dev api
+[tasks.dev] # !! build & daemon dev api
+dependencies = [
+    { name = "dev-build" },
+    { name = "dev-api" }
+]
+
+[tasks.dev-build] # >!! build dev api
 script = '''
 #!@duckscript
 !include_files ./makefile/util.env.ds ./makefile/util.docker.ds
@@ -29,14 +35,14 @@ ENV_FILE = get_env ENV_FILE
 PROJECT_NAME = get_env PROJECT_NAME
 
 # Generate datasource YAML
-yaml_ds_tpl = readfile ./config/application-datasource-tpl.yml
+yaml_ds_tpl = readfile ./config/api/application-datasource-tpl.yml
 yaml_ds_slots = json_parse --collection "[\"PGSQL_USER\", \"PGSQL_PASS\", \"PGSQL_DB\", \"PGSQL_SCHEMA\"]"
 yaml_ds_content = replace_env_value ${yaml_ds_tpl} ${yaml_ds_slots}
 release ${yaml_ds_slots}
 writefile ./cache/application-datasource.yml "${yaml_ds_content}"
 
 # Generate nacos YAML
-yaml_nacos_tpl = readfile ./config/application-nacos-tpl.yml
+yaml_nacos_tpl = readfile ./config/api/application-nacos-tpl.yml
 yaml_nacos_slots = json_parse --collection "[\"NACOS_USER\", \"NACOS_PASS\"]"
 yaml_nacos_content = replace_env_value ${yaml_nacos_tpl} ${yaml_nacos_slots}
 release ${yaml_nacos_slots}
@@ -45,7 +51,7 @@ writefile ./cache/application-nacos.yml "${yaml_nacos_content}"
 docker_build "${ENV_FILE}" "${PROJECT_NAME}" "./composer/docker-compose.dev-build.yml"
 '''
 
-[tasks.dev-api] # !! start dev api
+[tasks.dev-api] # >!! start dev api
 script = '''
 #!@duckscript
 !include_files ./makefile/util.env.ds ./makefile/util.docker.ds
@@ -59,14 +65,14 @@ docker_down "${ENV_FILE}" "${PROJECT_NAME}" "./composer/docker-compose.dev-api.y
 docker_up "${ENV_FILE}" "${PROJECT_NAME}" "./composer/docker-compose.dev-api.yml"
 '''
 
-[tasks.dev] # !! build & daemon dev api
+# img-local: image local host
+[tasks.img-local] # !! build & run image local host
 dependencies = [
-    { name = "dev-build" },
-    { name = "dev-api" }
+    { name = "img-local-build" },
+    { name = "img-local-run" }
 ]
 
-# img-local: image local host
-[tasks.img-local-build] # !! build image local host
+[tasks.img-local-build] # >!! build image local host
 script = '''
 #!@duckscript
 !include_files ./makefile/util.env.ds ./makefile/util.docker.ds
@@ -79,7 +85,7 @@ PROJECT_NAME = get_env PROJECT_NAME
 docker_build "${ENV_FILE}" "${PROJECT_NAME}" "./composer/docker-compose.img-local-build.yml"
 '''
 
-[tasks.img-local-run] # !! run image local host
+[tasks.img-local-run] # >!! run image local host
 script = '''
 #!@duckscript
 !include_files ./makefile/util.env.ds ./makefile/util.docker.ds
@@ -93,11 +99,39 @@ docker_down "${ENV_FILE}" "${PROJECT_NAME}" "./composer/docker-compose.img-local
 docker_up "${ENV_FILE}" "${PROJECT_NAME}" "./composer/docker-compose.img-local-run.yml"
 '''
 
-[tasks.img-local] # !! build & run image local host
+# img-alist: image alist host
+[tasks.img-alist] # !! build & run image alist host
 dependencies = [
-    { name = "img-local-build" },
-    { name = "img-local-run" }
+    { name = "img-alist-build" },
+    { name = "img-alist-run" }
 ]
+
+[tasks.img-alist-build] # >!! build image alist host
+script = '''
+#!@duckscript
+!include_files ./makefile/util.env.ds ./makefile/util.docker.ds
+prepare_envvars
+check_env
+
+ENV_FILE = get_env ENV_FILE
+PROJECT_NAME = get_env PROJECT_NAME
+
+docker_build "${ENV_FILE}" "${PROJECT_NAME}" "./composer/docker-compose.img-alist-build.yml"
+'''
+
+[tasks.img-alist-run] # >!! run image alist host
+script = '''
+#!@duckscript
+!include_files ./makefile/util.env.ds ./makefile/util.docker.ds
+prepare_envvars
+check_env
+
+ENV_FILE = get_env ENV_FILE
+PROJECT_NAME = get_env PROJECT_NAME
+
+docker_down "${ENV_FILE}" "${PROJECT_NAME}" "./composer/docker-compose.img-alist-run.yml"
+docker_up "${ENV_FILE}" "${PROJECT_NAME}" "./composer/docker-compose.img-alist-run.yml"
+'''
 
 # help
 [tasks.help]
@@ -119,6 +153,7 @@ println -c magenta " ${env_file}"
 
 echo Available commands:
 print_help_commands ${cmds}
+release ${cmds}
 
 echo What do you want? >>>
 cmd_name = read

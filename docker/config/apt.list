@@ -1,4 +1,0 @@
-# cat /etc/apt/sources.list
-deb https://mirrors.aliyun.com/debian bullseye main
-deb https://mirrors.aliyun.com/debian-security bullseye-security main
-deb https://mirrors.aliyun.com/debian bullseye-updates main

@@ -1,0 +1,34 @@
+services:
+  # Main services
+  minio:
+    image: gsapi/minio
+    build:
+      context: ${PROJECT_BASE}
+      dockerfile: docker/composer/docker-compose.img-alist-build.minio.Dockerfile
+  minio-proxy:
+    image: gsapi/minio-proxy
+    build:
+      context: ${PROJECT_BASE}
+      dockerfile: docker/composer/docker-compose.img-alist-build.minio-proxy.Dockerfile
+  minio-img2webp:
+    image: gsapi/minio-img2webp
+    build:
+      context: ${PROJECT_BASE}
+      dockerfile: docker/composer/docker-compose.img-alist-build.minio-img2webp.Dockerfile
+  alist:
+    image: gsapi/alist
+    build:
+      context: ${PROJECT_BASE}
+      dockerfile: docker/composer/docker-compose.img-alist-build.alist.Dockerfile
+
+  # Initialization services
+  minio-init:
+    image: gsapi/minio-init
+    build:
+      context: ${PROJECT_BASE}
+      dockerfile: docker/composer/docker-compose.img-alist-build.minio-init.Dockerfile
+  alist-init:
+    image: gsapi/alist-init
+    build:
+      context: ${PROJECT_BASE}
+      dockerfile: docker/composer/docker-compose.img-alist-build.alist-init.Dockerfile
