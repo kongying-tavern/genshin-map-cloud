@@ -10,6 +10,9 @@ function step_init_minio () {
   mc admin user svcacct add \
     --access-key "${MINIO_KEY}" \
     --secret-key "${MINIO_SECRET}" \
+    --policy /data/policy/uploadService.json \
+    --name "UploadSvc" \
+    --description "Image Upload Service" \
     minio "${MINIO_ROOT_USERNAME}"
 }
 
