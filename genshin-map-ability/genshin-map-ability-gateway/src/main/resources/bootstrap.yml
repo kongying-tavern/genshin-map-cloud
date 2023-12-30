@@ -44,6 +44,7 @@ genshin:
       - /api/punctuate/**
       - /api/marker/**
       - /api/marker_link/**
+      - /api/res/**
     MAP_MANAGER:
       - /api/punctuate_audit/**
       - /api/tag/**
