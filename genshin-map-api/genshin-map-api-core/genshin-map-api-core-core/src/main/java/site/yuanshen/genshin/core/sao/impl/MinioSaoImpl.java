@@ -62,6 +62,7 @@ public class MinioSaoImpl implements MinioSao {
                             .bucket(bucket)
                             .object(object)
                             .stream(file.getInputStream(), -1, 10485760)
+                            .contentType(file.getContentType())
                             .build()
             );
             return objectRes.object();
