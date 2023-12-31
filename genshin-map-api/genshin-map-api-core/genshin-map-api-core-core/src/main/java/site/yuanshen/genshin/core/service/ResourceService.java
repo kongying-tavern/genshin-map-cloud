@@ -78,11 +78,14 @@ public class ResourceService {
                 put("path", outputPathParam);
                 put("fullPath", outputPathFullParam);
             }};
+            String outputUrlTpl = "";
             if(StrUtil.isBlank(minioUrlTemplate)) {
-                outputUrl = TemplateUtils.execTemplate("{{entrypoint}}/{{bucket}}/{{path}}", outputParams);
+                outputUrlTpl = "[[entrypoint]]/[[bucket]]/[[path]]";
             } else {
-                outputUrl = TemplateUtils.execTemplate(minioUrlTemplate, outputParams);
+                outputUrlTpl = minioUrlTemplate;
             }
+            outputUrlTpl = outputUrlTpl.replace("[[", "${").replace("]]", "}");
+            outputUrl = TemplateUtils.execTemplate(outputUrlTpl, outputParams);
 
             fileInfo.setFilePath(outputPathParam);
             fileInfo.setFileUrl(outputUrl);
