@@ -19,11 +19,10 @@ services:
     restart: always
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
-      interval: 1m
-      timeout: 60s
+      interval: 30s
+      timeout: 30s
       retries: 3
-      start_period: 15s
-      start_interval: 10s
+      start_period: 2m
   minio:
     container_name: gsapi-minio
     hostname: gsapi-minio
@@ -45,11 +44,10 @@ services:
     restart: always
     healthcheck:
       test: ["CMD", "bash", "/minio/healthcheck.sh"]
-      interval: 1m
-      timeout: 60s
-      retries: 5
-      start_period: 30s
-      start_interval: 5s
+      interval: 30s
+      timeout: 30s
+      retries: 3
+      start_period: 2m
   minio-proxy:
     container_name: gsapi-minio-proxy
     hostname: gsapi-minio-proxy
@@ -110,11 +108,10 @@ services:
     restart: always
     healthcheck:
       test: ["CMD", "bash", "/alist/healthcheck.sh"]
-      interval: 1m
-      timeout: 60s
+      interval: 30s
+      timeout: 30s
       retries: 3
-      start_period: 15s
-      start_interval: 10s
+      start_period: 2m
 
   # Initialization services
   minio-init:
