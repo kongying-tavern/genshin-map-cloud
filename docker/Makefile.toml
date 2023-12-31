@@ -48,6 +48,13 @@ yaml_nacos_content = replace_env_value ${yaml_nacos_tpl} ${yaml_nacos_slots}
 release ${yaml_nacos_slots}
 writefile ./cache/application-nacos.yml "${yaml_nacos_content}"
 
+# Generate image YAML
+yaml_img_tpl = readfile ./config/api/application-image-tpl.yml
+yaml_img_slots = json_parse --collection "[\"MINIO_PORT_PROXY\", \"MINIO_BUCKET_IMAGE\", \"MINIO_KEY\", \"MINIO_SECRET\"]"
+yaml_img_content = replace_env_value ${yaml_img_tpl} ${yaml_img_slots}
+release ${yaml_img_slots}
+writefile ./cache/application-image.yml "${yaml_img_content}"
+
 docker_build "${ENV_FILE}" "${PROJECT_NAME}" "./composer/docker-compose.dev-build.yml"
 '''
 
