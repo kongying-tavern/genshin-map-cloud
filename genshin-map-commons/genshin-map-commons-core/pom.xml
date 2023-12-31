@@ -39,6 +39,12 @@
             <artifactId>hutool-extra</artifactId>
         </dependency>
 
+        <!-- velocity templater -->
+        <dependency>
+            <groupId>org.apache.velocity</groupId>
+            <artifactId>velocity-engine-core</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>cglib</groupId>
             <artifactId>cglib</artifactId>

@@ -4,6 +4,7 @@ spring:
     include:
       - nacos-prod
       - datasource-prod
+      - image-prod
   datasource:
     driver-class-name: org.postgresql.Driver
     type: com.alibaba.druid.pool.DruidDataSource

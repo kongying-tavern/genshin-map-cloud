@@ -31,6 +31,21 @@ import java.util.stream.Collectors;
 public class RestException {
     private static final String PROJECT_PACKAGE_PREFIX = "site.yuanshen";
 
+    private List<String> getStackTraceErrors(StackTraceElement[] stackTraceElements) {
+        List<String> stl = Arrays.stream(stackTraceElements)
+                .filter(v -> {
+                    try {
+                        final String className = v.getClassName();
+                        return StrUtil.startWith(className, PROJECT_PACKAGE_PREFIX);
+                    } catch(Throwable err) {
+                        return false;
+                    }
+                })
+                .map(StackTraceElement::toString)
+                .collect(Collectors.toList());
+        return stl;
+    }
+
     /**
      * 统一异常处理方法
      */
@@ -47,21 +62,10 @@ public class RestException {
             log.debug("[Rest-Exception]-debug error message:: {} - cause {}", t.getMessage(), t.getStackTrace());
         }
 
-        List<String> stl = Arrays.stream(t.getStackTrace())
-                .filter(v -> {
-                    try {
-                        final String className = v.getClassName();
-                        return StrUtil.startWith(className, PROJECT_PACKAGE_PREFIX);
-                    } catch(Throwable err) {
-                        return false;
-                    }
-                })
-                .map(StackTraceElement::toString)
-                .collect(Collectors.toList());
         return RUtils.create(
             Codes.FAIL,
             "请求失败",
-            stl
+            getStackTraceErrors(t.getStackTrace())
         );
     }
 

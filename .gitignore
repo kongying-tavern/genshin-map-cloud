@@ -46,6 +46,9 @@ database/**/.back_*
 application-datasource-dev.yml
 application-datasource-prod.yml
 application-datasource-uat.yml
+application-image-dev.yml
+application-image-prod.yml
+application-image-uat.yml
 
 ### Docker ###
 docker/.env

@@ -49,6 +49,12 @@
         </dependency>
         <!--END Auth用依赖-->
 
+        <!-- minio client -->
+        <dependency>
+            <groupId>io.minio</groupId>
+            <artifactId>minio</artifactId>
+        </dependency>
+
     </dependencies>
 
 </project>
