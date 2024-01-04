@@ -28,4 +28,12 @@ public interface MarkerItemLinkMapper extends BaseMapper<MarkerItemLink> {
      */
     List<MarkerItemLink> selectWithLargeCustomIn(@Param("column")String column, @Param("unnest")String unnest, @Param(Constants.WRAPPER)LambdaQueryWrapper<MarkerItemLink> wrapper);
 
+    /**
+     * 批量删除
+     * @param column 字段名
+     * @param unnest ${column} in (xxx,xxx) 时所包含的元素 格式为 '{10000, 11000}'
+     * @param wrapper
+     * @return
+     */
+    int deleteWithLargeCustomIn(@Param("column")String column, @Param("unnest")String unnest, @Param(Constants.WRAPPER)LambdaQueryWrapper<MarkerItemLink> wrapper);
 }

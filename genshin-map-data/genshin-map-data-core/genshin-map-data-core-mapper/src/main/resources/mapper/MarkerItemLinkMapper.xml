@@ -26,4 +26,13 @@
         ${ew.customSqlSegment} and del_flag = false
     </select>
 
+    <update id="deleteWithLargeCustomIn">
+        WITH id_list as (
+        SELECT unnest(${unnest}::bigint[]) "${column}2")
+        UPDATE marker_item_link AS mil
+        SET del_flag = true
+        FROM id_list
+        WHERE marker_item_link."${column}" = id_list."${column}2"
+        ${ew.customSqlSegment}
+    </update>
 </mapper>

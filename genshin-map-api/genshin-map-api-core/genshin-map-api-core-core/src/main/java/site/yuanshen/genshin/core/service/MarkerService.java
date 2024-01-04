@@ -1,5 +1,6 @@
 package site.yuanshen.genshin.core.service;
 
+import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -7,6 +8,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.yuanshen.common.core.exception.GenshinApiException;
+import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.common.core.utils.JsonUtils;
 import site.yuanshen.common.core.utils.PgsqlUtils;
 import site.yuanshen.common.core.utils.SpringContextUtils;
@@ -27,12 +29,9 @@ import site.yuanshen.genshin.core.convert.HistoryConvert;
 import site.yuanshen.genshin.core.dao.MarkerDao;
 import site.yuanshen.genshin.core.dao.MarkerLinkageDao;
 import site.yuanshen.genshin.core.service.mbp.MarkerItemLinkMBPService;
+import site.yuanshen.genshin.core.service.mbp.MarkerMBPService;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -47,6 +46,7 @@ import java.util.stream.Collectors;
 public class MarkerService {
 
     private final MarkerMapper markerMapper;
+    private final MarkerMBPService markerMBPService;
     private final MarkerDao markerDao;
     private final MarkerLinkageDao markerLinkageDao;
     private final MarkerItemLinkMapper markerItemLinkMapper;
@@ -212,18 +212,52 @@ public class MarkerService {
 
 
     private boolean saveMarker(MarkerDto markerDto) {
-        Boolean updated = markerMapper.update(markerDto.getEntity(), Wrappers.<Marker>lambdaUpdate()
-                .eq(Marker::getId, markerDto.getId())) == 1;
-        if (!updated) {
+        return saveMarker(List.of(markerDto), 1);
+    }
+
+    private boolean saveMarker(List<MarkerDto> markerDtos, int validateCount) {
+        // Extract data
+        final List<Marker> markerList = markerDtos.parallelStream()
+                .map(MarkerDto::getEntity)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+        final List<Long> markerIdList = markerList.parallelStream()
+                .map(Marker::getId)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+        final List<MarkerItemLink> itemList = markerDtos.parallelStream()
+                .map(markerDto -> {
+                    List<MarkerItemLinkVo> itemListData = markerDto.getItemList();
+                    if (itemListData == null) {
+                        return null;
+                    }
+                    return itemListData.parallelStream()
+                            .map(MarkerItemLinkDto::new)
+                            .map(dto -> dto.withMarkerId(markerDto.getId()).getEntity())
+                            .collect(Collectors.toList());
+                })
+                .filter(Objects::nonNull)
+                .flatMap(List::stream)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+        final List<Long> itemMarkerIdList = itemList.parallelStream()
+                .map(MarkerItemLink::getMarkerId)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+
+        // Save marker
+        if(CollUtil.isEmpty(markerIdList)) {
+            return validateCount == 0;
+        }
+        boolean updated = markerMBPService.saveOrUpdateBatch(markerList, 100);
+        if(!updated) {
             return false;
         }
-
-        if (markerDto.getItemList() != null && !markerDto.getItemList().isEmpty()) {
-            markerItemLinkMapper.delete(Wrappers.<MarkerItemLink>lambdaQuery().eq(MarkerItemLink::getMarkerId, markerDto.getId()));
-            List<MarkerItemLink> itemLinkList = markerDto.getItemList().parallelStream().map(MarkerItemLinkDto::new).map(dto->dto.withMarkerId(markerDto.getId()).getEntity()).collect(Collectors.toList());
-            markerItemLinkMBPService.saveBatch(itemLinkList);
-        } else if (markerDto.getItemList() != null) {
-            markerItemLinkMapper.delete(Wrappers.<MarkerItemLink>lambdaQuery().eq(MarkerItemLink::getMarkerId, markerDto.getId()));
+        if(CollUtil.isNotEmpty(itemMarkerIdList)) {
+            markerItemLinkMapper.deleteWithLargeCustomIn("marker_id", PgsqlUtils.unnestLongStr(itemMarkerIdList), Wrappers.<MarkerItemLink>lambdaQuery());
+        }
+        if(CollUtil.isNotEmpty(itemList)) {
+            markerItemLinkMBPService.saveBatch(itemList);
         }
         return true;
     }
