@@ -184,23 +184,12 @@ public class MarkerService {
         Map<String, Object> mergeResult = JsonUtils.merge(markerRecord.getExtra(), markerDto.getExtra());
         markerDto.setExtra(mergeResult);
 
-        Boolean updated = markerMapper.update(markerDto.getEntity(), Wrappers.<Marker>lambdaUpdate()
-                .eq(Marker::getId, markerDto.getId())) == 1;
-        if (!updated) {
+        Boolean updated = this.saveMarker(markerDto);
+        if(!updated) {
             throw new GenshinApiException("该点位已更新，请重新提交");
         }
-
-        if (markerDto.getItemList() != null && !markerDto.getItemList().isEmpty()) {
-            markerItemLinkMapper.delete(Wrappers.<MarkerItemLink>lambdaQuery().eq(MarkerItemLink::getMarkerId, markerDto.getId()));
-            List<MarkerItemLink> itemLinkList = markerDto.getItemList().parallelStream().map(MarkerItemLinkDto::new).map(dto->dto.withMarkerId(markerDto.getId()).getEntity()).collect(Collectors.toList());
-            markerItemLinkMBPService.saveBatch(itemLinkList);
-        } else if (markerDto.getItemList() != null) {
-            markerItemLinkMapper.delete(Wrappers.<MarkerItemLink>lambdaQuery().eq(MarkerItemLink::getMarkerId, markerDto.getId()));
-        }
-
         return updated;
     }
-
 
     /**
      * 根据点位ID删除点位
@@ -218,6 +207,24 @@ public class MarkerService {
         markerMapper.delete(Wrappers.<Marker>lambdaQuery().eq(Marker::getId, markerId));
         markerItemLinkMapper.delete(Wrappers.<MarkerItemLink>lambdaQuery().eq(MarkerItemLink::getMarkerId, markerId));
         markerLinkageDao.removeRelatedLinkageList(Collections.singletonList(markerId), true);
+        return true;
+    }
+
+
+    private boolean saveMarker(MarkerDto markerDto) {
+        Boolean updated = markerMapper.update(markerDto.getEntity(), Wrappers.<Marker>lambdaUpdate()
+                .eq(Marker::getId, markerDto.getId())) == 1;
+        if (!updated) {
+            return false;
+        }
+
+        if (markerDto.getItemList() != null && !markerDto.getItemList().isEmpty()) {
+            markerItemLinkMapper.delete(Wrappers.<MarkerItemLink>lambdaQuery().eq(MarkerItemLink::getMarkerId, markerDto.getId()));
+            List<MarkerItemLink> itemLinkList = markerDto.getItemList().parallelStream().map(MarkerItemLinkDto::new).map(dto->dto.withMarkerId(markerDto.getId()).getEntity()).collect(Collectors.toList());
+            markerItemLinkMBPService.saveBatch(itemLinkList);
+        } else if (markerDto.getItemList() != null) {
+            markerItemLinkMapper.delete(Wrappers.<MarkerItemLink>lambdaQuery().eq(MarkerItemLink::getMarkerId, markerDto.getId()));
+        }
         return true;
     }
 
