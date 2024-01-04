@@ -53,7 +53,6 @@ public class MarkerService {
     private final MarkerPunctuateMapper markerPunctuateMapper;
     private final ItemMapper itemMapper;
     private final ItemTypeLinkMapper itemTypeLinkMapper;
-    private final HistoryMapper historyMapper;
     private final HistoryMBPService historyMBPService;
 
     /**
@@ -179,7 +178,7 @@ public class MarkerService {
         MarkerDto markerRecord = buildMarkerDto(markerDto.getId());
 
         //将当前记录保存为历史记录
-        historyMapper.insert(HistoryConvert.convert(markerRecord, HistoryEditType.UPDATE));
+        this.saveHistory(markerRecord, HistoryEditType.UPDATE);
 
         Map<String, Object> mergeResult = JsonUtils.merge(markerRecord.getExtra(), markerDto.getExtra());
         markerDto.setExtra(mergeResult);
@@ -202,7 +201,7 @@ public class MarkerService {
         //查询修改前的记录
         MarkerDto markerRecord = buildMarkerDto(markerId);
         //将当前记录保存为历史记录
-        historyMapper.insert(HistoryConvert.convert(markerRecord, HistoryEditType.DELETE));
+        this.saveHistory(markerRecord, HistoryEditType.DELETE);
 
         markerMapper.delete(Wrappers.<Marker>lambdaQuery().eq(Marker::getId, markerId));
         markerItemLinkMapper.delete(Wrappers.<MarkerItemLink>lambdaQuery().eq(MarkerItemLink::getMarkerId, markerId));
