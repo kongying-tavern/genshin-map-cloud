@@ -9,8 +9,8 @@ import site.yuanshen.data.dto.adapter.marker.linkage.graph.AccumulatorCache;
 import site.yuanshen.data.dto.adapter.marker.linkage.graph.AccumulatorKey;
 import site.yuanshen.data.dto.adapter.marker.linkage.graph.DistributorDto;
 import site.yuanshen.data.dto.adapter.marker.linkage.graph.DistributorKey;
-import site.yuanshen.data.helper.MarkerLinkageGraphAccumulator;
-import site.yuanshen.data.helper.MarkerLinkageGraphDistributor;
+import site.yuanshen.data.helper.marker.linkage.MarkerLinkageGraphAccumulator;
+import site.yuanshen.data.helper.marker.linkage.MarkerLinkageGraphDistributor;
 import site.yuanshen.data.vo.MarkerLinkageVo;
 
 import java.util.List;

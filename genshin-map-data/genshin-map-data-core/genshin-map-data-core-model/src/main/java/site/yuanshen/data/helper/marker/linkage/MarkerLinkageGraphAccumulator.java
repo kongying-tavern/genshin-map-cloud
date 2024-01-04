@@ -1,4 +1,4 @@
-package site.yuanshen.data.helper;
+package site.yuanshen.data.helper.marker.linkage;
 
 import site.yuanshen.data.dto.adapter.marker.linkage.graph.AccumulatorCache;
 import site.yuanshen.data.vo.MarkerLinkageVo;

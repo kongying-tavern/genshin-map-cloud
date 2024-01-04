@@ -14,7 +14,7 @@ import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.common.core.utils.SpringContextUtils;
 import site.yuanshen.data.entity.Marker;
 import site.yuanshen.data.entity.MarkerLinkage;
-import site.yuanshen.data.helper.MarkerLinkageDataHelper;
+import site.yuanshen.data.helper.marker.linkage.MarkerLinkageDataHelper;
 import site.yuanshen.data.vo.MarkerLinkageVo;
 import site.yuanshen.data.vo.adapter.marker.linkage.graph.GraphVo;
 import site.yuanshen.genshin.core.service.mbp.MarkerLinkageMBPService;

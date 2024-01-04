@@ -15,7 +15,7 @@ import site.yuanshen.common.core.utils.PgsqlUtils;
 import site.yuanshen.common.core.utils.SpringContextUtils;
 import site.yuanshen.data.dto.MarkerLinkageDto;
 import site.yuanshen.data.entity.MarkerLinkage;
-import site.yuanshen.data.helper.MarkerLinkageDataHelper;
+import site.yuanshen.data.helper.marker.linkage.MarkerLinkageDataHelper;
 import site.yuanshen.data.mapper.MarkerLinkageMapper;
 import site.yuanshen.data.vo.MarkerLinkageVo;
 import site.yuanshen.data.vo.adapter.marker.linkage.graph.GraphVo;

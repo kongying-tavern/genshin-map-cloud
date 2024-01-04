@@ -1,4 +1,4 @@
-package site.yuanshen.data.helper;
+package site.yuanshen.data.helper.marker.linkage;
 
 import com.alibaba.fastjson2.JSON;
 import site.yuanshen.data.vo.adapter.marker.linkage.PathEdgeVo;
