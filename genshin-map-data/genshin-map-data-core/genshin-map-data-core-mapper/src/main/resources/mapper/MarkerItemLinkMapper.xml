@@ -32,7 +32,7 @@
         UPDATE marker_item_link AS mil
         SET del_flag = true
         FROM id_list
-        WHERE marker_item_link."${column}" = id_list."${column}2"
+        WHERE "mil"."${column}" = id_list."${column}2"
         ${ew.customSqlSegment}
     </update>
 </mapper>
