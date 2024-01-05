@@ -1,5 +1,6 @@
 package site.yuanshen.data.enums.marker.tweak;
 
+import cn.hutool.core.util.NumberUtil;
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +16,7 @@ import java.util.function.Function;
 @Getter
 public enum TweakPropertyEnum {
     TITLE(
-            "markerTitle", String.class,
+            "title", String.class,
             MarkerDto::getMarkerTitle,
             (marker, data) -> marker.setMarkerTitle((String) data)
     ),
@@ -27,12 +28,12 @@ public enum TweakPropertyEnum {
     REFRESH_TIME(
             "refreshTime", Long.class,
             MarkerDto::getRefreshTime,
-            (marker, data) -> marker.setRefreshTime((Long) data)
+            (marker, data) -> marker.setRefreshTime(NumberUtil.parseLong(data.toString()))
     ),
     HIDDEN_FLAG(
             "hiddenFlag", Integer.class,
             MarkerDto::getHiddenFlag,
-            (marker, data) -> marker.setHiddenFlag((Integer) data)
+            (marker, data) -> marker.setHiddenFlag(NumberUtil.parseInt(data.toString()))
     ),
     UNDERGROUND(
             "underground", Map.class,
