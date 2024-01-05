@@ -1,5 +1,6 @@
 package site.yuanshen.genshin.core.service;
 
+import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,28 +9,28 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.yuanshen.common.core.exception.GenshinApiException;
 import site.yuanshen.common.core.utils.JsonUtils;
+import site.yuanshen.common.core.utils.PgsqlUtils;
 import site.yuanshen.common.core.utils.SpringContextUtils;
 import site.yuanshen.data.dto.MarkerDto;
 import site.yuanshen.data.dto.MarkerItemLinkDto;
 import site.yuanshen.data.dto.helper.PageSearchDto;
-import site.yuanshen.data.entity.Item;
-import site.yuanshen.data.entity.ItemTypeLink;
-import site.yuanshen.data.entity.Marker;
-import site.yuanshen.data.entity.MarkerItemLink;
+import site.yuanshen.data.entity.*;
 import site.yuanshen.data.enums.HistoryEditType;
+import site.yuanshen.data.helper.marker.tweak.MarkerTweakDataHelper;
 import site.yuanshen.data.mapper.*;
+import site.yuanshen.data.vo.MarkerItemLinkVo;
 import site.yuanshen.data.vo.MarkerSearchVo;
 import site.yuanshen.data.vo.MarkerVo;
+import site.yuanshen.data.vo.adapter.marker.tweak.TweakVo;
 import site.yuanshen.data.vo.helper.PageListVo;
 import site.yuanshen.genshin.core.convert.HistoryConvert;
 import site.yuanshen.genshin.core.dao.MarkerDao;
 import site.yuanshen.genshin.core.dao.MarkerLinkageDao;
+import site.yuanshen.genshin.core.service.mbp.HistoryMBPService;
 import site.yuanshen.genshin.core.service.mbp.MarkerItemLinkMBPService;
+import site.yuanshen.genshin.core.service.mbp.MarkerMBPService;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -44,6 +45,7 @@ import java.util.stream.Collectors;
 public class MarkerService {
 
     private final MarkerMapper markerMapper;
+    private final MarkerMBPService markerMBPService;
     private final MarkerDao markerDao;
     private final MarkerLinkageDao markerLinkageDao;
     private final MarkerItemLinkMapper markerItemLinkMapper;
@@ -51,7 +53,7 @@ public class MarkerService {
     private final MarkerPunctuateMapper markerPunctuateMapper;
     private final ItemMapper itemMapper;
     private final ItemTypeLinkMapper itemTypeLinkMapper;
-    private final HistoryMapper historyMapper;
+    private final HistoryMBPService historyMBPService;
 
     /**
      * 根据各种条件筛选查询点位ID
@@ -176,28 +178,17 @@ public class MarkerService {
         MarkerDto markerRecord = buildMarkerDto(markerDto.getId());
 
         //将当前记录保存为历史记录
-        historyMapper.insert(HistoryConvert.convert(markerRecord, HistoryEditType.UPDATE));
+        this.saveHistory(markerRecord, HistoryEditType.UPDATE);
 
         Map<String, Object> mergeResult = JsonUtils.merge(markerRecord.getExtra(), markerDto.getExtra());
         markerDto.setExtra(mergeResult);
 
-        Boolean updated = markerMapper.update(markerDto.getEntity(), Wrappers.<Marker>lambdaUpdate()
-                .eq(Marker::getId, markerDto.getId())) == 1;
-        if (!updated) {
+        Boolean updated = this.saveMarker(markerDto);
+        if(!updated) {
             throw new GenshinApiException("该点位已更新，请重新提交");
         }
-
-        if (markerDto.getItemList() != null && !markerDto.getItemList().isEmpty()) {
-            markerItemLinkMapper.delete(Wrappers.<MarkerItemLink>lambdaQuery().eq(MarkerItemLink::getMarkerId, markerDto.getId()));
-            List<MarkerItemLink> itemLinkList = markerDto.getItemList().parallelStream().map(MarkerItemLinkDto::new).map(dto->dto.withMarkerId(markerDto.getId()).getEntity()).collect(Collectors.toList());
-            markerItemLinkMBPService.saveBatch(itemLinkList);
-        } else if (markerDto.getItemList() != null) {
-            markerItemLinkMapper.delete(Wrappers.<MarkerItemLink>lambdaQuery().eq(MarkerItemLink::getMarkerId, markerDto.getId()));
-        }
-
         return updated;
     }
-
 
     /**
      * 根据点位ID删除点位
@@ -210,7 +201,7 @@ public class MarkerService {
         //查询修改前的记录
         MarkerDto markerRecord = buildMarkerDto(markerId);
         //将当前记录保存为历史记录
-        historyMapper.insert(HistoryConvert.convert(markerRecord, HistoryEditType.DELETE));
+        this.saveHistory(markerRecord, HistoryEditType.DELETE);
 
         markerMapper.delete(Wrappers.<Marker>lambdaQuery().eq(Marker::getId, markerId));
         markerItemLinkMapper.delete(Wrappers.<MarkerItemLink>lambdaQuery().eq(MarkerItemLink::getMarkerId, markerId));
@@ -218,16 +209,140 @@ public class MarkerService {
         return true;
     }
 
-    //--------------------储存历史信息-----------------------
+    /**
+     * 调整点位数据
+     *
+     * @param tweakVo 点位调整配置
+     * @return 修改后的点位数据
+     */
+    @Transactional
+    public List<MarkerVo> tweakMarkers(TweakVo tweakVo) {
+        List<Long> markerIds = tweakVo.getMarkerIds();
+        if(CollUtil.isEmpty(markerIds)) {
+            return new ArrayList<>();
+        }
 
-    private MarkerDto buildMarkerDto(Long markerId) {
-        Marker marker = markerMapper.selectOne(Wrappers.<Marker>lambdaQuery().eq(Marker::getId, markerId));
-        return new MarkerDto(marker).withItemList(
-                markerItemLinkMapper.selectList(Wrappers.<MarkerItemLink>lambdaQuery().eq(MarkerItemLink::getMarkerId, markerId))
-                        .stream()
-                        .map(MarkerItemLinkDto::new)
-                        .map(MarkerItemLinkDto::getVo)
-                        .collect(Collectors.toList()));
+        // 生成数据
+        final List<MarkerDto> originalMarkers = this.buildMarkerDto(markerIds);
+        final List<MarkerDto> tweakedMarkers = originalMarkers.parallelStream()
+                .map(MarkerDto::getCopy)
+                .filter(Objects::nonNull)
+                .map(marker -> MarkerTweakDataHelper.applyTweakRules(marker, tweakVo.getTweaks()))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+
+        if(CollUtil.isEmpty(tweakedMarkers)) {
+            return new ArrayList<>();
+        }
+
+        // 保存数据
+        this.saveMarker(tweakedMarkers, tweakedMarkers.size());
+        this.saveHistory(originalMarkers, HistoryEditType.UPDATE);
+
+        // 重新获取数据，防止返回旧数据
+        List<MarkerDto> updatedMarkers = this.buildMarkerDto(markerIds);
+        return updatedMarkers.parallelStream()
+                .filter(Objects::nonNull)
+                .map(MarkerDto::getVo)
+                .collect(Collectors.toList());
     }
 
+    //--------------------构造点位Dto-----------------------
+    private MarkerDto buildMarkerDto(Long markerId) {
+        final List<MarkerDto> markerList = buildMarkerDto(List.of(markerId));
+        return markerList.isEmpty() ? null : markerList.get(0);
+    }
+
+    private List<MarkerDto> buildMarkerDto(List<Long> markerId) {
+        final String markerIdListStr = PgsqlUtils.unnestLongStr(markerId);
+        final List<Marker> markerList = markerMapper.selectListWithLargeIn(markerIdListStr, Wrappers.<Marker>lambdaQuery());
+        final List<MarkerItemLink> markerItemLinkList = markerItemLinkMapper.selectWithLargeCustomIn("marker_id", markerIdListStr, Wrappers.<MarkerItemLink>lambdaQuery());
+
+        final Map<Long, List<MarkerItemLinkDto>> markerItemLinkGroup = markerItemLinkList.parallelStream()
+                .map(MarkerItemLinkDto::new)
+                .collect(Collectors.groupingBy(MarkerItemLinkDto::getMarkerId));
+
+        return markerList.stream()
+                .map(MarkerDto::new)
+                .map(marker -> marker.withItemList(
+                        markerItemLinkGroup
+                                .getOrDefault(marker.getId(), List.of())
+                                .stream()
+                                .map(MarkerItemLinkDto::getVo)
+                                .collect(Collectors.toList())
+                ))
+                .collect(Collectors.toList());
+    }
+
+    //--------------------点位相关辅助方法----------------------
+    private boolean saveMarker(MarkerDto markerDto) {
+        return saveMarker(List.of(markerDto), 1);
+    }
+
+    private boolean saveMarker(List<MarkerDto> markerDtos, int validateCount) {
+        // Extract data
+        final List<Marker> markerList = markerDtos.parallelStream()
+                .map(MarkerDto::getEntity)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+        final List<Long> markerIdList = markerList.parallelStream()
+                .map(Marker::getId)
+                .filter(Objects::nonNull)
+                .distinct()
+                .collect(Collectors.toList());
+        final List<MarkerItemLink> itemList = markerDtos.parallelStream()
+                .map(markerDto -> {
+                    List<MarkerItemLinkVo> itemListData = markerDto.getItemList();
+                    if (itemListData == null) {
+                        return null;
+                    }
+                    return itemListData.parallelStream()
+                            .map(MarkerItemLinkDto::new)
+                            .map(dto -> dto.withMarkerId(markerDto.getId()).getEntity())
+                            .collect(Collectors.toList());
+                })
+                .filter(Objects::nonNull)
+                .flatMap(List::stream)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+        final List<Long> itemMarkerIdList = itemList.parallelStream()
+                .map(MarkerItemLink::getMarkerId)
+                .filter(Objects::nonNull)
+                .distinct()
+                .collect(Collectors.toList());
+
+        // Save marker
+        if(CollUtil.isEmpty(markerIdList)) {
+            return validateCount == 0;
+        }
+        boolean updated = markerMBPService.saveOrUpdateBatch(markerList, 100);
+        if(!updated) {
+            return false;
+        }
+        if(CollUtil.isNotEmpty(itemMarkerIdList)) {
+            markerItemLinkMapper.deleteWithLargeCustomIn("marker_id", PgsqlUtils.unnestLongStr(itemMarkerIdList), Wrappers.<MarkerItemLink>lambdaQuery());
+        }
+        if(CollUtil.isNotEmpty(itemList)) {
+            markerItemLinkMBPService.saveBatch(itemList);
+        }
+        return true;
+    }
+
+    //--------------------保存历史信息----------------------
+    private void saveHistory(MarkerDto markerDto, HistoryEditType historyType) {
+        saveHistory(List.of(markerDto), historyType);
+    }
+
+    private void saveHistory(List<MarkerDto> markerDtos, HistoryEditType historyType) {
+        if(CollUtil.isEmpty(markerDtos)) {
+            return;
+        }
+
+        List<History> historyList = markerDtos.stream()
+                .filter(Objects::nonNull)
+                .map(markerRecord -> HistoryConvert.convert(markerRecord, historyType))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+        historyMBPService.saveBatch(historyList, 100);
+    }
 }

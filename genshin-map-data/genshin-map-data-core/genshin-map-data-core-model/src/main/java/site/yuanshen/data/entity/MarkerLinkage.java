@@ -3,9 +3,8 @@ package site.yuanshen.data.entity;
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.*;
 import site.yuanshen.data.base.BaseEntity;
-import site.yuanshen.data.helper.MarkerLinkagePathTypeHandler;
+import site.yuanshen.data.helper.marker.linkage.MarkerLinkagePathTypeHandler;
 import site.yuanshen.data.vo.adapter.marker.linkage.PathEdgeVo;
-import site.yuanshen.handler.MBPJsonArrayTypeHandler;
 import site.yuanshen.handler.MBPJsonObjectTypeHandler;
 
 import java.time.LocalDateTime;

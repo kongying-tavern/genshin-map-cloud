@@ -15,7 +15,7 @@ import java.util.Objects;
 public abstract class DefaultConvert implements Convert {
 
     @Override
-    public final History convert(Object o, HistoryEditType editType) {
+    public History convert(Object o, HistoryEditType editType) {
         History history = new History();
 
         String ipv4 = "N/A";

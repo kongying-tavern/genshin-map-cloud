@@ -11,6 +11,7 @@ import site.yuanshen.data.dto.helper.PageSearchDto;
 import site.yuanshen.data.enums.HiddenFlagEnum;
 import site.yuanshen.data.vo.MarkerSearchVo;
 import site.yuanshen.data.vo.MarkerVo;
+import site.yuanshen.data.vo.adapter.marker.tweak.TweakVo;
 import site.yuanshen.data.vo.helper.PageListVo;
 import site.yuanshen.data.vo.helper.PageSearchVo;
 import site.yuanshen.genshin.core.service.CacheService;
@@ -18,7 +19,6 @@ import site.yuanshen.genshin.core.service.MarkerService;
 import site.yuanshen.genshin.core.service.UserAppenderService;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * 点位 Controller 层
@@ -111,6 +111,19 @@ public class MarkerController {
         return RUtils.create(result);
     }
 
+
     //////////////END:点位自身的API//////////////
+
+    //////////////START:点位调整的API//////////////
+    @Operation(summary = "调整点位", description = "对点位数据进行微调")
+    @PostMapping("/tweak")
+    public R<List<MarkerVo>> tweakMarkers(@RequestBody TweakVo tweakVo) {
+        List<MarkerVo> result = markerService.tweakMarkers(tweakVo);
+        cacheService.cleanItemCache();
+        cacheService.cleanMarkerCache();
+        cacheService.cleanMarkerLinkageCache();
+        return RUtils.create(result);
+    }
+    //////////////END:点位调整的API//////////////
 
 }

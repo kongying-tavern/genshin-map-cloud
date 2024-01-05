@@ -17,7 +17,7 @@ public class ClassUtils {
      * @param propName 属性名
      * @return 属性描述器
      */
-    public static PropertyDescriptor getPropertyDescriptor(Class clazz, String propName) {
+    public static <T> PropertyDescriptor getPropertyDescriptor(Class<T> clazz, String propName) {
         PropertyDescriptor pd = null;
         try {
             final Field field = clazz.getDeclaredField(propName);
@@ -29,10 +29,24 @@ public class ClassUtils {
                 final Method setMethod = clazz.getDeclaredMethod(setMethodName, new Class[]{field.getType()});
                 pd = new PropertyDescriptor(propName, getMethod, setMethod);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
         return pd;
+    }
+
+    /**
+     * 设置属性
+     * @param obj 对象
+     * @param pd 属性描述
+     * @param value 属性值
+     */
+    public static <T, V> void setProperty(T obj, PropertyDescriptor pd, V value) {
+        try {
+            pd.getWriteMethod().invoke(obj, value);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     /**
@@ -41,15 +55,26 @@ public class ClassUtils {
      * @param propName 属性名
      * @param value 属性值
      */
-    public static void setProperty(Object obj, String propName, Object value) {
+    public static <T, V> void setProperty(T obj, String propName, V value) {
         final Class clazz = obj.getClass();
         final PropertyDescriptor pd = getPropertyDescriptor(clazz, propName);
-        final Method method = pd.getWriteMethod();
+        setProperty(obj, pd, value);
+    }
+
+    /**
+     * 获取属性
+     * @param obj 对象
+     * @param pd 属性描述
+     * @return 属性值
+     */
+    public static <T, V> V getProperty(T obj, PropertyDescriptor pd) {
+        V value = null;
         try {
-            method.invoke(obj, new Object[]{value});
+            value = (V) pd.getReadMethod().invoke(obj);
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return value;
     }
 
     /**
@@ -58,17 +83,10 @@ public class ClassUtils {
      * @param propName 属性名
      * @return 属性值
      */
-    public static Object getProperty(Object obj, String propName) {
+    public static <T, V> V getProperty(T obj, String propName) {
         final Class clazz = obj.getClass();
         final PropertyDescriptor pd = getPropertyDescriptor(clazz, propName);
-        final Method method = pd.getReadMethod();
-        Object value = null;
-        try {
-            value = method.invoke(obj, new Class[]{});
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return value;
+        return getProperty(obj, pd);
     }
 
     /**
