@@ -69,6 +69,10 @@ public enum TweakTypeEnum {
     REMOVE_ITEM_LIST_ITEM(
             "removeItemListItem",
             (v, meta) -> MarkerTweakTransformer.applyRemoveItemListItem((List<MarkerItemLinkVo>) v, meta)
+    ),
+    PRESERVE_ITEM_LIST_ITEM(
+            "preserveItemListItem",
+            (v, meta) -> MarkerTweakTransformer.applyPreserveItemListItem((List<MarkerItemLinkVo>) v, meta)
     );
 
     @JsonValue

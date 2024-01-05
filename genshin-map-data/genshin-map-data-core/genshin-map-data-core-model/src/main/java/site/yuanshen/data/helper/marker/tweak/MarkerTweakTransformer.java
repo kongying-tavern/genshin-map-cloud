@@ -159,4 +159,24 @@ public final class MarkerTweakTransformer {
                 .collect(Collectors.toList());
         return newList;
     }
+
+    public static List<MarkerItemLinkVo> applyPreserveItemListItem(List<MarkerItemLinkVo> data, TweakConfigMetaVo meta) {
+        final List<MarkerItemLinkVo> itemList = meta.getItemList();
+        if(itemList == null) {
+            return data;
+        } else if(data == null) {
+            return null;
+        }
+
+        Set<Long> itemIdSet = new HashSet<>();
+        // Generate id set
+        for(MarkerItemLinkVo item : itemList) {
+            itemIdSet.add(item.getItemId());
+        }
+        // Delete items
+        final List<MarkerItemLinkVo> newList = data.stream()
+                .filter(item -> item.getItemId() != null && itemIdSet.contains(item.getItemId()))
+                .collect(Collectors.toList());
+        return newList;
+    }
 }

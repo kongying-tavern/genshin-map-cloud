@@ -138,6 +138,11 @@ public enum TweakHandlerEnum {
             "itemList", "removeItem",
             TweakPropertyEnum.ITEM_LIST,
             TweakTypeEnum.REMOVE_ITEM_LIST_ITEM
+    ),
+    ITEM_LIST$$PRESERVE_ITEM(
+            "itemList", "preserveItem",
+            TweakPropertyEnum.ITEM_LIST,
+            TweakTypeEnum.PRESERVE_ITEM_LIST_ITEM
     );
 
     private final String propName;
