@@ -35,8 +35,8 @@ public enum TweakPropertyEnum {
             MarkerDto::getHiddenFlag,
             (marker, data) -> marker.setHiddenFlag(NumberUtil.parseInt(data.toString()))
     ),
-    UNDERGROUND(
-            "underground", Map.class,
+    EXTRA(
+            "extra", Map.class,
             MarkerDto::getExtra,
             (marker, data) -> marker.setExtra((Map<String, Object>) data)
     ),

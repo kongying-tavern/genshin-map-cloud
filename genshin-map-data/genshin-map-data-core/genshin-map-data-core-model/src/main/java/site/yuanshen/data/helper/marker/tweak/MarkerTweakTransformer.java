@@ -83,13 +83,7 @@ public final class MarkerTweakTransformer {
     }
 
     public static Map<String, Object> applyMerge(Map<String, Object> data, TweakConfigMetaVo meta) {
-        final Object value = meta.getValue();
-        Map<String, Object> map = new HashMap<>();
-        try {
-            map = (Map<String, Object>) value;
-        } catch (Exception e) {
-            // skip
-        }
+        final Map<String, Object> map = meta.getMap();
         final Map<String, Object> dataNew = JsonUtils.merge(data, map);
         return dataNew;
     }

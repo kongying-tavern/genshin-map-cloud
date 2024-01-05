@@ -92,9 +92,9 @@ public enum TweakHandlerEnum {
             TweakPropertyEnum.HIDDEN_FLAG,
             TweakTypeEnum.UPDATE
     ),
-    // UNDERGROUND
-    UNDERGROUND$$MERGE(
-            TweakPropertyEnum.UNDERGROUND,
+    // EXTRA
+    EXTRA$$MERGE(
+            TweakPropertyEnum.EXTRA,
             TweakTypeEnum.MERGE
     ),
     // ITEM_LIST
