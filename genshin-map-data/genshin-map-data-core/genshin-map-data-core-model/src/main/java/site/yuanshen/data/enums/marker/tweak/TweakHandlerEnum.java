@@ -122,7 +122,7 @@ public enum TweakHandlerEnum {
     ITEM_LIST$$UPDATE(
             "itemList", "update",
             TweakPropertyEnum.ITEM_LIST,
-            TweakTypeEnum.UPDATE
+            TweakTypeEnum.UPDATE_ITEM_LIST
     );
 
     private final String propName;

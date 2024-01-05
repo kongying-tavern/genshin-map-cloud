@@ -4,9 +4,10 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import site.yuanshen.data.helper.marker.tweak.MarkerTweakTransformer;
+import site.yuanshen.data.vo.MarkerItemLinkVo;
 import site.yuanshen.data.vo.adapter.marker.tweak.TweakConfigMetaVo;
-import site.yuanshen.data.vo.adapter.marker.tweak.TweakConfigVo;
 
+import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
 
@@ -52,6 +53,10 @@ public enum TweakTypeEnum {
     MERGE(
             "merge",
             (v, meta) -> MarkerTweakTransformer.applyMerge((Map<String, Object>) v, meta)
+    ),
+    UPDATE_ITEM_LIST(
+            "updateItemList",
+            (v, meta) -> MarkerTweakTransformer.applyUpdateItemList((List<MarkerItemLinkVo>) v, meta)
     );
 
     @JsonValue

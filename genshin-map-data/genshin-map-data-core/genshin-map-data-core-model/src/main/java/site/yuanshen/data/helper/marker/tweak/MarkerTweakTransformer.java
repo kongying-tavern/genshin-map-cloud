@@ -3,9 +3,11 @@ package site.yuanshen.data.helper.marker.tweak;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 import site.yuanshen.common.core.utils.JsonUtils;
+import site.yuanshen.data.vo.MarkerItemLinkVo;
 import site.yuanshen.data.vo.adapter.marker.tweak.TweakConfigMetaVo;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public final class MarkerTweakTransformer {
@@ -86,6 +88,15 @@ public final class MarkerTweakTransformer {
         final Map<String, Object> map = meta.getMap();
         final Map<String, Object> dataNew = JsonUtils.merge(data, map);
         return dataNew;
+    }
+
+    public static List<MarkerItemLinkVo> applyUpdateItemList(List<MarkerItemLinkVo> data, TweakConfigMetaVo meta) {
+        final List<MarkerItemLinkVo> itemList = meta.getItemList();
+        if(itemList == null) {
+            return data;
+        } else {
+            return itemList;
+        }
     }
 
 }

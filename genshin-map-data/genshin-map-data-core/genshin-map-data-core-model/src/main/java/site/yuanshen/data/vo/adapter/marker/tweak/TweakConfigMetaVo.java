@@ -2,7 +2,9 @@ package site.yuanshen.data.vo.adapter.marker.tweak;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import site.yuanshen.data.vo.MarkerItemLinkVo;
 
+import java.util.List;
 import java.util.Map;
 
 @Data
@@ -19,4 +21,7 @@ public class TweakConfigMetaVo {
 
     @Schema(title = "键值对映射")
     private Map<String, Object> map;
+
+    @Schema(title = "物品关联")
+    private List<MarkerItemLinkVo> itemList;
 }
