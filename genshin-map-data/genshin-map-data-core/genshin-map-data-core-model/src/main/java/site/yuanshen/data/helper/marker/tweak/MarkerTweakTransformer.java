@@ -6,6 +6,7 @@ import site.yuanshen.common.core.utils.JsonUtils;
 import site.yuanshen.data.vo.MarkerItemLinkVo;
 import site.yuanshen.data.vo.adapter.marker.tweak.TweakConfigMetaVo;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -99,4 +100,24 @@ public final class MarkerTweakTransformer {
         }
     }
 
+    public static List<MarkerItemLinkVo> applyInsertItemListIfAbsent(List<MarkerItemLinkVo> data, TweakConfigMetaVo meta) {
+        final List<MarkerItemLinkVo> itemList = meta.getItemList();
+        if(itemList == null) {
+            return data;
+        } else if(data == null) {
+            return null;
+        }
+
+        Map<Long, MarkerItemLinkVo> itemMap = new HashMap<>();
+        // Add base items
+        for(MarkerItemLinkVo item : data) {
+            itemMap.putIfAbsent(item.getItemId(), item);
+        }
+        // Add insertion items
+        for(MarkerItemLinkVo item : itemList) {
+            itemMap.putIfAbsent(item.getItemId(), item);
+        }
+        List<MarkerItemLinkVo> newList = new ArrayList<>(itemMap.values());
+        return newList;
+    }
 }

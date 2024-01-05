@@ -57,6 +57,10 @@ public enum TweakTypeEnum {
     UPDATE_ITEM_LIST(
             "updateItemList",
             (v, meta) -> MarkerTweakTransformer.applyUpdateItemList((List<MarkerItemLinkVo>) v, meta)
+    ),
+    INSERT_ITEM_LIST_IF_ABSENT(
+            "insertItemListIfAbsent",
+            (v, meta) -> MarkerTweakTransformer.applyInsertItemListIfAbsent((List<MarkerItemLinkVo>) v, meta)
     );
 
     @JsonValue
