@@ -128,6 +128,11 @@ public enum TweakHandlerEnum {
             "itemList", "insertIfAbsent",
             TweakPropertyEnum.ITEM_LIST,
             TweakTypeEnum.INSERT_ITEM_LIST_IF_ABSENT
+    ),
+    ITEM_LIST$$INSERT_OR_UPDATE(
+            "itemList", "insertOrUpdate",
+            TweakPropertyEnum.ITEM_LIST,
+            TweakTypeEnum.INSERT_ITEM_LIST_OR_UPDATE
     );
 
     private final String propName;

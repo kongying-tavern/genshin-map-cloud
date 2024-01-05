@@ -120,4 +120,25 @@ public final class MarkerTweakTransformer {
         List<MarkerItemLinkVo> newList = new ArrayList<>(itemMap.values());
         return newList;
     }
+
+    public static List<MarkerItemLinkVo> applyInsertItemListOrUpdate(List<MarkerItemLinkVo> data, TweakConfigMetaVo meta) {
+        final List<MarkerItemLinkVo> itemList = meta.getItemList();
+        if(itemList == null) {
+            return data;
+        } else if(data == null) {
+            return null;
+        }
+
+        Map<Long, MarkerItemLinkVo> itemMap = new HashMap<>();
+        // Add base items
+        for(MarkerItemLinkVo item : data) {
+            itemMap.put(item.getItemId(), item);
+        }
+        // Add insertion items
+        for(MarkerItemLinkVo item : itemList) {
+            itemMap.put(item.getItemId(), item);
+        }
+        List<MarkerItemLinkVo> newList = new ArrayList<>(itemMap.values());
+        return newList;
+    }
 }
