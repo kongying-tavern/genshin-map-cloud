@@ -133,6 +133,11 @@ public enum TweakHandlerEnum {
             "itemList", "insertOrUpdate",
             TweakPropertyEnum.ITEM_LIST,
             TweakTypeEnum.INSERT_ITEM_LIST_OR_UPDATE
+    ),
+    ITEM_LIST$$REMOVE_ITEM(
+            "itemList", "removeItem",
+            TweakPropertyEnum.ITEM_LIST,
+            TweakTypeEnum.REMOVE_ITEM_LIST_ITEM
     );
 
     private final String propName;

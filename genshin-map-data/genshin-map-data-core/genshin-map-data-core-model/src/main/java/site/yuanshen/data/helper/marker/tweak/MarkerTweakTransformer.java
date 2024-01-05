@@ -6,10 +6,8 @@ import site.yuanshen.common.core.utils.JsonUtils;
 import site.yuanshen.data.vo.MarkerItemLinkVo;
 import site.yuanshen.data.vo.adapter.marker.tweak.TweakConfigMetaVo;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public final class MarkerTweakTransformer {
     public static Object applyUpdate(Object data, TweakConfigMetaVo meta) {
@@ -117,7 +115,7 @@ public final class MarkerTweakTransformer {
         for(MarkerItemLinkVo item : itemList) {
             itemMap.putIfAbsent(item.getItemId(), item);
         }
-        List<MarkerItemLinkVo> newList = new ArrayList<>(itemMap.values());
+        final List<MarkerItemLinkVo> newList = new ArrayList<>(itemMap.values());
         return newList;
     }
 
@@ -138,7 +136,27 @@ public final class MarkerTweakTransformer {
         for(MarkerItemLinkVo item : itemList) {
             itemMap.put(item.getItemId(), item);
         }
-        List<MarkerItemLinkVo> newList = new ArrayList<>(itemMap.values());
+        final List<MarkerItemLinkVo> newList = new ArrayList<>(itemMap.values());
+        return newList;
+    }
+
+    public static List<MarkerItemLinkVo> applyRemoveItemListItem(List<MarkerItemLinkVo> data, TweakConfigMetaVo meta) {
+        final List<MarkerItemLinkVo> itemList = meta.getItemList();
+        if(itemList == null) {
+            return data;
+        } else if(data == null) {
+            return null;
+        }
+
+        Set<Long> itemIdSet = new HashSet<>();
+        // Generate id set
+        for(MarkerItemLinkVo item : itemList) {
+            itemIdSet.add(item.getItemId());
+        }
+        // Delete items
+        final List<MarkerItemLinkVo> newList = data.stream()
+                .filter(item -> item.getItemId() != null && !itemIdSet.contains(item.getItemId()))
+                .collect(Collectors.toList());
         return newList;
     }
 }
