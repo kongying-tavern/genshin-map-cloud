@@ -19,8 +19,8 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/9d77v/go-pkg/cache/redis"
-	"github.com/9d77v/go-pkg/env"
+	"docker-component.local/minio-image-to-webp/go-pkg/cache/redis"
+	"docker-component.local/minio-image-to-webp/go-pkg/env"
 	"github.com/chai2010/webp"
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
