@@ -107,9 +107,8 @@ public class NoticeService {
         }
 
         return 1 == noticeMapper.update(
-            null,
+            noticeDto.getEntity(),
             Wrappers.<Notice>lambdaUpdate()
-                .setEntity(noticeDto.getEntity())
                 .set(Notice::getValidTimeStart, noticeDto.getValidTimeStart())
                 .set(Notice::getValidTimeEnd, noticeDto.getValidTimeEnd())
                 .eq(Notice::getId, noticeDto.getId()));
