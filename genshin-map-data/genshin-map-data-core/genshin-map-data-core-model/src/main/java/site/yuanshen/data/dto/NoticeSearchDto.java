@@ -35,6 +35,11 @@ public class NoticeSearchDto extends PageSearchDto {
      */
     private Boolean getValid;
 
+    /**
+     * 数据转换器
+     */
+    private String transformer;
+
     public NoticeSearchDto(NoticeSearchVo iconSearchVo) {
         BeanUtils.copyNotNull(iconSearchVo, this);
     }

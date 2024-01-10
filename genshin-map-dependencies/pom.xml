@@ -20,7 +20,8 @@
         <velocity.version>2.3</velocity.version>
         <minio.version>8.5.7</minio.version>
         <okhttp.version>4.12.0</okhttp.version>
-        <commons-compres.version>1.21</commons-compres.version>
+        <jsoup.version>1.17.2</jsoup.version>
+        <commons-compress.version>1.21</commons-compress.version>
         <cglib.version>3.3.0</cglib.version>
     </properties>
 
@@ -148,10 +149,17 @@
                 <version>${okhttp.version}</version>
             </dependency>
 
+            <!-- jsoup -->
+            <dependency>
+                <groupId>org.jsoup</groupId>
+                <artifactId>jsoup</artifactId>
+                <version>${jsoup.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-compress</artifactId>
-                <version>${commons-compres.version}</version>
+                <version>${commons-compress.version}</version>
             </dependency>
 
             <dependency>
