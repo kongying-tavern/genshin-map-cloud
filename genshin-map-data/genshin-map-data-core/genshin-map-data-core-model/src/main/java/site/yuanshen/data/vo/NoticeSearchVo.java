@@ -33,6 +33,12 @@ public class NoticeSearchVo {
     private Boolean getValid;
 
     /**
+     * 数据转换器
+     */
+    @Schema(title = "数据转换器")
+    private String transformer;
+
+    /**
      * 当前页，从0开始
      */
     @Schema(title = "当前页，从0开始")
