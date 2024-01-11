@@ -4,20 +4,16 @@ import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import site.yuanshen.data.dto.SysUserDto;
-import site.yuanshen.data.dto.adapter.score.ScoreSpanConfigDto;
+import site.yuanshen.data.dto.adapter.score.v1.ScoreSpanConfigDto;
 import site.yuanshen.data.entity.ScoreStat;
-import site.yuanshen.data.entity.SysUser;
-import site.yuanshen.data.enums.ScoreScopeEnum;
+import site.yuanshen.data.enums.score.v1.ScoreScopeEnum;
 import site.yuanshen.data.mapper.SysUserMapper;
-import site.yuanshen.data.vo.SysUserVo;
-import site.yuanshen.data.vo.adapter.score.ScoreDataPackVo;
-import site.yuanshen.data.vo.adapter.score.ScoreDataPunctuateVo;
-import site.yuanshen.data.vo.adapter.score.ScoreParamsVo;
-import site.yuanshen.genshin.core.service.helper.score.ScoreHelper;
+import site.yuanshen.data.vo.adapter.score.v1.ScoreDataPackVo;
+import site.yuanshen.data.vo.adapter.score.v1.ScoreDataPunctuateVo;
+import site.yuanshen.data.vo.adapter.score.v1.ScoreParamsVo;
+import site.yuanshen.genshin.core.service.helper.score.v1.ScoreHelper;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor

@@ -1,4 +1,4 @@
-package site.yuanshen.data.vo.adapter.score;
+package site.yuanshen.data.vo.adapter.score.v1;
 
 import lombok.Data;
 import lombok.experimental.Accessors;

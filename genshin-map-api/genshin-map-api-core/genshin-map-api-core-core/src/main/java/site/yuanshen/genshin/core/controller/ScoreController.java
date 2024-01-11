@@ -6,8 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import site.yuanshen.common.web.response.R;
 import site.yuanshen.common.web.response.RUtils;
-import site.yuanshen.data.vo.adapter.score.ScoreDataPackVo;
-import site.yuanshen.data.vo.adapter.score.ScoreParamsVo;
+import site.yuanshen.data.vo.adapter.score.v1.ScoreDataPackVo;
+import site.yuanshen.data.vo.adapter.score.v1.ScoreParamsVo;
 import site.yuanshen.genshin.core.service.ScoreDataService;
 import site.yuanshen.genshin.core.service.ScoreGenerateService;
 

@@ -1,4 +1,4 @@
-package site.yuanshen.genshin.core.service.helper.score;
+package site.yuanshen.genshin.core.service.helper.score.v1;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
@@ -12,15 +12,15 @@ import site.yuanshen.common.core.utils.JsonUtils;
 import site.yuanshen.common.core.utils.TimeUtils;
 import site.yuanshen.data.base.BaseEntity;
 import site.yuanshen.data.dto.MarkerDto;
-import site.yuanshen.data.dto.adapter.score.ScoreSpanConfigDto;
+import site.yuanshen.data.dto.adapter.score.v1.ScoreSpanConfigDto;
 import site.yuanshen.data.entity.*;
 import site.yuanshen.data.enums.HistoryEditType;
-import site.yuanshen.data.enums.ScoreScopeEnum;
+import site.yuanshen.data.enums.score.v1.ScoreScopeEnum;
 import site.yuanshen.data.mapper.HistoryMapper;
 import site.yuanshen.data.mapper.ItemMapper;
 import site.yuanshen.data.mapper.MarkerItemLinkMapper;
 import site.yuanshen.data.mapper.MarkerMapper;
-import site.yuanshen.data.vo.adapter.score.ScoreDataPunctuateVo;
+import site.yuanshen.data.vo.adapter.score.v1.ScoreDataPunctuateVo;
 import site.yuanshen.genshin.core.convert.HistoryConvert;
 
 import java.sql.Timestamp;

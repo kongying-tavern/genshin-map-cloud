@@ -1,12 +1,12 @@
-package site.yuanshen.data.vo.adapter.score;
+package site.yuanshen.data.vo.adapter.score.v1;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import site.yuanshen.data.dto.adapter.score.ScoreSpanConfigDto;
-import site.yuanshen.data.enums.ScoreSpanEnum;
+import site.yuanshen.data.dto.adapter.score.v1.ScoreSpanConfigDto;
+import site.yuanshen.data.enums.score.v1.ScoreSpanEnum;
 
 import java.sql.Timestamp;
 

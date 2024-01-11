@@ -1,7 +1,6 @@
-package site.yuanshen.data.enums;
+package site.yuanshen.data.enums.score.v1;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import site.yuanshen.common.core.exception.GenshinApiException;
 
 @AllArgsConstructor
