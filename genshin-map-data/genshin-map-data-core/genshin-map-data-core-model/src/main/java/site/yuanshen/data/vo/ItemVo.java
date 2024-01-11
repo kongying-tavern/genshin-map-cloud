@@ -3,6 +3,7 @@ package site.yuanshen.data.vo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -40,7 +41,7 @@ public class ItemVo {
      * 创建时间
      */
     @Schema(title = "创建时间")
-    private LocalDateTime createTime;
+    private Timestamp createTime;
 
     /**
      * 更新人
@@ -52,7 +53,7 @@ public class ItemVo {
      * 更新时间
      */
     @Schema(title = "更新时间")
-    private LocalDateTime updateTime;
+    private Timestamp updateTime;
 
     /**
      * 物品名称

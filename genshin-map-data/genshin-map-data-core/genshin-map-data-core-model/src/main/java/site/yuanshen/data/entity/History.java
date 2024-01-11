@@ -6,6 +6,7 @@ import lombok.*;
 import site.yuanshen.data.base.BaseEntity;
 import site.yuanshen.data.enums.HistoryEditType;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 /**
@@ -44,7 +45,7 @@ public class History extends BaseEntity {
      * 更新时间
      */
     @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
-    private LocalDateTime updateTime;
+    private Timestamp updateTime;
 
     /**
      * 内容

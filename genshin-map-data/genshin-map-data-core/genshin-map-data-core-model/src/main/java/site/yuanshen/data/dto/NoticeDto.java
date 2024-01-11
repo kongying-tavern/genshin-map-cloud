@@ -41,7 +41,7 @@ public class NoticeDto {
     /**
      * 更新时间
      */
-    private LocalDateTime updateTime;
+    private Timestamp updateTime;
 
     /**
      * 频道

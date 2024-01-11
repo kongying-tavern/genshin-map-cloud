@@ -6,6 +6,8 @@ import com.alibaba.fastjson2.annotation.JSONField;
 import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.entity.MarkerItemLink;
 import site.yuanshen.data.vo.MarkerItemLinkVo;
+
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 
@@ -39,7 +41,7 @@ public class MarkerItemLinkDto {
     /**
      * 更新时间
      */
-    private LocalDateTime updateTime;
+    private Timestamp updateTime;
 
     /**
      * 物品ID

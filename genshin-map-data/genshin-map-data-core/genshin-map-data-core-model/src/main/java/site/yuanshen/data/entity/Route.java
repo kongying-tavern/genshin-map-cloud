@@ -6,6 +6,7 @@ import site.yuanshen.data.base.BaseEntity;
 import site.yuanshen.handler.MBPJsonArrayTypeHandler;
 import site.yuanshen.handler.MBPJsonObjectTypeHandler;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -46,7 +47,7 @@ public class Route extends BaseEntity {
      * 更新时间
      */
     @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
-    private LocalDateTime updateTime;
+    private Timestamp updateTime;
 
     /**
      * 路线名称

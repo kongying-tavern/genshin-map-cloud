@@ -7,9 +7,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.With;
 import site.yuanshen.common.core.utils.BeanUtils;
+import site.yuanshen.common.core.utils.TimeUtils;
 import site.yuanshen.data.vo.SysArchiveVo;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
+
 
 /**
  * 存档Dto</p>
@@ -27,8 +29,7 @@ public class SysUserArchiveDto {
     /**
      * 存档时间
      */
-    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime time;
+    private Timestamp time;
 
     /**
      * 存档
@@ -37,7 +38,7 @@ public class SysUserArchiveDto {
 
     public SysUserArchiveDto(String archive) {
         this.archive = StrUtil.cleanBlank(archive);
-        time = LocalDateTime.now();
+        time = TimeUtils.getCurrentTimestamp();
     }
 
     public SysUserArchiveDto(SysArchiveVo vo) {

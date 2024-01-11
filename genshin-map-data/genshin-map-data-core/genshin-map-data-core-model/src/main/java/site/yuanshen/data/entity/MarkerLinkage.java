@@ -7,6 +7,7 @@ import site.yuanshen.data.helper.marker.linkage.MarkerLinkagePathTypeHandler;
 import site.yuanshen.data.vo.adapter.marker.linkage.PathEdgeVo;
 import site.yuanshen.handler.MBPJsonObjectTypeHandler;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -47,7 +48,7 @@ public class MarkerLinkage extends BaseEntity {
      * 更新时间
      */
     @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
-    private LocalDateTime updateTime;
+    private Timestamp updateTime;
 
     /**
      * 组ID
