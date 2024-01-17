@@ -13,6 +13,7 @@ import site.yuanshen.data.entity.SysUserArchive;
 import site.yuanshen.data.vo.SysArchiveSlotVo;
 import site.yuanshen.data.vo.SysArchiveVo;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -43,12 +44,12 @@ public class SysUserArchiveSlotDto {
     /**
      * 创建时间
      */
-    private LocalDateTime createTime;
+    private Timestamp createTime;
 
     /**
      * 更新时间
      */
-    private LocalDateTime updateTime;
+    private Timestamp updateTime;
 
     /**
      * 存档名称

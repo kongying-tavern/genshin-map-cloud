@@ -3,6 +3,7 @@ spring:
     include:
       - nacos-uat
       - datasource-uat
+      - image-uat
   datasource:
     driver-class-name: org.postgresql.Driver
     type: com.alibaba.druid.pool.DruidDataSource

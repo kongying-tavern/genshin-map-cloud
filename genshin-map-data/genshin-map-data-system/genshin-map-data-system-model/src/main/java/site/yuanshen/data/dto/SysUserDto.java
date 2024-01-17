@@ -8,6 +8,8 @@ import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.entity.SysUser;
 import site.yuanshen.data.vo.SysUserRegisterVo;
 import site.yuanshen.data.vo.SysUserVo;
+
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 
@@ -41,7 +43,7 @@ public class SysUserDto {
     /**
      * 更新时间
      */
-    private LocalDateTime updateTime;
+    private Timestamp updateTime;
 
     /**
      * 用户名

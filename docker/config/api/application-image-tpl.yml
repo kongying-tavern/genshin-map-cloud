@@ -1,0 +1,7 @@
+image:
+  minio:
+    endpoint: http://minio-proxy.local:80
+    key: {{MINIO_KEY}}
+    secret: {{MINIO_SECRET}}
+    bucket: {{MINIO_BUCKET_IMAGE}}
+    static-url-template: http://localhost:{{MINIO_PORT_PROXY}}/[[fullPath]]

@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import site.yuanshen.data.enums.HistoryEditType;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 /**
@@ -40,7 +41,7 @@ public class HistoryVo {
      * 创建时间
      */
     @Schema(title = "创建时间")
-    private LocalDateTime createTime;
+    private Timestamp createTime;
 
     /**
      * 更新人
@@ -52,7 +53,7 @@ public class HistoryVo {
      * 更新时间
      */
     @Schema(title = "更新时间")
-    private LocalDateTime updateTime;
+    private Timestamp updateTime;
 
     /**
      * 内容

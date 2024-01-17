@@ -193,7 +193,7 @@ public class ScoreGeneratePunctuateHelper {
         final List<History> initializeHistory = markerList
                 .stream()
                 .map(marker -> {
-                    Timestamp createTime = TimeUtils.toTimestamp(marker.getCreateTime(), ScoreHelper.tz);
+                    Timestamp createTime = marker.getCreateTime();
                     if(span.isTimeMatch(createTime)) {
                         final Long markerId = marker.getId();
                         final Item markerItem = markerItemMap.getOrDefault(markerId, new Item());
@@ -275,9 +275,9 @@ public class ScoreGeneratePunctuateHelper {
                         MarkerDto o = BeanUtils.copy(marker, MarkerDto.class);
                         history = HistoryConvert.convert(o, HistoryEditType.NONE);
                         history.setCreatorId(marker.getUpdaterId());
-                        history.setCreateTime(marker.getUpdateTime().plusSeconds(100L));
+                        history.setCreateTime(TimeUtils.toTimeOffsetInSecond(marker.getUpdateTime(), 100L));
                         history.setUpdaterId(marker.getUpdaterId());
-                        history.setUpdateTime(marker.getUpdateTime().plusSeconds(100L));
+                        history.setUpdateTime(TimeUtils.toTimeOffsetInSecond(marker.getUpdateTime(), 100L));
                     }
                     return history;
                 })

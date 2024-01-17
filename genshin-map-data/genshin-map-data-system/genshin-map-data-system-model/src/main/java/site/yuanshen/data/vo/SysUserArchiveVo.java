@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.With;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -43,7 +44,7 @@ public class SysUserArchiveVo {
      * 创建时间
      */
     @Schema(title = "创建时间")
-    private LocalDateTime createTime;
+    private Timestamp createTime;
 
     /**
      * 更新人
@@ -55,7 +56,7 @@ public class SysUserArchiveVo {
      * 更新时间
      */
     @Schema(title = "更新时间")
-    private LocalDateTime updateTime;
+    private Timestamp updateTime;
 
     /**
      * 存档名称

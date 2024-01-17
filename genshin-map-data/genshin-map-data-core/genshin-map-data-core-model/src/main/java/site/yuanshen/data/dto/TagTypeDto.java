@@ -8,6 +8,8 @@ import site.yuanshen.data.entity.TagType;
 import site.yuanshen.data.vo.SysUserSmallVo;
 import site.yuanshen.data.vo.SysUserVo;
 import site.yuanshen.data.vo.TagTypeVo;
+
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 
@@ -41,7 +43,7 @@ public class TagTypeDto {
     /**
      * 创建时间
      */
-    private LocalDateTime createTime;
+    private Timestamp createTime;
 
     /**
      * 更新人
@@ -51,7 +53,7 @@ public class TagTypeDto {
     /**
      * 更新时间
      */
-    private LocalDateTime updateTime;
+    private Timestamp updateTime;
 
     /**
      * 分类名称

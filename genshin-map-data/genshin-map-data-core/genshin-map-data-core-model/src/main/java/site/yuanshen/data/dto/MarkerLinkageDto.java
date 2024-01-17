@@ -11,6 +11,7 @@ import site.yuanshen.data.entity.MarkerLinkage;
 import site.yuanshen.data.vo.MarkerLinkageVo;
 import site.yuanshen.data.vo.adapter.marker.linkage.PathEdgeVo;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -46,7 +47,7 @@ public class MarkerLinkageDto {
     /**
      * 更新时间
      */
-    private LocalDateTime updateTime;
+    private Timestamp updateTime;
 
     /**
      * 组ID

@@ -3,3 +3,5 @@ networks:
     name: gsapi-api
   gsapi-img-local:
     name: gsapi-img-local
+  gsapi-img-alist:
+    name: gsapi-img-alist

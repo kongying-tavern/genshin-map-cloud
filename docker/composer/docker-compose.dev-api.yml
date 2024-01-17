@@ -16,6 +16,9 @@ services:
       gsapi-api:
         aliases:
           - api.local
+      gsapi-img-alist:
+        aliases:
+          - img-alist.local
     volumes:
       - ${DATA_DIR}/api/logs:/data/logs
     ports:

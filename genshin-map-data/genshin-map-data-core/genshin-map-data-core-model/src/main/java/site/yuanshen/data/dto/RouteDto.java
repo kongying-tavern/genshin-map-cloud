@@ -12,6 +12,7 @@ import site.yuanshen.data.vo.RouteVo;
 import site.yuanshen.data.vo.SysUserSmallVo;
 import site.yuanshen.data.vo.SysUserVo;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -47,7 +48,7 @@ public class RouteDto {
     /**
      * 创建时间
      */
-    private LocalDateTime createTime;
+    private Timestamp createTime;
 
     /**
      * 更新人
@@ -57,7 +58,7 @@ public class RouteDto {
     /**
      * 更新时间
      */
-    private LocalDateTime updateTime;
+    private Timestamp updateTime;
 
     /**
      * 路线名称

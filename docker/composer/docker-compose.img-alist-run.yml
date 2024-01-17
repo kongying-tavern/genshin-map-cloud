@@ -1,0 +1,157 @@
+include:
+  - docker-compose.network.yml
+
+services:
+  # Main services
+  redis:
+    container_name: gsapi-redis
+    hostname: gsapi-redis
+    image: redis
+    networks:
+      gsapi-img-alist:
+        aliases:
+          - redis.local
+    volumes:
+      - ${DATA_DIR}/redis/data:/data
+      - ${DATA_DIR}/redis/conf/redis.conf:/usr/local/etc/redis/redis.conf
+    ports:
+      - ${REDIS_PORT:-6379}:6379
+    restart: always
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 30s
+      retries: 3
+      start_period: 2m
+  minio:
+    container_name: gsapi-minio
+    hostname: gsapi-minio
+    image: gsapi/minio
+    networks:
+      gsapi-img-alist:
+        aliases:
+          - minio.local
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASS}
+      MINIO_BROWSER_REDIRECT_URL: ${MINIO_REDIRECT_URL}
+    volumes:
+      - ${DATA_DIR}/minio/config:/root/.minio
+      - ${DATA_DIR}/minio/data:/data
+    ports:
+      - ${MINIO_PORT_API:-9000}:9000
+      - ${MINIO_PORT_CONSOLE:-9001}:9999
+    restart: always
+    healthcheck:
+      test: ["CMD", "bash", "/minio/healthcheck.sh"]
+      interval: 30s
+      timeout: 30s
+      retries: 3
+      start_period: 2m
+  minio-proxy:
+    container_name: gsapi-minio-proxy
+    hostname: gsapi-minio-proxy
+    image: gsapi/minio-proxy
+    depends_on:
+      minio-init:
+        condition: service_completed_successfully
+    networks:
+      gsapi-img-alist:
+        aliases:
+          - minio-proxy.local
+    volumes:
+      - ${DATA_DIR}/minio-proxy/cache:/data/cache
+      - ${DATA_DIR}/minio-proxy/log:/data/log
+    ports:
+      - ${MINIO_PORT_PROXY:-9010}:80
+    restart: always
+  minio-img2webp:
+    container_name: gsapi-minio-img2webp
+    hostname: gsapi-minio-img2webp
+    image: gsapi/minio-img2webp
+    depends_on:
+      minio-init:
+        condition: service_completed_successfully
+    networks:
+      gsapi-img-alist:
+        aliases:
+          - minio-img2webp.local
+    environment:
+      TZ: ${MINIO_IMG2WEBP_TZ}
+      REDIS_ADDRESS: redis.local:6379
+      REDIS_LIST: MINIO_BUCKET_NOTIFY:IMAGE
+      MINIO_BUCKET: ${MINIO_BUCKET_IMAGE}
+      MINIO_ADDRESS: minio.local:9000
+      MINIO_ACCESS_KEY_ID: ${MINIO_KEY}
+      MINIO_SECRET_ACCESS_KEY: ${MINIO_SECRET}
+      MINIO_USE_SSL: false
+      WEBP_QUALITY: ${MINIO_IMG2WEBP_QUALITY:-80}
+      MODE: ${MINIO_IMG2WEBP_MODE:-0}
+    restart: always
+  alist:
+    container_name: gsapi-alist
+    hostname: gsapi-alist
+    image: gsapi/alist
+    networks:
+      gsapi-img-alist:
+        aliases:
+          - alist.local
+    environment:
+      PUID: ${ALIST_PUID:-0}
+      PGID: ${ALIST_PGID:-0}
+      UMASK: ${ALIST_UMASK:-022}
+      ADMIN_PASSWORD: ${ALIST_ROOT_PASSWORD}
+    volumes:
+      - ${DATA_DIR}/alist:/alist/data
+    ports:
+      - ${ALIST_PORT:-5244}:5244
+    restart: always
+    healthcheck:
+      test: ["CMD", "bash", "/alist/healthcheck.sh"]
+      interval: 30s
+      timeout: 30s
+      retries: 3
+      start_period: 2m
+
+  # Initialization services
+  minio-init:
+    container_name: gsapi-minio-init
+    hostname: gsapi-minio-init
+    image: gsapi/minio-init
+    depends_on:
+      redis:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    networks:
+      - gsapi-img-alist
+    environment:
+      MINIO_ROOT_USERNAME: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASS}
+      MINIO_BUCKET_IMAGE: ${MINIO_BUCKET_IMAGE}
+      MINIO_KEY: ${MINIO_KEY}
+      MINIO_SECRET: ${MINIO_SECRET}
+    volumes:
+      - ${DATA_DIR}/init/minio-init:/data/record
+    restart: no
+  alist-init:
+    container_name: gsapi-alist-init
+    hostname: gsapi-alist-init
+    image: gsapi/alist-init
+    depends_on:
+      alist:
+        condition: service_healthy
+    networks:
+      - gsapi-img-alist
+    environment:
+      ALIST_ROOT_PASSWORD: ${ALIST_ROOT_PASSWORD}
+      ALIST_USERNAME: ${ALIST_USERNAME}
+      ALIST_PASSWORD: ${ALIST_PASSWORD}
+      ALIST_MOUNT_PATH: ${ALIST_MOUNT_PATH}
+      ALIST_CACHE_EXPIRE: ${ALIST_CACHE_EXPIRE}
+      MINIO_BUCKET_IMAGE: ${MINIO_BUCKET_IMAGE}
+      MINIO_KEY: ${MINIO_KEY}
+      MINIO_SECRET: ${MINIO_SECRET}
+    volumes:
+      - ${DATA_DIR}/init/alist-init:/data/record
+    restart: no

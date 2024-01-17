@@ -1,6 +1,7 @@
 package site.yuanshen.genshin.core.aspect;
 
 import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONWriter;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -9,8 +10,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author kraken
@@ -23,6 +27,30 @@ public class WebLogAspect {
 
     private static final String LINE_SEPARATOR = System.lineSeparator();
     public static final ThreadLocal<StopWatch> STOP_WATCH_THREAD_LOCAL = new ThreadLocal<>();
+
+    public static final JSONWriter.Feature[] defaultWriteFeatures = new JSONWriter.Feature[]{
+            JSONWriter.Feature.BrowserCompatible,
+            JSONWriter.Feature.WriteEnumUsingToString,
+            JSONWriter.Feature.WriteBigDecimalAsPlain,
+            JSONWriter.Feature.WriteEnumUsingToString,
+            JSONWriter.Feature.WriteNonStringKeyAsString
+    };
+
+    private Object[] sanitizeArgs(Object[] args) {
+        final Object[] sanitizedArgs = List.of(args)
+                .parallelStream()
+                .map(arg -> {
+                    if(arg == null) {
+                        return null;
+                    } else if(arg instanceof MultipartFile) {
+                        return "@[Instance MultipartFile]";
+                    } else {
+                        return arg;
+                    }
+                })
+                .toArray();
+        return sanitizedArgs;
+    }
 
     /**
      * 以 controller 包下定义的所有请求为切入点
@@ -64,7 +92,7 @@ public class WebLogAspect {
                         + request.getRemoteAddr()
                         + LINE_SEPARATOR
                         + "请求入参     : "
-                        + JSON.toJSONString(joinPoint.getArgs())
+                        + JSON.toJSONString(sanitizeArgs(joinPoint.getArgs()), defaultWriteFeatures)
                         + LINE_SEPARATOR);
     }
 
@@ -101,7 +129,7 @@ public class WebLogAspect {
             throw e;
         } finally {
             STOP_WATCH_THREAD_LOCAL.get().stop();
-            String s = JSON.toJSONString(result);
+            String s = JSON.toJSONString(result, defaultWriteFeatures);
             log.info(
                     LINE_SEPARATOR
                             + "URL          : "

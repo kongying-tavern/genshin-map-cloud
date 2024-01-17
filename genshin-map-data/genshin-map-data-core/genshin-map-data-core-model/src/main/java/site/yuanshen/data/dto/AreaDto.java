@@ -9,6 +9,7 @@ import site.yuanshen.data.vo.AreaVo;
 import site.yuanshen.data.vo.SysUserSmallVo;
 import site.yuanshen.data.vo.SysUserVo;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 
@@ -42,7 +43,7 @@ public class AreaDto {
     /**
      * 创建时间
      */
-    private LocalDateTime createTime;
+    private Timestamp createTime;
 
     /**
      * 更新人
@@ -52,7 +53,7 @@ public class AreaDto {
     /**
      * 更新时间
      */
-    private LocalDateTime updateTime;
+    private Timestamp updateTime;
 
     /**
      * 地区名称

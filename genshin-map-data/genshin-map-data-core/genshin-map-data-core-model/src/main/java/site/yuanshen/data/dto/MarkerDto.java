@@ -1,18 +1,21 @@
 package site.yuanshen.data.dto;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
 import com.alibaba.fastjson2.annotation.JSONField;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.With;
 import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.entity.Marker;
 import site.yuanshen.data.vo.MarkerItemLinkVo;
 import site.yuanshen.data.vo.MarkerVo;
-import site.yuanshen.data.vo.SysUserSmallVo;
-import site.yuanshen.data.vo.SysUserVo;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 /**
@@ -45,7 +48,7 @@ public class MarkerDto {
     /**
      * 创建时间
      */
-    private LocalDateTime createTime;
+    private Timestamp createTime;
 
     /**
      * 更新人
@@ -55,7 +58,7 @@ public class MarkerDto {
     /**
      * 更新时间
      */
-    private LocalDateTime updateTime;
+    private Timestamp updateTime;
 
     /**
      * 点位签戳（用于兼容旧点位ID）
@@ -128,6 +131,26 @@ public class MarkerDto {
 
     public MarkerDto(MarkerVo markerVo) {
         BeanUtils.copy(markerVo, this);
+    }
+
+    /**
+     * 获取深拷贝对象
+     * @return
+     */
+    @JSONField(serialize = false)
+    public MarkerDto getCopy() {
+        MarkerDto markerCopy = new MarkerDto();
+        BeanUtils.copy(this, markerCopy);
+        List<MarkerItemLinkVo> itemList = this.getItemList();
+        List<MarkerItemLinkVo> itemListCopy = itemList.parallelStream()
+                .map(itemLink -> {
+                    MarkerItemLinkVo itemLinkCopy = new MarkerItemLinkVo();
+                    BeanUtils.copy(itemLink, itemLinkCopy);
+                    return itemLinkCopy;
+                })
+                .collect(Collectors.toList());
+        markerCopy.setItemList(itemListCopy);
+        return markerCopy;
     }
 
     @JSONField(serialize = false)

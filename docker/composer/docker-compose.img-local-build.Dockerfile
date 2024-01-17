@@ -1,11 +1,18 @@
-FROM php:7.4-apache
+FROM php:7.4-apache-bullseye
 
 WORKDIR /var/www/html
-ADD docker/config/apt.list /etc/apt/sources.list
+ADD docker/config/apt/debian-bullseye.list /etc/apt/sources.list
 ADD docker/config/img-local-uploader .
 
-RUN apt update && \
-    apt install -y \
+RUN mkdir -p ./cache && \
+    mkdir -p ./saved_img && \
+    chown -R www-data:www-data . && \
+    mkdir -p /data && \
+    mv -f ./startup.sh /data/startup.sh && \
+    chown -R www-data:www-data /data && \
+    chmod +x /data/startup.sh && \
+    apt-get update && \
+    apt-get install -y \
         libwebp-dev \
         libjpeg-dev \
         libpng-dev \
@@ -21,3 +28,5 @@ RUN apt update && \
 
 VOLUME ["/var/www/html/cache", "/var/www/html/saved_img"]
 EXPOSE 80
+
+ENTRYPOINT ["bash", "/data/startup.sh"]

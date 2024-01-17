@@ -1,4 +1,4 @@
-package site.yuanshen.data.helper;
+package site.yuanshen.data.helper.marker.linkage;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ByteUtil;

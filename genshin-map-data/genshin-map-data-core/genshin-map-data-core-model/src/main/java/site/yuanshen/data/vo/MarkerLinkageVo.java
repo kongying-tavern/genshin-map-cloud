@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.With;
 import site.yuanshen.data.vo.adapter.marker.linkage.PathEdgeVo;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -45,7 +46,7 @@ public class MarkerLinkageVo {
      * 更新时间
      */
     @Schema(title = "更新时间")
-    private LocalDateTime updateTime;
+    private Timestamp updateTime;
 
     /**
      * 组ID

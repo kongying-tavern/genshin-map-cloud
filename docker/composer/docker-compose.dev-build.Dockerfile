@@ -10,12 +10,14 @@ ADD genshin-map-generator genshin-map-generator
 ADD genshin-map-ability genshin-map-ability
 ADD genshin-map-api genshin-map-api
 ADD pom.xml pom.xml
-ADD docker/config docker/config
+ADD docker/config/apt/debian-bookworm.list /etc/apt/sources.list
+ADD docker/config/maven docker/config
 ADD docker/cache docker/cache
 
 RUN --mount=type=cache,target=/root/.m2,rw \
     cp -f ./docker/cache/application-datasource.yml ./genshin-map-config/src/main/resources-dev/application-datasource-dev.yml && \
     cp -f ./docker/cache/application-nacos.yml ./genshin-map-config/src/main/resources-dev/application-nacos-dev.yml && \
+    cp -f ./docker/cache/application-image.yml ./genshin-map-config/src/main/resources-dev/application-image-dev.yml && \
     cp -f ./docker/cache/application-nacos.yml ./genshin-map-ability/genshin-map-ability-gateway/src/main/resources/application.yml && \
     mvn clean package -s ./docker/config/maven.xml -P dev -f pom.xml && \
     mkdir -p ./dist && \
@@ -27,17 +29,17 @@ FROM openjdk:11 AS api
 
 WORKDIR /data
 COPY --from=builder /data/dist .
-ADD docker/config/apt.list /etc/apt/sources.list
-ADD docker/config/startup.sh startup.sh
-ADD docker/config/api-gateway.service /etc/systemd/system/genshin-map-ability-gateway.service
-ADD docker/config/api-core.service /etc/systemd/system/genshin-map-api-core.service
+ADD docker/config/apt/debian-bookworm.list /etc/apt/sources.list
+ADD docker/config/api/startup.sh startup.sh
+ADD docker/config/api/api-gateway.service /etc/systemd/system/genshin-map-ability-gateway.service
+ADD docker/config/api/api-core.service /etc/systemd/system/genshin-map-api-core.service
 
 RUN ln -s /usr/local/openjdk-11/bin/java /bin/java && \
     chmod +x /data/startup.sh && \
     chmod +x /etc/systemd/system/genshin-map-ability-gateway.service && \
     chmod +x /etc/systemd/system/genshin-map-api-core.service && \
-    apt update && \
-    apt install -y systemctl
+    apt-get update && \
+    apt-get install -y systemctl
 
 VOLUME ["/data/logs"]
 EXPOSE 8101
