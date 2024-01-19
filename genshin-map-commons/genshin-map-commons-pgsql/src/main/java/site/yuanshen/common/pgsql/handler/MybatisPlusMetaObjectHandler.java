@@ -7,7 +7,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Objects;
 
 /**
@@ -22,7 +24,7 @@ public class MybatisPlusMetaObjectHandler implements MetaObjectHandler {
 
     @Override
     public void insertFill(MetaObject metaObject) {
-        LocalDateTime date = LocalDateTime.now();
+        Timestamp date = new Timestamp((new Date()).getTime());
         log.debug("auto insert fill: createTime, updateTime : " + date);
         this.setFieldValByName("createTime", date, metaObject);
         this.setFieldValByName("updateTime", date, metaObject);
@@ -37,7 +39,7 @@ public class MybatisPlusMetaObjectHandler implements MetaObjectHandler {
 
     @Override
     public void updateFill(MetaObject metaObject) {
-        LocalDateTime date = LocalDateTime.now();
+        Timestamp date = new Timestamp((new Date()).getTime());
         log.debug("auto insert fill: createTime, updateTime : " + date);
         this.setFieldValByName("updateTime", date, metaObject);
         ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
