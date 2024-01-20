@@ -5,6 +5,9 @@
     <select id="selectPageItem"
             resultType="site.yuanshen.data.entity.Item"
             parameterType="site.yuanshen.data.dto.ItemSearchDto">
+        <bind
+            name="itemSearchName"
+            value="itemSearchDto.name != null and itemSearchDto.name != '' ? '%' + itemSearchDto.name + '%' : ''" />
         select * from item where id in
         (select distinct i.id
         from item i
@@ -33,6 +36,9 @@
                 <foreach collection="itemSearchDto.hiddenFlagList" open="(" separator="," close=")" item="hiddenFlag">
                     #{hiddenFlag}
                 </foreach>
+            </if>
+            <if test="itemSearchName != null and itemSearchName != ''">
+                and i.name LIKE #{itemSearchName}
             </if>
         </where>
         order by i.id)

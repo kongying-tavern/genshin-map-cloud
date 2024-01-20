@@ -34,6 +34,12 @@ public class ItemSearchVo {
     private List<Long> areaIdList;
 
     /**
+     * 图标名
+     */
+    @Schema(title = "物品名")
+    private String name;
+
+    /**
      * 当前页，从0开始
      */
     @Schema(title = "当前页，从0开始")
