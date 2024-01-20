@@ -53,10 +53,6 @@ public class IconSearchDto {
     @Schema(title = "图标名")
     private String name;
 
-    public String getName() {
-        return StrUtil.isBlank(this.name) ? "" : "%" + name + "%";
-    }
-
     /**
      * 当前页，从0开始
      */
