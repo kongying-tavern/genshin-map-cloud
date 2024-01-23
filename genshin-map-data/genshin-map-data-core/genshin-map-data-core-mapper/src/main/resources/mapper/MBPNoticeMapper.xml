@@ -11,7 +11,7 @@
         <result column="version" property="version"/>
         <result column="updater_id" property="updaterId"/>
         <result column="update_time" property="updateTime"/>
-        <result column="channel" property="channel"/>
+        <result column="channel" property="channel" typeHandler="site.yuanshen.handler.MBPJsonArrayTypeHandler"/>
         <result column="title" property="title"/>
         <result column="content" property="content"/>
         <result column="valid_time_start" property="validTimeStart"/>
