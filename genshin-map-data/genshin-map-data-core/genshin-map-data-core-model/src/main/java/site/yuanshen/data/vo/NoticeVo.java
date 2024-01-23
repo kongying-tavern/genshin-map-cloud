@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.With;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
+import java.util.List;
 
 /**
 * 消息通知前端封装
@@ -62,7 +62,7 @@ public class NoticeVo {
      * 频道
      */
     @Schema(title = "频道")
-    private String channel;
+    private List<String> channel;
 
     /**
      * 标题

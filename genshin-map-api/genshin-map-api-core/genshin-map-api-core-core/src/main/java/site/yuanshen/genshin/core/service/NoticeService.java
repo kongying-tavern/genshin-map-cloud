@@ -22,6 +22,7 @@ import site.yuanshen.data.vo.NoticeVo;
 import site.yuanshen.data.vo.helper.PageListVo;
 
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -33,10 +34,17 @@ public class NoticeService {
     @Cacheable(value = "listNotice")
     public PageListVo<NoticeVo> listNotice(NoticeSearchDto noticeSearchDto) {
         final Boolean isValid = noticeSearchDto.getGetValid();
+
+        String channelArrStr = "";
+        if(CollUtil.isNotEmpty(noticeSearchDto.getChannels())) {
+            final List<String> channels = noticeSearchDto.getChannels();
+            final List<String> channelArr = channels.stream().map(channel -> "'" + channel + "'").collect(Collectors.toList());
+            channelArrStr = StrUtil.join(",", channelArr);
+        }
         final Page<Notice> result = noticeMapper.selectPage(
-            noticeSearchDto.getPageEntity(),
+            noticeSearchDto.getPageEntity().setOptimizeCountSql(false),
             Wrappers.<Notice>lambdaQuery()
-                .in(CollUtil.isNotEmpty(noticeSearchDto.getChannels()), Notice::getChannel, noticeSearchDto.getChannels())
+                .apply(String.format("(channel::jsonb) ??| array[%s]", channelArrStr))
                 .like(StrUtil.isNotBlank(noticeSearchDto.getTitle()), Notice::getTitle, noticeSearchDto.getTitle())
                 .nested(isValid != null, cwValid -> {
                     final Timestamp ts = TimeUtils.getCurrentTimestamp();
@@ -64,7 +72,6 @@ public class NoticeService {
                                     cwSE
                                             .isNotNull(Notice::getValidTimeEnd)
                                             .lt(Notice::getValidTimeEnd, ts);
-
                                 });
                     }
                 })
@@ -106,7 +113,7 @@ public class NoticeService {
         }
     )
     public Long createNotice(NoticeDto noticeDto) {
-        if(StrUtil.isBlank(noticeDto.getChannel())) {
+        if(CollUtil.isEmpty(noticeDto.getChannel())) {
             throw new GenshinApiException("公告频道不能为空");
         }
 
@@ -122,7 +129,7 @@ public class NoticeService {
         }
     )
     public Boolean updateNotice(NoticeDto noticeDto) {
-        if(StrUtil.isBlank(noticeDto.getChannel())) {
+        if(CollUtil.isEmpty(noticeDto.getChannel())) {
             throw new GenshinApiException("公告频道不能为空");
         }
 
