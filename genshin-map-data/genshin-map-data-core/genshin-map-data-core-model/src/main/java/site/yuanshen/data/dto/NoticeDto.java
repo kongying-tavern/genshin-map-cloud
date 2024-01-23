@@ -1,14 +1,17 @@
 package site.yuanshen.data.dto;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
 import com.alibaba.fastjson2.annotation.JSONField;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.With;
 import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.entity.Notice;
 import site.yuanshen.data.vo.NoticeVo;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
+import java.util.List;
 
 
 /**
@@ -46,7 +49,7 @@ public class NoticeDto {
     /**
      * 频道
      */
-    private String channel;
+    private List<String> channel;
 
     /**
      * 标题

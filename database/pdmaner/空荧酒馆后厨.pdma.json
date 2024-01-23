@@ -2,9 +2,9 @@
   "name": "空荧酒馆后厨",
   "describe": "空荧酒馆后厨",
   "avatar": "data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAACXBIWXMAAAsTAAALEwEAmpwYAAAJ82lUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNi4wLWMwMDIgNzkuMTY0MzUyLCAyMDIwLzAxLzMwLTE1OjUwOjM4ICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIgeG1sbnM6cGhvdG9zaG9wPSJodHRwOi8vbnMuYWRvYmUuY29tL3Bob3Rvc2hvcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RFdnQ9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZUV2ZW50IyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIDIxLjEgKFdpbmRvd3MpIiB4bXA6Q3JlYXRlRGF0ZT0iMjAyMi0xMS0yNFQxNDowMzo0OSswODowMCIgeG1wOk1vZGlmeURhdGU9IjIwMjItMTEtMjRUMTQ6MjM6NTkrMDg6MDAiIHhtcDpNZXRhZGF0YURhdGU9IjIwMjItMTEtMjRUMTQ6MjM6NTkrMDg6MDAiIGRjOmZvcm1hdD0iaW1hZ2UvcG5nIiBwaG90b3Nob3A6Q29sb3JNb2RlPSIzIiBwaG90b3Nob3A6SUNDUHJvZmlsZT0ic1JHQiBJRUM2MTk2Ni0yLjEiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6ZGJmZWY1NDUtOGMxMS0xMDQ4LTgxYjMtM2NiY2QyNmE4YTE0IiB4bXBNTTpEb2N1bWVudElEPSJhZG9iZTpkb2NpZDpwaG90b3Nob3A6NGQyMjliMDQtZjYxZS05ZDQxLTk3MmEtYWUxMWM3ZTQ2YjZjIiB4bXBNTTpPcmlnaW5hbERvY3VtZW50SUQ9InhtcC5kaWQ6ZDg5Y2E1ZTgtNTg4OC1mYTRiLWEwOTUtZjNhNmJkY2FhYTc4Ij4gPHhtcE1NOkhpc3Rvcnk+IDxyZGY6U2VxPiA8cmRmOmxpIHN0RXZ0OmFjdGlvbj0iY3JlYXRlZCIgc3RFdnQ6aW5zdGFuY2VJRD0ieG1wLmlpZDpkODljYTVlOC01ODg4LWZhNGItYTA5NS1mM2E2YmRjYWFhNzgiIHN0RXZ0OndoZW49IjIwMjItMTEtMjRUMTQ6MDM6NDkrMDg6MDAiIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFkb2JlIFBob3Rvc2hvcCAyMS4xIChXaW5kb3dzKSIvPiA8cmRmOmxpIHN0RXZ0OmFjdGlvbj0iY29udmVydGVkIiBzdEV2dDpwYXJhbWV0ZXJzPSJmcm9tIGltYWdlL3BuZyB0byBhcHBsaWNhdGlvbi92bmQuYWRvYmUucGhvdG9zaG9wIi8+IDxyZGY6bGkgc3RFdnQ6YWN0aW9uPSJzYXZlZCIgc3RFdnQ6aW5zdGFuY2VJRD0ieG1wLmlpZDo2ZmFhNGQyMi03ZWExLWFkNDAtOWU1NS0xMTcyMDY3ZWJkZjEiIHN0RXZ0OndoZW49IjIwMjItMTEtMjRUMTQ6MjA6NDIrMDg6MDAiIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFkb2JlIFBob3Rvc2hvcCAyMS4xIChXaW5kb3dzKSIgc3RFdnQ6Y2hhbmdlZD0iLyIvPiA8cmRmOmxpIHN0RXZ0OmFjdGlvbj0ic2F2ZWQiIHN0RXZ0Omluc3RhbmNlSUQ9InhtcC5paWQ6M2NiOTdmMzUtNTYwYi0wZjQ1LTljZjgtMDY1ODUwMzhlMzg5IiBzdEV2dDp3aGVuPSIyMDIyLTExLTI0VDE0OjIzOjU5KzA4OjAwIiBzdEV2dDpzb2Z0d2FyZUFnZW50PSJBZG9iZSBQaG90b3Nob3AgMjEuMSAoV2luZG93cykiIHN0RXZ0OmNoYW5nZWQ9Ii8iLz4gPHJkZjpsaSBzdEV2dDphY3Rpb249ImNvbnZlcnRlZCIgc3RFdnQ6cGFyYW1ldGVycz0iZnJvbSBhcHBsaWNhdGlvbi92bmQuYWRvYmUucGhvdG9zaG9wIHRvIGltYWdlL3BuZyIvPiA8cmRmOmxpIHN0RXZ0OmFjdGlvbj0iZGVyaXZlZCIgc3RFdnQ6cGFyYW1ldGVycz0iY29udmVydGVkIGZyb20gYXBwbGljYXRpb24vdm5kLmFkb2JlLnBob3Rvc2hvcCB0byBpbWFnZS9wbmciLz4gPHJkZjpsaSBzdEV2dDphY3Rpb249InNhdmVkIiBzdEV2dDppbnN0YW5jZUlEPSJ4bXAuaWlkOmRiZmVmNTQ1LThjMTEtMTA0OC04MWIzLTNjYmNkMjZhOGExNCIgc3RFdnQ6d2hlbj0iMjAyMi0xMS0yNFQxNDoyMzo1OSswODowMCIgc3RFdnQ6c29mdHdhcmVBZ2VudD0iQWRvYmUgUGhvdG9zaG9wIDIxLjEgKFdpbmRvd3MpIiBzdEV2dDpjaGFuZ2VkPSIvIi8+IDwvcmRmOlNlcT4gPC94bXBNTTpIaXN0b3J5PiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDozY2I5N2YzNS01NjBiLTBmNDUtOWNmOC0wNjU4NTAzOGUzODkiIHN0UmVmOmRvY3VtZW50SUQ9ImFkb2JlOmRvY2lkOnBob3Rvc2hvcDpiYjAwZmQwZi1jYTBmLTczNDEtYjY2Yy02OWJlMDViZWM4OWEiIHN0UmVmOm9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDpkODljYTVlOC01ODg4LWZhNGItYTA5NS1mM2E2YmRjYWFhNzgiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz7QjFA3AAA1a0lEQVR4nM2dd3xc1Zn3v7dPn5E00ox6b+4NG4xtDKamsQmBAJvy5g2BhBI2ZbNvstkQlk14NyGbEEJCAiFLyYYEAqEbg00xJca94Crbkmz1PkVT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",
-  "version": "4.6.3",
+  "version": "4.8.1",
   "createdTime": "2022-4-22 02:18:22",
-  "updatedTime": "2023-12-3 17:11:42",
+  "updatedTime": "2024-1-21 06:18:32",
   "dbConns": [],
   "profile": {
     "default": {
@@ -30,7 +30,8 @@
             "fontColor": "#d37a11",
             "tags": []
           },
-          "id": "EFC4E9D4-DB07-4438-B463-245D5653D140"
+          "id": "EFC4E9D4-DB07-4438-B463-245D5653D140",
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "id",
@@ -51,7 +52,8 @@
             "fontColor": "#d37a11",
             "tags": []
           },
-          "id": "390CA2FC-DFB5-4BDF-8A20-0F3FB5B19239"
+          "id": "390CA2FC-DFB5-4BDF-8A20-0F3FB5B19239",
+          "baseType": "79CDCB0A-87D7-4E4F-AB10-6CCD57E8DD9B"
         },
         {
           "defKey": "creator_id",
@@ -72,7 +74,8 @@
             "fontColor": "#d37a11",
             "tags": []
           },
-          "id": "EF6B4CAB-7779-42F1-9106-4D86D05BC544"
+          "id": "EF6B4CAB-7779-42F1-9106-4D86D05BC544",
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "updater_id",
@@ -93,7 +96,8 @@
             "fontColor": "#d37a11",
             "tags": []
           },
-          "id": "2B434A20-DFCA-44A0-ABEA-BBA7C9CD521B"
+          "id": "2B434A20-DFCA-44A0-ABEA-BBA7C9CD521B",
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "create_time",
@@ -114,7 +118,8 @@
             "fontColor": "#d37a11",
             "tags": []
           },
-          "id": "0FCD9C98-F4FE-4833-8A92-DC5ADD0F7427"
+          "id": "0FCD9C98-F4FE-4833-8A92-DC5ADD0F7427",
+          "baseType": "89D69E81-EA34-42EE-9FA2-93B8BD27E098"
         },
         {
           "defKey": "update_time",
@@ -135,7 +140,8 @@
             "fontColor": "#d37a11",
             "tags": []
           },
-          "id": "AA3CB4CA-38C5-4619-BBC0-AFFF7E35C817"
+          "id": "AA3CB4CA-38C5-4619-BBC0-AFFF7E35C817",
+          "baseType": "89D69E81-EA34-42EE-9FA2-93B8BD27E098"
         },
         {
           "defKey": "del_flag",
@@ -156,7 +162,8 @@
             "fontColor": "#d37a11",
             "tags": []
           },
-          "id": "E499A815-BF5C-4136-BD77-B0F88DFAFC61"
+          "id": "E499A815-BF5C-4136-BD77-B0F88DFAFC61",
+          "baseType": "EAD52604-078D-41C0-BB9E-5284BB11674D"
         }
       ],
       "entityInitProperties": {}
@@ -285,7 +292,7 @@
         "createIndex": "{{~ it.entity.indexes:index}}\nCREATE {{? index.unique}}UNIQUE {{?}}INDEX {{=index.defKey}} ON {{=it.entity.defKey}}({{ fieldsKeys = index.fields.map(function(field){return field.fieldDefKey}) ; }}{{=it.func.join(...fieldsKeys,',')}});\n{{~}}",
         "deleteIndex": "{{~ it.entity.indexes:index}}\nDROP INDEX {{=index.defKey}} CASCADE;\n{{~}}",
         "message": "{{\n    let createEntities = it.changes.filter(function(row){return (row.opt==='add'&&row['type']==='entity');});\n    let dropEntities   = it.changes.filter(function(row){return (row.opt==='delete'&&row['type']==='entity');});\n    let modifyEntities = it.changes.filter(function(row){return (row.opt==='update'&&row['type']==='entity');});\n    \n    function baseChanged(beforeAfter){\n        if(beforeAfter == null){\n            return '';\n        }\n        let ret = [];\n        let before = beforeAfter.before || {\"defKey\":\"\",\"defName\":\"\",\"comment\":\"\"};\n        let after = beforeAfter.after || {\"defKey\":\"\",\"defName\":\"\",\"comment\":\"\"};\n        if(before.defKey !== after.defKey){\n            ret.push('代码:'+(before.defKey||'NULL')+'->'+(after.defKey||'NULL'));\n        }\n        if(before.defName !== after.defName){\n            ret.push('显示名称:'+(before.defName||'NULL')+'->'+(after.defName||'NULL'));\n        }\n        if(before.comment !== after.comment){\n            ret.push('说明:'+(before.comment||'NULL')+'->'+(after.comment||'NULL'));\n        }\n        if(ret.length>0){\n            return '    基本信息:\\n\\t'+ret.join('\\n\\t');\n        }\n        return '';\n    };\n    \n    function buildAddedDesc(entity){\n        let ret = [];\n        let fieldAdded = entity.data.fieldAdded||[];\n        \n        for (let field of fieldAdded) { \n            let row = [];\n            row.push(field.defKey+'['+field.defName+']');\n            ret.push(row.join(\"\"))\n        }\n        return ret;\n    };\n    \n    function buildRemovedDesc(entity){\n        let ret = [];\n        let fieldRemoved = entity.data.fieldRemoved||[];\n        \n        for (let field of fieldRemoved) { \n            let row = [];\n            row.push(field.defKey+'['+field.defName+']');\n            ret.push(row.join(\"\"))\n        }\n        return ret;\n    };\n    \n    function buildModifiedDesc(entity){\n        let ret = [];\n        let fieldModified = entity.data.fieldModified||[];\n        \n        for (let field1 of fieldModified) { \n            let row = [];\n            let field = field1.before;\n            row.push(field.defKey+'['+field.defName+']');\n            ret.push(row.join(\"\"))\n        }\n        return ret;\n    };\n}}\n\n\n{{? createEntities && createEntities.length > 0}}\n/* --------------- 创建表 --------------- */\n{{~ createEntities:entity}}\n{{=entity.data.defKey}}[{{=entity.data.defName}}]\n{{~}}\n{{?}}\n\n\n{{? dropEntities && dropEntities.length > 0}}\n/* --------------- 删除表 --------------- */\n{{~ dropEntities:entity}}\n{{=entity.data.defKey}}[{{=entity.data.defName}}]\n{{~}}\n{{?}}\n\n{{? modifyEntities && modifyEntities.length > 0}}\n/* --------------- 修改表 --------------- */\n{{~ modifyEntities:entity}}\n{{=entity.data.baseInfo.defKey}}[{{=entity.data.baseInfo.defName}}]{{let changeText=baseChanged(entity.data.baseChanged);}}\n{{=baseChanged(entity.data.baseChanged)}}\n    {{? entity.data.fieldModified && entity.data.fieldModified.length > 0}}\n    修改字段：\n    {{='\\t'}}{{=buildModifiedDesc(entity).join('\\n\\t')}}{{?}}{{\n        /*计算是否调整了属性*/\n        let propAdded = entity.data.propAdded || [];\n        let propRemoved = entity.data.propRemoved || [];\n        let propModified = entity.data.propModified || [];\n        let changed = propAdded.length>0 || propRemoved.length>0 || propModified.length>0;\n        /*计算关联是否调整*/\n        let refEntityAdd = entity.data.refEntityAdd || [];\n        let refEntityRemoved = entity.data.refEntityRemoved || [];\n        let relaArray = [];\n        for (let rela of refEntityAdd) {\n            relaArray.push('建立关联:'+rela.defKey+'['+rela.defName+']');\n        }\n        for (let rela of refEntityRemoved) {\n            relaArray.push('解除关联:'+rela.defKey+'['+rela.defName+']');\n        }\n        /*索引是否修改过*/\n        let indexChanged = entity.data.indexChanged;\n    }}{{=indexChanged?'\\n\\t更改了索引':''}}{{=changed?'\\n\\t更改了属性':''}}{{=relaArray.length>0?('\\n\\t'+relaArray.join('\\n\\t')):''}}\n{{? entity.data.fieldAdded && entity.data.fieldAdded.length > 0}}\n    添加字段：\n{{='\\t'}}{{=buildAddedDesc(entity).join('\\n\\t')}}\n{{?}}{{? entity.data.fieldRemoved && entity.data.fieldRemoved.length > 0}}\n    删除字段：\n{{='\\t'}}{{=buildRemovedDesc(entity).join('\\n\\t')}}\n{{?}}\n{{~}}\n{{?}}",
-        "update": "{{\n    let createEntities = it.changes.filter(function(row){return (row.opt==='add'&&row['type']==='entity');});\n    let dropEntities   = it.changes.filter(function(row){return (row.opt==='delete'&&row['type']==='entity');});\n    let modifyEntities = it.changes.filter(function(row){return (row.opt==='update'&&row['type']==='entity');});\n    \n    function baseChangedDDL(beforeAfter){\n        if(beforeAfter == null){\n            return '';\n        }\n        let ret = [];\n        let before = beforeAfter.before || {\"defKey\":\"\",\"defName\":\"\",\"comment\":\"\"};\n        let after = beforeAfter.after || {\"defKey\":\"\",\"defName\":\"\",\"comment\":\"\"};\n        if(before.defKey !== after.defKey){\n            ret.push(`ALTER TABLE ${before.defKey} RENAME TO ${after.defKey}`);\n        }\n        let commentText = '';\n        let commentChanged = false;\n        if(before.defName !== after.defName){\n            commentText = after.defName;\n            commentChanged = true;\n        }\n        if(before.comment !== after.comment){\n            commentChanged = true;\n            if(commentText){\n                commentText = (commentText+ ';'+after.comment)\n            }else{\n                commentText = after.comment\n            }\n        }\n        if(commentChanged){\n            let myText = `COMMENT ON TABLE ${after.defKey} IS '${commentText}'`;\n            ret.push(myText);\n        }\n        let baseText = '-- 基本信息:\\n';\n        return baseText+ret.join(';\\n')+';';\n    };\n    \n    function buildAddedDDL(entity){\n        let ret = [];\n        let fieldAdded = entity.data.fieldAdded||[];\n        if(fieldAdded.length == 0){\n            return '';\n        }\n        \n        let firstDDL = `ALTER TABLE ${entity.data.baseInfo.defKey}`;\n        for (let field of fieldAdded) { \n            let ddlItem = `ADD COLUMN ${field.defKey} ${field.dbType}`;\n            /*处理数据类型长度*/\n            if(field.len>0){\n                ddlItem += ('('+field.len);\n                if(parseInt(field.scale)>0){\n                    ddlItem += (','+field.scale);\n                }\n                ddlItem += ')';\n            }\n            if(field.notNull){\n                ddlItem += ' NOT NULL';\n            }            \n            let defaultValue = field.defaultValue;\n            defaultValue = (defaultValue==null)?\"\":(\"\"+defaultValue);\n            if(defaultValue.length>0){\n                ddlItem += (' DEFAULT ' + defaultValue);\n            }\n\n            ret.push(`${firstDDL} ${ddlItem}`);\n            \n            /*处理字段注释*/\n            let fieldComments = [];\n            if(field.defName != null &&field.defName.length>0){\n                fieldComments.push(field.defName);\n            }\n            if(field.comment != null &&field.comment.length>0){\n                fieldComments.push(field.comment);\n            }\n            let commentText = fieldComments.join(';');\n            if(commentText != null && commentText.length > 0){\n                let commentDDL = `COMMENT ON COLUMN ${entity.data.baseInfo.defKey}.${field.defKey} IS '${commentText}'`;\n                 ret.push(commentDDL);\n            }\n        }\n        return '\\n'+ret.join(';\\n');\n    };\n    \n    function buildRemovedDDL(entity){\n        let ret = [];\n        let fieldRemoved = entity.data.fieldRemoved||[];\n        if(fieldRemoved.length == 0){\n            return '';\n        }\n        \n        let firstDDL = `ALTER TABLE ${entity.data.baseInfo.defKey}`;\n        for (let field of fieldRemoved) { \n            ret.push(`${firstDDL} DROP COLUMN ${field.defKey}`);\n        }\n        return '\\n'+ret.join(';\\n');\n    };\n    \n    function buildModifiedDDL(entity){\n        let ret = [];\n        let fieldModified = entity.data.fieldModified||[];\n        \n        let firstDDL = `ALTER TABLE ${entity.data.baseInfo.defKey}`;\n        for (let field of fieldModified) { \n            let before = field.before || {};\n            let after = field.after || {};\n            if(before.defKey !== after.defKey){\n                let renameText = `ALTER TABLE ${entity.data.baseInfo.defKey} RENAME COLUMN ${before.defKey} TO ${after.defKey};`;\n                ret.push(renameText);\n            }\n            /*如果没有变化，则不生成变更语句*/\n            if(before.dbType === after.dbType \n            && before['len'] === after['len'] \n            && before.scale === after.scale\n            && before.primaryKey === after.primaryKey\n            && before.notNull === after.notNull\n            && before.autoIncrement === after.autoIncrement\n            && before.defaultValue === after.defaultValue){\n                continue;\n            }\n            if(before.dbType !== after.dbType || before.len !== after.len || before.scale !== after.scale){\n                let dbTypeDDL = `ALTER TABLE ${entity.data.baseInfo.defKey} ALTER COLUMN ${after.defKey} TYPE ${before.dbType}`;\n                if(after.len>0){\n                    dbTypeDDL += ('('+after.len);\n                    if(parseInt(after.scale)>0){\n                        dbTypeDDL += (','+after.scale);\n                    }\n                    dbTypeDDL += ')';\n                }\n                ret.push(dbTypeDDL+';');\n            }\n            \n            if(before.defaultValue !== after.defaultValue){\n                let defaultDDL = '';\n                let defaultValue = after.defaultValue;\n                defaultValue = (defaultValue==null)?\"NULL\":(\"\"+defaultValue);\n                if(defaultValue.length>0){\n                    defaultDDL += ('SET DEFAULT ' + defaultValue);\n                }\n                let defaultTpl = `ALTER TABLE ${entity.data.baseInfo.defKey} ALTER COLUMN ${defaultDDL};`;\n                ret.push(defaultTpl);\n            }\n            \n            if(before.notNull !== after.notNull){\n                let notNullDDL= 'SET NULL';\n                if(after.notNull){\n                    let notNullDDL= 'SET NOT NULL';\n                }\n                let notNullTpl = `ALTER TABLE ${entity.data.baseInfo.defKey} ALTER COLUMN ${notNullDDL};`;\n                ret.push(notNullTpl);\n            }\n        }\n        return ret;\n    };\n}}\n{{? createEntities && createEntities.length > 0}}\n/* --------------- 创建表 --------------- */\n{{~ createEntities:entity}}\n{{=it.func.createDDL(entity.data,entity['type'])}}\n{{~}}\n{{?}}\n\n\n{{? dropEntities && dropEntities.length > 0}}\n/* --------------- 删除表 --------------- */\n{{~ dropEntities:entity}}\n{{=it.func.dropDDL(entity.data,entity['type'])}}\n{{~}}\n{{?}}\n\n\n{{? modifyEntities && modifyEntities.length > 0}}\n{{~ modifyEntities:entity}}\n/* --------------- 修改表 --------------- */\n-- 修改表：{{=entity.data.baseInfo.defKey}}[{{=entity.data.baseInfo.defName}}]\n{{=baseChangedDDL(entity.data.baseChanged)}}\n{{? entity.data.fieldModified && entity.data.fieldModified.length > 0}}\n-- 修改字段：\n{{=buildModifiedDDL(entity).join('\\n')}}\n{{?}}{{\n/*索引是否修改过*/\nlet indexChanged = entity.data.indexChanged;\n}}\n{{? indexChanged }}\n-- 索引重建\n{{=it.func.indexRebuildDDL(entity.data.baseInfo,entity.data.newIndexes,entity.data.fullFields,entity['type'])}}\n{{?}}\n\n{{? entity.data.fieldAdded && entity.data.fieldAdded.length > 0}}\n-- 添加字段：\n{{=buildAddedDDL(entity)}};\n{{?}}\n\n{{? entity.data.fieldRemoved && entity.data.fieldRemoved.length > 0}}\n-- 删除字段：\n{{=buildRemovedDDL(entity)}};\n{{?}}\n{{~}}\n{{?}}"
+        "update": "{{\n    let createEntities = it.changes.filter(function(row){return (row.opt==='add'&&row['type']==='entity');});\n    let dropEntities   = it.changes.filter(function(row){return (row.opt==='delete'&&row['type']==='entity');});\n    let modifyEntities = it.changes.filter(function(row){return (row.opt==='update'&&row['type']==='entity');});\n    \n    function baseChangedDDL(beforeAfter){\n        if(beforeAfter == null){\n            return '';\n        }\n        let ret = [];\n        let before = beforeAfter.before || {\"defKey\":\"\",\"defName\":\"\",\"comment\":\"\"};\n        let after = beforeAfter.after || {\"defKey\":\"\",\"defName\":\"\",\"comment\":\"\"};\n        if(before.defKey !== after.defKey){\n            ret.push(`ALTER TABLE ${before.defKey} RENAME TO ${after.defKey}`);\n        }\n        let commentText = '';\n        let commentChanged = false;\n        if(before.defName !== after.defName){\n            commentText = after.defName;\n            commentChanged = true;\n        }\n        if(before.comment !== after.comment){\n            commentChanged = true;\n            if(commentText){\n                commentText = (commentText+ ';'+after.comment)\n            }else{\n                commentText = after.comment\n            }\n        }\n        if(commentChanged){\n            let myText = `COMMENT ON TABLE ${after.defKey} IS '${commentText}'`;\n            ret.push(myText);\n        }\n        let baseText = '-- 基本信息:\\n';\n        return baseText+ret.join(';\\n')+';';\n    };\n    \n    function buildAddedDDL(entity){\n        let ret = [];\n        let fieldAdded = entity.data.fieldAdded||[];\n        if(fieldAdded.length == 0){\n            return '';\n        }\n        \n        let firstDDL = `ALTER TABLE ${entity.data.baseInfo.defKey}`;\n        for (let field of fieldAdded) { \n            let ddlItem = `ADD COLUMN ${field.defKey} ${field.dbType}`;\n            /*处理数据类型长度*/\n            if(field.len>0){\n                ddlItem += ('('+field.len);\n                if(parseInt(field.scale)>0){\n                    ddlItem += (','+field.scale);\n                }\n                ddlItem += ')';\n            }\n            if(field.notNull){\n                ddlItem += ' NOT NULL';\n            }            \n            let defaultValue = field.defaultValue;\n            defaultValue = (defaultValue==null)?\"\":(\"\"+defaultValue);\n            if(defaultValue.length>0){\n                ddlItem += (' DEFAULT ' + defaultValue);\n            }\n\n            ret.push(`${firstDDL} ${ddlItem}`);\n            \n            /*处理字段注释*/\n            let fieldComments = [];\n            if(field.defName != null &&field.defName.length>0){\n                fieldComments.push(field.defName);\n            }\n            if(field.comment != null &&field.comment.length>0){\n                fieldComments.push(field.comment);\n            }\n            let commentText = fieldComments.join(';');\n            if(commentText != null && commentText.length > 0){\n                let commentDDL = `COMMENT ON COLUMN ${entity.data.baseInfo.defKey}.${field.defKey} IS '${commentText}'`;\n                 ret.push(commentDDL);\n            }\n        }\n        return '\\n'+ret.join(';\\n');\n    };\n    \n    function buildRemovedDDL(entity){\n        let ret = [];\n        let fieldRemoved = entity.data.fieldRemoved||[];\n        if(fieldRemoved.length == 0){\n            return '';\n        }\n        \n        let firstDDL = `ALTER TABLE ${entity.data.baseInfo.defKey}`;\n        for (let field of fieldRemoved) { \n            ret.push(`${firstDDL} DROP COLUMN ${field.defKey}`);\n        }\n        return '\\n'+ret.join(';\\n');\n    };\n    \n    function buildModifiedDDL(entity){\n        let ret = [];\n        let fieldModified = entity.data.fieldModified||[];\n        \n        let firstDDL = `ALTER TABLE ${entity.data.baseInfo.defKey}`;\n        for (let field of fieldModified) { \n            let before = field.before || {};\n            let after = field.after || {};\n            if(before.defKey !== after.defKey){\n                let renameText = `ALTER TABLE ${entity.data.baseInfo.defKey} RENAME COLUMN ${before.defKey} TO ${after.defKey};`;\n                ret.push(renameText);\n            }\n            /*如果没有变化，则不生成变更语句*/\n            if(before.dbType === after.dbType \n            && before['len'] === after['len'] \n            && before.scale === after.scale\n            && before.primaryKey === after.primaryKey\n            && before.notNull === after.notNull\n            && before.autoIncrement === after.autoIncrement\n            && before.defaultValue === after.defaultValue){\n                continue;\n            }\n            \n            if(before.defaultValue !== after.defaultValue){\n                let defaultDDL = `${after.defKey} `;\n                let defaultValue = after.defaultValue;\n                defaultValue = (defaultValue==null)?\"NULL\":(\"\"+defaultValue);\n                if(defaultValue.length>0){\n                    defaultDDL += `SET DEFAULT ${defaultValue}`;\n                }\n                let defaultTpl = `ALTER TABLE ${entity.data.baseInfo.defKey} ALTER COLUMN ${defaultDDL};`;\n                ret.push(defaultTpl);\n            }\n            \n            if(before.dbType !== after.dbType || before.len !== after.len || before.scale !== after.scale){\n                let dbTypeDDL = `ALTER TABLE ${entity.data.baseInfo.defKey} ALTER COLUMN ${after.defKey} TYPE ${after.dbType}`;\n                if(after.len>0){\n                    dbTypeDDL += ('('+after.len);\n                    if(parseInt(after.scale)>0){\n                        dbTypeDDL += (','+after.scale);\n                    }\n                    dbTypeDDL += ')';\n                }\n                dbTypeDDL += ` USING ${after.defKey}::${after.dbType};`;\n                ret.push(dbTypeDDL);\n            }\n            \n            if(before.notNull !== after.notNull){\n                let notNullDDL= 'SET NULL';\n                if(after.notNull){\n                    let notNullDDL= 'SET NOT NULL';\n                }\n                let notNullTpl = `ALTER TABLE ${entity.data.baseInfo.defKey} ALTER COLUMN ${notNullDDL};`;\n                ret.push(notNullTpl);\n            }\n        }\n        return ret;\n    };\n}}\n{{? createEntities && createEntities.length > 0}}\n/* --------------- 创建表 --------------- */\n{{~ createEntities:entity}}\n{{=it.func.createDDL(entity.data,entity['type'])}}\n{{~}}\n{{?}}\n\n\n{{? dropEntities && dropEntities.length > 0}}\n/* --------------- 删除表 --------------- */\n{{~ dropEntities:entity}}\n{{=it.func.dropDDL(entity.data,entity['type'])}}\n{{~}}\n{{?}}\n\n\n{{? modifyEntities && modifyEntities.length > 0}}\n{{~ modifyEntities:entity}}\n/* --------------- 修改表 --------------- */\n-- 修改表：{{=entity.data.baseInfo.defKey}}[{{=entity.data.baseInfo.defName}}]\n{{=baseChangedDDL(entity.data.baseChanged)}}\n{{? entity.data.fieldModified && entity.data.fieldModified.length > 0}}\n-- 修改字段：\n{{=buildModifiedDDL(entity).join('\\n')}}\n{{?}}{{\n/*索引是否修改过*/\nlet indexChanged = entity.data.indexChanged;\n}}\n{{? indexChanged }}\n-- 索引重建\n{{=it.func.indexRebuildDDL(entity.data.baseInfo,entity.data.newIndexes,entity.data.fullFields,entity['type'])}}\n{{?}}\n\n{{? entity.data.fieldAdded && entity.data.fieldAdded.length > 0}}\n-- 添加字段：\n{{=buildAddedDDL(entity)}};\n{{?}}\n\n{{? entity.data.fieldRemoved && entity.data.fieldRemoved.length > 0}}\n-- 删除字段：\n{{=buildRemovedDDL(entity)}};\n{{?}}\n{{~}}\n{{?}}"
       },
       {
         "type": "dbDDL",
@@ -597,7 +604,6 @@
         "map keys terminated by ':'": "",
         "store as textfile;": ""
       },
-      "nameTemplate": "{defKey}[{defName}]",
       "headers": [
         {
           "refKey": "hideInGraph",
@@ -811,7 +817,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "id",
@@ -831,7 +838,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "79CDCB0A-87D7-4E4F-AB10-6CCD57E8DD9B"
         },
         {
           "defKey": "creator_id",
@@ -852,7 +860,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "updater_id",
@@ -873,7 +882,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "create_time",
@@ -894,7 +904,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "89D69E81-EA34-42EE-9FA2-93B8BD27E098"
         },
         {
           "defKey": "update_time",
@@ -915,7 +926,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "89D69E81-EA34-42EE-9FA2-93B8BD27E098"
         },
         {
           "defKey": "del_flag",
@@ -935,7 +947,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "EAD52604-078D-41C0-BB9E-5284BB11674D"
         },
         {
           "defKey": "marker_stamp",
@@ -952,7 +965,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "9092C4E0-1A54-4859-ABBB-5B62DBC27573",
-          "id": "8A83287D-6854-4CD2-95D8-3553608BAC00"
+          "id": "8A83287D-6854-4CD2-95D8-3553608BAC00",
+          "baseType": "FC9790A7-36B8-4A48-8F9A-BC1042BCFE64"
         },
         {
           "defKey": "marker_title",
@@ -969,7 +983,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "9092C4E0-1A54-4859-ABBB-5B62DBC27573",
-          "id": "A706B8E9-A5D8-42D1-8F61-A6B54FC906C6"
+          "id": "A706B8E9-A5D8-42D1-8F61-A6B54FC906C6",
+          "baseType": "FC9790A7-36B8-4A48-8F9A-BC1042BCFE64"
         },
         {
           "defKey": "position",
@@ -985,7 +1000,8 @@
           "hideInGraph": false,
           "refDict": "",
           "domain": "9092C4E0-1A54-4859-ABBB-5B62DBC27573",
-          "id": "4729C637-EE56-4642-ACC9-79BEBF691B2C"
+          "id": "4729C637-EE56-4642-ACC9-79BEBF691B2C",
+          "baseType": "FC9790A7-36B8-4A48-8F9A-BC1042BCFE64"
         },
         {
           "defKey": "content",
@@ -1001,7 +1017,8 @@
           "hideInGraph": false,
           "refDict": "",
           "domain": "3E948CEC-3070-472C-AF92-F3CA11EC9D15",
-          "id": "3A6BC4E3-D1DD-4EC8-B296-9213C2364F7E"
+          "id": "3A6BC4E3-D1DD-4EC8-B296-9213C2364F7E",
+          "baseType": "B17BDED3-085F-40E1-9019-3B79CF2BF075"
         },
         {
           "defKey": "picture",
@@ -1017,7 +1034,8 @@
           "hideInGraph": false,
           "refDict": "",
           "domain": "3E948CEC-3070-472C-AF92-F3CA11EC9D15",
-          "id": "C0C8B358-A504-4398-B948-BCA60EF20A9A"
+          "id": "C0C8B358-A504-4398-B948-BCA60EF20A9A",
+          "baseType": "B17BDED3-085F-40E1-9019-3B79CF2BF075"
         },
         {
           "defKey": "marker_creator_id",
@@ -1033,7 +1051,8 @@
           "hideInGraph": false,
           "refDict": "",
           "domain": "CE58D2F6-7F4B-4928-A0D1-9CD3BFF2D2B2",
-          "id": "B8E1CB26-1E2C-4442-A9B7-F1E71B31A9A4"
+          "id": "B8E1CB26-1E2C-4442-A9B7-F1E71B31A9A4",
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "picture_creator_id",
@@ -1049,7 +1068,8 @@
           "hideInGraph": false,
           "refDict": "",
           "domain": "CE58D2F6-7F4B-4928-A0D1-9CD3BFF2D2B2",
-          "id": "E2728237-8FD6-4A3D-893F-66F34295EC35"
+          "id": "E2728237-8FD6-4A3D-893F-66F34295EC35",
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "video_path",
@@ -1066,7 +1086,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "9092C4E0-1A54-4859-ABBB-5B62DBC27573",
-          "id": "E119F51F-D3F9-40F7-9D40-6196C922C992"
+          "id": "E119F51F-D3F9-40F7-9D40-6196C922C992",
+          "baseType": "FC9790A7-36B8-4A48-8F9A-BC1042BCFE64"
         },
         {
           "defKey": "refresh_time",
@@ -1083,7 +1104,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "CE58D2F6-7F4B-4928-A0D1-9CD3BFF2D2B2",
-          "id": "D7081888-4D5C-4651-B0A9-9EE7AAA9E441"
+          "id": "D7081888-4D5C-4651-B0A9-9EE7AAA9E441",
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "hidden_flag",
@@ -1100,7 +1122,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "6BC8F04B-6CFA-4995-98D3-318F5CDD774E",
-          "id": "7B50516A-BD17-45A4-9050-E4A4BEC8962C"
+          "id": "7B50516A-BD17-45A4-9050-E4A4BEC8962C",
+          "baseType": "1D764C4A-6F9F-421E-B11A-6F3E23B51811"
         },
         {
           "defKey": "extra",
@@ -1117,12 +1140,17 @@
           "refDict": "",
           "extProps": {},
           "domain": "F698B7AF-78D1-4C57-968A-4035DD5213C6",
-          "id": "89A07F58-1F10-4EFE-93B2-AF8C1EA2E31A"
+          "id": "89A07F58-1F10-4EFE-93B2-AF8C1EA2E31A",
+          "baseType": "72CAA11F-9DF2-4C28-B50F-8BE71ED17CED"
         }
       ],
       "correlations": [],
       "indexes": [],
-      "notes": {}
+      "notes": {},
+      "type": "P",
+      "sysProps": {
+        "nameTemplate": "{defKey}[{defName}]"
+      }
     },
     {
       "id": "DF39DB81-677E-4D1B-88C7-FFFB3583B4B8",
@@ -1143,7 +1171,6 @@
         "map keys terminated by ':'": "",
         "store as textfile;": ""
       },
-      "nameTemplate": "{defKey}[{defName}]",
       "headers": [
         {
           "refKey": "hideInGraph",
@@ -1357,7 +1384,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "id",
@@ -1377,7 +1405,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "79CDCB0A-87D7-4E4F-AB10-6CCD57E8DD9B"
         },
         {
           "defKey": "creator_id",
@@ -1398,7 +1427,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "updater_id",
@@ -1419,7 +1449,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "create_time",
@@ -1440,7 +1471,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "89D69E81-EA34-42EE-9FA2-93B8BD27E098"
         },
         {
           "defKey": "update_time",
@@ -1461,7 +1493,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "89D69E81-EA34-42EE-9FA2-93B8BD27E098"
         },
         {
           "defKey": "del_flag",
@@ -1481,7 +1514,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "EAD52604-078D-41C0-BB9E-5284BB11674D"
         },
         {
           "defKey": "punctuate_id",
@@ -1497,7 +1531,8 @@
           "hideInGraph": false,
           "domain": "CE58D2F6-7F4B-4928-A0D1-9CD3BFF2D2B2",
           "refDict": "",
-          "id": "1EBE1EDB-4FB5-45C8-9FD6-FFA7BCE2E3ED"
+          "id": "1EBE1EDB-4FB5-45C8-9FD6-FFA7BCE2E3ED",
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "original_marker_id",
@@ -1514,7 +1549,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "CE58D2F6-7F4B-4928-A0D1-9CD3BFF2D2B2",
-          "id": "8CD7EBCB-4C4A-49E6-B9E5-F3C35002955F"
+          "id": "8CD7EBCB-4C4A-49E6-B9E5-F3C35002955F",
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "marker_title",
@@ -1531,7 +1567,8 @@
           "domain": "9092C4E0-1A54-4859-ABBB-5B62DBC27573",
           "refDict": "",
           "extProps": {},
-          "id": "A012617E-7613-4B66-9F18-FFB8876722E3"
+          "id": "A012617E-7613-4B66-9F18-FFB8876722E3",
+          "baseType": "FC9790A7-36B8-4A48-8F9A-BC1042BCFE64"
         },
         {
           "defKey": "item_list",
@@ -1547,7 +1584,8 @@
           "hideInGraph": false,
           "domain": "F698B7AF-78D1-4C57-968A-4035DD5213C6",
           "refDict": "",
-          "id": "D73CB61E-465D-4D45-A33E-8272B5710E61"
+          "id": "D73CB61E-465D-4D45-A33E-8272B5710E61",
+          "baseType": "72CAA11F-9DF2-4C28-B50F-8BE71ED17CED"
         },
         {
           "defKey": "position",
@@ -1563,7 +1601,8 @@
           "hideInGraph": false,
           "domain": "9092C4E0-1A54-4859-ABBB-5B62DBC27573",
           "refDict": "",
-          "id": "3938ACB1-878D-4BE2-851E-9D1C0FD236ED"
+          "id": "3938ACB1-878D-4BE2-851E-9D1C0FD236ED",
+          "baseType": "FC9790A7-36B8-4A48-8F9A-BC1042BCFE64"
         },
         {
           "defKey": "content",
@@ -1579,7 +1618,8 @@
           "hideInGraph": false,
           "domain": "3E948CEC-3070-472C-AF92-F3CA11EC9D15",
           "refDict": "",
-          "id": "CCCF974B-9D08-4A32-95C9-BFFC9818DAC1"
+          "id": "CCCF974B-9D08-4A32-95C9-BFFC9818DAC1",
+          "baseType": "B17BDED3-085F-40E1-9019-3B79CF2BF075"
         },
         {
           "defKey": "extra",
@@ -1596,7 +1636,8 @@
           "domain": "F698B7AF-78D1-4C57-968A-4035DD5213C6",
           "refDict": "",
           "extProps": {},
-          "id": "074710EF-486F-4633-BEA5-71D39D6A75C6"
+          "id": "074710EF-486F-4633-BEA5-71D39D6A75C6",
+          "baseType": "72CAA11F-9DF2-4C28-B50F-8BE71ED17CED"
         },
         {
           "defKey": "picture",
@@ -1612,7 +1653,8 @@
           "hideInGraph": false,
           "domain": "3E948CEC-3070-472C-AF92-F3CA11EC9D15",
           "refDict": "",
-          "id": "DBA4D68A-77CA-4935-AE6F-E45C3DB038AA"
+          "id": "DBA4D68A-77CA-4935-AE6F-E45C3DB038AA",
+          "baseType": "B17BDED3-085F-40E1-9019-3B79CF2BF075"
         },
         {
           "defKey": "marker_creator_id",
@@ -1628,7 +1670,8 @@
           "hideInGraph": false,
           "domain": "CE58D2F6-7F4B-4928-A0D1-9CD3BFF2D2B2",
           "refDict": "",
-          "id": "22E00919-5312-49AA-8122-A1BF617CF51A"
+          "id": "22E00919-5312-49AA-8122-A1BF617CF51A",
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "picture_creator_id",
@@ -1644,7 +1687,8 @@
           "hideInGraph": false,
           "domain": "CE58D2F6-7F4B-4928-A0D1-9CD3BFF2D2B2",
           "refDict": "",
-          "id": "CACEF345-61CA-4C70-838E-700E857A1F9B"
+          "id": "CACEF345-61CA-4C70-838E-700E857A1F9B",
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "video_path",
@@ -1661,7 +1705,8 @@
           "domain": "9092C4E0-1A54-4859-ABBB-5B62DBC27573",
           "refDict": "",
           "extProps": {},
-          "id": "19B01C4A-CE64-4D94-87B2-24F45F5ADB64"
+          "id": "19B01C4A-CE64-4D94-87B2-24F45F5ADB64",
+          "baseType": "FC9790A7-36B8-4A48-8F9A-BC1042BCFE64"
         },
         {
           "defKey": "hidden_flag",
@@ -1688,7 +1733,8 @@
           "attr7": "",
           "attr8": "",
           "attr9": "",
-          "id": "98FDA958-9E24-41FC-AC81-340F02C11AF0"
+          "id": "98FDA958-9E24-41FC-AC81-340F02C11AF0",
+          "baseType": "1D764C4A-6F9F-421E-B11A-6F3E23B51811"
         },
         {
           "defKey": "author",
@@ -1704,7 +1750,8 @@
           "hideInGraph": false,
           "refDict": "",
           "domain": "CE58D2F6-7F4B-4928-A0D1-9CD3BFF2D2B2",
-          "id": "413E172B-CE18-454F-B885-8D29CD95AA6A"
+          "id": "413E172B-CE18-454F-B885-8D29CD95AA6A",
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "status",
@@ -1720,7 +1767,8 @@
           "hideInGraph": true,
           "refDict": "",
           "domain": "6BC8F04B-6CFA-4995-98D3-318F5CDD774E",
-          "id": "F02B4F77-30BE-4A73-9271-BD4931382194"
+          "id": "F02B4F77-30BE-4A73-9271-BD4931382194",
+          "baseType": "1D764C4A-6F9F-421E-B11A-6F3E23B51811"
         },
         {
           "defKey": "audit_remark",
@@ -1736,7 +1784,8 @@
           "hideInGraph": true,
           "refDict": "",
           "domain": "9092C4E0-1A54-4859-ABBB-5B62DBC27573",
-          "id": "12B60512-224F-44E1-ADA3-81DDE9C83265"
+          "id": "12B60512-224F-44E1-ADA3-81DDE9C83265",
+          "baseType": "FC9790A7-36B8-4A48-8F9A-BC1042BCFE64"
         },
         {
           "defKey": "method_type",
@@ -1752,7 +1801,8 @@
           "hideInGraph": true,
           "refDict": "",
           "domain": "6BC8F04B-6CFA-4995-98D3-318F5CDD774E",
-          "id": "097F7A81-8B64-4692-B07F-561D31AE6565"
+          "id": "097F7A81-8B64-4692-B07F-561D31AE6565",
+          "baseType": "1D764C4A-6F9F-421E-B11A-6F3E23B51811"
         },
         {
           "defKey": "refresh_time",
@@ -1769,7 +1819,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "CE58D2F6-7F4B-4928-A0D1-9CD3BFF2D2B2",
-          "id": "604EC298-4DA0-4678-B670-BD62D0596357"
+          "id": "604EC298-4DA0-4678-B670-BD62D0596357",
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         }
       ],
       "correlations": [],
@@ -1789,7 +1840,11 @@
           "id": "ABF0E522-B8BF-4B95-B5EC-2BBDC4DFFD62"
         }
       ],
-      "notes": {}
+      "notes": {},
+      "type": "P",
+      "sysProps": {
+        "nameTemplate": "{defKey}[{defName}]"
+      }
     },
     {
       "id": "0675943F-0BB8-4B64-A8A7-44204A3090DD",
@@ -1810,7 +1865,6 @@
         "map keys terminated by ':'": "",
         "store as textfile;": ""
       },
-      "nameTemplate": "{defKey}[{defName}]",
       "headers": [
         {
           "refKey": "hideInGraph",
@@ -2024,7 +2078,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "id",
@@ -2044,7 +2099,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "79CDCB0A-87D7-4E4F-AB10-6CCD57E8DD9B"
         },
         {
           "defKey": "creator_id",
@@ -2065,7 +2121,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "updater_id",
@@ -2086,7 +2143,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "create_time",
@@ -2107,7 +2165,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "89D69E81-EA34-42EE-9FA2-93B8BD27E098"
         },
         {
           "defKey": "update_time",
@@ -2128,7 +2187,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "89D69E81-EA34-42EE-9FA2-93B8BD27E098"
         },
         {
           "defKey": "del_flag",
@@ -2148,7 +2208,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "EAD52604-078D-41C0-BB9E-5284BB11674D"
         },
         {
           "defKey": "item_id",
@@ -2165,7 +2226,8 @@
           "domain": "CE58D2F6-7F4B-4928-A0D1-9CD3BFF2D2B2",
           "refDict": "",
           "extProps": {},
-          "id": "EE5D8F91-C721-4D36-8E02-001CCD12F986"
+          "id": "EE5D8F91-C721-4D36-8E02-001CCD12F986",
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "marker_id",
@@ -2182,7 +2244,8 @@
           "domain": "CE58D2F6-7F4B-4928-A0D1-9CD3BFF2D2B2",
           "refDict": "",
           "extProps": {},
-          "id": "FD3D09EE-4548-4A26-A2E4-3894984FCC7A"
+          "id": "FD3D09EE-4548-4A26-A2E4-3894984FCC7A",
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "count",
@@ -2199,7 +2262,8 @@
           "domain": "6BC8F04B-6CFA-4995-98D3-318F5CDD774E",
           "refDict": "",
           "extProps": {},
-          "id": "05177522-E8A8-4E2E-8D30-9187847CE126"
+          "id": "05177522-E8A8-4E2E-8D30-9187847CE126",
+          "baseType": "1D764C4A-6F9F-421E-B11A-6F3E23B51811"
         }
       ],
       "correlations": [],
@@ -2233,7 +2297,11 @@
           "id": "E14393F5-FEF8-4747-93A7-F71F072DB85B"
         }
       ],
-      "notes": {}
+      "notes": {},
+      "type": "P",
+      "sysProps": {
+        "nameTemplate": "{defKey}[{defName}]"
+      }
     },
     {
       "id": "4C33D54D-D248-4EE8-9BAF-DC12164D19D0",
@@ -2254,7 +2322,6 @@
         "map keys terminated by ':'": "",
         "store as textfile;": ""
       },
-      "nameTemplate": "{defKey}[{defName}]",
       "headers": [
         {
           "refKey": "hideInGraph",
@@ -2463,7 +2530,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "id",
@@ -2483,7 +2551,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "79CDCB0A-87D7-4E4F-AB10-6CCD57E8DD9B"
         },
         {
           "defKey": "creator_id",
@@ -2504,7 +2573,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "updater_id",
@@ -2525,7 +2595,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "create_time",
@@ -2546,7 +2617,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "89D69E81-EA34-42EE-9FA2-93B8BD27E098"
         },
         {
           "defKey": "update_time",
@@ -2567,7 +2639,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "89D69E81-EA34-42EE-9FA2-93B8BD27E098"
         },
         {
           "defKey": "del_flag",
@@ -2587,7 +2660,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "EAD52604-078D-41C0-BB9E-5284BB11674D"
         },
         {
           "defKey": "name",
@@ -2603,7 +2677,8 @@
           "hideInGraph": false,
           "refDict": "",
           "domain": "9092C4E0-1A54-4859-ABBB-5B62DBC27573",
-          "id": "DA595A73-D661-4EFE-BB51-5B95AEFD87F1"
+          "id": "DA595A73-D661-4EFE-BB51-5B95AEFD87F1",
+          "baseType": "FC9790A7-36B8-4A48-8F9A-BC1042BCFE64"
         },
         {
           "defKey": "area_id",
@@ -2620,7 +2695,8 @@
           "domain": "CE58D2F6-7F4B-4928-A0D1-9CD3BFF2D2B2",
           "refDict": "",
           "extProps": {},
-          "id": "9607ADC9-CE4F-4363-A57E-5A0AEE0DB77D"
+          "id": "9607ADC9-CE4F-4363-A57E-5A0AEE0DB77D",
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "default_refresh_time",
@@ -2637,7 +2713,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "CE58D2F6-7F4B-4928-A0D1-9CD3BFF2D2B2",
-          "id": "31B4BC9E-317F-42A8-8886-805D2EEF6E87"
+          "id": "31B4BC9E-317F-42A8-8886-805D2EEF6E87",
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "default_content",
@@ -2653,7 +2730,8 @@
           "hideInGraph": false,
           "refDict": "",
           "domain": "3E948CEC-3070-472C-AF92-F3CA11EC9D15",
-          "id": "5F8B0641-6D3B-4A24-AEFC-5960D17A71E0"
+          "id": "5F8B0641-6D3B-4A24-AEFC-5960D17A71E0",
+          "baseType": "B17BDED3-085F-40E1-9019-3B79CF2BF075"
         },
         {
           "defKey": "default_count",
@@ -2670,7 +2748,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "6BC8F04B-6CFA-4995-98D3-318F5CDD774E",
-          "id": "D128AF0E-2182-48CA-99C8-F74B3962FC6C"
+          "id": "D128AF0E-2182-48CA-99C8-F74B3962FC6C",
+          "baseType": "1D764C4A-6F9F-421E-B11A-6F3E23B51811"
         },
         {
           "defKey": "icon_tag",
@@ -2686,7 +2765,8 @@
           "hideInGraph": false,
           "refDict": "",
           "domain": "9092C4E0-1A54-4859-ABBB-5B62DBC27573",
-          "id": "BF40C687-1008-4844-BAEA-E16D77F941D7"
+          "id": "BF40C687-1008-4844-BAEA-E16D77F941D7",
+          "baseType": "FC9790A7-36B8-4A48-8F9A-BC1042BCFE64"
         },
         {
           "defKey": "icon_style_type",
@@ -2703,7 +2783,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "6BC8F04B-6CFA-4995-98D3-318F5CDD774E",
-          "id": "4847F125-AD3C-4A66-8D23-C8B170B75F7A"
+          "id": "4847F125-AD3C-4A66-8D23-C8B170B75F7A",
+          "baseType": "1D764C4A-6F9F-421E-B11A-6F3E23B51811"
         },
         {
           "defKey": "hidden_flag",
@@ -2720,7 +2801,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "6BC8F04B-6CFA-4995-98D3-318F5CDD774E",
-          "id": "740E8474-C393-48D3-8DCA-91AF86EEFEC1"
+          "id": "740E8474-C393-48D3-8DCA-91AF86EEFEC1",
+          "baseType": "1D764C4A-6F9F-421E-B11A-6F3E23B51811"
         },
         {
           "defKey": "sort_index",
@@ -2737,7 +2819,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "6BC8F04B-6CFA-4995-98D3-318F5CDD774E",
-          "id": "7E089D1D-7069-4C24-82C5-1B8C8BB89924"
+          "id": "7E089D1D-7069-4C24-82C5-1B8C8BB89924",
+          "baseType": "1D764C4A-6F9F-421E-B11A-6F3E23B51811"
         },
         {
           "defKey": "special_flag",
@@ -2754,7 +2837,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "6BC8F04B-6CFA-4995-98D3-318F5CDD774E",
-          "id": "9E5E40ED-C237-40BA-BF0B-07263CB09E6B"
+          "id": "9E5E40ED-C237-40BA-BF0B-07263CB09E6B",
+          "baseType": "1D764C4A-6F9F-421E-B11A-6F3E23B51811"
         }
       ],
       "correlations": [],
@@ -2774,7 +2858,11 @@
           "id": "C5480C29-74D7-40EE-BB1F-BA0A9F7A6486"
         }
       ],
-      "notes": {}
+      "notes": {},
+      "type": "P",
+      "sysProps": {
+        "nameTemplate": "{defKey}[{defName}]"
+      }
     },
     {
       "id": "A885D09C-5A56-40B1-BB40-8D0D7EB1EE99",
@@ -2795,7 +2883,6 @@
         "map keys terminated by ':'": "",
         "store as textfile;": ""
       },
-      "nameTemplate": "{defKey}[{defName}]",
       "headers": [
         {
           "refKey": "hideInGraph",
@@ -3004,7 +3091,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "id",
@@ -3024,7 +3112,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "79CDCB0A-87D7-4E4F-AB10-6CCD57E8DD9B"
         },
         {
           "defKey": "creator_id",
@@ -3045,7 +3134,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "updater_id",
@@ -3066,7 +3156,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "create_time",
@@ -3087,7 +3178,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "89D69E81-EA34-42EE-9FA2-93B8BD27E098"
         },
         {
           "defKey": "update_time",
@@ -3108,7 +3200,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "89D69E81-EA34-42EE-9FA2-93B8BD27E098"
         },
         {
           "defKey": "del_flag",
@@ -3128,7 +3221,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "EAD52604-078D-41C0-BB9E-5284BB11674D"
         },
         {
           "defKey": "icon_tag",
@@ -3144,7 +3238,8 @@
           "hideInGraph": false,
           "refDict": "",
           "domain": "9092C4E0-1A54-4859-ABBB-5B62DBC27573",
-          "id": "AD4F27FE-A367-4744-B165-C39119EB095A"
+          "id": "AD4F27FE-A367-4744-B165-C39119EB095A",
+          "baseType": "FC9790A7-36B8-4A48-8F9A-BC1042BCFE64"
         },
         {
           "defKey": "name",
@@ -3160,7 +3255,8 @@
           "hideInGraph": false,
           "refDict": "",
           "domain": "9092C4E0-1A54-4859-ABBB-5B62DBC27573",
-          "id": "3F525A7E-68DA-48BA-AD3A-1E44374892D2"
+          "id": "3F525A7E-68DA-48BA-AD3A-1E44374892D2",
+          "baseType": "FC9790A7-36B8-4A48-8F9A-BC1042BCFE64"
         },
         {
           "defKey": "content",
@@ -3176,7 +3272,8 @@
           "hideInGraph": false,
           "refDict": "",
           "domain": "9092C4E0-1A54-4859-ABBB-5B62DBC27573",
-          "id": "E2756352-DDD8-47A2-9D07-D55EBE7595BF"
+          "id": "E2756352-DDD8-47A2-9D07-D55EBE7595BF",
+          "baseType": "FC9790A7-36B8-4A48-8F9A-BC1042BCFE64"
         },
         {
           "defKey": "parent_id",
@@ -3192,7 +3289,8 @@
           "hideInGraph": false,
           "refDict": "",
           "domain": "CE58D2F6-7F4B-4928-A0D1-9CD3BFF2D2B2",
-          "id": "B0A32D80-0C4D-40B7-9EC7-9FE5328B16BB"
+          "id": "B0A32D80-0C4D-40B7-9EC7-9FE5328B16BB",
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "is_final",
@@ -3208,7 +3306,8 @@
           "hideInGraph": false,
           "refDict": "",
           "domain": "6F7C1C5C-D159-41E6-BF9D-54DEEFA79AFF",
-          "id": "2BB9C186-972F-4CAF-A0D6-5D784AFF1C39"
+          "id": "2BB9C186-972F-4CAF-A0D6-5D784AFF1C39",
+          "baseType": "EAD52604-078D-41C0-BB9E-5284BB11674D"
         },
         {
           "defKey": "hidden_flag",
@@ -3225,7 +3324,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "6BC8F04B-6CFA-4995-98D3-318F5CDD774E",
-          "id": "5D53113C-BC8E-4249-B78B-3365CD81EE5B"
+          "id": "5D53113C-BC8E-4249-B78B-3365CD81EE5B",
+          "baseType": "1D764C4A-6F9F-421E-B11A-6F3E23B51811"
         },
         {
           "defKey": "sort_index",
@@ -3242,7 +3342,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "6BC8F04B-6CFA-4995-98D3-318F5CDD774E",
-          "id": "E2443EBA-68E0-4D06-B786-3D48E7107DE2"
+          "id": "E2443EBA-68E0-4D06-B786-3D48E7107DE2",
+          "baseType": "1D764C4A-6F9F-421E-B11A-6F3E23B51811"
         }
       ],
       "correlations": [],
@@ -3276,7 +3377,11 @@
           "id": "5A12F55D-9066-4264-BA00-B900EF5EF95B"
         }
       ],
-      "notes": {}
+      "notes": {},
+      "type": "P",
+      "sysProps": {
+        "nameTemplate": "{defKey}[{defName}]"
+      }
     },
     {
       "id": "4245C310-3FC3-4668-B0DB-9A9450B6B35C",
@@ -3297,7 +3402,6 @@
         "map keys terminated by ':'": "",
         "store as textfile;": ""
       },
-      "nameTemplate": "{defKey}[{defName}]",
       "headers": [
         {
           "refKey": "hideInGraph",
@@ -3506,7 +3610,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "id",
@@ -3526,7 +3631,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "79CDCB0A-87D7-4E4F-AB10-6CCD57E8DD9B"
         },
         {
           "defKey": "creator_id",
@@ -3547,7 +3653,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "updater_id",
@@ -3568,7 +3675,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "create_time",
@@ -3589,7 +3697,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "89D69E81-EA34-42EE-9FA2-93B8BD27E098"
         },
         {
           "defKey": "update_time",
@@ -3610,7 +3719,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "89D69E81-EA34-42EE-9FA2-93B8BD27E098"
         },
         {
           "defKey": "del_flag",
@@ -3630,7 +3740,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "EAD52604-078D-41C0-BB9E-5284BB11674D"
         },
         {
           "defKey": "type_id",
@@ -3646,7 +3757,8 @@
           "hideInGraph": false,
           "domain": "CE58D2F6-7F4B-4928-A0D1-9CD3BFF2D2B2",
           "refDict": "",
-          "id": "6EDF2FFB-25D6-4CD3-A3F7-ACCAD47D041F"
+          "id": "6EDF2FFB-25D6-4CD3-A3F7-ACCAD47D041F",
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "item_id",
@@ -3662,7 +3774,8 @@
           "hideInGraph": false,
           "domain": "CE58D2F6-7F4B-4928-A0D1-9CD3BFF2D2B2",
           "refDict": "",
-          "id": "F10E2303-0E8F-465F-ACDE-D9CE7E6BD148"
+          "id": "F10E2303-0E8F-465F-ACDE-D9CE7E6BD148",
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         }
       ],
       "correlations": [],
@@ -3701,7 +3814,11 @@
           "id": "C700F441-677B-472C-A799-B1B88FB903B2"
         }
       ],
-      "notes": {}
+      "notes": {},
+      "type": "P",
+      "sysProps": {
+        "nameTemplate": "{defKey}[{defName}]"
+      }
     },
     {
       "id": "73A00D41-21B9-4A7C-9B02-03F131988E9A",
@@ -3722,7 +3839,6 @@
         "map keys terminated by ':'": "",
         "store as textfile;": ""
       },
-      "nameTemplate": "{defKey}[{defName}]",
       "headers": [
         {
           "refKey": "hideInGraph",
@@ -3931,7 +4047,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "id",
@@ -3951,7 +4068,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "79CDCB0A-87D7-4E4F-AB10-6CCD57E8DD9B"
         },
         {
           "defKey": "creator_id",
@@ -3972,7 +4090,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "updater_id",
@@ -3993,7 +4112,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "create_time",
@@ -4014,7 +4134,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "89D69E81-EA34-42EE-9FA2-93B8BD27E098"
         },
         {
           "defKey": "update_time",
@@ -4035,7 +4156,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "89D69E81-EA34-42EE-9FA2-93B8BD27E098"
         },
         {
           "defKey": "del_flag",
@@ -4055,7 +4177,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "EAD52604-078D-41C0-BB9E-5284BB11674D"
         },
         {
           "defKey": "item_id",
@@ -4071,12 +4194,17 @@
           "hideInGraph": false,
           "refDict": "",
           "domain": "CE58D2F6-7F4B-4928-A0D1-9CD3BFF2D2B2",
-          "id": "E7746E65-0315-46D7-AF01-7FFBB5199BEE"
+          "id": "E7746E65-0315-46D7-AF01-7FFBB5199BEE",
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         }
       ],
       "correlations": [],
       "indexes": [],
-      "notes": {}
+      "notes": {},
+      "type": "P",
+      "sysProps": {
+        "nameTemplate": "{defKey}[{defName}]"
+      }
     },
     {
       "id": "FF8738B3-DB9D-483D-A6AD-30BCB4900B48",
@@ -4097,7 +4225,6 @@
         "map keys terminated by ':'": "",
         "store as textfile;": ""
       },
-      "nameTemplate": "{defKey}[{defName}]",
       "headers": [
         {
           "refKey": "hideInGraph",
@@ -4306,7 +4433,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "id",
@@ -4326,7 +4454,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "79CDCB0A-87D7-4E4F-AB10-6CCD57E8DD9B"
         },
         {
           "defKey": "creator_id",
@@ -4347,7 +4476,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "updater_id",
@@ -4368,7 +4498,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "create_time",
@@ -4389,7 +4520,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "89D69E81-EA34-42EE-9FA2-93B8BD27E098"
         },
         {
           "defKey": "update_time",
@@ -4410,7 +4542,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "89D69E81-EA34-42EE-9FA2-93B8BD27E098"
         },
         {
           "defKey": "del_flag",
@@ -4430,7 +4563,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "EAD52604-078D-41C0-BB9E-5284BB11674D"
         },
         {
           "defKey": "tag",
@@ -4446,7 +4580,8 @@
           "hideInGraph": false,
           "refDict": "",
           "domain": "9092C4E0-1A54-4859-ABBB-5B62DBC27573",
-          "id": "B15063C9-B2A7-4CB3-83FD-CE6BCD0611DD"
+          "id": "B15063C9-B2A7-4CB3-83FD-CE6BCD0611DD",
+          "baseType": "FC9790A7-36B8-4A48-8F9A-BC1042BCFE64"
         },
         {
           "defKey": "icon_id",
@@ -4462,7 +4597,8 @@
           "hideInGraph": false,
           "refDict": "",
           "domain": "CE58D2F6-7F4B-4928-A0D1-9CD3BFF2D2B2",
-          "id": "52D92194-46CA-4CEE-A5ED-49FE9ED5C2E2"
+          "id": "52D92194-46CA-4CEE-A5ED-49FE9ED5C2E2",
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         }
       ],
       "correlations": [],
@@ -4496,7 +4632,11 @@
           "id": "49067860-8102-4831-9173-8E9A9CA3B6E6"
         }
       ],
-      "notes": {}
+      "notes": {},
+      "type": "P",
+      "sysProps": {
+        "nameTemplate": "{defKey}[{defName}]"
+      }
     },
     {
       "id": "E6D2BC4E-BBF2-4F49-8386-22956720CEE7",
@@ -4517,7 +4657,6 @@
         "map keys terminated by ':'": "",
         "store as textfile;": ""
       },
-      "nameTemplate": "{defKey}[{defName}]",
       "headers": [
         {
           "refKey": "hideInGraph",
@@ -4726,7 +4865,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "id",
@@ -4746,7 +4886,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "79CDCB0A-87D7-4E4F-AB10-6CCD57E8DD9B"
         },
         {
           "defKey": "creator_id",
@@ -4767,7 +4908,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "updater_id",
@@ -4788,7 +4930,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "create_time",
@@ -4809,7 +4952,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "89D69E81-EA34-42EE-9FA2-93B8BD27E098"
         },
         {
           "defKey": "update_time",
@@ -4830,7 +4974,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "89D69E81-EA34-42EE-9FA2-93B8BD27E098"
         },
         {
           "defKey": "del_flag",
@@ -4850,7 +4995,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "EAD52604-078D-41C0-BB9E-5284BB11674D"
         },
         {
           "defKey": "name",
@@ -4866,7 +5012,8 @@
           "hideInGraph": false,
           "domain": "9092C4E0-1A54-4859-ABBB-5B62DBC27573",
           "refDict": "",
-          "id": "0EE913FF-64C0-4EAF-9022-1B09A4466260"
+          "id": "0EE913FF-64C0-4EAF-9022-1B09A4466260",
+          "baseType": "FC9790A7-36B8-4A48-8F9A-BC1042BCFE64"
         },
         {
           "defKey": "parent",
@@ -4882,7 +5029,8 @@
           "hideInGraph": false,
           "domain": "CE58D2F6-7F4B-4928-A0D1-9CD3BFF2D2B2",
           "refDict": "",
-          "id": "BFAEDE83-6637-43BF-A7CE-57DBFD2CCBF7"
+          "id": "BFAEDE83-6637-43BF-A7CE-57DBFD2CCBF7",
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "is_final",
@@ -4899,7 +5047,8 @@
           "domain": "6F7C1C5C-D159-41E6-BF9D-54DEEFA79AFF",
           "refDict": "",
           "extProps": {},
-          "id": "86F38D10-0F18-461E-941E-B837111E53D3"
+          "id": "86F38D10-0F18-461E-941E-B837111E53D3",
+          "baseType": "EAD52604-078D-41C0-BB9E-5284BB11674D"
         }
       ],
       "correlations": [],
@@ -4919,7 +5068,11 @@
           "id": "A2A73A2A-6E96-429D-BE2C-019993E0B87A"
         }
       ],
-      "notes": {}
+      "notes": {},
+      "type": "P",
+      "sysProps": {
+        "nameTemplate": "{defKey}[{defName}]"
+      }
     },
     {
       "id": "8039ADEB-22FA-45A6-A2AE-63DD7FA795D6",
@@ -4940,7 +5093,6 @@
         "map keys terminated by ':'": "",
         "store as textfile;": ""
       },
-      "nameTemplate": "{defKey}[{defName}]",
       "headers": [
         {
           "refKey": "hideInGraph",
@@ -5149,7 +5301,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "id",
@@ -5169,7 +5322,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "79CDCB0A-87D7-4E4F-AB10-6CCD57E8DD9B"
         },
         {
           "defKey": "creator_id",
@@ -5190,7 +5344,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "updater_id",
@@ -5211,7 +5366,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "create_time",
@@ -5232,7 +5388,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "89D69E81-EA34-42EE-9FA2-93B8BD27E098"
         },
         {
           "defKey": "update_time",
@@ -5253,7 +5410,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "89D69E81-EA34-42EE-9FA2-93B8BD27E098"
         },
         {
           "defKey": "del_flag",
@@ -5273,7 +5431,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "EAD52604-078D-41C0-BB9E-5284BB11674D"
         },
         {
           "defKey": "type_id",
@@ -5289,7 +5448,8 @@
           "hideInGraph": false,
           "domain": "CE58D2F6-7F4B-4928-A0D1-9CD3BFF2D2B2",
           "refDict": "",
-          "id": "BF102924-DDFC-452B-84AA-311F479D6732"
+          "id": "BF102924-DDFC-452B-84AA-311F479D6732",
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "tag_name",
@@ -5305,7 +5465,8 @@
           "hideInGraph": false,
           "domain": "9092C4E0-1A54-4859-ABBB-5B62DBC27573",
           "refDict": "",
-          "id": "7D204AA0-4F13-42D0-A9E2-5F9FDC00F6B3"
+          "id": "7D204AA0-4F13-42D0-A9E2-5F9FDC00F6B3",
+          "baseType": "FC9790A7-36B8-4A48-8F9A-BC1042BCFE64"
         }
       ],
       "correlations": [],
@@ -5339,7 +5500,11 @@
           "id": "F17DED67-22A9-4B4F-B6C7-2659898ED9FD"
         }
       ],
-      "notes": {}
+      "notes": {},
+      "type": "P",
+      "sysProps": {
+        "nameTemplate": "{defKey}[{defName}]"
+      }
     },
     {
       "id": "EDFE5B80-EC7D-4012-BEE2-86ADE48BF03B",
@@ -5360,7 +5525,6 @@
         "map keys terminated by ':'": "",
         "store as textfile;": ""
       },
-      "nameTemplate": "{defKey}[{defName}]",
       "headers": [
         {
           "refKey": "hideInGraph",
@@ -5569,7 +5733,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "id",
@@ -5589,7 +5754,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "79CDCB0A-87D7-4E4F-AB10-6CCD57E8DD9B"
         },
         {
           "defKey": "creator_id",
@@ -5610,7 +5776,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "updater_id",
@@ -5631,7 +5798,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "create_time",
@@ -5652,7 +5820,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "89D69E81-EA34-42EE-9FA2-93B8BD27E098"
         },
         {
           "defKey": "update_time",
@@ -5673,7 +5842,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "89D69E81-EA34-42EE-9FA2-93B8BD27E098"
         },
         {
           "defKey": "del_flag",
@@ -5693,7 +5863,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "EAD52604-078D-41C0-BB9E-5284BB11674D"
         },
         {
           "defKey": "name",
@@ -5709,7 +5880,8 @@
           "hideInGraph": false,
           "refDict": "",
           "domain": "9092C4E0-1A54-4859-ABBB-5B62DBC27573",
-          "id": "B107169F-8334-4421-B992-2FF2D05E6998"
+          "id": "B107169F-8334-4421-B992-2FF2D05E6998",
+          "baseType": "FC9790A7-36B8-4A48-8F9A-BC1042BCFE64"
         },
         {
           "defKey": "url",
@@ -5725,7 +5897,8 @@
           "hideInGraph": false,
           "refDict": "",
           "domain": "9092C4E0-1A54-4859-ABBB-5B62DBC27573",
-          "id": "66716DAF-A292-49C8-88C8-D262FC302B06"
+          "id": "66716DAF-A292-49C8-88C8-D262FC302B06",
+          "baseType": "FC9790A7-36B8-4A48-8F9A-BC1042BCFE64"
         }
       ],
       "correlations": [],
@@ -5745,7 +5918,11 @@
           "id": "CBC3D540-8003-4899-A722-1EF8BA0D65EB"
         }
       ],
-      "notes": {}
+      "notes": {},
+      "type": "P",
+      "sysProps": {
+        "nameTemplate": "{defKey}[{defName}]"
+      }
     },
     {
       "id": "DDBD40EA-098B-4FDC-9D76-9B84095FACED",
@@ -5766,7 +5943,6 @@
         "map keys terminated by ':'": "",
         "store as textfile;": ""
       },
-      "nameTemplate": "{defKey}[{defName}]",
       "headers": [
         {
           "refKey": "hideInGraph",
@@ -5975,7 +6151,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "id",
@@ -5995,7 +6172,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "79CDCB0A-87D7-4E4F-AB10-6CCD57E8DD9B"
         },
         {
           "defKey": "creator_id",
@@ -6016,7 +6194,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "updater_id",
@@ -6037,7 +6216,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "create_time",
@@ -6058,7 +6238,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "89D69E81-EA34-42EE-9FA2-93B8BD27E098"
         },
         {
           "defKey": "update_time",
@@ -6079,7 +6260,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "89D69E81-EA34-42EE-9FA2-93B8BD27E098"
         },
         {
           "defKey": "del_flag",
@@ -6099,7 +6281,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "EAD52604-078D-41C0-BB9E-5284BB11674D"
         },
         {
           "defKey": "name",
@@ -6115,7 +6298,8 @@
           "hideInGraph": false,
           "refDict": "",
           "domain": "9092C4E0-1A54-4859-ABBB-5B62DBC27573",
-          "id": "4F9BEB10-B5D3-4159-9049-3408881AB18B"
+          "id": "4F9BEB10-B5D3-4159-9049-3408881AB18B",
+          "baseType": "FC9790A7-36B8-4A48-8F9A-BC1042BCFE64"
         },
         {
           "defKey": "parent",
@@ -6131,7 +6315,8 @@
           "hideInGraph": false,
           "refDict": "",
           "domain": "CE58D2F6-7F4B-4928-A0D1-9CD3BFF2D2B2",
-          "id": "A4424939-A0B1-4B9C-903E-5561FFDF14CB"
+          "id": "A4424939-A0B1-4B9C-903E-5561FFDF14CB",
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "is_final",
@@ -6148,7 +6333,8 @@
           "domain": "6F7C1C5C-D159-41E6-BF9D-54DEEFA79AFF",
           "refDict": "",
           "extProps": {},
-          "id": "EFBF402C-47CD-44D8-B5F6-75090587B4AE"
+          "id": "EFBF402C-47CD-44D8-B5F6-75090587B4AE",
+          "baseType": "EAD52604-078D-41C0-BB9E-5284BB11674D"
         }
       ],
       "correlations": [],
@@ -6168,7 +6354,11 @@
           "id": "E261D3DA-ABCC-47F1-B848-E9E652EC7EB5"
         }
       ],
-      "notes": {}
+      "notes": {},
+      "type": "P",
+      "sysProps": {
+        "nameTemplate": "{defKey}[{defName}]"
+      }
     },
     {
       "id": "CBD8A734-12A9-4E48-88B3-BA4761CF8363",
@@ -6189,7 +6379,6 @@
         "map keys terminated by ':'": "",
         "store as textfile;": ""
       },
-      "nameTemplate": "{defKey}[{defName}]",
       "headers": [
         {
           "refKey": "hideInGraph",
@@ -6398,7 +6587,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "id",
@@ -6418,7 +6608,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "79CDCB0A-87D7-4E4F-AB10-6CCD57E8DD9B"
         },
         {
           "defKey": "creator_id",
@@ -6439,7 +6630,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "updater_id",
@@ -6460,7 +6652,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "create_time",
@@ -6481,7 +6674,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "89D69E81-EA34-42EE-9FA2-93B8BD27E098"
         },
         {
           "defKey": "update_time",
@@ -6502,7 +6696,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "89D69E81-EA34-42EE-9FA2-93B8BD27E098"
         },
         {
           "defKey": "del_flag",
@@ -6522,7 +6717,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "EAD52604-078D-41C0-BB9E-5284BB11674D"
         },
         {
           "defKey": "type_id",
@@ -6538,7 +6734,8 @@
           "hideInGraph": false,
           "domain": "CE58D2F6-7F4B-4928-A0D1-9CD3BFF2D2B2",
           "refDict": "",
-          "id": "7D204AA0-4F13-42D0-A9E2-5F9FDC00F6B3"
+          "id": "7D204AA0-4F13-42D0-A9E2-5F9FDC00F6B3",
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "icon_id",
@@ -6554,7 +6751,8 @@
           "hideInGraph": false,
           "domain": "CE58D2F6-7F4B-4928-A0D1-9CD3BFF2D2B2",
           "refDict": "",
-          "id": "BF102924-DDFC-452B-84AA-311F479D6732"
+          "id": "BF102924-DDFC-452B-84AA-311F479D6732",
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         }
       ],
       "correlations": [],
@@ -6588,7 +6786,11 @@
           "id": "6B6B7750-8624-454F-B111-599B83EBA61B"
         }
       ],
-      "notes": {}
+      "notes": {},
+      "type": "P",
+      "sysProps": {
+        "nameTemplate": "{defKey}[{defName}]"
+      }
     },
     {
       "id": "40A9FBF1-F314-46E1-B182-927CF7D7C5AD",
@@ -6609,7 +6811,6 @@
         "map keys terminated by ':'": "",
         "store as textfile;": ""
       },
-      "nameTemplate": "{defKey}[{defName}]",
       "headers": [
         {
           "refKey": "hideInGraph",
@@ -6818,7 +7019,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "id",
@@ -6838,7 +7040,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "79CDCB0A-87D7-4E4F-AB10-6CCD57E8DD9B"
         },
         {
           "defKey": "creator_id",
@@ -6859,7 +7062,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "updater_id",
@@ -6880,7 +7084,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "create_time",
@@ -6901,7 +7106,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "89D69E81-EA34-42EE-9FA2-93B8BD27E098"
         },
         {
           "defKey": "update_time",
@@ -6922,7 +7128,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "89D69E81-EA34-42EE-9FA2-93B8BD27E098"
         },
         {
           "defKey": "del_flag",
@@ -6942,7 +7149,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "EAD52604-078D-41C0-BB9E-5284BB11674D"
         },
         {
           "defKey": "name",
@@ -6958,7 +7166,8 @@
           "hideInGraph": false,
           "refDict": "",
           "domain": "9092C4E0-1A54-4859-ABBB-5B62DBC27573",
-          "id": "FA3E130B-22CA-4F10-9E0C-29DC20CC3A5E"
+          "id": "FA3E130B-22CA-4F10-9E0C-29DC20CC3A5E",
+          "baseType": "FC9790A7-36B8-4A48-8F9A-BC1042BCFE64"
         },
         {
           "defKey": "code",
@@ -6975,7 +7184,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "9092C4E0-1A54-4859-ABBB-5B62DBC27573",
-          "id": "E9051415-95D6-4D74-98B8-311C6CDB7BB5"
+          "id": "E9051415-95D6-4D74-98B8-311C6CDB7BB5",
+          "baseType": "FC9790A7-36B8-4A48-8F9A-BC1042BCFE64"
         },
         {
           "defKey": "content",
@@ -6991,7 +7201,8 @@
           "hideInGraph": false,
           "refDict": "",
           "domain": "9092C4E0-1A54-4859-ABBB-5B62DBC27573",
-          "id": "59B6EFA6-3DCB-493A-9B35-F258374FF956"
+          "id": "59B6EFA6-3DCB-493A-9B35-F258374FF956",
+          "baseType": "FC9790A7-36B8-4A48-8F9A-BC1042BCFE64"
         },
         {
           "defKey": "icon_tag",
@@ -7007,7 +7218,8 @@
           "hideInGraph": false,
           "refDict": "",
           "domain": "9092C4E0-1A54-4859-ABBB-5B62DBC27573",
-          "id": "A0F68DD3-E683-4512-B189-49D793B0D866"
+          "id": "A0F68DD3-E683-4512-B189-49D793B0D866",
+          "baseType": "FC9790A7-36B8-4A48-8F9A-BC1042BCFE64"
         },
         {
           "defKey": "parent_id",
@@ -7023,7 +7235,8 @@
           "hideInGraph": false,
           "refDict": "",
           "domain": "CE58D2F6-7F4B-4928-A0D1-9CD3BFF2D2B2",
-          "id": "69C993E6-3052-4DD4-8C06-CE6DE29A25AB"
+          "id": "69C993E6-3052-4DD4-8C06-CE6DE29A25AB",
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "is_final",
@@ -7040,7 +7253,8 @@
           "domain": "6F7C1C5C-D159-41E6-BF9D-54DEEFA79AFF",
           "refDict": "",
           "extProps": {},
-          "id": "78C210AE-29A9-4920-97FF-2B18C633ED5B"
+          "id": "78C210AE-29A9-4920-97FF-2B18C633ED5B",
+          "baseType": "EAD52604-078D-41C0-BB9E-5284BB11674D"
         },
         {
           "defKey": "hidden_flag",
@@ -7057,7 +7271,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "6BC8F04B-6CFA-4995-98D3-318F5CDD774E",
-          "id": "5D0F0B38-B921-460E-9C9D-488B933967FF"
+          "id": "5D0F0B38-B921-460E-9C9D-488B933967FF",
+          "baseType": "1D764C4A-6F9F-421E-B11A-6F3E23B51811"
         },
         {
           "defKey": "special_flag",
@@ -7074,7 +7289,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "6BC8F04B-6CFA-4995-98D3-318F5CDD774E",
-          "id": "D51E34AE-317F-44E8-BB93-FFA515C5ACED"
+          "id": "D51E34AE-317F-44E8-BB93-FFA515C5ACED",
+          "baseType": "1D764C4A-6F9F-421E-B11A-6F3E23B51811"
         },
         {
           "defKey": "sort_index",
@@ -7091,12 +7307,17 @@
           "refDict": "",
           "extProps": {},
           "domain": "6BC8F04B-6CFA-4995-98D3-318F5CDD774E",
-          "id": "E78EBD44-BD0F-4383-9281-5A600A913593"
+          "id": "E78EBD44-BD0F-4383-9281-5A600A913593",
+          "baseType": "1D764C4A-6F9F-421E-B11A-6F3E23B51811"
         }
       ],
       "correlations": [],
       "indexes": [],
-      "notes": {}
+      "notes": {},
+      "type": "P",
+      "sysProps": {
+        "nameTemplate": "{defKey}[{defName}]"
+      }
     },
     {
       "id": "217567DA-D6DD-4376-BE83-BD9EA1543338",
@@ -7117,7 +7338,6 @@
         "map keys terminated by ':'": "",
         "store as textfile;": ""
       },
-      "nameTemplate": "{defKey}[{defName}]",
       "headers": [
         {
           "refKey": "hideInGraph",
@@ -7331,7 +7551,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "id",
@@ -7351,7 +7572,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "79CDCB0A-87D7-4E4F-AB10-6CCD57E8DD9B"
         },
         {
           "defKey": "creator_id",
@@ -7372,7 +7594,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "updater_id",
@@ -7393,7 +7616,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "create_time",
@@ -7414,7 +7638,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "89D69E81-EA34-42EE-9FA2-93B8BD27E098"
         },
         {
           "defKey": "update_time",
@@ -7435,7 +7660,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "89D69E81-EA34-42EE-9FA2-93B8BD27E098"
         },
         {
           "defKey": "del_flag",
@@ -7455,7 +7681,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "EAD52604-078D-41C0-BB9E-5284BB11674D"
         },
         {
           "defKey": "username",
@@ -7472,7 +7699,8 @@
           "domain": "54611CCC-CA4B-42E1-9F32-4944C85B85A6",
           "refDict": "",
           "extProps": {},
-          "id": "C0D656F5-6D49-4099-964E-B38B5B4B7A8F"
+          "id": "C0D656F5-6D49-4099-964E-B38B5B4B7A8F",
+          "baseType": "FC9790A7-36B8-4A48-8F9A-BC1042BCFE64"
         },
         {
           "defKey": "password",
@@ -7489,7 +7717,8 @@
           "domain": "9092C4E0-1A54-4859-ABBB-5B62DBC27573",
           "refDict": "",
           "extProps": {},
-          "id": "AD189003-ACBF-4B7A-9A6C-3609A6BD4C80"
+          "id": "AD189003-ACBF-4B7A-9A6C-3609A6BD4C80",
+          "baseType": "FC9790A7-36B8-4A48-8F9A-BC1042BCFE64"
         },
         {
           "defKey": "nickname",
@@ -7506,7 +7735,8 @@
           "domain": "54611CCC-CA4B-42E1-9F32-4944C85B85A6",
           "refDict": "",
           "extProps": {},
-          "id": "6AD6CBA6-657D-4250-B983-931B67F349BB"
+          "id": "6AD6CBA6-657D-4250-B983-931B67F349BB",
+          "baseType": "FC9790A7-36B8-4A48-8F9A-BC1042BCFE64"
         },
         {
           "defKey": "qq",
@@ -7523,7 +7753,8 @@
           "domain": "54611CCC-CA4B-42E1-9F32-4944C85B85A6",
           "refDict": "",
           "extProps": {},
-          "id": "0F6A1E1E-062A-4032-9AB4-BD3B18B205E9"
+          "id": "0F6A1E1E-062A-4032-9AB4-BD3B18B205E9",
+          "baseType": "FC9790A7-36B8-4A48-8F9A-BC1042BCFE64"
         },
         {
           "defKey": "phone",
@@ -7540,7 +7771,8 @@
           "domain": "54611CCC-CA4B-42E1-9F32-4944C85B85A6",
           "refDict": "",
           "extProps": {},
-          "id": "2508E025-14C7-4066-950F-513204F9EBE4"
+          "id": "2508E025-14C7-4066-950F-513204F9EBE4",
+          "baseType": "FC9790A7-36B8-4A48-8F9A-BC1042BCFE64"
         },
         {
           "defKey": "logo",
@@ -7557,7 +7789,8 @@
           "domain": "3E948CEC-3070-472C-AF92-F3CA11EC9D15",
           "refDict": "",
           "extProps": {},
-          "id": "E08A001B-345C-4B56-9F17-F7EBE0BF40D0"
+          "id": "E08A001B-345C-4B56-9F17-F7EBE0BF40D0",
+          "baseType": "B17BDED3-085F-40E1-9019-3B79CF2BF075"
         },
         {
           "defKey": "role_id",
@@ -7574,7 +7807,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "6BC8F04B-6CFA-4995-98D3-318F5CDD774E",
-          "id": "58263B73-5A1D-46CC-B383-8340F02EA9B1"
+          "id": "58263B73-5A1D-46CC-B383-8340F02EA9B1",
+          "baseType": "1D764C4A-6F9F-421E-B11A-6F3E23B51811"
         }
       ],
       "correlations": [],
@@ -7622,7 +7856,11 @@
           "id": "208A9A94-B635-4FF0-91D5-5A4AD21F01A0"
         }
       ],
-      "notes": {}
+      "notes": {},
+      "type": "P",
+      "sysProps": {
+        "nameTemplate": "{defKey}[{defName}]"
+      }
     },
     {
       "id": "15BE2482-6CDE-49BF-BB64-044AECE1F775",
@@ -7659,7 +7897,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "id",
@@ -7689,7 +7928,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "79CDCB0A-87D7-4E4F-AB10-6CCD57E8DD9B"
         },
         {
           "defKey": "creator_id",
@@ -7719,7 +7959,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "updater_id",
@@ -7749,7 +7990,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "create_time",
@@ -7779,7 +8021,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "89D69E81-EA34-42EE-9FA2-93B8BD27E098"
         },
         {
           "defKey": "update_time",
@@ -7809,7 +8052,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "89D69E81-EA34-42EE-9FA2-93B8BD27E098"
         },
         {
           "defKey": "del_flag",
@@ -7839,7 +8083,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "EAD52604-078D-41C0-BB9E-5284BB11674D"
         },
         {
           "defKey": "client_id",
@@ -7865,7 +8110,8 @@
           "attr6": "",
           "attr7": "",
           "attr8": "",
-          "attr9": ""
+          "attr9": "",
+          "baseType": "FC9790A7-36B8-4A48-8F9A-BC1042BCFE64"
         },
         {
           "defKey": "client_secret",
@@ -7891,7 +8137,8 @@
           "attr6": "",
           "attr7": "",
           "attr8": "",
-          "attr9": ""
+          "attr9": "",
+          "baseType": "FC9790A7-36B8-4A48-8F9A-BC1042BCFE64"
         },
         {
           "defKey": "scope",
@@ -7917,7 +8164,8 @@
           "attr6": "",
           "attr7": "",
           "attr8": "",
-          "attr9": ""
+          "attr9": "",
+          "baseType": "FC9790A7-36B8-4A48-8F9A-BC1042BCFE64"
         },
         {
           "defKey": "authorized_grant_types",
@@ -7943,7 +8191,8 @@
           "attr6": "",
           "attr7": "",
           "attr8": "",
-          "attr9": ""
+          "attr9": "",
+          "baseType": "FC9790A7-36B8-4A48-8F9A-BC1042BCFE64"
         },
         {
           "defKey": "web_server_redirect_uri",
@@ -7969,7 +8218,8 @@
           "attr6": "",
           "attr7": "",
           "attr8": "",
-          "attr9": ""
+          "attr9": "",
+          "baseType": "FC9790A7-36B8-4A48-8F9A-BC1042BCFE64"
         },
         {
           "defKey": "authorities",
@@ -7995,7 +8245,8 @@
           "attr6": "",
           "attr7": "",
           "attr8": "",
-          "attr9": ""
+          "attr9": "",
+          "baseType": "FC9790A7-36B8-4A48-8F9A-BC1042BCFE64"
         },
         {
           "defKey": "access_token_validity",
@@ -8021,7 +8272,8 @@
           "attr6": "",
           "attr7": "",
           "attr8": "",
-          "attr9": ""
+          "attr9": "",
+          "baseType": "1D764C4A-6F9F-421E-B11A-6F3E23B51811"
         },
         {
           "defKey": "refresh_token_validity",
@@ -8047,7 +8299,8 @@
           "attr6": "",
           "attr7": "",
           "attr8": "",
-          "attr9": ""
+          "attr9": "",
+          "baseType": "1D764C4A-6F9F-421E-B11A-6F3E23B51811"
         },
         {
           "defKey": "additional_information",
@@ -8073,7 +8326,8 @@
           "attr6": "",
           "attr7": "",
           "attr8": "",
-          "attr9": ""
+          "attr9": "",
+          "baseType": "B17BDED3-085F-40E1-9019-3B79CF2BF075"
         },
         {
           "defKey": "auto_approve",
@@ -8099,11 +8353,11 @@
           "attr6": "",
           "attr7": "",
           "attr8": "",
-          "attr9": ""
+          "attr9": "",
+          "baseType": "FC9790A7-36B8-4A48-8F9A-BC1042BCFE64"
         }
       ],
       "indexes": [],
-      "nameTemplate": "{defKey}[{defName}]",
       "headers": [
         {
           "refKey": "hideInGraph",
@@ -8232,7 +8486,11 @@
         }
       ],
       "correlations": [],
-      "notes": {}
+      "notes": {},
+      "type": "P",
+      "sysProps": {
+        "nameTemplate": "{defKey}[{defName}]"
+      }
     },
     {
       "id": "CF88EAAB-2120-4E41-A96C-4261D6FAF1B5",
@@ -8277,7 +8535,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "id",
@@ -8308,7 +8567,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "79CDCB0A-87D7-4E4F-AB10-6CCD57E8DD9B"
         },
         {
           "defKey": "creator_id",
@@ -8339,7 +8599,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "updater_id",
@@ -8370,7 +8631,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "create_time",
@@ -8401,7 +8663,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "89D69E81-EA34-42EE-9FA2-93B8BD27E098"
         },
         {
           "defKey": "update_time",
@@ -8432,7 +8695,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "89D69E81-EA34-42EE-9FA2-93B8BD27E098"
         },
         {
           "defKey": "del_flag",
@@ -8463,7 +8727,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "EAD52604-078D-41C0-BB9E-5284BB11674D"
         },
         {
           "defKey": "content",
@@ -8489,7 +8754,8 @@
           "attr6": "",
           "attr7": "",
           "attr8": "",
-          "attr9": ""
+          "attr9": "",
+          "baseType": "B17BDED3-085F-40E1-9019-3B79CF2BF075"
         },
         {
           "defKey": "md5",
@@ -8515,7 +8781,8 @@
           "attr6": "",
           "attr7": "",
           "attr8": "",
-          "attr9": ""
+          "attr9": "",
+          "baseType": "FC9790A7-36B8-4A48-8F9A-BC1042BCFE64"
         },
         {
           "defKey": "t_id",
@@ -8541,7 +8808,8 @@
           "attr6": "",
           "attr7": "",
           "attr8": "",
-          "attr9": ""
+          "attr9": "",
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "type",
@@ -8567,7 +8835,8 @@
           "attr6": "",
           "attr7": "",
           "attr8": "",
-          "attr9": ""
+          "attr9": "",
+          "baseType": "1D764C4A-6F9F-421E-B11A-6F3E23B51811"
         },
         {
           "defKey": "ipv4",
@@ -8593,7 +8862,8 @@
           "attr6": "",
           "attr7": "",
           "attr8": "",
-          "attr9": ""
+          "attr9": "",
+          "baseType": "FC9790A7-36B8-4A48-8F9A-BC1042BCFE64"
         },
         {
           "defKey": "edit_type",
@@ -8612,11 +8882,11 @@
           "domain": "6BC8F04B-6CFA-4995-98D3-318F5CDD774E",
           "id": "D026872A-DB90-4B75-86EA-0751D782CAD5",
           "isStandard": true,
-          "refStandard": "B55886C8-EC0B-4C0E-911E-83B8B1EA7846"
+          "refStandard": "B55886C8-EC0B-4C0E-911E-83B8B1EA7846",
+          "baseType": "1D764C4A-6F9F-421E-B11A-6F3E23B51811"
         }
       ],
       "indexes": [],
-      "nameTemplate": "{defKey}[{defName}]",
       "headers": [
         {
           "refKey": "hideInGraph",
@@ -8825,7 +9095,11 @@
         }
       ],
       "correlations": [],
-      "notes": {}
+      "notes": {},
+      "type": "P",
+      "sysProps": {
+        "nameTemplate": "{defKey}[{defName}]"
+      }
     },
     {
       "id": "7B12E746-FEFC-4700-A14D-E3A15C8F9D7A",
@@ -8846,7 +9120,6 @@
         "map keys terminated by ':'": "",
         "store as textfile;": ""
       },
-      "nameTemplate": "{defKey}[{defName}]",
       "notes": {},
       "headers": [
         {
@@ -8981,7 +9254,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "id",
@@ -9001,7 +9275,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "79CDCB0A-87D7-4E4F-AB10-6CCD57E8DD9B"
         },
         {
           "defKey": "creator_id",
@@ -9022,7 +9297,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "updater_id",
@@ -9043,7 +9319,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "create_time",
@@ -9064,7 +9341,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "89D69E81-EA34-42EE-9FA2-93B8BD27E098"
         },
         {
           "defKey": "update_time",
@@ -9085,7 +9363,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "89D69E81-EA34-42EE-9FA2-93B8BD27E098"
         },
         {
           "defKey": "del_flag",
@@ -9105,7 +9384,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "EAD52604-078D-41C0-BB9E-5284BB11674D"
         },
         {
           "defKey": "name",
@@ -9122,7 +9402,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "9092C4E0-1A54-4859-ABBB-5B62DBC27573",
-          "id": "71625322-0095-4203-BDBF-49ED0906DE5B"
+          "id": "71625322-0095-4203-BDBF-49ED0906DE5B",
+          "baseType": "FC9790A7-36B8-4A48-8F9A-BC1042BCFE64"
         },
         {
           "defKey": "slot_index",
@@ -9139,7 +9420,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "6BC8F04B-6CFA-4995-98D3-318F5CDD774E",
-          "id": "EF300CF7-A9A1-45B1-88FB-D20AF13D6C66"
+          "id": "EF300CF7-A9A1-45B1-88FB-D20AF13D6C66",
+          "baseType": "1D764C4A-6F9F-421E-B11A-6F3E23B51811"
         },
         {
           "defKey": "user_id",
@@ -9156,7 +9438,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "CE58D2F6-7F4B-4928-A0D1-9CD3BFF2D2B2",
-          "id": "AF841A33-CF67-4D0B-8AF4-F343DA457B7B"
+          "id": "AF841A33-CF67-4D0B-8AF4-F343DA457B7B",
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "data",
@@ -9173,7 +9456,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "F698B7AF-78D1-4C57-968A-4035DD5213C6",
-          "id": "A0974669-264A-41DE-8415-8C0C140028EE"
+          "id": "A0974669-264A-41DE-8415-8C0C140028EE",
+          "baseType": "72CAA11F-9DF2-4C28-B50F-8BE71ED17CED"
         }
       ],
       "correlations": [],
@@ -9192,7 +9476,11 @@
           ],
           "id": "D868B966-5FCD-472F-A907-1DBFFE1260FA"
         }
-      ]
+      ],
+      "type": "P",
+      "sysProps": {
+        "nameTemplate": "{defKey}[{defName}]"
+      }
     },
     {
       "id": "55852E65-BDCD-4834-B3FF-EC54844F4234",
@@ -9213,7 +9501,6 @@
         "map keys terminated by ':'": "",
         "store as textfile;": ""
       },
-      "nameTemplate": "{defKey}[{defName}]",
       "headers": [
         {
           "refKey": "hideInGraph",
@@ -9347,7 +9634,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "id",
@@ -9367,7 +9655,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "79CDCB0A-87D7-4E4F-AB10-6CCD57E8DD9B"
         },
         {
           "defKey": "creator_id",
@@ -9388,7 +9677,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "updater_id",
@@ -9409,7 +9699,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "create_time",
@@ -9430,7 +9721,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "89D69E81-EA34-42EE-9FA2-93B8BD27E098"
         },
         {
           "defKey": "update_time",
@@ -9451,7 +9743,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "89D69E81-EA34-42EE-9FA2-93B8BD27E098"
         },
         {
           "defKey": "del_flag",
@@ -9471,7 +9764,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "EAD52604-078D-41C0-BB9E-5284BB11674D"
         },
         {
           "defKey": "name",
@@ -9488,7 +9782,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "9092C4E0-1A54-4859-ABBB-5B62DBC27573",
-          "id": "9CFEE123-60C1-4447-ABD3-755A650A4A73"
+          "id": "9CFEE123-60C1-4447-ABD3-755A650A4A73",
+          "baseType": "FC9790A7-36B8-4A48-8F9A-BC1042BCFE64"
         },
         {
           "defKey": "content",
@@ -9505,7 +9800,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "9092C4E0-1A54-4859-ABBB-5B62DBC27573",
-          "id": "B0AC63E8-C022-44AA-8615-A3034A513CB7"
+          "id": "B0AC63E8-C022-44AA-8615-A3034A513CB7",
+          "baseType": "FC9790A7-36B8-4A48-8F9A-BC1042BCFE64"
         },
         {
           "defKey": "marker_list",
@@ -9522,7 +9818,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "F698B7AF-78D1-4C57-968A-4035DD5213C6",
-          "id": "88C0DD4E-9FF4-4E78-8707-6291812B9FDF"
+          "id": "88C0DD4E-9FF4-4E78-8707-6291812B9FDF",
+          "baseType": "72CAA11F-9DF2-4C28-B50F-8BE71ED17CED"
         },
         {
           "defKey": "hidden_flag",
@@ -9539,7 +9836,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "6BC8F04B-6CFA-4995-98D3-318F5CDD774E",
-          "id": "6535FCB5-D34D-45E4-9F51-9D6E5D0B4A9C"
+          "id": "6535FCB5-D34D-45E4-9F51-9D6E5D0B4A9C",
+          "baseType": "1D764C4A-6F9F-421E-B11A-6F3E23B51811"
         },
         {
           "defKey": "video",
@@ -9556,7 +9854,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "3E948CEC-3070-472C-AF92-F3CA11EC9D15",
-          "id": "D42CFD5F-272F-4971-98C5-FEBE184864DE"
+          "id": "D42CFD5F-272F-4971-98C5-FEBE184864DE",
+          "baseType": "B17BDED3-085F-40E1-9019-3B79CF2BF075"
         },
         {
           "defKey": "extra",
@@ -9573,7 +9872,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "F698B7AF-78D1-4C57-968A-4035DD5213C6",
-          "id": "F88BACC6-31F8-4FCB-BED4-A23494CA2E5A"
+          "id": "F88BACC6-31F8-4FCB-BED4-A23494CA2E5A",
+          "baseType": "72CAA11F-9DF2-4C28-B50F-8BE71ED17CED"
         },
         {
           "defKey": "creator_nickname",
@@ -9590,12 +9890,17 @@
           "refDict": "",
           "extProps": {},
           "domain": "9092C4E0-1A54-4859-ABBB-5B62DBC27573",
-          "id": "D8FFFD63-C98A-42C9-A41E-0062DDC35793"
+          "id": "D8FFFD63-C98A-42C9-A41E-0062DDC35793",
+          "baseType": "FC9790A7-36B8-4A48-8F9A-BC1042BCFE64"
         }
       ],
       "correlations": [],
       "indexes": [],
-      "notes": {}
+      "notes": {},
+      "type": "P",
+      "sysProps": {
+        "nameTemplate": "{defKey}[{defName}]"
+      }
     },
     {
       "id": "A2F64890-766E-485D-9127-38AFE0343775",
@@ -9616,7 +9921,6 @@
         "map keys terminated by ':'": "",
         "store as textfile;": ""
       },
-      "nameTemplate": "{defKey}[{defName}]",
       "headers": [
         {
           "refKey": "hideInGraph",
@@ -9750,7 +10054,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "id",
@@ -9770,7 +10075,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "79CDCB0A-87D7-4E4F-AB10-6CCD57E8DD9B"
         },
         {
           "defKey": "creator_id",
@@ -9791,7 +10097,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "updater_id",
@@ -9812,7 +10119,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "create_time",
@@ -9833,7 +10141,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "89D69E81-EA34-42EE-9FA2-93B8BD27E098"
         },
         {
           "defKey": "update_time",
@@ -9854,7 +10163,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "89D69E81-EA34-42EE-9FA2-93B8BD27E098"
         },
         {
           "defKey": "del_flag",
@@ -9874,7 +10184,8 @@
           "notes": {
             "fontColor": "#d37a11",
             "tags": []
-          }
+          },
+          "baseType": "EAD52604-078D-41C0-BB9E-5284BB11674D"
         },
         {
           "defKey": "scope",
@@ -9892,7 +10203,8 @@
           "refDict": "",
           "extProps": {},
           "id": "A0170240-AC32-442B-AB3E-83DB8DECAD55",
-          "isStandard": true
+          "isStandard": true,
+          "baseType": "FC9790A7-36B8-4A48-8F9A-BC1042BCFE64"
         },
         {
           "defKey": "span",
@@ -9910,7 +10222,8 @@
           "refDict": "",
           "extProps": {},
           "id": "E1F97265-6850-48F8-A5CF-91CB03DED6B6",
-          "isStandard": true
+          "isStandard": true,
+          "baseType": "FC9790A7-36B8-4A48-8F9A-BC1042BCFE64"
         },
         {
           "defKey": "span_start_time",
@@ -9927,7 +10240,8 @@
           "hideInGraph": false,
           "refDict": "",
           "uiHint": "",
-          "id": "EE3F6546-BB9F-4569-98C5-74D488DCF2FF"
+          "id": "EE3F6546-BB9F-4569-98C5-74D488DCF2FF",
+          "baseType": "89D69E81-EA34-42EE-9FA2-93B8BD27E098"
         },
         {
           "defKey": "span_end_time",
@@ -9944,7 +10258,8 @@
           "domain": "7CFFA0D3-6A93-4DDC-BC10-DF21211064DC",
           "refDict": "",
           "extProps": {},
-          "id": "0B5D82CE-4A4E-4996-82C7-04B13226E2E2"
+          "id": "0B5D82CE-4A4E-4996-82C7-04B13226E2E2",
+          "baseType": "89D69E81-EA34-42EE-9FA2-93B8BD27E098"
         },
         {
           "defKey": "user_id",
@@ -9962,7 +10277,8 @@
           "refDict": "",
           "extProps": {},
           "id": "7444C2F5-52AC-4DF8-A6D1-CA65461F0216",
-          "isStandard": true
+          "isStandard": true,
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "content",
@@ -9980,7 +10296,8 @@
           "refDict": "",
           "extProps": {},
           "id": "87DCD6CB-D5EB-4E1A-9EE6-25660AD676B5",
-          "isStandard": true
+          "isStandard": true,
+          "baseType": "72CAA11F-9DF2-4C28-B50F-8BE71ED17CED"
         }
       ],
       "correlations": [],
@@ -10020,7 +10337,11 @@
           "id": "2514246B-E8C0-472F-9B30-05E0D566A09C"
         }
       ],
-      "notes": {}
+      "notes": {},
+      "type": "P",
+      "sysProps": {
+        "nameTemplate": "{defKey}[{defName}]"
+      }
     },
     {
       "id": "609D6D47-DE10-4B25-99BC-52020531A573",
@@ -10041,7 +10362,6 @@
         "map keys terminated by ':'": "",
         "store as textfile;": ""
       },
-      "nameTemplate": "{defKey}[{defName}]",
       "notes": {},
       "headers": [
         {
@@ -10189,7 +10509,8 @@
             "fontColor": "#d37a11",
             "tags": []
           },
-          "id": "4EE8351D-4971-44C6-A2DB-894722DECE85"
+          "id": "4EE8351D-4971-44C6-A2DB-894722DECE85",
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "id",
@@ -10210,7 +10531,8 @@
             "fontColor": "#d37a11",
             "tags": []
           },
-          "id": "B11E6DD3-9B83-4104-9E5D-6EF39176DD0F"
+          "id": "B11E6DD3-9B83-4104-9E5D-6EF39176DD0F",
+          "baseType": "79CDCB0A-87D7-4E4F-AB10-6CCD57E8DD9B"
         },
         {
           "defKey": "creator_id",
@@ -10231,7 +10553,8 @@
             "fontColor": "#d37a11",
             "tags": []
           },
-          "id": "98E0934B-371E-4162-9835-76ADA5301716"
+          "id": "98E0934B-371E-4162-9835-76ADA5301716",
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "updater_id",
@@ -10252,7 +10575,8 @@
             "fontColor": "#d37a11",
             "tags": []
           },
-          "id": "FEC2D208-686A-447A-9917-3B5DDD86903A"
+          "id": "FEC2D208-686A-447A-9917-3B5DDD86903A",
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "create_time",
@@ -10273,7 +10597,8 @@
             "fontColor": "#d37a11",
             "tags": []
           },
-          "id": "EB4B3D70-2B95-45E5-B5B4-82D9B69E1698"
+          "id": "EB4B3D70-2B95-45E5-B5B4-82D9B69E1698",
+          "baseType": "89D69E81-EA34-42EE-9FA2-93B8BD27E098"
         },
         {
           "defKey": "update_time",
@@ -10294,7 +10619,8 @@
             "fontColor": "#d37a11",
             "tags": []
           },
-          "id": "2065C690-2009-4E2A-99EE-1C32F88F4833"
+          "id": "2065C690-2009-4E2A-99EE-1C32F88F4833",
+          "baseType": "89D69E81-EA34-42EE-9FA2-93B8BD27E098"
         },
         {
           "defKey": "del_flag",
@@ -10315,7 +10641,8 @@
             "fontColor": "#d37a11",
             "tags": []
           },
-          "id": "14068041-0890-4407-942C-C9B284E1DD3F"
+          "id": "14068041-0890-4407-942C-C9B284E1DD3F",
+          "baseType": "EAD52604-078D-41C0-BB9E-5284BB11674D"
         },
         {
           "defKey": "channel",
@@ -10327,13 +10654,14 @@
           "primaryKey": false,
           "notNull": true,
           "autoIncrement": false,
-          "defaultValue": "''",
+          "defaultValue": "'[]'::json",
           "hideInGraph": false,
-          "domain": "9092C4E0-1A54-4859-ABBB-5B62DBC27573",
+          "domain": "F698B7AF-78D1-4C57-968A-4035DD5213C6",
           "refDict": "",
           "extProps": {},
           "id": "E758904F-DD1E-4256-8F9F-310C0C457023",
-          "isStandard": true
+          "isStandard": true,
+          "baseType": "72CAA11F-9DF2-4C28-B50F-8BE71ED17CED"
         },
         {
           "defKey": "title",
@@ -10351,7 +10679,8 @@
           "refDict": "",
           "extProps": {},
           "id": "F1E01ABE-47CC-44EC-98AC-6BE864D426B0",
-          "isStandard": true
+          "isStandard": true,
+          "baseType": "FC9790A7-36B8-4A48-8F9A-BC1042BCFE64"
         },
         {
           "defKey": "content",
@@ -10370,7 +10699,8 @@
           "extProps": {},
           "id": "D73975F2-232E-4303-891C-066701776D2D",
           "isStandard": true,
-          "refStandard": "2A9A19C6-5B86-460E-A426-B0548D71F137"
+          "refStandard": "2A9A19C6-5B86-460E-A426-B0548D71F137",
+          "baseType": "B17BDED3-085F-40E1-9019-3B79CF2BF075"
         },
         {
           "defKey": "valid_time_start",
@@ -10388,7 +10718,8 @@
           "refDict": "",
           "extProps": {},
           "id": "9D3CC939-9A36-49B1-9928-61410D51330A",
-          "isStandard": true
+          "isStandard": true,
+          "baseType": "89D69E81-EA34-42EE-9FA2-93B8BD27E098"
         },
         {
           "defKey": "valid_time_end",
@@ -10406,11 +10737,16 @@
           "refDict": "",
           "extProps": {},
           "id": "D57DE565-0BB9-4450-B86D-D4FF956D7FB2",
-          "isStandard": true
+          "isStandard": true,
+          "baseType": "89D69E81-EA34-42EE-9FA2-93B8BD27E098"
         }
       ],
       "correlations": [],
-      "indexes": []
+      "indexes": [],
+      "type": "P",
+      "sysProps": {
+        "nameTemplate": "{defKey}[{defName}]"
+      }
     },
     {
       "id": "5E31E208-66AD-4B3A-B1A0-63828FF56073",
@@ -10424,7 +10760,6 @@
       "defName": "点位关联",
       "comment": "",
       "properties": {},
-      "nameTemplate": "{defKey}[{defName}]",
       "notes": {},
       "headers": [
         {
@@ -10572,7 +10907,8 @@
             "fontColor": "#d37a11",
             "tags": []
           },
-          "id": "80412254-9331-4485-99A3-E527028C32F1"
+          "id": "80412254-9331-4485-99A3-E527028C32F1",
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "id",
@@ -10593,7 +10929,8 @@
             "fontColor": "#d37a11",
             "tags": []
           },
-          "id": "695D72C5-EA2E-414D-A209-900C54A90C99"
+          "id": "695D72C5-EA2E-414D-A209-900C54A90C99",
+          "baseType": "79CDCB0A-87D7-4E4F-AB10-6CCD57E8DD9B"
         },
         {
           "defKey": "creator_id",
@@ -10614,7 +10951,8 @@
             "fontColor": "#d37a11",
             "tags": []
           },
-          "id": "F98BF12D-5CCF-42B7-BAC2-A643971EC8DF"
+          "id": "F98BF12D-5CCF-42B7-BAC2-A643971EC8DF",
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "updater_id",
@@ -10635,7 +10973,8 @@
             "fontColor": "#d37a11",
             "tags": []
           },
-          "id": "B490E754-FD56-401A-A2CA-DBC77D85D717"
+          "id": "B490E754-FD56-401A-A2CA-DBC77D85D717",
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "create_time",
@@ -10656,7 +10995,8 @@
             "fontColor": "#d37a11",
             "tags": []
           },
-          "id": "AE27F8E9-14A6-426B-9184-D4343A9ED227"
+          "id": "AE27F8E9-14A6-426B-9184-D4343A9ED227",
+          "baseType": "89D69E81-EA34-42EE-9FA2-93B8BD27E098"
         },
         {
           "defKey": "update_time",
@@ -10677,7 +11017,8 @@
             "fontColor": "#d37a11",
             "tags": []
           },
-          "id": "E7CA6A9D-681E-4E4A-8BEB-48F6599847B9"
+          "id": "E7CA6A9D-681E-4E4A-8BEB-48F6599847B9",
+          "baseType": "89D69E81-EA34-42EE-9FA2-93B8BD27E098"
         },
         {
           "defKey": "del_flag",
@@ -10698,7 +11039,8 @@
             "fontColor": "#d37a11",
             "tags": []
           },
-          "id": "73CFA802-69B9-45B1-BD2C-706DF59AFB90"
+          "id": "73CFA802-69B9-45B1-BD2C-706DF59AFB90",
+          "baseType": "EAD52604-078D-41C0-BB9E-5284BB11674D"
         },
         {
           "defKey": "group_id",
@@ -10715,7 +11057,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "54611CCC-CA4B-42E1-9F32-4944C85B85A6",
-          "id": "47B38692-5B68-4EBF-8425-D608BE5E725A"
+          "id": "47B38692-5B68-4EBF-8425-D608BE5E725A",
+          "baseType": "FC9790A7-36B8-4A48-8F9A-BC1042BCFE64"
         },
         {
           "defKey": "from_id",
@@ -10732,7 +11075,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "CE58D2F6-7F4B-4928-A0D1-9CD3BFF2D2B2",
-          "id": "F95E2C86-745C-457E-8E45-256C7047BFC7"
+          "id": "F95E2C86-745C-457E-8E45-256C7047BFC7",
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "to_id",
@@ -10749,7 +11093,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "CE58D2F6-7F4B-4928-A0D1-9CD3BFF2D2B2",
-          "id": "420009B4-B147-4994-8A73-DF763A2CBC9B"
+          "id": "420009B4-B147-4994-8A73-DF763A2CBC9B",
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "link_action",
@@ -10766,7 +11111,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "9092C4E0-1A54-4859-ABBB-5B62DBC27573",
-          "id": "DFA0A159-7944-435C-A5EB-219B0D4793F0"
+          "id": "DFA0A159-7944-435C-A5EB-219B0D4793F0",
+          "baseType": "FC9790A7-36B8-4A48-8F9A-BC1042BCFE64"
         },
         {
           "defKey": "link_reverse",
@@ -10783,7 +11129,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "6F7C1C5C-D159-41E6-BF9D-54DEEFA79AFF",
-          "id": "226A60A7-C4FF-4D91-B49F-62D0623F0DDE"
+          "id": "226A60A7-C4FF-4D91-B49F-62D0623F0DDE",
+          "baseType": "EAD52604-078D-41C0-BB9E-5284BB11674D"
         },
         {
           "defKey": "path",
@@ -10800,7 +11147,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "F698B7AF-78D1-4C57-968A-4035DD5213C6",
-          "id": "E12845DA-1AC9-42E1-B980-F31C31031C00"
+          "id": "E12845DA-1AC9-42E1-B980-F31C31031C00",
+          "baseType": "72CAA11F-9DF2-4C28-B50F-8BE71ED17CED"
         },
         {
           "defKey": "extra",
@@ -10817,11 +11165,16 @@
           "refDict": "",
           "extProps": {},
           "domain": "F698B7AF-78D1-4C57-968A-4035DD5213C6",
-          "id": "07EF61F9-9835-443F-AB59-BC509A2979AD"
+          "id": "07EF61F9-9835-443F-AB59-BC509A2979AD",
+          "baseType": "72CAA11F-9DF2-4C28-B50F-8BE71ED17CED"
         }
       ],
       "correlations": [],
-      "indexes": []
+      "indexes": [],
+      "type": "P",
+      "sysProps": {
+        "nameTemplate": "{defKey}[{defName}]"
+      }
     }
   ],
   "views": [],
@@ -11560,7 +11913,8 @@
           "domain": "CE58D2F6-7F4B-4928-A0D1-9CD3BFF2D2B2",
           "refDict": "",
           "extProps": {},
-          "id": "B5156457-802E-4677-BDE2-94C6DD13219D"
+          "id": "B5156457-802E-4677-BDE2-94C6DD13219D",
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "id",
@@ -11577,7 +11931,8 @@
           "domain": "16120F75-6AA7-4483-868D-F07F511BB081",
           "refDict": "",
           "extProps": {},
-          "id": "1B33970C-D3D2-455E-972A-AF528837B67E"
+          "id": "1B33970C-D3D2-455E-972A-AF528837B67E",
+          "baseType": "79CDCB0A-87D7-4E4F-AB10-6CCD57E8DD9B"
         },
         {
           "defKey": "creator_id",
@@ -11594,7 +11949,8 @@
           "domain": "CE58D2F6-7F4B-4928-A0D1-9CD3BFF2D2B2",
           "refDict": "",
           "extProps": {},
-          "id": "CC3CE575-B95C-4FAD-A628-F7660B594700"
+          "id": "CC3CE575-B95C-4FAD-A628-F7660B594700",
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "updater_id",
@@ -11611,7 +11967,8 @@
           "domain": "CE58D2F6-7F4B-4928-A0D1-9CD3BFF2D2B2",
           "refDict": "",
           "extProps": {},
-          "id": "48C62101-58A7-46E6-B980-CAAEEF969966"
+          "id": "48C62101-58A7-46E6-B980-CAAEEF969966",
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "create_time",
@@ -11628,7 +11985,8 @@
           "domain": "7CFFA0D3-6A93-4DDC-BC10-DF21211064DC",
           "refDict": "",
           "extProps": {},
-          "id": "BDB69534-81C1-4492-9A4D-86A3810E4B42"
+          "id": "BDB69534-81C1-4492-9A4D-86A3810E4B42",
+          "baseType": "89D69E81-EA34-42EE-9FA2-93B8BD27E098"
         },
         {
           "defKey": "update_time",
@@ -11645,7 +12003,8 @@
           "domain": "7CFFA0D3-6A93-4DDC-BC10-DF21211064DC",
           "refDict": "",
           "extProps": {},
-          "id": "EE7D8EB6-A34A-4F95-AFC2-3472670F8AB3"
+          "id": "EE7D8EB6-A34A-4F95-AFC2-3472670F8AB3",
+          "baseType": "89D69E81-EA34-42EE-9FA2-93B8BD27E098"
         },
         {
           "defKey": "del_flag",
@@ -11662,7 +12021,8 @@
           "domain": "6F7C1C5C-D159-41E6-BF9D-54DEEFA79AFF",
           "refDict": "",
           "extProps": {},
-          "id": "804B0BDD-FFAA-4EFF-AE6C-C8DE3DB996BA"
+          "id": "804B0BDD-FFAA-4EFF-AE6C-C8DE3DB996BA",
+          "baseType": "EAD52604-078D-41C0-BB9E-5284BB11674D"
         }
       ],
       "id": "FB4D7249-D853-4A4A-BABE-5DC7CA0D4FC1"
@@ -11686,7 +12046,8 @@
           "domain": "9092C4E0-1A54-4859-ABBB-5B62DBC27573",
           "refDict": "",
           "extProps": {},
-          "id": "DF8D8421-6E8E-43A2-9A7F-926DB5613CBC"
+          "id": "DF8D8421-6E8E-43A2-9A7F-926DB5613CBC",
+          "baseType": "FC9790A7-36B8-4A48-8F9A-BC1042BCFE64"
         },
         {
           "defKey": "content",
@@ -11703,7 +12064,8 @@
           "domain": "3E948CEC-3070-472C-AF92-F3CA11EC9D15",
           "refDict": "",
           "extProps": {},
-          "id": "2A9A19C6-5B86-460E-A426-B0548D71F137"
+          "id": "2A9A19C6-5B86-460E-A426-B0548D71F137",
+          "baseType": "B17BDED3-085F-40E1-9019-3B79CF2BF075"
         },
         {
           "defKey": "enum",
@@ -11720,7 +12082,8 @@
           "refDict": "",
           "extProps": {},
           "domain": "6BC8F04B-6CFA-4995-98D3-318F5CDD774E",
-          "id": "B55886C8-EC0B-4C0E-911E-83B8B1EA7846"
+          "id": "B55886C8-EC0B-4C0E-911E-83B8B1EA7846",
+          "baseType": "1D764C4A-6F9F-421E-B11A-6F3E23B51811"
         },
         {
           "defKey": "link_id",
@@ -11737,7 +12100,8 @@
           "domain": "CE58D2F6-7F4B-4928-A0D1-9CD3BFF2D2B2",
           "refDict": "",
           "extProps": {},
-          "id": "7658E05E-80BA-43BA-8907-FF60343C543F"
+          "id": "7658E05E-80BA-43BA-8907-FF60343C543F",
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "count",
@@ -11754,7 +12118,8 @@
           "domain": "6BC8F04B-6CFA-4995-98D3-318F5CDD774E",
           "refDict": "",
           "extProps": {},
-          "id": "C4875ED1-BEC1-494C-B8B4-4F962BCB4552"
+          "id": "C4875ED1-BEC1-494C-B8B4-4F962BCB4552",
+          "baseType": "1D764C4A-6F9F-421E-B11A-6F3E23B51811"
         },
         {
           "defKey": "url",
@@ -11771,7 +12136,8 @@
           "domain": "3E948CEC-3070-472C-AF92-F3CA11EC9D15",
           "refDict": "",
           "extProps": {},
-          "id": "477540CE-805E-48C5-B4E8-D9A03276E72C"
+          "id": "477540CE-805E-48C5-B4E8-D9A03276E72C",
+          "baseType": "B17BDED3-085F-40E1-9019-3B79CF2BF075"
         },
         {
           "defKey": "time",
@@ -11788,7 +12154,8 @@
           "domain": "7CFFA0D3-6A93-4DDC-BC10-DF21211064DC",
           "refDict": "",
           "extProps": {},
-          "id": "38656D6A-97E7-4F6B-B34F-7EC533983424"
+          "id": "38656D6A-97E7-4F6B-B34F-7EC533983424",
+          "baseType": "89D69E81-EA34-42EE-9FA2-93B8BD27E098"
         },
         {
           "defKey": "parent_id",
@@ -11805,7 +12172,8 @@
           "domain": "CE58D2F6-7F4B-4928-A0D1-9CD3BFF2D2B2",
           "refDict": "",
           "extProps": {},
-          "id": "7CECA3CC-1597-489A-8145-27E5DF6F7B6B"
+          "id": "7CECA3CC-1597-489A-8145-27E5DF6F7B6B",
+          "baseType": "5FAB1A52-D1C5-4157-A9EE-4DBB226A5382"
         },
         {
           "defKey": "is_final",
@@ -11822,7 +12190,8 @@
           "domain": "6F7C1C5C-D159-41E6-BF9D-54DEEFA79AFF",
           "refDict": "",
           "extProps": {},
-          "id": "15C53AA7-6FF9-44D0-BC9E-9F5F47AB8743"
+          "id": "15C53AA7-6FF9-44D0-BC9E-9F5F47AB8743",
+          "baseType": "EAD52604-078D-41C0-BB9E-5284BB11674D"
         },
         {
           "defKey": "sort_index",
@@ -11839,7 +12208,8 @@
           "domain": "6BC8F04B-6CFA-4995-98D3-318F5CDD774E",
           "refDict": "",
           "extProps": {},
-          "id": "C154F1BC-D5F6-46CF-BC61-7D80E41E8BF5"
+          "id": "C154F1BC-D5F6-46CF-BC61-7D80E41E8BF5",
+          "baseType": "1D764C4A-6F9F-421E-B11A-6F3E23B51811"
         },
         {
           "defKey": "extra",
@@ -11856,7 +12226,8 @@
           "domain": "F698B7AF-78D1-4C57-968A-4035DD5213C6",
           "refDict": "",
           "extProps": {},
-          "id": "E0B55597-7653-49C9-93E6-8546A2C93B4D"
+          "id": "E0B55597-7653-49C9-93E6-8546A2C93B4D",
+          "baseType": "72CAA11F-9DF2-4C28-B50F-8BE71ED17CED"
         },
         {
           "defKey": "special_flag",
@@ -11873,7 +12244,8 @@
           "domain": "6BC8F04B-6CFA-4995-98D3-318F5CDD774E",
           "refDict": "",
           "extProps": {},
-          "id": "2EEE80BD-4AA3-4290-9AAF-CF93CE678F6A"
+          "id": "2EEE80BD-4AA3-4290-9AAF-CF93CE678F6A",
+          "baseType": "1D764C4A-6F9F-421E-B11A-6F3E23B51811"
         }
       ],
       "id": "80ED4DA8-6AA6-4C41-A3A8-2F14B499AA8C"

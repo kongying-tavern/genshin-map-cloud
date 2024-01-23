@@ -1,16 +1,12 @@
 package site.yuanshen.data.entity;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.annotation.Version;
+import com.baomidou.mybatisplus.annotation.*;
+import lombok.*;
+import site.yuanshen.data.base.BaseEntity;
+import site.yuanshen.handler.MBPJsonArrayTypeHandler;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import site.yuanshen.data.base.BaseEntity;
-import lombok.*;
+import java.util.List;
 
 /**
  * 消息通知
@@ -22,7 +18,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-@TableName("notice")
+@TableName(value = "notice", autoResultMap = true)
 public class Notice extends BaseEntity {
 
     /**
@@ -53,8 +49,8 @@ public class Notice extends BaseEntity {
     /**
      * 频道
      */
-    @TableField("channel")
-    private String channel;
+    @TableField(value = "channel", typeHandler = MBPJsonArrayTypeHandler.class)
+    private List<String> channel;
 
     /**
      * 标题
