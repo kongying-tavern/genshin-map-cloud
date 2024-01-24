@@ -133,12 +133,11 @@ public class NoticeService {
             throw new GenshinApiException("公告频道不能为空");
         }
 
-        return 1 == noticeMapper.update(
-            noticeDto.getEntity(),
-            Wrappers.<Notice>lambdaUpdate()
-                .set(Notice::getValidTimeStart, noticeDto.getValidTimeStart())
-                .set(Notice::getValidTimeEnd, noticeDto.getValidTimeEnd())
-                .eq(Notice::getId, noticeDto.getId()));
+        final Notice notice = noticeDto.getEntity();
+        notice.setValidTimeStart(noticeDto.getValidTimeStart());
+        notice.setValidTimeEnd(noticeDto.getValidTimeEnd());
+
+        return 1 == noticeMapper.update(notice, Wrappers.<Notice>lambdaUpdate().eq(Notice::getId, noticeDto.getId()));
     }
 
     @Transactional
