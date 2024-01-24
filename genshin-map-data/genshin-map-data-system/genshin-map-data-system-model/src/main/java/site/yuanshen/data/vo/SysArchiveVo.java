@@ -25,7 +25,6 @@ public class SysArchiveVo {
      * 存档时间
      */
     @Schema(title = "存档时间")
-    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime time;
 
     /**

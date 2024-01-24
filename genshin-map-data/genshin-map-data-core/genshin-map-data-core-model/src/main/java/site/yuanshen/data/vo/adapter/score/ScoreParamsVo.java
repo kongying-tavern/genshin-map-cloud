@@ -1,5 +1,6 @@
 package site.yuanshen.data.vo.adapter.score;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -32,12 +33,14 @@ public class ScoreParamsVo {
      * 开始时间
      */
     @Schema(title = "开始时间")
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
     private Timestamp startTime;
 
     /**
      * 结束时间
      */
     @Schema(title = "结束时间")
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
     private Timestamp endTime;
 
     /**

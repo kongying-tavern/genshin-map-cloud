@@ -1,6 +1,7 @@
 package site.yuanshen.data.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import site.yuanshen.data.base.BaseEntity;
 import site.yuanshen.handler.MBPJsonObjectTypeHandler;
@@ -45,6 +46,7 @@ public class ScoreStat extends BaseEntity {
      * 更新时间
      */
     @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
     private Timestamp updateTime;
 
     /**

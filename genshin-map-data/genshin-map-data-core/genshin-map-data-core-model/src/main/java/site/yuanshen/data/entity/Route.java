@@ -1,13 +1,13 @@
 package site.yuanshen.data.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import site.yuanshen.data.base.BaseEntity;
 import site.yuanshen.handler.MBPJsonArrayTypeHandler;
 import site.yuanshen.handler.MBPJsonObjectTypeHandler;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -47,6 +47,7 @@ public class Route extends BaseEntity {
      * 更新时间
      */
     @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
     private Timestamp updateTime;
 
     /**

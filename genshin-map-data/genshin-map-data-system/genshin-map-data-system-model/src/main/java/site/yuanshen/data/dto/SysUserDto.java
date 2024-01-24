@@ -1,16 +1,18 @@
 package site.yuanshen.data.dto;
 
-import com.baomidou.mybatisplus.annotation.TableField;
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
 import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.With;
 import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.entity.SysUser;
 import site.yuanshen.data.vo.SysUserRegisterVo;
 import site.yuanshen.data.vo.SysUserVo;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 
 
 /**
@@ -43,6 +45,7 @@ public class SysUserDto {
     /**
      * 更新时间
      */
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
     private Timestamp updateTime;
 
     /**

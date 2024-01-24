@@ -1,6 +1,7 @@
 package site.yuanshen.data.dto;
 
 import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -44,6 +45,7 @@ public class NoticeDto {
     /**
      * 更新时间
      */
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
     private Timestamp updateTime;
 
     /**
@@ -64,13 +66,13 @@ public class NoticeDto {
     /**
      * 有效期开始时间
      */
-    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
     private Timestamp validTimeStart;
 
     /**
      * 有效期结束时间
      */
-    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
     private Timestamp validTimeEnd;
 
     public NoticeDto(Notice notice) {

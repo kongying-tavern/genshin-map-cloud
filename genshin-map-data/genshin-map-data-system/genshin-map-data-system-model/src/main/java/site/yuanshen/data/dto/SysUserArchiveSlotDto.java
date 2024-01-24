@@ -2,6 +2,7 @@ package site.yuanshen.data.dto;
 
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson2.JSONArray;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,7 +15,6 @@ import site.yuanshen.data.vo.SysArchiveSlotVo;
 import site.yuanshen.data.vo.SysArchiveVo;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -44,11 +44,13 @@ public class SysUserArchiveSlotDto {
     /**
      * 创建时间
      */
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
     private Timestamp createTime;
 
     /**
      * 更新时间
      */
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
     private Timestamp updateTime;
 
     /**

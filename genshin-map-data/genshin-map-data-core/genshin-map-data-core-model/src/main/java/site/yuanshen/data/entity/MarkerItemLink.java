@@ -1,16 +1,11 @@
 package site.yuanshen.data.entity;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.annotation.Version;
+import com.baomidou.mybatisplus.annotation.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.*;
+import site.yuanshen.data.base.BaseEntity;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import site.yuanshen.data.base.BaseEntity;
-import lombok.*;
 
 /**
  * 点位-物品关联表
@@ -48,6 +43,7 @@ public class MarkerItemLink extends BaseEntity {
      * 更新时间
      */
     @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
     private Timestamp updateTime;
 
     /**

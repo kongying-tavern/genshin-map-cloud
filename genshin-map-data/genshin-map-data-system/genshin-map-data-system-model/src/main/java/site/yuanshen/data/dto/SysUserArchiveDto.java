@@ -1,7 +1,7 @@
 package site.yuanshen.data.dto;
 
 import cn.hutool.core.util.StrUtil;
-import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,6 +29,7 @@ public class SysUserArchiveDto {
     /**
      * 存档时间
      */
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
     private Timestamp time;
 
     /**

@@ -44,7 +44,7 @@ public class NoticeService {
         final Page<Notice> result = noticeMapper.selectPage(
             noticeSearchDto.getPageEntity().setOptimizeCountSql(false),
             Wrappers.<Notice>lambdaQuery()
-                .apply(String.format("(channel::jsonb) ??| array[%s]", channelArrStr))
+                .apply(StrUtil.isNotBlank(channelArrStr), String.format("(channel::jsonb) ??| array[%s]", channelArrStr))
                 .like(StrUtil.isNotBlank(noticeSearchDto.getTitle()), Notice::getTitle, noticeSearchDto.getTitle())
                 .nested(isValid != null, cwValid -> {
                     final Timestamp ts = TimeUtils.getCurrentTimestamp();
@@ -133,12 +133,11 @@ public class NoticeService {
             throw new GenshinApiException("公告频道不能为空");
         }
 
-        return 1 == noticeMapper.update(
-            noticeDto.getEntity(),
-            Wrappers.<Notice>lambdaUpdate()
-                .set(Notice::getValidTimeStart, noticeDto.getValidTimeStart())
-                .set(Notice::getValidTimeEnd, noticeDto.getValidTimeEnd())
-                .eq(Notice::getId, noticeDto.getId()));
+        final Notice notice = noticeDto.getEntity();
+        notice.setValidTimeStart(noticeDto.getValidTimeStart());
+        notice.setValidTimeEnd(noticeDto.getValidTimeEnd());
+
+        return 1 == noticeMapper.update(notice, Wrappers.<Notice>lambdaUpdate().eq(Notice::getId, noticeDto.getId()));
     }
 
     @Transactional
