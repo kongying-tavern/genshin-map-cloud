@@ -44,7 +44,7 @@ public class NoticeService {
         final Page<Notice> result = noticeMapper.selectPage(
             noticeSearchDto.getPageEntity().setOptimizeCountSql(false),
             Wrappers.<Notice>lambdaQuery()
-                .apply(String.format("(channel::jsonb) ??| array[%s]", channelArrStr))
+                .apply(StrUtil.isNotBlank(channelArrStr), String.format("(channel::jsonb) ??| array[%s]", channelArrStr))
                 .like(StrUtil.isNotBlank(noticeSearchDto.getTitle()), Notice::getTitle, noticeSearchDto.getTitle())
                 .nested(isValid != null, cwValid -> {
                     final Timestamp ts = TimeUtils.getCurrentTimestamp();
