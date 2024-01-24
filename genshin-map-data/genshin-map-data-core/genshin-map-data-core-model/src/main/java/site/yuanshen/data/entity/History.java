@@ -2,12 +2,12 @@ package site.yuanshen.data.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.baomidou.mybatisplus.core.handlers.MybatisEnumTypeHandler;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import site.yuanshen.data.base.BaseEntity;
 import site.yuanshen.data.enums.HistoryEditType;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 
 /**
  * 历史操作表
@@ -45,6 +45,7 @@ public class History extends BaseEntity {
      * 更新时间
      */
     @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
     private Timestamp updateTime;
 
     /**

@@ -1,5 +1,6 @@
 package site.yuanshen.data.vo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,7 +9,6 @@ import lombok.With;
 import site.yuanshen.data.vo.adapter.marker.linkage.PathEdgeVo;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -46,6 +46,7 @@ public class MarkerLinkageVo {
      * 更新时间
      */
     @Schema(title = "更新时间")
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
     private Timestamp updateTime;
 
     /**

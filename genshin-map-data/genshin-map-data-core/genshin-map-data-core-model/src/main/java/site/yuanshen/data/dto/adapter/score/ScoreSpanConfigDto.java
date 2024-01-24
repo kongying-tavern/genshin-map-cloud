@@ -1,5 +1,6 @@
 package site.yuanshen.data.dto.adapter.score;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import site.yuanshen.common.core.exception.GenshinApiException;
@@ -24,6 +25,7 @@ public class ScoreSpanConfigDto {
     /**
      * 开始时间
      */
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
     private Timestamp startTime;
 
     /**
@@ -34,6 +36,7 @@ public class ScoreSpanConfigDto {
     /**
      * 结束时间
      */
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
     private Timestamp endTime;
 
     /**
@@ -44,11 +47,13 @@ public class ScoreSpanConfigDto {
     /**
      * 区间开始时间
      */
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
     private Timestamp spanStartTime;
 
     /**
      * 区间结束时间
      */
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
     private Timestamp spanEndTime;
 
     /**

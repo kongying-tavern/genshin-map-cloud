@@ -1,6 +1,7 @@
 package site.yuanshen.data.dto;
 
 import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,11 +12,8 @@ import site.yuanshen.data.entity.MarkerPunctuate;
 import site.yuanshen.data.enums.PunctuateMethodEnum;
 import site.yuanshen.data.enums.PunctuateStatusEnum;
 import site.yuanshen.data.vo.MarkerPunctuateVo;
-import site.yuanshen.data.vo.SysUserSmallVo;
-import site.yuanshen.data.vo.SysUserVo;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.Map;
 
 
@@ -49,6 +47,7 @@ public class MarkerPunctuateDto {
     /**
      * 创建时间
      */
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
     private Timestamp createTime;
 
     /**
@@ -59,6 +58,7 @@ public class MarkerPunctuateDto {
     /**
      * 更新时间
      */
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
     private Timestamp updateTime;
 
     /**

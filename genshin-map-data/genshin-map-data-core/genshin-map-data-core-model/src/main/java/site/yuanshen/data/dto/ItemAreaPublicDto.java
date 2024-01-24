@@ -1,16 +1,17 @@
 package site.yuanshen.data.dto;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
 import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.With;
 import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.entity.ItemAreaPublic;
 import site.yuanshen.data.vo.ItemAreaPublicVo;
-import site.yuanshen.data.vo.SysUserSmallVo;
-import site.yuanshen.data.vo.SysUserVo;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -44,6 +45,7 @@ public class ItemAreaPublicDto {
     /**
      * 创建时间
      */
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
     private Timestamp createTime;
 
     /**
@@ -54,6 +56,7 @@ public class ItemAreaPublicDto {
     /**
      * 更新时间
      */
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
     private Timestamp updateTime;
 
     /**

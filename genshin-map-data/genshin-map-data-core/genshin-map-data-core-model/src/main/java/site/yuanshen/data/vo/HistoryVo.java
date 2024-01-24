@@ -1,11 +1,14 @@
 package site.yuanshen.data.vo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.With;
 import site.yuanshen.data.enums.HistoryEditType;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 
 /**
 * 历史操作表前端封装
@@ -41,6 +44,7 @@ public class HistoryVo {
      * 创建时间
      */
     @Schema(title = "创建时间")
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
     private Timestamp createTime;
 
     /**
@@ -53,6 +57,7 @@ public class HistoryVo {
      * 更新时间
      */
     @Schema(title = "更新时间")
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
     private Timestamp updateTime;
 
     /**
