@@ -39,6 +39,12 @@ public class NoticeSearchVo {
     private String transformer;
 
     /**
+     * 排序条件
+     */
+    @Schema(title = "排序条件")
+    private List<String> sort;
+
+    /**
      * 当前页，从0开始
      */
     @Schema(title = "当前页，从0开始")

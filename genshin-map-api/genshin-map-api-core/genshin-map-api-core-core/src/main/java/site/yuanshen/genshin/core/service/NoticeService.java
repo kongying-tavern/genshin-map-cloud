@@ -2,6 +2,8 @@ package site.yuanshen.genshin.core.service;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +13,7 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.yuanshen.common.core.exception.GenshinApiException;
+import site.yuanshen.common.core.utils.PgsqlUtils;
 import site.yuanshen.common.core.utils.TimeUtils;
 import site.yuanshen.data.base.BaseEntity;
 import site.yuanshen.data.dto.NoticeDto;
@@ -23,6 +26,7 @@ import site.yuanshen.data.vo.helper.PageListVo;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -33,32 +37,45 @@ public class NoticeService {
 
     @Cacheable(value = "listNotice")
     public PageListVo<NoticeVo> listNotice(NoticeSearchDto noticeSearchDto) {
+        QueryWrapper<Notice> wrapper = Wrappers.<Notice>query();
         final Boolean isValid = noticeSearchDto.getGetValid();
 
+        // 预处理频道参数
         String channelArrStr = "";
         if(CollUtil.isNotEmpty(noticeSearchDto.getChannels())) {
             final List<String> channels = noticeSearchDto.getChannels();
             final List<String> channelArr = channels.stream().map(channel -> "'" + channel + "'").collect(Collectors.toList());
             channelArrStr = StrUtil.join(",", channelArr);
         }
-        final Page<Notice> result = noticeMapper.selectPage(
-            noticeSearchDto.getPageEntity().setOptimizeCountSql(false),
-            Wrappers.<Notice>lambdaQuery()
+
+        // 处理排序
+        final List<PgsqlUtils.Sort<Notice>> sortList = PgsqlUtils.toSort(noticeSearchDto.getSort(), Notice.class, Set.of("title", "validTimeStart", "validTimeEnd", "updateTime"));
+        wrapper = PgsqlUtils.sortWrapper(wrapper, sortList);
+
+        final LambdaQueryWrapper<Notice> queryWrapper = wrapper.lambda()
                 .apply(StrUtil.isNotBlank(channelArrStr), String.format("(channel::jsonb) ??| array[%s]", channelArrStr))
                 .like(StrUtil.isNotBlank(noticeSearchDto.getTitle()), Notice::getTitle, noticeSearchDto.getTitle())
                 .nested(isValid != null, cwValid -> {
                     final Timestamp ts = TimeUtils.getCurrentTimestamp();
-                    if(isValid != null) {
+                    if (isValid != null) {
                         cwValid
                                 .nested(cwST -> {
                                     cwST
-                                            .nested(cwSTN -> {cwSTN.isNull(Notice::getValidTimeStart);}).or()
-                                            .nested(cwSTN -> {cwSTN.isNotNull(Notice::getValidTimeStart).le(Notice::getValidTimeStart, ts);});
+                                            .nested(cwSTN -> {
+                                                cwSTN.isNull(Notice::getValidTimeStart);
+                                            }).or()
+                                            .nested(cwSTN -> {
+                                                cwSTN.isNotNull(Notice::getValidTimeStart).le(Notice::getValidTimeStart, ts);
+                                            });
                                 })
                                 .nested(cwET -> {
                                     cwET
-                                            .nested(cwETN -> {cwETN.isNull(Notice::getValidTimeEnd);}).or()
-                                            .nested(cwETN -> {cwETN.isNotNull(Notice::getValidTimeEnd).ge(Notice::getValidTimeEnd, ts);});
+                                            .nested(cwETN -> {
+                                                cwETN.isNull(Notice::getValidTimeEnd);
+                                            }).or()
+                                            .nested(cwETN -> {
+                                                cwETN.isNotNull(Notice::getValidTimeEnd).ge(Notice::getValidTimeEnd, ts);
+                                            });
                                 });
                     } else {
                         cwValid
@@ -74,10 +91,9 @@ public class NoticeService {
                                             .lt(Notice::getValidTimeEnd, ts);
                                 });
                     }
-                })
-                .orderByDesc(BaseEntity::getCreateTime)
-        );
+                });
 
+        final Page<Notice> result = noticeMapper.selectPage(noticeSearchDto.getPageEntity().setOptimizeCountSql(false), queryWrapper);
         return new PageListVo<NoticeVo>()
             .setRecord(result.getRecords()
                 .parallelStream()

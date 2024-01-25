@@ -7,6 +7,7 @@ import org.jsoup.helper.DataUtil;
 import org.jsoup.nodes.Attribute;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Entities;
+import org.jsoup.parser.Parser;
 import org.jsoup.safety.Cleaner;
 import org.jsoup.safety.Safelist;
 
@@ -90,10 +91,7 @@ public final class NoticeContentTransformer {
         final Pattern valuePattern = Pattern.compile("\\s+value\\s*=\\s*\"\\s*([^\"]+)\\s*\"");
         html = ReUtil.replaceAll(html, valuePattern, "=$1");
         // Transform HTML entities
-        html = StrUtil.replace(html, "&amp;", "&");
-        html = StrUtil.replace(html, "&lt;", "<");
-        html = StrUtil.replace(html, "&gt;", ">");
-        html = StrUtil.replace(html, "&quot;", "\"");
+        html = Parser.unescapeEntities(html, false);
         // Remove trailing new line due to `p` and `br`
         html = StrUtil.removeSuffix(html, "\n");
 
