@@ -12,6 +12,7 @@ import site.yuanshen.data.dto.helper.PageSearchDto;
 import site.yuanshen.data.entity.Notice;
 import site.yuanshen.data.vo.NoticeSearchVo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -39,6 +40,11 @@ public class NoticeSearchDto extends PageSearchDto {
      * 数据转换器
      */
     private String transformer;
+
+    /**
+     * 排序条件
+     */
+    private List<String> sort = new ArrayList<>();
 
     public NoticeSearchDto(NoticeSearchVo iconSearchVo) {
         BeanUtils.copyNotNull(iconSearchVo, this);
