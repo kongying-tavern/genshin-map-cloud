@@ -169,16 +169,12 @@ public class SysUserService {
 
         List<String> sort = CollUtil.emptyIfNull(searchDto.getSort());
         boolean nickNameSortIsAcs = false;
-        boolean createTimeIsAcs = false;
         for (String s : sort) {
-            if (s.startsWith("createTime")) {
-                createTimeIsAcs = !s.endsWith("-");
-            }
             if (s.startsWith("nickname")) {
                 nickNameSortIsAcs = !s.endsWith("-");
             }
         }
 
-        return userDao.searchPage(searchDto, createTimeIsAcs, nickNameSortIsAcs);
+        return userDao.searchPage(searchDto, nickNameSortIsAcs);
     }
 }
