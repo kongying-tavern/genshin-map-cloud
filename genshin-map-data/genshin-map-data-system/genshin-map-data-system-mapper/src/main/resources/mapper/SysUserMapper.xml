@@ -7,7 +7,10 @@
         <include refid="Base_Column_List"/>
         from sys_user su
         <!--customSqlSegment自带where-->
-        ${ew.customSqlSegment}
+        <if test="ew.customSqlSegment ==null or ew.customSqlSegment == ''">
+            where true and
+        </if>
+        ${ew.customSqlSegment} del_flag = false
         <if test="nickNameSortIsAcs">
             order by convert(nickname::bytea,'UTF-8','GB18030')
         </if>

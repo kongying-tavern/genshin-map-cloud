@@ -208,6 +208,7 @@ public class ItemService {
                             .set(itemDto.getHiddenFlag() != null, Item::getHiddenFlag, itemDto.getHiddenFlag())
                             .set(itemDto.getDefaultRefreshTime() != null, Item::getDefaultRefreshTime, itemDto.getDefaultRefreshTime())
                             .set(itemDto.getSortIndex() != null, Item::getSortIndex, itemDto.getSortIndex())
+                            .set(itemDto.getSpecialFlag() != null, Item::getSpecialFlag, itemDto.getSpecialFlag())
             );
             if(itemDto.getAreaId() != null) {
                 itemMapper.update(null,
