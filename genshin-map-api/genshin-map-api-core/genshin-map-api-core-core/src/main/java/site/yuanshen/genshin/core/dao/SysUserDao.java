@@ -80,7 +80,7 @@ public class SysUserDao {
         return result == 1;
     }
 
-    public PageListVo<SysUserVo> searchPage(SysUserSearchDto searchDto, boolean nickNameSortIsAcs) {
+    public PageListVo<SysUserVo> searchPage(SysUserSearchDto searchDto) {
         QueryWrapper<SysUser> wrapper = Wrappers.<SysUser>query();
         final List<PgsqlUtils.Sort<SysUser>> sortList = PgsqlUtils.toSort(searchDto.getSort(), SysUser.class, Set.of("id", "nickname", "createTime", "updateTime"));
         wrapper = PgsqlUtils.sortWrapper(wrapper, sortList);
@@ -91,7 +91,7 @@ public class SysUserDao {
                 .in(CollUtil.isNotEmpty(searchDto.getRoleIds()), SysUser::getRoleId, searchDto.getRoleIds());
 
         //此处mbp的分页优化有问题，关闭分页优化，减少报错日志
-        IPage<SysUser> sysUserPage = userMapper.searchUserPage(searchDto.getPageEntity().setOptimizeCountSql(false), queryWrapper, nickNameSortIsAcs);
+        IPage<SysUser> sysUserPage = userMapper.selectPage(searchDto.getPageEntity().setOptimizeCountSql(false), queryWrapper);
 
         return new PageListVo<SysUserVo>()
                 .setRecord(sysUserPage.getRecords().stream()
