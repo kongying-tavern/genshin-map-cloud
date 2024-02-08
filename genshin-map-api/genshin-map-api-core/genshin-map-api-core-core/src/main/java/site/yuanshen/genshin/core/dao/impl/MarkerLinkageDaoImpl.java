@@ -103,11 +103,15 @@ public class MarkerLinkageDaoImpl implements MarkerLinkageDao {
      */
     @Override
     public boolean saveOrUpdateBatch(List<MarkerLinkage> markerLinkageList) {
+        final List<Long> allIdList = markerLinkageList.parallelStream().filter(v -> v.getId() != null).map(MarkerLinkage::getId).collect(Collectors.toList());
         final List<Long> deleteIdList = markerLinkageList.parallelStream().filter(v -> v.getId() != null && v.getDelFlag() == null || v.getDelFlag().equals(true)).map(MarkerLinkage::getId).collect(Collectors.toList());
         final List<MarkerLinkage> updateList = markerLinkageList.parallelStream().filter(v -> v.getDelFlag() != null && v.getDelFlag().equals(false)).collect(Collectors.toList());
 
+        if(CollUtil.isNotEmpty(allIdList)) {
+            markerLinkageMapper.undeleteByIds(PgsqlUtils.unnestLongStr(allIdList));
+        }
         boolean updateSuccess = CollUtil.isEmpty(markerLinkageList) || markerLinkageMBPService.saveOrUpdateBatch(updateList);
-        int deleteSuccess = CollUtil.isEmpty(deleteIdList) ? 1 : markerLinkageMapper.deleteBatchIds(deleteIdList);
+        int deleteSuccess = CollUtil.isEmpty(deleteIdList) ? 1 : markerLinkageMapper.deleteByIds(PgsqlUtils.unnestLongStr(deleteIdList));
         return updateSuccess && deleteSuccess >= 0;
     }
 

@@ -32,4 +32,24 @@
         GROUP BY ml.id
     </select>
 
+    <update id="deleteByIds">
+        WITH id_list AS (
+            SELECT UNNEST(${unnest}::bigint[]) "id2"
+        )
+        UPDATE marker_linkage
+        SET del_flag = true
+        FROM id_list
+        WHERE marker_linkage.id = id_list.id2
+    </update>
+
+    <update id="undeleteByIds">
+        WITH id_list AS (
+            SELECT UNNEST(${unnest}::bigint[]) "id2"
+        )
+        UPDATE marker_linkage
+        SET del_flag = false
+        FROM id_list
+        WHERE marker_linkage.id = id_list.id2
+    </update>
+
 </mapper>
