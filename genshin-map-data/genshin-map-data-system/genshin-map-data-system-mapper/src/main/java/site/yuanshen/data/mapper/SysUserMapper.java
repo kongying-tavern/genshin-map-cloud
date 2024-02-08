@@ -18,8 +18,6 @@ import java.util.List;
 @Mapper
 public interface SysUserMapper extends BaseMapper<SysUser> {
 
-    IPage<SysUser> searchUserPage(IPage<SysUser> page, @Param(Constants.WRAPPER) Wrapper<SysUser> queryWrapper, @Param("nickNameSortIsAcs") Boolean nickNameSortIsAcs);
-
     List<SysUser> selectUserWithDelete(@Param("userIdList") List<Long> userIdList);
 
 }

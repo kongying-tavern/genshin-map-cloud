@@ -2,20 +2,6 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="site.yuanshen.data.mapper.SysUserMapper">
 
-    <select id="searchUserPage" resultType="site.yuanshen.data.entity.SysUser">
-        select
-        <include refid="Base_Column_List"/>
-        from sys_user su
-        <!--customSqlSegment自带where-->
-        <if test="ew.customSqlSegment ==null or ew.customSqlSegment == ''">
-            where true and
-        </if>
-        ${ew.customSqlSegment} del_flag = false
-        <if test="nickNameSortIsAcs">
-            order by convert(nickname::bytea,'UTF-8','GB18030')
-        </if>
-    </select>
-
     <select id="selectUserWithDelete"
             parameterType="java.util.List"
             resultType="site.yuanshen.data.entity.SysUser">

@@ -168,13 +168,7 @@ public class SysUserService {
         SysUserSearchDto searchDto = new SysUserSearchDto(searchVo);
 
         List<String> sort = CollUtil.emptyIfNull(searchDto.getSort());
-        boolean nickNameSortIsAcs = false;
-        for (String s : sort) {
-            if (s.startsWith("nickname")) {
-                nickNameSortIsAcs = !s.endsWith("-");
-            }
-        }
 
-        return userDao.searchPage(searchDto, nickNameSortIsAcs);
+        return userDao.searchPage(searchDto);
     }
 }
