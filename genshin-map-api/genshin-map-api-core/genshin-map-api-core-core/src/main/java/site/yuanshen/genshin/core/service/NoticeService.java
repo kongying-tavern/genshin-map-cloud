@@ -150,10 +150,14 @@ public class NoticeService {
         }
 
         final Notice notice = noticeDto.getEntity();
-        notice.setValidTimeStart(noticeDto.getValidTimeStart());
-        notice.setValidTimeEnd(noticeDto.getValidTimeEnd());
+        notice.setValidTimeStart(null);
+        notice.setValidTimeEnd(null);
 
-        return 1 == noticeMapper.update(notice, Wrappers.<Notice>lambdaUpdate().eq(Notice::getId, noticeDto.getId()));
+        return 1 == noticeMapper.update(notice, Wrappers.<Notice>lambdaUpdate()
+                .eq(Notice::getId, noticeDto.getId())
+                .set(Notice::getValidTimeStart, noticeDto.getValidTimeStart())
+                .set(Notice::getValidTimeEnd, noticeDto.getValidTimeEnd())
+        );
     }
 
     @Transactional
