@@ -3,6 +3,7 @@ package site.yuanshen.data.mapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 import org.apache.ibatis.annotations.Param;
+import site.yuanshen.data.entity.Marker;
 import site.yuanshen.data.entity.MarkerLinkage;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
@@ -32,6 +33,9 @@ public interface MarkerLinkageMapper extends BaseMapper<MarkerLinkage> {
      * @param wrapper
      * @return
      */
-    List<MarkerLinkage> selectWithLargeMarkerIdIn(@Param("unnest")String unnest, @Param(Constants.WRAPPER)LambdaQueryWrapper<MarkerLinkage> wrapper);
+    List<MarkerLinkage> selectWithLargeMarkerIdIn(@Param("unnest") String unnest, @Param(Constants.WRAPPER)LambdaQueryWrapper<MarkerLinkage> wrapper);
 
+    Integer deleteByIds(@Param("unnest") String unnest);
+
+    Integer undeleteByIds(@Param("unnest") String unnest);
 }
