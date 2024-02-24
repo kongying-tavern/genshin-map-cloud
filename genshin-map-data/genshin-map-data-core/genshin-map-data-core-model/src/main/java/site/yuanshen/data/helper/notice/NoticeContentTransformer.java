@@ -25,6 +25,7 @@ public final class NoticeContentTransformer {
                         "p", "br",
                         "b", "strong",
                         "i", "em",
+                        "u",
                         "size",
                         "color",
                         "a"
