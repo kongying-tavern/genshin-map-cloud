@@ -26,10 +26,12 @@ public final class NoticeContentTransformer {
                         "b", "strong",
                         "i", "em",
                         "size",
-                        "color"
+                        "color",
+                        "a"
                 )
                 .addAttributes("size", "style")
-                .addAttributes("color", "style");
+                .addAttributes("color", "style")
+                .addAttributes("a", "href");
         Cleaner safeCleaner = new Cleaner(safeList);
         doc = safeCleaner.clean(doc);
         doc.outputSettings(
@@ -58,7 +60,7 @@ public final class NoticeContentTransformer {
                         colorValue = NoticeDataHelper.colorToHex(color);
                     }
                     if(StrUtil.isNotBlank(colorValue)) {
-                        el.attr("value", colorValue);
+                        el.attr("collval", colorValue);
                     }
                     return el;
                 });
@@ -75,7 +77,7 @@ public final class NoticeContentTransformer {
                         sizeValue = NoticeDataHelper.sizeToNumber(size);
                     }
                     if(StrUtil.isNotBlank(sizeValue)) {
-                        el.attr("value", sizeValue);
+                        el.attr("collval", sizeValue);
                     }
                     return el;
                 });
@@ -88,7 +90,7 @@ public final class NoticeContentTransformer {
 
         html = doc.body().html();
         // Transform `color` and `size` values
-        final Pattern valuePattern = Pattern.compile("\\s+value\\s*=\\s*\"\\s*([^\"]+)\\s*\"");
+        final Pattern valuePattern = Pattern.compile("\\s+collval\\s*=\\s*\"\\s*([^\"]+)\\s*\"");
         html = ReUtil.replaceAll(html, valuePattern, "=$1");
         // Transform HTML entities
         html = Parser.unescapeEntities(html, false);
