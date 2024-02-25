@@ -47,7 +47,7 @@ public final class NoticeContentTransformer {
         doc.select("strong").tagName("b");
         doc.select("em").tagName("i");
 
-        // Re-format `color` and `size` tag
+        // Re-format `color` and `size`
         doc
                 .select("color")
                 .replaceAll(el -> {
@@ -79,6 +79,22 @@ public final class NoticeContentTransformer {
                     }
                     if(StrUtil.isNotBlank(sizeValue)) {
                         el.attr("collval", sizeValue);
+                    }
+                    return el;
+                });
+
+        // Re-format `a` to `link`
+        doc
+                .select("a, link")
+                .tagName("link")
+                .replaceAll(el -> {
+                    final Attribute hrefAttr = el.attribute("href");
+                    final String href = hrefAttr.getValue();
+                    el.clearAttributes();
+                    if(StrUtil.isBlank(href)) {
+                        el.unwrap();
+                    } else {
+                        el.attr("collval", href);
                     }
                     return el;
                 });
