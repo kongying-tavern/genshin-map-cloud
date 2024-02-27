@@ -57,7 +57,7 @@ public class NoticeService {
                 .like(StrUtil.isNotBlank(noticeSearchDto.getTitle()), Notice::getTitle, noticeSearchDto.getTitle())
                 .nested(isValid != null, cwValid -> {
                     final Timestamp ts = TimeUtils.getCurrentTimestamp();
-                    if (isValid != null) {
+                    if (Boolean.TRUE.equals(isValid)) {
                         cwValid
                                 .nested(cwST -> {
                                     cwST
