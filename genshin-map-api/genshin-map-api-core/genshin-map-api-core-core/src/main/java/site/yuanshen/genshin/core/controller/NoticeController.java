@@ -30,7 +30,7 @@ import site.yuanshen.genshin.core.websocket.WebSocketEntrypoint;
 public class NoticeController {
     private final NoticeService noticeService;
     private final CacheService cacheService;
-    private final WebSocketEntrypoint websocketEntrypoint;
+    private final WebSocketEntrypoint webSocket;
 
     @Operation(summary = "分页查询所有公告信息", description = "分页查询所有点位信息")
     @PostMapping("/get/list")
@@ -48,7 +48,7 @@ public class NoticeController {
     public R<Boolean> updateNotice(@RequestBody NoticeVo noticeVo, @RequestHeader("userId") String userId) {
         final Boolean success = noticeService.updateNotice(new NoticeDto(noticeVo));
         cacheService.cleanNoticeCache();
-        websocketEntrypoint.broadcast(userId, WUtils.create("NoticeUpdated", noticeVo.getId()));
+        webSocket.broadcast(userId, WUtils.create("NoticeUpdated", noticeVo.getId()));
         return RUtils.create(success);
     }
 
@@ -57,7 +57,7 @@ public class NoticeController {
     public R<Long> createNotice(@RequestBody NoticeVo noticeVo, @RequestHeader("userId") String userId) {
         final Long noticeId = noticeService.createNotice(new NoticeDto(noticeVo));
         cacheService.cleanNoticeCache();
-        websocketEntrypoint.broadcast(userId, WUtils.create("NoticeAdded", noticeId));
+        webSocket.broadcast(userId, WUtils.create("NoticeAdded", noticeId));
         return RUtils.create(noticeId);
     }
 
@@ -66,7 +66,7 @@ public class NoticeController {
     public R<Boolean> deleteNotice(@PathVariable("noticeId") Long noticeId, @RequestHeader("userId") String userId) {
         final Boolean success = noticeService.deleteNotice(noticeId);
         cacheService.cleanNoticeCache();
-        websocketEntrypoint.broadcast(userId, WUtils.create("NoticeAdded", noticeId));
+        webSocket.broadcast(userId, WUtils.create("NoticeAdded", noticeId));
         return RUtils.create(success);
     }
 }
