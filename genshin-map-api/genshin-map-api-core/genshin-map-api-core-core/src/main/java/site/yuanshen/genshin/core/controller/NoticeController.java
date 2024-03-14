@@ -66,7 +66,7 @@ public class NoticeController {
     public R<Boolean> deleteNotice(@PathVariable("noticeId") Long noticeId, @RequestHeader("userId") String userId) {
         final Boolean success = noticeService.deleteNotice(noticeId);
         cacheService.cleanNoticeCache();
-        webSocket.broadcast(userId, WUtils.create("NoticeAdded", noticeId));
+        webSocket.broadcast(userId, WUtils.create("NoticeDeleted", noticeId));
         return RUtils.create(success);
     }
 }
