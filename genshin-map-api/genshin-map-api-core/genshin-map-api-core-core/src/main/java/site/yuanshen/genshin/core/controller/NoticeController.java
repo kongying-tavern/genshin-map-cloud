@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import site.yuanshen.common.web.response.R;
 import site.yuanshen.common.web.response.RUtils;
+import site.yuanshen.common.web.response.WUtils;
 import site.yuanshen.data.dto.NoticeDto;
 import site.yuanshen.data.dto.NoticeSearchDto;
 import site.yuanshen.data.vo.NoticeSearchVo;
@@ -13,6 +14,7 @@ import site.yuanshen.data.vo.NoticeVo;
 import site.yuanshen.data.vo.helper.PageListVo;
 import site.yuanshen.genshin.core.service.NoticeService;
 import site.yuanshen.genshin.core.service.UserAppenderService;
+import site.yuanshen.genshin.core.websocket.WebSocketEntrypoint;
 
 /**
  * 公告 Controller 层
@@ -26,6 +28,7 @@ import site.yuanshen.genshin.core.service.UserAppenderService;
 @Tag(name = "notice", description = "公告API")
 public class NoticeController {
     private final NoticeService noticeService;
+    private final WebSocketEntrypoint websocketEntrypoint;
 
     @Operation(summary = "分页查询所有公告信息", description = "分页查询所有点位信息")
     @PostMapping("/get/list")
@@ -41,24 +44,24 @@ public class NoticeController {
     @Operation(summary = "修改公告", description = "修改公告")
     @PostMapping("/update")
     public R<Boolean> updateNotice(@RequestBody NoticeVo noticeVo) {
-        return RUtils.create(
-            noticeService.updateNotice(new NoticeDto(noticeVo))
-        );
+        final Boolean success = noticeService.updateNotice(new NoticeDto(noticeVo));
+        websocketEntrypoint.broadcast(WUtils.create("NoticeUpdated", noticeVo.getId()));
+        return RUtils.create(success);
     }
 
     @Operation(summary = "新增公告", description = "返回新增公告ID")
     @PutMapping("/add")
     public R<Long> createNotice(@RequestBody NoticeVo noticeVo) {
-        return RUtils.create(
-                noticeService.createNotice(new NoticeDto(noticeVo))
-        );
+        final Long noticeId = noticeService.createNotice(new NoticeDto(noticeVo));
+        websocketEntrypoint.broadcast(WUtils.create("NoticeAdded", noticeId));
+        return RUtils.create(noticeId);
     }
 
     @Operation(summary = "删除公告", description = "删除公告，请在前端做二次确认")
     @DeleteMapping("/{noticeId}")
     public R<Boolean> deleteNotice(@PathVariable("noticeId") Long noticeId) {
-        return RUtils.create(
-                noticeService.deleteNotice(noticeId)
-        );
+        final Boolean success = noticeService.deleteNotice(noticeId);
+        websocketEntrypoint.broadcast(WUtils.create("NoticeAdded", noticeId));
+        return RUtils.create(success);
     }
 }
