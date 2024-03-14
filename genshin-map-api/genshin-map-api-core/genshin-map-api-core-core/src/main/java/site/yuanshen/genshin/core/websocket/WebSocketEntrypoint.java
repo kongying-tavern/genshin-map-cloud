@@ -9,6 +9,7 @@ import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -57,12 +58,15 @@ public class WebSocketEntrypoint {
         error.printStackTrace();
     }
 
-    public <T> void broadcast(W<T> message) {
+    public <T> void broadcast(String userId, W<T> message) {
         final String messageText = JSON.toJSONString(message);
-        log.info("[websocket] broadcase:" + messageText);
-        for(WebSocketEntrypoint webSocket : webSockets) {
+        log.info("[websocket] broadcast:" + messageText);
+        for (WebSocketEntrypoint webSocket : webSockets) {
             try {
-                if(webSocket.session.isOpen() && !Objects.equals(webSocket.userId, this.userId)) {
+                if(webSocket.session.isOpen()) {
+                    if (userId != null && Objects.equals(userId, webSocket.userId)) {
+                        return;
+                    }
                     webSocket.session.getAsyncRemote().sendText(messageText);
                 }
             } catch (Exception e) {
@@ -71,30 +75,35 @@ public class WebSocketEntrypoint {
         }
     }
 
-    public <T> void send(String userId, W<T> message) {
+    public <T> void sendToUsers(String[] userIds, W<T> message) {
         final String messageText = JSON.toJSONString(message);
-        Session session = sessionPool.get(userId);
-        if (session != null && session.isOpen()) {
-            try {
-                log.info("[websocket] send message: " + messageText);
-                session.getAsyncRemote().sendText(messageText);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public <T> void sendBatch(String[] userIds, W<T> message) {
-        final String messageText = JSON.toJSONString(message);
-        for (String userId:userIds) {
+        for (String userId : userIds) {
             Session session = sessionPool.get(userId);
-            if (session != null&&session.isOpen()) {
+            if (session != null && session.isOpen()) {
                 try {
-                    log.info("[websocket] send message: " + messageText);
+                    log.info("[websocket] send message to users (" + userId + "): " + messageText);
                     session.getAsyncRemote().sendText(messageText);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+            }
+        }
+    }
+
+    public <T> void sendExceptUsers(String[] userIds, W<T> message) {
+        final String messageText = JSON.toJSONString(message);
+        final Set<String> userIdSet = Set.of(userIds);
+        for (WebSocketEntrypoint webSocket : webSockets) {
+            try {
+                if(webSocket.session.isOpen()) {
+                    if (webSocket.userId != null && userIdSet.contains(webSocket.userId)) {
+                        return;
+                    }
+                    log.info("[websocket] send message to users (" + webSocket.userId + "): " + messageText);
+                    webSocket.session.getAsyncRemote().sendText(messageText);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }
