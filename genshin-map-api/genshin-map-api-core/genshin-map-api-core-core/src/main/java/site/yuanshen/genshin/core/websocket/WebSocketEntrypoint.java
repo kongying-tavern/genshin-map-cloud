@@ -58,6 +58,11 @@ public class WebSocketEntrypoint {
         error.printStackTrace();
     }
 
+    /**
+     * 广播消息
+     * @param userId 用户ID，如果用户ID存在，则不对指定ID进行广播，如果用户ID为null则广播给所有人
+     * @param message 用户消息
+     */
     public <T> void broadcast(String userId, W<T> message) {
         final String messageText = JSON.toJSONString(message);
         log.info("[websocket] broadcast:" + messageText);
@@ -75,6 +80,11 @@ public class WebSocketEntrypoint {
         }
     }
 
+    /**
+     * 发送给指定用户ID频道
+     * @param userIds 接收者用户ID
+     * @param message 用户消息
+     */
     public <T> void sendToUsers(String[] userIds, W<T> message) {
         final String messageText = JSON.toJSONString(message);
         for (String userId : userIds) {
@@ -90,6 +100,11 @@ public class WebSocketEntrypoint {
         }
     }
 
+    /**
+     * 发送给所有人，但排除部分用户ID
+     * @param userIds 需要排除的用户ID，列表中的用户无法接收到消息
+     * @param message 用户消息
+     */
     public <T> void sendExceptUsers(String[] userIds, W<T> message) {
         final String messageText = JSON.toJSONString(message);
         final Set<String> userIdSet = Set.of(userIds);
