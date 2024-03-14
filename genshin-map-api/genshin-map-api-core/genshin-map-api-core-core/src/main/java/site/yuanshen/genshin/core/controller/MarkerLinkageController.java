@@ -3,17 +3,17 @@ package site.yuanshen.genshin.core.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import site.yuanshen.common.web.response.R;
 import site.yuanshen.common.web.response.RUtils;
+import site.yuanshen.common.web.response.WUtils;
 import site.yuanshen.data.vo.MarkerLinkageSearchVo;
 import site.yuanshen.data.vo.MarkerLinkageVo;
+import site.yuanshen.data.vo.adapter.marker.linkage.LinkChangeVo;
 import site.yuanshen.data.vo.adapter.marker.linkage.graph.GraphVo;
 import site.yuanshen.genshin.core.service.CacheService;
 import site.yuanshen.genshin.core.service.MarkerLinkageService;
+import site.yuanshen.genshin.core.websocket.WebSocketEntrypoint;
 
 import java.util.List;
 import java.util.Map;
@@ -32,6 +32,7 @@ public class MarkerLinkageController {
 
     private final MarkerLinkageService markerLinkageService;
     private final CacheService cacheService;
+    private final WebSocketEntrypoint webSocket;
 
     @Operation(summary = "关联点位列表", description = "关联点位列表")
     @PostMapping("/get/list")
@@ -51,10 +52,12 @@ public class MarkerLinkageController {
 
     @Operation(summary = "关联点位", description = "关联点位数据")
     @PostMapping("/link")
-    public R<String> linkMarker(@RequestBody List<MarkerLinkageVo> markerLinkageVoList) {
-        String groupId = markerLinkageService.linkMarker(markerLinkageVoList);
+    public R<String> linkMarker(@RequestBody List<MarkerLinkageVo> markerLinkageVoList, @RequestHeader("userId") String userId) {
+        LinkChangeVo linkChangeVo = new LinkChangeVo();
+        String groupId = markerLinkageService.linkMarker(markerLinkageVoList, linkChangeVo);
         cacheService.cleanMarkerCache();
         cacheService.cleanMarkerLinkageCache();
+        webSocket.broadcast(userId, WUtils.create("MarkerLinked", linkChangeVo));
         return RUtils.create(groupId);
     }
 }

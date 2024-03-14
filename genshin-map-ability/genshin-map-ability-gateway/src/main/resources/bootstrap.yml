@@ -13,6 +13,7 @@ env: prd
 
 genshin:
   pass-filter:
+    - /ws/**
     - /oauth/**
     - /v3/**
     - /swagger-ui/**
@@ -120,6 +121,10 @@ spring:
             - Path=/oauth/check_token
           filters:
             - PreserveHostHeader
+        - id: websocket
+          uri: lb://api-core
+          predicates:
+            - Path=/ws/**
         - id: openapi
           uri: lb://api-core
           predicates:
@@ -136,4 +141,3 @@ spring:
           uri: lb://api-core
           predicates:
             - Path=/api/**
-
