@@ -12,6 +12,7 @@ import site.yuanshen.data.dto.NoticeSearchDto;
 import site.yuanshen.data.vo.NoticeSearchVo;
 import site.yuanshen.data.vo.NoticeVo;
 import site.yuanshen.data.vo.helper.PageListVo;
+import site.yuanshen.genshin.core.service.CacheService;
 import site.yuanshen.genshin.core.service.NoticeService;
 import site.yuanshen.genshin.core.service.UserAppenderService;
 import site.yuanshen.genshin.core.websocket.WebSocketEntrypoint;
@@ -28,6 +29,7 @@ import site.yuanshen.genshin.core.websocket.WebSocketEntrypoint;
 @Tag(name = "notice", description = "公告API")
 public class NoticeController {
     private final NoticeService noticeService;
+    private final CacheService cacheService;
     private final WebSocketEntrypoint websocketEntrypoint;
 
     @Operation(summary = "分页查询所有公告信息", description = "分页查询所有点位信息")
@@ -45,6 +47,7 @@ public class NoticeController {
     @PostMapping("/update")
     public R<Boolean> updateNotice(@RequestBody NoticeVo noticeVo, @RequestHeader("userId") String userId) {
         final Boolean success = noticeService.updateNotice(new NoticeDto(noticeVo));
+        cacheService.cleanNoticeCache();
         websocketEntrypoint.broadcast(userId, WUtils.create("NoticeUpdated", noticeVo.getId()));
         return RUtils.create(success);
     }
@@ -53,6 +56,7 @@ public class NoticeController {
     @PutMapping("/add")
     public R<Long> createNotice(@RequestBody NoticeVo noticeVo, @RequestHeader("userId") String userId) {
         final Long noticeId = noticeService.createNotice(new NoticeDto(noticeVo));
+        cacheService.cleanNoticeCache();
         websocketEntrypoint.broadcast(userId, WUtils.create("NoticeAdded", noticeId));
         return RUtils.create(noticeId);
     }
@@ -61,6 +65,7 @@ public class NoticeController {
     @DeleteMapping("/{noticeId}")
     public R<Boolean> deleteNotice(@PathVariable("noticeId") Long noticeId, @RequestHeader("userId") String userId) {
         final Boolean success = noticeService.deleteNotice(noticeId);
+        cacheService.cleanNoticeCache();
         websocketEntrypoint.broadcast(userId, WUtils.create("NoticeAdded", noticeId));
         return RUtils.create(success);
     }
