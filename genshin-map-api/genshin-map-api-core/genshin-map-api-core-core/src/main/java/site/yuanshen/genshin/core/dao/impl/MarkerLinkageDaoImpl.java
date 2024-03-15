@@ -127,7 +127,6 @@ public class MarkerLinkageDaoImpl implements MarkerLinkageDao {
                 .filter(v -> v.getId() != null)
                 .collect(Collectors.toList());
 
-
         if(CollUtil.isNotEmpty(allIdList)) {
             markerLinkageMapper.undeleteByIds(PgsqlUtils.unnestLongStr(allIdList));
         }

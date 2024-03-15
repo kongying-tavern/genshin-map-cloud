@@ -1,12 +1,12 @@
 package site.yuanshen.common.web.exception;
 
-import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import site.yuanshen.common.core.exception.GenshinApiException;
 import site.yuanshen.common.web.response.Codes;
@@ -29,18 +29,8 @@ import java.util.stream.Collectors;
 @Slf4j
 @RestControllerAdvice
 public class RestException {
-    private static final String PROJECT_PACKAGE_PREFIX = "site.yuanshen";
-
     private List<String> getStackTraceErrors(StackTraceElement[] stackTraceElements) {
         List<String> stl = Arrays.stream(stackTraceElements)
-                .filter(v -> {
-                    try {
-                        final String className = v.getClassName();
-                        return StrUtil.startWith(className, PROJECT_PACKAGE_PREFIX);
-                    } catch(Throwable err) {
-                        return false;
-                    }
-                })
                 .map(StackTraceElement::toString)
                 .collect(Collectors.toList());
         return stl;
@@ -50,7 +40,7 @@ public class RestException {
      * 统一异常处理方法
      */
     @ExceptionHandler(Throwable.class)
-    public R exceptionHandler(Throwable t) {
+    public R exceptionHandler(Throwable t, @RequestHeader(name = "V-Debug") String debug) {
         try {
             //获取当前请求
             HttpServletRequest request = RequestUtils.getHttpServletRequest();
@@ -65,7 +55,7 @@ public class RestException {
         return RUtils.create(
             Codes.FAIL,
             "请求失败",
-            getStackTraceErrors(t.getStackTrace())
+            "DEBUG".equals(debug) ? getStackTraceErrors(t.getStackTrace()) : ""
         );
     }
 
