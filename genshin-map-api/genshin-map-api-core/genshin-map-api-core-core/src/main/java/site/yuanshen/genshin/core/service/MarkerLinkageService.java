@@ -2,16 +2,19 @@ package site.yuanshen.genshin.core.service;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import site.yuanshen.common.core.utils.BeanUtils;
+import site.yuanshen.data.dto.MarkerLinkageDto;
 import site.yuanshen.data.entity.MarkerLinkage;
 import site.yuanshen.data.helper.marker.linkage.MarkerLinkageDataHelper;
 import site.yuanshen.data.vo.MarkerLinkageSearchVo;
 import site.yuanshen.data.vo.MarkerLinkageVo;
+import site.yuanshen.data.vo.adapter.marker.linkage.LinkChangeVo;
 import site.yuanshen.data.vo.adapter.marker.linkage.graph.GraphVo;
 import site.yuanshen.genshin.core.dao.MarkerLinkageDao;
 
@@ -68,7 +71,7 @@ public class MarkerLinkageService {
     }
 
     @Transactional
-    public String linkMarker(List<MarkerLinkageVo> linkageVos) {
+    public String linkMarker(List<MarkerLinkageVo> linkageVos, LinkChangeVo changeVo) {
         // 校验数据可用性
         if(linkageVos == null) linkageVos = new ArrayList<>();
         linkageVos = linkageVos.parallelStream().filter(Objects::nonNull).collect(Collectors.toList());
@@ -79,9 +82,21 @@ public class MarkerLinkageService {
         // 获取现有的列表
         final List<Long> idList = MarkerLinkageDataHelper.getLinkIdList(linkageVos);
         final List<MarkerLinkage> linkageExistsList = markerLinkageDao.getRelatedLinkageList(idList, true)
-            .parallelStream()
-            .map(v -> BeanUtils.copy(v, MarkerLinkage.class))
-            .collect(Collectors.toList());
+                .parallelStream()
+                .map(v -> BeanUtils.copy(v, MarkerLinkage.class))
+                .collect(Collectors.toList());
+        final Set<String> linkExGroupIds = linkageExistsList
+                .parallelStream()
+                .map(MarkerLinkage::getGroupId)
+                .filter(StrUtil::isNotBlank)
+                .collect(Collectors.toSet());
+        final List<Long> linkExMarkerIds = MarkerLinkageDataHelper.getLinkIdList(
+                linkageExistsList
+                        .parallelStream()
+                        .map(MarkerLinkageDto::new)
+                        .map(MarkerLinkageDto::getVo)
+                        .collect(Collectors.toList())
+        );
 
         // 生成更新数据的数据列表
         Map<String, MarkerLinkage> linkageMap = MarkerLinkageDataHelper.getLinkSearchMap(linkageExistsList);
@@ -90,7 +105,20 @@ public class MarkerLinkageService {
 
         // 更新数据
         boolean linkSuccess = markerLinkageDao.saveOrUpdateBatch(linkageList);
-        return linkSuccess ? groupId : "";
+        String linkGroupId = linkSuccess ? groupId : "";
+
+        // (*) 将受到影响的数据添加到变更数据中
+        // 添加变更前数据
+        changeVo.addGroups(linkExGroupIds);
+        changeVo.addMarkers(linkExMarkerIds);
+        // 添加用户提交的关联数据
+        changeVo.addMarkers(idList);
+        // 添加新创建的关联组
+        if(StrUtil.isNotBlank(linkGroupId)) {
+            changeVo.addGroups(Set.of(linkGroupId));
+        }
+
+        return linkGroupId;
     }
 
 }

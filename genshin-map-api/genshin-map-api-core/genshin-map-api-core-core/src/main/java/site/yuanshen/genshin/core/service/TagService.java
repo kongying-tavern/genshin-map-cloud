@@ -8,6 +8,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.yuanshen.common.core.exception.GenshinApiException;
+import site.yuanshen.common.core.utils.TimeUtils;
 import site.yuanshen.common.web.utils.UserUtils;
 import site.yuanshen.data.dto.TagDto;
 import site.yuanshen.data.dto.TagSearchDto;
@@ -25,7 +26,6 @@ import site.yuanshen.genshin.core.service.mbp.TagMBPService;
 import site.yuanshen.genshin.core.service.mbp.TagTypeLinkMBPService;
 import site.yuanshen.genshin.core.service.mbp.TagTypeMBPService;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -130,7 +130,7 @@ public class TagService {
         boolean isUpdate = tagMapper.update(null, Wrappers.<Tag>lambdaUpdate()
                 .eq(Tag::getTag, tagName)
                 .set(Tag::getIconId, iconId)
-                .set(Tag::getUpdateTime, LocalDateTime.now())
+                .set(Tag::getUpdateTime, TimeUtils.getCurrentTimestamp())
                 .set(Tag::getUpdaterId, UserUtils.getUserId())) == 1;
         if (!isUpdate) throw new GenshinApiException("与原数据一致，未进行实质修改");
         return true;
@@ -153,7 +153,7 @@ public class TagService {
         //更新标签信息
         tagMapper.update(null, Wrappers.<Tag>lambdaUpdate()
                .eq(Tag::getTag, tagDto.getTag())
-               .set(Tag::getUpdateTime, LocalDateTime.now())
+               .set(Tag::getUpdateTime, TimeUtils.getCurrentTimestamp())
                .set(Tag::getUpdaterId, UserUtils.getUserId()));
 
         if(CollUtil.isEmpty(typeIdList)) {

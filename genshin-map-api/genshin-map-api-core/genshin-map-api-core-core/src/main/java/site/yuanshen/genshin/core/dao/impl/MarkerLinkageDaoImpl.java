@@ -28,6 +28,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -103,16 +104,44 @@ public class MarkerLinkageDaoImpl implements MarkerLinkageDao {
      */
     @Override
     public boolean saveOrUpdateBatch(List<MarkerLinkage> markerLinkageList) {
-        final List<Long> allIdList = markerLinkageList.parallelStream().filter(v -> v.getId() != null).map(MarkerLinkage::getId).collect(Collectors.toList());
-        final List<Long> deleteIdList = markerLinkageList.parallelStream().filter(v -> v.getId() != null && v.getDelFlag() == null || v.getDelFlag().equals(true)).map(MarkerLinkage::getId).collect(Collectors.toList());
-        final List<MarkerLinkage> updateList = markerLinkageList.parallelStream().filter(v -> v.getDelFlag() != null && v.getDelFlag().equals(false)).collect(Collectors.toList());
+        final List<Long> allIdList = markerLinkageList
+                .stream()
+                .map(MarkerLinkage::getId)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+        final List<Long> deleteIdList = markerLinkageList
+                .stream()
+                .filter(v -> v.getId() != null && (v.getDelFlag() == null || Objects.equals(v.getDelFlag(), true)))
+                .map(MarkerLinkage::getId)
+                .collect(Collectors.toList());
+        final List<MarkerLinkage> saveList = markerLinkageList
+                .stream()
+                .filter(v -> v.getDelFlag() != null && Objects.equals(v.getDelFlag(), false))
+                .collect(Collectors.toList());
+        final List<MarkerLinkage> insertList = saveList
+                .stream()
+                .filter(v -> v.getId() == null)
+                .collect(Collectors.toList());
+        final List<MarkerLinkage> updateList = saveList
+                .stream()
+                .filter(v -> v.getId() != null)
+                .collect(Collectors.toList());
 
         if(CollUtil.isNotEmpty(allIdList)) {
             markerLinkageMapper.undeleteByIds(PgsqlUtils.unnestLongStr(allIdList));
         }
-        boolean updateSuccess = CollUtil.isEmpty(markerLinkageList) || markerLinkageMBPService.saveOrUpdateBatch(updateList);
-        int deleteSuccess = CollUtil.isEmpty(deleteIdList) ? 1 : markerLinkageMapper.deleteByIds(PgsqlUtils.unnestLongStr(deleteIdList));
-        return updateSuccess && deleteSuccess >= 0;
+
+        boolean processSuccess = true;
+        if(CollUtil.isNotEmpty(insertList)) {
+            processSuccess = markerLinkageMBPService.saveBatch(insertList, 100);
+        }
+        if(CollUtil.isNotEmpty(updateList)) {
+            processSuccess = processSuccess && markerLinkageMBPService.updateBatchById(updateList, 100);
+        }
+        if(CollUtil.isNotEmpty(deleteIdList)) {
+            processSuccess = processSuccess && markerLinkageMapper.deleteByIds(PgsqlUtils.unnestLongStr(deleteIdList)) >= 0;
+        }
+        return processSuccess;
     }
 
     /**
