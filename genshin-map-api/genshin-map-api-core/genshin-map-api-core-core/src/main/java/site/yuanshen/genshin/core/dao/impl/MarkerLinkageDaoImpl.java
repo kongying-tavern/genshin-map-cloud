@@ -131,13 +131,17 @@ public class MarkerLinkageDaoImpl implements MarkerLinkageDao {
             markerLinkageMapper.undeleteByIds(PgsqlUtils.unnestLongStr(allIdList));
         }
 
-        boolean updateSuccess = true;
-        if(CollUtil.isNotEmpty(markerLinkageList)) {
-            updateSuccess = markerLinkageMBPService.saveBatch(insertList, 100);
-            updateSuccess = updateSuccess && markerLinkageMBPService.updateBatchById(updateList, 100);
+        boolean processSuccess = true;
+        if(CollUtil.isNotEmpty(insertList)) {
+            processSuccess = markerLinkageMBPService.saveBatch(insertList, 100);
         }
-        int deleteSuccess = CollUtil.isEmpty(deleteIdList) ? 1 : markerLinkageMapper.deleteByIds(PgsqlUtils.unnestLongStr(deleteIdList));
-        return updateSuccess && deleteSuccess >= 0;
+        if(CollUtil.isNotEmpty(updateList)) {
+            processSuccess = processSuccess && markerLinkageMBPService.updateBatchById(updateList, 100);
+        }
+        if(CollUtil.isNotEmpty(deleteIdList)) {
+            processSuccess = processSuccess && markerLinkageMapper.deleteByIds(PgsqlUtils.unnestLongStr(deleteIdList)) >= 0;
+        }
+        return processSuccess;
     }
 
     /**
