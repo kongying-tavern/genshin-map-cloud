@@ -4,14 +4,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionSynchronizationAdapter;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.util.StringUtils;
 import site.yuanshen.common.core.utils.DebounceExecutor;
+import site.yuanshen.common.web.response.WUtils;
 import site.yuanshen.genshin.core.dao.IconTagDao;
+import site.yuanshen.genshin.core.websocket.WebSocketEntrypoint;
 
 import java.util.Objects;
 import java.util.concurrent.*;
@@ -31,6 +32,7 @@ public class CacheService {
     private final ItemDocService itemDocService;
     private final IconTagDao iconTagDao;
     private final CacheManager cacheManager;
+    private final WebSocketEntrypoint webSocket;
 
     ThreadPoolExecutor executor = new ThreadPoolExecutor(10, 20, 200, TimeUnit.MILLISECONDS,
             new ArrayBlockingQueue<>(5));
@@ -60,8 +62,13 @@ public class CacheService {
         runAfterTransactionByFuture(futureTask);
         try {
             if (futureTask.get() == Status.OK)
-                runAfterTransactionDebounceByKey(this::refreshIconTagBz2,
-                        FunctionKeyEnum.refreshIconTagBz2,5);
+                runAfterTransactionDebounceByKey(
+                        () -> {
+                            this.refreshIconTagBz2();
+                            webSocket.broadcast(null, WUtils.create("IconTagBz2Purged", null));
+                        },
+                        FunctionKeyEnum.refreshIconTagBz2, 5
+                );
             else
                 log.error("cleanIconTagCache执行失败,未知原因");
         } catch (Exception e) {
@@ -88,8 +95,13 @@ public class CacheService {
             }
     )
     public void cleanItemCache() {
-        runAfterTransactionDebounceByKey(itemDocService::refreshItemBz2MD5,
-                FunctionKeyEnum.refreshItemBz2,5);
+        runAfterTransactionDebounceByKey(
+                () -> {
+                    itemDocService.refreshItemBz2MD5();
+                    webSocket.broadcast(null, WUtils.create("ItemBz2Purged", null));
+                },
+                FunctionKeyEnum.refreshItemBz2, 5
+        );
     }
 
     @Caching(
@@ -109,8 +121,13 @@ public class CacheService {
     )
     public void cleanMarkerCache() {
         log.info("cleanMarkerCache");
-        runAfterTransactionDebounceByKey(markerDocService::refreshMarkerBz2MD5,
-                FunctionKeyEnum.refreshMarkerBz2, 5);
+        runAfterTransactionDebounceByKey(
+                () -> {
+                    markerDocService.refreshMarkerBz2MD5();
+                    webSocket.broadcast(null, WUtils.create("MarkerBz2Purged", null));
+                },
+                FunctionKeyEnum.refreshMarkerBz2, 5
+        );
     }
 
     @Caching(
@@ -134,6 +151,7 @@ public class CacheService {
                 () -> {
                     markerLinkageDocService.refreshMarkerLinkageListBz2MD5();
                     markerLinkageDocService.refreshMarkerLinkageGraphBz2MD5();
+                    webSocket.broadcast(null, WUtils.create("MarkerLinkageBz2Purged", null));
                 },
                 FunctionKeyEnum.refreshMarkerLinkageBz2, 5
         );
