@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
@@ -100,7 +99,7 @@ public class MarkerLinkageHelperService {
             return new HashMap<>();
         }
         final List<Marker> markerList = markerMBPService.list(Wrappers.<Marker>lambdaQuery().in(Marker::getId, markerIds));
-        final Map<Long, Point2D.Double> markerCoords = new ConcurrentHashMap<>();
+        final Map<Long, Point2D.Double> markerCoords = new HashMap<>();
         markerList.parallelStream()
                 .forEach(marker -> {
                     final Long markerId = ObjectUtil.defaultIfNull(marker.getId(), 0L);

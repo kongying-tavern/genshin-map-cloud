@@ -1,20 +1,14 @@
 package site.yuanshen.data.dto.adapter.marker.linkage.graph;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.collection.ConcurrentHashSet;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.ObjectUtil;
 import lombok.Getter;
 import site.yuanshen.data.vo.MarkerLinkageVo;
 import site.yuanshen.data.vo.adapter.marker.linkage.PathEdgeVo;
 
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.*;
 
-/**
- * This is a temporarily DTO adapter to hold accumulated data. These data should be reformed to VO for API usage.
- * The thread safe datasets in this DTO is due to upper-level parallel calls.
- */
 @Getter
 public class AccumulatorCache {
     public AccumulatorCache() {
@@ -29,7 +23,7 @@ public class AccumulatorCache {
     }
 
     // 关联相关数据
-    private ConcurrentHashSet<LinkRefDto> linkageSet = new ConcurrentHashSet<>();
+    private Set<LinkRefDto> linkageSet = new HashSet<>();
 
     public boolean inLinkage(LinkRefDto linkRef, boolean useFrom, boolean useTo) {
         if(linkRef == null) {
@@ -76,7 +70,7 @@ public class AccumulatorCache {
     }
 
     // 路径相关数据
-    private ConcurrentHashMap<Long, List<PathEdgeVo>> pathMap = new ConcurrentHashMap<>();
+    private Map<Long, List<PathEdgeVo>> pathMap = new HashMap<>();
 
     public void addPath(MarkerLinkageVo linkage) {
         if(linkage == null) {

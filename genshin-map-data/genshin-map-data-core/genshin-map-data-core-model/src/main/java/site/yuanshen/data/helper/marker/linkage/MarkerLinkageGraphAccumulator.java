@@ -12,110 +12,100 @@ public final class MarkerLinkageGraphAccumulator {
         final AccumulatorCache ac = new AccumulatorCache();
         ac.addLinkage(linkRef);
         ac.addPath(linkageVo);
-        synchronized (caches) {
-            caches.add(ac);
-        }
+        caches.add(ac);
     }
 
     public static void withTriggerAll(List<AccumulatorCache> caches, MarkerLinkageVo linkageVo) {
         final LinkRefDto linkRef = MarkerLinkageDataHelper.getLinkRef(linkageVo);
         AccumulatorCache ac = null;
 
-        synchronized (caches) {
-            // Try to find existing matched accumulator cache
-            for (AccumulatorCache cache : caches) {
-                final Long toId = linkageVo.getToId();
-                if (cache.inLinkage(null, toId, false, true)) {
-                    ac = cache;
-                    break;
-                }
+        // Try to find existing matched accumulator cache
+        for (AccumulatorCache cache : caches) {
+            final Long toId = linkageVo.getToId();
+            if (cache.inLinkage(null, toId, false, true)) {
+                ac = cache;
+                break;
             }
-
-            // No accumulator cache matched, add a new accumulator cache
-            if (ac == null) {
-                ac = new AccumulatorCache();
-                caches.add(ac);
-            }
-
-            // Add data
-            ac.addLinkage(linkRef);
-            ac.addPath(linkageVo);
         }
+
+        // No accumulator cache matched, add a new accumulator cache
+        if (ac == null) {
+            ac = new AccumulatorCache();
+            caches.add(ac);
+        }
+
+        // Add data
+        ac.addLinkage(linkRef);
+        ac.addPath(linkageVo);
     }
 
     public static void withTriggerAny(List<AccumulatorCache> caches, MarkerLinkageVo linkageVo) {
         final LinkRefDto linkRef = MarkerLinkageDataHelper.getLinkRef(linkageVo);
         AccumulatorCache ac = null;
 
-        synchronized (caches) {
-            // Try to find existing matched accumulator cache
-            for (AccumulatorCache cache : caches) {
-                final Long toId = linkageVo.getToId();
-                if (cache.inLinkage(null, toId, false, true)) {
-                    ac = cache;
-                    break;
-                }
+        // Try to find existing matched accumulator cache
+        for (AccumulatorCache cache : caches) {
+            final Long toId = linkageVo.getToId();
+            if (cache.inLinkage(null, toId, false, true)) {
+                ac = cache;
+                break;
             }
-
-            // No accumulator cache matched, add a new accumulator cache
-            if (ac == null) {
-                ac = new AccumulatorCache();
-                caches.add(ac);
-            }
-
-            // Add data
-            ac.addLinkage(linkRef);
-            ac.addPath(linkageVo);
         }
+
+        // No accumulator cache matched, add a new accumulator cache
+        if (ac == null) {
+            ac = new AccumulatorCache();
+            caches.add(ac);
+        }
+
+        // Add data
+        ac.addLinkage(linkRef);
+        ac.addPath(linkageVo);
     }
 
     public static void withRelated(List<AccumulatorCache> caches, MarkerLinkageVo linkageVo) {
         final LinkRefDto linkRef = MarkerLinkageDataHelper.getLinkRef(linkageVo);
         AccumulatorCache ac = null;
 
-        synchronized (caches) {
-            // Try to find existing matched accumulator cache
-            for (AccumulatorCache cache : caches) {
-                if (cache.inLinkage(linkRef, true, true)) {
-                    ac = cache;
-                    break;
-                }
+        // Try to find existing matched accumulator cache
+        for (AccumulatorCache cache : caches) {
+            if (cache.inLinkage(linkRef, true, true)) {
+                ac = cache;
+                break;
             }
-
-            // No accumulator cache matched, add a new accumulator cache
-            if (ac == null) {
-                ac = new AccumulatorCache();
-                caches.add(ac);
-            }
-
-            // Add data
-            ac.addLinkage(linkRef);
-            ac.addPath(linkageVo);
         }
+
+        // No accumulator cache matched, add a new accumulator cache
+        if (ac == null) {
+            ac = new AccumulatorCache();
+            caches.add(ac);
+        }
+
+        // Add data
+        ac.addLinkage(linkRef);
+        ac.addPath(linkageVo);
     }
 
     public static void withEquivalent(List<AccumulatorCache> caches, MarkerLinkageVo linkageVo) {
         final LinkRefDto linkRef = MarkerLinkageDataHelper.getLinkRef(linkageVo);
         AccumulatorCache ac = null;
 
-        synchronized (caches) {
-            // Try to find existing matched accumulator cache
-            for (AccumulatorCache cache : caches) {
-                if (cache.inLinkage(linkRef, true, true)) {
-                    ac = cache;
-                    break;
-                }
+        // Try to find existing matched accumulator cache
+        for (AccumulatorCache cache : caches) {
+            if (cache.inLinkage(linkRef, true, true)) {
+                ac = cache;
+                break;
             }
-
-            // No accumulator cache matched, add a new accumulator cache
-            if (ac == null) {
-                ac = new AccumulatorCache();
-                caches.add(ac);
-            }
-
-            // Add data
-            ac.addLinkage(linkRef);
-            ac.addPath(linkageVo);
         }
+
+        // No accumulator cache matched, add a new accumulator cache
+        if (ac == null) {
+            ac = new AccumulatorCache();
+            caches.add(ac);
+        }
+
+        // Add data
+        ac.addLinkage(linkRef);
+        ac.addPath(linkageVo);
     }
 }

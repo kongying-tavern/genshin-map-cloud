@@ -5,9 +5,9 @@ import lombok.Getter;
 import lombok.Setter;
 import site.yuanshen.data.vo.adapter.marker.linkage.PathEdgeVo;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Getter
 public class DistributorDto {
@@ -18,7 +18,7 @@ public class DistributorDto {
     private RelationDto relation;
 
     // 路线引用相关
-    private ConcurrentHashMap<Long, List<PathEdgeVo>> pathRefs = new ConcurrentHashMap<>();
+    private Map<Long, List<PathEdgeVo>> pathRefs = new HashMap<>();
 
     public void addPaths(Map<Long, List<PathEdgeVo>> pathMap) {
         if(CollUtil.isEmpty(pathMap)) {
