@@ -17,7 +17,6 @@ import site.yuanshen.data.vo.adapter.marker.linkage.graph.GraphVo;
 import java.awt.geom.Point2D;
 import java.nio.ByteOrder;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -45,7 +44,7 @@ public final class MarkerLinkageDataHelper {
             idSet.add(linkage.getFromId());
             idSet.add(linkage.getToId());
         }
-        return idSet.parallelStream().filter(Objects::nonNull).collect(Collectors.toList());
+        return idSet.stream().filter(Objects::nonNull).collect(Collectors.toList());
     }
 
     public static String getIdHash(List<Long> idList) {
@@ -124,14 +123,14 @@ public final class MarkerLinkageDataHelper {
 
     //////////////START:绘图数据方法//////////////
     public static Map<String, GraphVo> buildLinkageGraph(List<MarkerLinkageVo> linkageVos) {
-        ConcurrentHashMap<AccumulatorKey, List<MarkerLinkageVo>> graphSearchMap = getGraphSearchMap(linkageVos);
+        Map<AccumulatorKey, List<MarkerLinkageVo>> graphSearchMap = getGraphSearchMap(linkageVos);
 
         // 聚合数据为行为分组
-        ConcurrentHashMap<AccumulatorKey, List<AccumulatorCache>> accumulateMap = new ConcurrentHashMap<>();
+        Map<AccumulatorKey, List<AccumulatorCache>> accumulateMap = new HashMap<>();
         accumulateGraphData(accumulateMap, graphSearchMap);
 
         // 分散分组为与点位关联的数据
-        ConcurrentHashMap<DistributorKey, DistributorDto> graphDistributeMap = new ConcurrentHashMap<>();
+        Map<DistributorKey, DistributorDto> graphDistributeMap = new HashMap<>();
         distributeGraphData(graphDistributeMap, accumulateMap);
 
         // 聚合点位关联数据为 API 数据
@@ -140,8 +139,8 @@ public final class MarkerLinkageDataHelper {
         return graphData;
     }
 
-    private static ConcurrentHashMap<AccumulatorKey, List<MarkerLinkageVo>> getGraphSearchMap(List<MarkerLinkageVo> linkageVos) {
-        return linkageVos.parallelStream()
+    private static Map<AccumulatorKey, List<MarkerLinkageVo>> getGraphSearchMap(List<MarkerLinkageVo> linkageVos) {
+        return linkageVos.stream()
             .filter(Objects::nonNull)
             .map(linkage -> {
                 final String groupId = StrUtil.blankToDefault(linkage.getGroupId(), "");
@@ -158,15 +157,15 @@ public final class MarkerLinkageDataHelper {
             })
             .filter(Objects::nonNull)
             .collect(
-                Collectors.groupingByConcurrent(MarkerLinkageDataHelper::getAccumulateKey, ConcurrentHashMap::new, Collectors.toList())
+                Collectors.groupingBy(MarkerLinkageDataHelper::getAccumulateKey, HashMap::new, Collectors.toList())
             );
     }
 
     private static void accumulateGraphData(
         Map<AccumulatorKey, List<AccumulatorCache>> accumulateMap,
-        ConcurrentHashMap<AccumulatorKey, List<MarkerLinkageVo>> graphSearchMap
+        Map<AccumulatorKey, List<MarkerLinkageVo>> graphSearchMap
     ) {
-        graphSearchMap.forEachEntry(2, markerLinkageEntity -> {
+        for(Map.Entry<AccumulatorKey, List<MarkerLinkageVo>> markerLinkageEntity : graphSearchMap.entrySet()) {
             final AccumulatorKey key = markerLinkageEntity.getKey();
             final List<MarkerLinkageVo> valList = markerLinkageEntity.getValue();
 
@@ -179,16 +178,16 @@ public final class MarkerLinkageDataHelper {
             if(linkAccumulator != null && CollUtil.isNotEmpty(valList)) {
                 accumulateMap.putIfAbsent(key, new ArrayList<>());
                 List<AccumulatorCache> accumulateList = accumulateMap.get(key);
-                valList.parallelStream().forEach(linkage -> linkAccumulator.accept(accumulateList, linkage));
+                valList.stream().forEach(linkage -> linkAccumulator.accept(accumulateList, linkage));
             }
-        });
+        }
     }
 
     private static void distributeGraphData(
             Map<DistributorKey, DistributorDto> graphDistributeMap,
-            ConcurrentHashMap<AccumulatorKey, List<AccumulatorCache>> accumulateMap
+            Map<AccumulatorKey, List<AccumulatorCache>> accumulateMap
     ) {
-        accumulateMap.forEachEntry(2, accEntry -> {
+        for(Map.Entry<AccumulatorKey, List<AccumulatorCache>> accEntry : accumulateMap.entrySet()) {
             final AccumulatorKey key = accEntry.getKey();
             final LinkActionEnum linkAction = key.getLinkAction();
             if(linkAction == null) {
@@ -198,16 +197,16 @@ public final class MarkerLinkageDataHelper {
             final TriConsumer<Map<DistributorKey, DistributorDto>, AccumulatorKey, AccumulatorCache> linkDistributor = linkAction.getDistributor();
             if(linkDistributor != null) {
                 final List<AccumulatorCache> cacheList = accEntry.getValue();
-                cacheList.parallelStream().forEach(cache -> {
+                cacheList.stream().forEach(cache -> {
                     linkDistributor.accept(graphDistributeMap, key, cache);
                 });
             }
-        });
+        }
     }
 
-    private static Map<String, GraphVo> restructureGraphData(ConcurrentHashMap<DistributorKey, DistributorDto> graphDistributeMap) {
-        final ConcurrentHashMap<String, GraphDto> graphMap = new ConcurrentHashMap<>();
-        graphDistributeMap.forEachEntry(2, distEntry -> {
+    private static Map<String, GraphVo> restructureGraphData(Map<DistributorKey, DistributorDto> graphDistributeMap) {
+        final Map<String, GraphDto> graphMap = new HashMap<>();
+        for(Map.Entry<DistributorKey, DistributorDto> distEntry : graphDistributeMap.entrySet()) {
             final DistributorKey distKey = distEntry.getKey();
             final DistributorDto distDto = distEntry.getValue();
             final String groupId = StrUtil.blankToDefault(distKey.getGroupId(), "");
@@ -216,12 +215,12 @@ public final class MarkerLinkageDataHelper {
             GraphDto gm = graphMap.get(groupId);
             gm.addRel(distKey.getMarkerId(), distDto.getRelationId(), distDto.getRelation());
             gm.addPaths(distDto.getPathRefs());
-        });
+        }
 
-        final ConcurrentHashMap<String, GraphVo> graphData = new ConcurrentHashMap<>();
-        graphMap.forEachEntry(2, graphEntry -> {
+        final Map<String, GraphVo> graphData = new HashMap<>();
+        for(Map.Entry<String, GraphDto> graphEntry : graphMap.entrySet()) {
             graphData.putIfAbsent(graphEntry.getKey(), graphEntry.getValue().toVo());
-        });
+        }
 
         return graphData;
     }
@@ -232,7 +231,7 @@ public final class MarkerLinkageDataHelper {
         if(CollUtil.isEmpty(linkageVos)) {
             return new ArrayList<>();
         }
-        return linkageVos.parallelStream()
+        return linkageVos.stream()
                 .filter(Objects::nonNull)
                 .map(MarkerLinkageVo::getPath)
                 .filter(Objects::nonNull)
@@ -248,7 +247,7 @@ public final class MarkerLinkageDataHelper {
         if(CollUtil.isEmpty(linkageMap)) {
             return new ArrayList<>();
         }
-        return linkageMap.values().parallelStream()
+        return linkageMap.values().stream()
                 .filter(Objects::nonNull)
                 .map(GraphVo::getPathRefs)
                 .map(Map::values)
@@ -265,9 +264,31 @@ public final class MarkerLinkageDataHelper {
             List<MarkerLinkageVo> linkageVos,
             Map<Long, Point2D.Double> markerCoords
     ) {
-        linkageVos.parallelStream().forEach(linkage -> {
-            synchronized (linkage) {
-                linkage.getPath().forEach(path -> {
+        linkageVos.stream().forEach(linkage -> {
+            linkage.getPath().forEach(path -> {
+                final Long id1 = path.getId1();
+                final Point2D.Double coord1 = markerCoords.get(id1);
+                if(coord1 != null) {
+                    path.setX1(coord1.getX());
+                    path.setY1(coord1.getY());
+                }
+                final Long id2 = path.getId2();
+                final Point2D.Double coord2 = markerCoords.get(id2);
+                if(coord2 != null) {
+                    path.setX2(coord2.getX());
+                    path.setY2(coord2.getY());
+                }
+            });
+        });
+    }
+
+    public static void patchPathMarkerCoordsInGraph(
+            Map<String, GraphVo> linkageMap,
+            Map<Long, Point2D.Double> markerCoords
+    ) {
+        linkageMap.forEach((groupId, graphVo) -> {
+            graphVo.getPathRefs().forEach((refId, refPaths) -> {
+                refPaths.forEach(path -> {
                     final Long id1 = path.getId1();
                     final Point2D.Double coord1 = markerCoords.get(id1);
                     if(coord1 != null) {
@@ -281,32 +302,6 @@ public final class MarkerLinkageDataHelper {
                         path.setY2(coord2.getY());
                     }
                 });
-            }
-        });
-    }
-
-    public static void patchPathMarkerCoordsInGraph(
-            Map<String, GraphVo> linkageMap,
-            Map<Long, Point2D.Double> markerCoords
-    ) {
-        linkageMap.forEach((groupId, graphVo) -> {
-            graphVo.getPathRefs().forEach((refId, refPaths) -> {
-                synchronized (refPaths) {
-                    refPaths.forEach(path -> {
-                        final Long id1 = path.getId1();
-                        final Point2D.Double coord1 = markerCoords.get(id1);
-                        if(coord1 != null) {
-                            path.setX1(coord1.getX());
-                            path.setY1(coord1.getY());
-                        }
-                        final Long id2 = path.getId2();
-                        final Point2D.Double coord2 = markerCoords.get(id2);
-                        if(coord2 != null) {
-                            path.setX2(coord2.getX());
-                            path.setY2(coord2.getY());
-                        }
-                    });
-                }
             });
         });
     }
@@ -314,7 +309,7 @@ public final class MarkerLinkageDataHelper {
 
     //////////////START:关联点位方法//////////////
     public static Map<String, MarkerLinkage> getLinkSearchMap(List<MarkerLinkage> linkageList) {
-        return linkageList.parallelStream().collect(Collectors.toConcurrentMap(
+        return linkageList.stream().collect(Collectors.toMap(
             linkageEntity -> MarkerLinkageDataHelper.getIdHash(Arrays.asList(linkageEntity.getFromId(), linkageEntity.getToId())),
             linkageEntity -> linkageEntity,
             (o, n) -> n

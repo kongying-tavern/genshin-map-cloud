@@ -1,10 +1,10 @@
 package site.yuanshen.data.helper.marker.linkage;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.collection.ConcurrentHashSet;
 import cn.hutool.core.util.StrUtil;
 import site.yuanshen.data.dto.adapter.marker.linkage.graph.*;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -36,7 +36,7 @@ public final class MarkerLinkageGraphDistributor {
             AccumulatorCache cache
     ) {
         final String cacheId = StrUtil.blankToDefault(cache.getCacheId(), "");
-        final Set<LinkRefDto> cacheLinks = CollUtil.defaultIfEmpty(cache.getLinkageSet(), new ConcurrentHashSet<>());
+        final Set<LinkRefDto> cacheLinks = CollUtil.defaultIfEmpty(cache.getLinkageSet(), new HashSet<>());
         final RelationDto relation = MarkerLinkageDataHelper.getRelationGroup(cacheLinks, accumulatorKey.getLinkAction());
         DistributorKey distKey = null;
 
