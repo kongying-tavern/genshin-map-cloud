@@ -9,7 +9,7 @@ import ${package.Service}.${table.serviceName};
 /**
  * ${table.comment!} Mybatis Plus CRUD服务实现类
  *
- * @author Mybatis Plus generator
+ * @author ${author}
  */
 @Service
 public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.mapperName}, ${entity}> implements ${table.serviceName} {
