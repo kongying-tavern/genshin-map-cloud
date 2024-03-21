@@ -67,6 +67,12 @@ public class Notice extends BaseEntity {
     private String content;
 
     /**
+     * 排序
+     */
+    @TableField("sort_index")
+    private Integer sortIndex;
+
+    /**
      * 有效期开始时间
      */
     @TableField("valid_time_start")
