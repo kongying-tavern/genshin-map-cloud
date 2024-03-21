@@ -49,7 +49,7 @@ public class NoticeService {
         }
 
         // 处理排序
-        final List<PgsqlUtils.Sort<Notice>> sortList = PgsqlUtils.toSort(noticeSearchDto.getSort(), Notice.class, Set.of("title", "validTimeStart", "validTimeEnd", "updateTime"));
+        final List<PgsqlUtils.Sort<Notice>> sortList = PgsqlUtils.toSort(noticeSearchDto.getSort(), Notice.class, Set.of("title", "sortIndex", "validTimeStart", "validTimeEnd", "updateTime"));
         wrapper = PgsqlUtils.sortWrapper(wrapper, sortList);
 
         final LambdaQueryWrapper<Notice> queryWrapper = wrapper.lambda()
