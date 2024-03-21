@@ -144,7 +144,7 @@ public class MarkerDto {
         MarkerDto markerCopy = new MarkerDto();
         BeanUtils.copy(this, markerCopy);
         List<MarkerItemLinkVo> itemList = this.getItemList();
-        List<MarkerItemLinkVo> itemListCopy = itemList.parallelStream()
+        List<MarkerItemLinkVo> itemListCopy = itemList.stream()
                 .map(itemLink -> {
                     MarkerItemLinkVo itemLinkCopy = new MarkerItemLinkVo();
                     BeanUtils.copy(itemLink, itemLinkCopy);

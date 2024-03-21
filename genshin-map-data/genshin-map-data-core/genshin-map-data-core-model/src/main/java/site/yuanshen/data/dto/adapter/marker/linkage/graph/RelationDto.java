@@ -1,7 +1,6 @@
 package site.yuanshen.data.dto.adapter.marker.linkage.graph;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.collection.ConcurrentHashSet;
 import cn.hutool.core.util.StrUtil;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,20 +9,19 @@ import site.yuanshen.data.enums.marker.linkage.RelationTypeEnum;
 import site.yuanshen.data.vo.adapter.marker.linkage.graph.LinkRefVo;
 import site.yuanshen.data.vo.adapter.marker.linkage.graph.RelationVo;
 
-/**
- * This uses {@link ConcurrentHashSet} to avoid mutex locking, to save memory and cpu usage in concurrent scenarios.
- * Concurrent cases are not for all cases, just in case it is needed.
- */
+import java.util.HashSet;
+import java.util.Set;
+
 @Getter
 public class RelationDto {
     @Setter
     private String type = "";
 
-    private ConcurrentHashSet<LinkRefVo> triggers = new ConcurrentHashSet<>();
+    private Set<LinkRefVo> triggers = new HashSet<>();
 
-    private ConcurrentHashSet<LinkRefVo> targets = new ConcurrentHashSet<>();
+    private Set<LinkRefVo> targets = new HashSet<>();
 
-    private ConcurrentHashSet<LinkRefVo> group = new ConcurrentHashSet<>();
+    private Set<LinkRefVo> group = new HashSet<>();
 
     public void addRelation(RelationTypeEnum relationType, IdTypeEnum idType, LinkRefDto link) {
         if (link == null) {

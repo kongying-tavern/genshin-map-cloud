@@ -14,6 +14,7 @@
         <result column="channel" property="channel" typeHandler="site.yuanshen.handler.MBPJsonArrayTypeHandler"/>
         <result column="title" property="title"/>
         <result column="content" property="content"/>
+        <result column="sort_index" property="sortIndex"/>
         <result column="valid_time_start" property="validTimeStart"/>
         <result column="valid_time_end" property="validTimeEnd"/>
     </resultMap>
@@ -30,6 +31,7 @@
         n.channel,
         n.title,
         n.content,
+        n.sort_index,
         n.valid_time_start,
         n.valid_time_end
     </sql>

@@ -79,6 +79,12 @@ public class NoticeVo {
     private String content;
 
     /**
+     * 排序
+     */
+    @Schema(title = "排序")
+    private Integer sortIndex;
+
+    /**
      * 有效期开始时间
      */
     @Schema(title = "有效期开始时间")

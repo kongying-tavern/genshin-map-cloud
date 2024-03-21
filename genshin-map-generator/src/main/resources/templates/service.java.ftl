@@ -6,7 +6,7 @@ import ${package.Entity}.${entity};
 /**
  * ${table.comment!} Mybatis Plus CRUD服务类
  *
- * @author Mybatis Plus generator
+ * @author ${author}
  */
 public interface ${table.serviceName} extends ${superServiceClass}<${entity}> {
 
