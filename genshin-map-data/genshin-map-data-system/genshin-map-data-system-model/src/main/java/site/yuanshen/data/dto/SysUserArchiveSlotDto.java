@@ -15,7 +15,11 @@ import site.yuanshen.data.vo.SysArchiveSlotVo;
 import site.yuanshen.data.vo.SysArchiveVo;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.LinkedList;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -75,7 +79,26 @@ public class SysUserArchiveSlotDto {
 
     public SysUserArchiveSlotDto(SysUserArchive sysUserArchive) {
         BeanUtils.copy(sysUserArchive, this);
-        archiveHistory = new LinkedList<>(JSONArray.from(sysUserArchive.getData()).toJavaList(SysUserArchiveDto.class));
+        archiveHistory = sysUserArchive.getData().stream()
+                .map(archiveHistory -> {
+                    try {
+                        Map<String, Object> archive = (Map<String, Object>) archiveHistory;
+                        Object time = archive.get("time");
+                        Timestamp ts = null;
+                        if(time instanceof String) {
+                            ts = Timestamp.from(LocalDateTime.parse((String) time).atZone(ZoneId.of("Asia/Shanghai")).toInstant());
+                        } else if(time instanceof Long) {
+                            ts = new Timestamp((Long) time);
+                        }
+                        return (new SysUserArchiveDto())
+                                .withArchive((String) archive.get("archive"))
+                                .withTime(ts);
+                    } catch(Exception ex) {
+                        return null;
+                    }
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toCollection(LinkedList::new));
     }
 
     public SysUserArchive getEntity() {
