@@ -169,12 +169,8 @@ public class MarkerDaoImpl implements MarkerDao {
                 if(StrUtil.isBlank(groupId)) {
                     return;
                 }
-                if(!markerLinkageMap.containsKey(fromId)) {
-                    markerLinkageMap.put(fromId, groupId);
-                }
-                if(!markerLinkageMap.containsKey(toId)) {
-                    markerLinkageMap.put(toId, groupId);
-                }
+                markerLinkageMap.putIfAbsent(fromId, groupId);
+                markerLinkageMap.putIfAbsent(toId, groupId);
             });
     }
 
@@ -201,7 +197,7 @@ public class MarkerDaoImpl implements MarkerDao {
             Cache bz2Cache = neverRefreshCacheManager.getCache("listPageMarkerByBz2");
             if (bz2Cache == null) throw new GenshinApiException("缓存未初始化");
 
-            Map<String, byte[]> result = new HashMap<>();
+            Map<String, byte[]> result = new LinkedHashMap<>();
             for(HiddenFlagEnum flagEnum : HiddenFlagEnum.values()) {
                 List<MarkerVo> markerList = getAllMarkerVo(flagEnum.getCode());
                 markerList.sort(Comparator.comparingLong(MarkerVo::getId));
@@ -227,7 +223,9 @@ public class MarkerDaoImpl implements MarkerDao {
                     for (int i = 0; i < totalPages; i++) {
                         byte[] page = JSON.toJSONString(CollUtil.page(i + 1, chunkSize, markerList)).getBytes(StandardCharsets.UTF_8);
                         byte[] compress = CompressUtils.compress(page);
-                        bz2Cache.put(flagEnum.getCode() + "_" + i, compress);
+                        String cacheKey = flagEnum.getCode() + "_" + i;
+                        result.put(cacheKey, compress);
+                        bz2Cache.put(cacheKey, compress);
                     }
                 }
             }
