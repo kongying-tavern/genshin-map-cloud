@@ -196,12 +196,12 @@ public class MarkerDaoImpl implements MarkerDao {
      * @return 刷新后的各个分页
      */
     @Override
-    public List<byte[]> refreshPageMarkerByBz2() {
+    public Map<String, byte[]> refreshPageMarkerByBz2() {
         try {
             Cache bz2Cache = neverRefreshCacheManager.getCache("listPageMarkerByBz2");
             if (bz2Cache == null) throw new GenshinApiException("缓存未初始化");
 
-            List<byte[]> result = new ArrayList<>();
+            Map<String, byte[]> result = new HashMap<>();
             for(HiddenFlagEnum flagEnum : HiddenFlagEnum.values()) {
                 List<MarkerVo> markerList = getAllMarkerVo(flagEnum.getCode());
                 markerList.sort(Comparator.comparingLong(MarkerVo::getId));
@@ -218,8 +218,9 @@ public class MarkerDaoImpl implements MarkerDao {
                                                 .sorted(Comparator.comparingLong(MarkerVo::getId)).collect(Collectors.toList()))
                                 .getBytes(StandardCharsets.UTF_8);
                         byte[] compress = CompressUtils.compress(page);
-                        result.add(compress);
-                        bz2Cache.put(flagEnum.getCode() + "_" + i, compress);
+                        String cacheKey = flagEnum.getCode() + "_" + i;
+                        result.put(cacheKey, compress);
+                        bz2Cache.put(cacheKey, compress);
                     }
                 } else {
                     int totalPages = (int) ((markerList.size() + chunkSize - 1) / chunkSize);

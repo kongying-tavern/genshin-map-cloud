@@ -5,6 +5,7 @@ import site.yuanshen.data.vo.MarkerVo;
 import site.yuanshen.data.vo.helper.PageListVo;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 点位信息的数据查询层
@@ -43,6 +44,6 @@ public interface MarkerDao {
      * 刷新bz2返回点位分页
      * @return 刷新后的各个分页
      */
-    List<byte[]> refreshPageMarkerByBz2();
+    Map<String, byte[]> refreshPageMarkerByBz2();
 
 }
