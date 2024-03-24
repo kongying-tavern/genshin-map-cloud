@@ -10,7 +10,7 @@
         <if test="ew.customSqlSegment ==null or ew.customSqlSegment == ''">
             where true and
         </if>
-         ${ew.customSqlSegment} del_flag = false
+         ${ew.customSqlSegment} and del_flag = false
     </select>
 
     <select id="selectWithLargeCustomIn" resultMap="BaseResultMap">
@@ -20,7 +20,7 @@
         <if test="ew.customSqlSegment ==null or ew.customSqlSegment == ''">
             where true and
         </if>
-        ${ew.customSqlSegment}  del_flag = false
+        ${ew.customSqlSegment} and del_flag = false
     </select>
 
     <select id="selectListByMarkerItemLink" resultMap="BaseResultMap">

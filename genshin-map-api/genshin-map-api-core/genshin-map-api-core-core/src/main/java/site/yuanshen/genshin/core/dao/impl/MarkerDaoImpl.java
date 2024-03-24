@@ -19,7 +19,7 @@ import site.yuanshen.data.dto.MarkerDto;
 import site.yuanshen.data.dto.MarkerItemLinkDto;
 import site.yuanshen.data.dto.helper.PageSearchDto;
 import site.yuanshen.data.entity.*;
-import site.yuanshen.data.entity.MarkerLinkage;
+import site.yuanshen.data.enums.HiddenFlagEnum;
 import site.yuanshen.data.mapper.*;
 import site.yuanshen.data.vo.MarkerItemLinkVo;
 import site.yuanshen.data.vo.MarkerVo;
@@ -198,81 +198,111 @@ public class MarkerDaoImpl implements MarkerDao {
     @Override
     public List<byte[]> refreshPageMarkerByBz2() {
         try {
-            List<MarkerVo> markerList = getAllMarkerVo();
-            markerList.sort(Comparator.comparingLong(MarkerVo::getId));
-            Long lastId = markerList.get(markerList.size() - 1).getId();
-            int totalPages = (int) ((lastId + 3000 - 1) / 3000);
-            List<byte[]> result = new ArrayList<>();
             Cache bz2Cache = neverRefreshCacheManager.getCache("listPageMarkerByBz2");
             if (bz2Cache == null) throw new GenshinApiException("缓存未初始化");
-            for (int i = 0; i < totalPages; i++) {
-                int finalI = i;
-                byte[] page = JSON.toJSONString(
-                                markerList.parallelStream()
-                                        .filter(markerVo -> markerVo.getId() >= (finalI * 3000L) && markerVo.getId() < ((finalI + 1) * 3000L))
-                                        .sorted(Comparator.comparingLong(MarkerVo::getId)).collect(Collectors.toList()))
-                        .getBytes(StandardCharsets.UTF_8);
-                byte[] compress = CompressUtils.compress(page);
-                result.add(compress);
-                bz2Cache.put(i, compress);
+
+            List<byte[]> result = new ArrayList<>();
+            for(HiddenFlagEnum flagEnum : HiddenFlagEnum.values()) {
+                List<MarkerVo> markerList = getAllMarkerVo(flagEnum.getCode());
+                markerList.sort(Comparator.comparingLong(MarkerVo::getId));
+                boolean chunkById = flagEnum.getChunkById();
+                int chunkSize = flagEnum.getChunkSize();
+                if (chunkById) {
+                    Long lastId = markerList.get(markerList.size() - 1).getId();
+                    int totalPages = (int) ((lastId + chunkSize - 1) / chunkSize);
+                    for (int i = 0; i < totalPages; i++) {
+                        int finalI = i;
+                        byte[] page = JSON.toJSONString(
+                                        markerList.parallelStream()
+                                                .filter(markerVo -> markerVo.getId() >= (finalI * chunkSize) && markerVo.getId() < ((finalI + 1) * chunkSize))
+                                                .sorted(Comparator.comparingLong(MarkerVo::getId)).collect(Collectors.toList()))
+                                .getBytes(StandardCharsets.UTF_8);
+                        byte[] compress = CompressUtils.compress(page);
+                        result.add(compress);
+                        bz2Cache.put(flagEnum.getCode() + "_" + i, compress);
+                    }
+                } else {
+                    int totalPages = (int) ((markerList.size() + chunkSize - 1) / chunkSize);
+                    for (int i = 0; i < totalPages; i++) {
+                        byte[] page = JSON.toJSONString(CollUtil.page(i + 1, chunkSize, markerList)).getBytes(StandardCharsets.UTF_8);
+                        byte[] compress = CompressUtils.compress(page);
+                        bz2Cache.put(flagEnum.getCode() + "_" + i, compress);
+                    }
+                }
             }
+
             return result;
         } catch (Exception e) {
             throw new GenshinApiException("创建压缩失败", e);
         }
     }
 
-    private List<MarkerVo> getAllMarkerVo() {
-        List<Marker> markerList = markerMapper.selectList(Wrappers.<Marker>lambdaQuery().eq(Marker::getHiddenFlag, 0));
+    private List<MarkerVo> getAllMarkerVo(Integer hiddenFlag) {
+        List<Integer> overrideFlags = HiddenFlagEnum.getOverrideList(hiddenFlag);
+        overrideFlags = CollUtil.isEmpty(overrideFlags) ? List.of(hiddenFlag) : overrideFlags;
 
-        List<Long> hideAreas = areaMapper.selectList(Wrappers.<Area>lambdaQuery().select(Area::getId).in(Area::getHiddenFlag, 1,2))
-                .stream().map(Area::getId)
-                .collect(Collectors.toList());
+        Set<Long> areaIds = areaMapper.selectList(Wrappers.<Area>lambdaQuery().select(Area::getId).eq(Area::getHiddenFlag, hiddenFlag))
+                .stream().map(Area::getId).collect(Collectors.toSet());
+        Map<Long, Item> itemMap = CollUtil.isEmpty(areaIds) ? new HashMap<>() : itemMapper.selectWithLargeCustomIn(
+                        "area_id",
+                        PgsqlUtils.unnestLongStr(areaIds),
+                        Wrappers.<Item>lambdaQuery().select(Item::getId).in(Item::getHiddenFlag, overrideFlags)
+                )
+                .stream().collect(Collectors.toMap(
+                        Item::getId,
+                        item -> item,
+                        (o, n) -> n
+                ));
+        Set<Long> itemIds = itemMap.keySet();
+        List<MarkerItemLink> markerItemLinks = CollUtil.isEmpty(itemIds) ? List.of() : new ArrayList<>(markerItemLinkMapper.selectWithLargeCustomIn(
+                "item_id",
+                PgsqlUtils.unnestLongStr(itemIds),
+                Wrappers.<MarkerItemLink>lambdaQuery().select(MarkerItemLink::getItemId, MarkerItemLink::getMarkerId)
+        ));
+        Set<Long> markerIds = markerItemLinks.stream().map(MarkerItemLink::getMarkerId).collect(Collectors.toSet());
+        List<Marker> markerList = CollUtil.isEmpty(markerIds) ? List.of() : markerMapper.selectListWithLargeIn(
+                PgsqlUtils.unnestLongStr(markerIds),
+                Wrappers.<Marker>lambdaQuery().in(Marker::getHiddenFlag, overrideFlags)
+        );
+        Set<Long> markerListIds = markerList.parallelStream().map(Marker::getId).collect(Collectors.toSet());
 
-        //获取item_id,得到item合集
-        Map<Long, Item> itemMap = itemMapper.selectList(Wrappers.<Item>lambdaQuery().eq(Item::getHiddenFlag, 0).notIn(CollUtil.isNotEmpty(hideAreas), Item::getAreaId,hideAreas))
-                .stream().collect(Collectors.toMap(Item::getId, Item -> Item));
-
+        // 合并点位-物品关联数据
         ConcurrentHashMap<Long, List<MarkerItemLink>> itemLinkMap = new ConcurrentHashMap<>();
-        markerItemLinkMapper.selectList(Wrappers.lambdaQuery())
-                .parallelStream().forEach(markerItemLink -> {
-                            if (!itemMap.containsKey(markerItemLink.getItemId())) {
-                                return;
-                            }
-                            itemLinkMap.compute(markerItemLink.getMarkerId(),
-                                    (markerId, linkList) -> {
-                                        if (linkList == null) return new ArrayList<>(Collections.singletonList(markerItemLink));
-                                        linkList.add(markerItemLink);
-                                        return linkList;
-                                    }
-                            );
+        markerItemLinks.parallelStream().forEach(markerItemLink -> {
+            if (!itemMap.containsKey(markerItemLink.getItemId())) {
+                return;
+            } else if(!markerListIds.contains(markerItemLink.getMarkerId())) {
+                return;
+            }
+            itemLinkMap.compute(
+                    markerItemLink.getMarkerId(),
+                    (markerId, linkList) -> {
+                        if (linkList == null) {
+                            return new ArrayList<>(Collections.singletonList(markerItemLink));
                         }
-                );
+                        linkList.add(markerItemLink);
+                        return linkList;
+                    }
+            );
+        });
 
-        // 获取marker_linkage关联
+        // 获取点位管理组关联
         ConcurrentHashMap<Long, String> markerLinkageMap = new ConcurrentHashMap<>();
-        markerLinkageMapper.selectList(Wrappers.<MarkerLinkage>lambdaQuery())
-            .parallelStream().forEach(markerLinkage -> {
-                final Long fromId = markerLinkage.getFromId();
-                final Long toId = markerLinkage.getToId();
+        List<MarkerLinkage> markerLinkages = markerLinkageMapper.selectList(Wrappers.<MarkerLinkage>lambdaQuery());
+        markerLinkages.parallelStream().forEach(markerLinkage -> {
                 final String groupId = StrUtil.blankToDefault(markerLinkage.getGroupId(), "");
                 if(StrUtil.isBlank(groupId)) {
                     return;
                 }
-                if(!markerLinkageMap.containsKey(fromId)) {
-                    markerLinkageMap.put(fromId, groupId);
-                }
-                if(!markerLinkageMap.containsKey(toId)) {
-                    markerLinkageMap.put(toId, groupId);
-                }
+                markerLinkageMap.putIfAbsent(markerLinkage.getFromId(), groupId);
+                markerLinkageMap.putIfAbsent(markerLinkage.getToId(), groupId);
             });
-
 
         return markerList.parallelStream()
                 .map(MarkerDto::new)
                 .map(dto -> dto
                         .withItemList(
-                                itemLinkMap.getOrDefault(dto.getId(),Collections.emptyList()).stream()
+                                itemLinkMap.getOrDefault(dto.getId(), Collections.emptyList()).stream()
                                         .map(MarkerItemLinkDto::new)
                                         .map(MarkerItemLinkDto::getVo)
                                         .map(vo->{
@@ -285,10 +315,9 @@ public class MarkerDaoImpl implements MarkerDao {
                                         .filter(Objects::nonNull)
                                         .collect(Collectors.toList())
                         )
-                        .withLinkageId(markerLinkageMap.getOrDefault(dto.getId(),""))
+                        .withLinkageId(markerLinkageMap.getOrDefault(dto.getId(), ""))
                 )
                 .map(MarkerDto::getVo)
                 .collect(Collectors.toList());
     }
-
 }
