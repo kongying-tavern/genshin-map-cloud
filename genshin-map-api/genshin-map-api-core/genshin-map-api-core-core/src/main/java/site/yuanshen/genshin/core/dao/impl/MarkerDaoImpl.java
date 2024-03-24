@@ -303,6 +303,7 @@ public class MarkerDaoImpl implements MarkerDao {
                 .map(dto -> dto
                         .withItemList(
                                 itemLinkMap.getOrDefault(dto.getId(), Collections.emptyList()).stream()
+                                        .sorted(Comparator.comparingLong(MarkerItemLink::getId))
                                         .map(MarkerItemLinkDto::new)
                                         .map(MarkerItemLinkDto::getVo)
                                         .map(vo->{
