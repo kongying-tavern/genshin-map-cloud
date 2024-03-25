@@ -5,6 +5,7 @@ import site.yuanshen.data.vo.MarkerVo;
 import site.yuanshen.data.vo.helper.PageListVo;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 点位信息的数据查询层
@@ -34,15 +35,24 @@ public interface MarkerDao {
     /**
      * 通过bz2返回点位分页
      *
-     * @param index 下标（从1开始）
+     * @param flagList 权限标记
+     * @param md5 bz2数据的MD5
      * @return 压缩后的字节数组
      */
-    byte[] listPageMarkerByBz2(Integer index);
+    byte[] listPageMarkerByBz2(List<Integer> flagList, String md5);
+
+    /**
+     * 返回MD5列表
+     *
+     * @param flagList 权限标记
+     * @return 压缩后的字节数组
+     */
+    List<String> listMarkerMD5(List<Integer> flagList);
 
     /**
      * 刷新bz2返回点位分页
      * @return 刷新后的各个分页
      */
-    List<byte[]> refreshPageMarkerByBz2();
+    Map<String, byte[]> refreshPageMarkerByBz2();
 
 }
