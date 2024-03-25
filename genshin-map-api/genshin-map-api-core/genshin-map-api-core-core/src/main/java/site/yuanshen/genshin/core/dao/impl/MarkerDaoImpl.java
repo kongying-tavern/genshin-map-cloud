@@ -232,7 +232,7 @@ public class MarkerDaoImpl implements MarkerDao {
                 } else {
                     int totalPages = (int) ((markerList.size() + chunkSize - 1) / chunkSize);
                     for (int i = 0; i < totalPages; i++) {
-                        byte[] page = JSON.toJSONString(CollUtil.page(i + 1, chunkSize, markerList)).getBytes(StandardCharsets.UTF_8);
+                        byte[] page = JSON.toJSONString(CollUtil.page(i, chunkSize, markerList)).getBytes(StandardCharsets.UTF_8);
                         byte[] compress = CompressUtils.compress(page);
                         String cacheKey = flagEnum.getCode() + "_" + i;
                         result.put(cacheKey, compress);
