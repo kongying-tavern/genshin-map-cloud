@@ -27,6 +27,7 @@ import site.yuanshen.data.vo.helper.PageListVo;
 import site.yuanshen.genshin.core.dao.MarkerDao;
 
 import java.nio.charset.StandardCharsets;
+import java.sql.Array;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
@@ -177,12 +178,39 @@ public class MarkerDaoImpl implements MarkerDao {
     /**
      * 通过bz2返回点位分页
      *
-     * @param index 下标（从1开始）
+     * @param flagList 权限标记
+     * @param md5 bz2数据的MD5
      * @return 压缩后的字节数组
      */
     @Override
-    public byte[] listPageMarkerByBz2(List<Integer> flagList, Integer index) {
-        return new byte[]{};
+    public byte[] listPageMarkerByBz2(List<Integer> flagList, String md5) {
+        try {
+            if(StrUtil.isBlank(md5)) {
+                throw new GenshinApiException("MD5不能为空");
+            }
+            // 查找MD5对应的Key
+            LinkedHashMap<String, String> md5Map = getMarkerMd5ByFlags(flagList);
+            String md5Key = "";
+            for(Map.Entry<String, String> md5Entry : md5Map.entrySet()) {
+                String key = md5Entry.getKey();
+                String val = md5Entry.getValue();
+                if(val != null && val.equals(md5)) {
+                    md5Key = key;
+                    break;
+                }
+            }
+            if(StrUtil.isBlank(md5Key)) {
+                throw new GenshinApiException("分页数据未生成或超出获取范围");
+            }
+
+            Cache bz2Cache = neverRefreshCacheManager.getCache("listPageMarkerByBz2");
+            if (bz2Cache == null) throw new GenshinApiException("缓存未初始化");
+            byte[] result = bz2Cache.get(md5Key, byte[].class);
+            if(result == null) throw new GenshinApiException("分页数据未生成或超出获取范围");
+            return result;
+        } catch (Exception e) {
+            throw new GenshinApiException("获取分页数据失败", e);
+        }
     }
 
     /**

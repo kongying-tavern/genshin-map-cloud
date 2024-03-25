@@ -36,10 +36,10 @@ public interface MarkerDao {
      * 通过bz2返回点位分页
      *
      * @param flagList 权限标记
-     * @param index 下标（从1开始）
+     * @param md5 bz2数据的MD5
      * @return 压缩后的字节数组
      */
-    byte[] listPageMarkerByBz2(List<Integer> flagList, Integer index);
+    byte[] listPageMarkerByBz2(List<Integer> flagList, String md5);
 
     /**
      * 返回MD5列表

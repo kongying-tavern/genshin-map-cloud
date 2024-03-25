@@ -27,9 +27,9 @@ public class MarkerDocController {
     private final MarkerDao markerDao;
 
     @Operation(summary = "通过bz2返回点位分页", description = "查询分页点位信息，返回bz2压缩格式的byte数组")
-    @GetMapping("/list_page_bz2/{index}")
-    public byte[] listPageMarkerBy7zip(@RequestHeader(value = "userDataLevel",required = false) String userDataLevel, @PathVariable("index") Integer index) {
-        return markerDao.listPageMarkerByBz2(HiddenFlagEnum.getFlagList(userDataLevel), index);
+    @GetMapping("/list_page_bz2/{md5}")
+    public byte[] listPageMarkerBy7zip(@RequestHeader(value = "userDataLevel",required = false) String userDataLevel, @PathVariable("md5") String md5) {
+        return markerDao.listPageMarkerByBz2(HiddenFlagEnum.getFlagList(userDataLevel), md5);
     }
 
     @Operation(summary = "返回点位分页bz2的md5数组", description = "返回点位分页bz2的md5数组")
