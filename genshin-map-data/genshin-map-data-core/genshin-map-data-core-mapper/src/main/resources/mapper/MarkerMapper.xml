@@ -8,7 +8,7 @@
         select *
         from marker inner join id_list on marker.id = id_list.id2
         <if test="ew.customSqlSegment ==null or ew.customSqlSegment == ''">
-            where true and
+            where true
         </if>
          ${ew.customSqlSegment} and del_flag = false
     </select>
@@ -18,7 +18,7 @@
         select * from
         marker inner join id_list on marker.${column}=id_list."${column}2"
         <if test="ew.customSqlSegment ==null or ew.customSqlSegment == ''">
-            where true and
+            where true
         </if>
         ${ew.customSqlSegment} and del_flag = false
     </select>
@@ -29,7 +29,7 @@
         <include refid="Base_Column_List"/>
         from marker as m inner join ( select distinct marker_id from marker_item_link, id_list
         <if test="ew.customSqlSegment ==null or ew.customSqlSegment == ''">
-            where true and
+            where true
         </if>
         ${ew.customSqlSegment} marker_item_link.${column}=id_list."${column}2" ) marker_id_list
         on m.id = marker_id_list.marker_id
@@ -62,7 +62,7 @@
         from marker
             join valid_id_list on marker.id = valid_id_list.id
         <if test="ew.customSqlSegment ==null or ew.customSqlSegment == ''">
-            where true and
+            where true
         </if>
         ${ew.customSqlSegment}
         marker.hidden_flag in
@@ -96,7 +96,7 @@
         from marker
             join valid_id_list on marker.id = valid_id_list.id
         <if test="ew.customSqlSegment ==null or ew.customSqlSegment == ''">
-            where true and
+            where true
         </if>
         ${ew.customSqlSegment}
         marker.hidden_flag in

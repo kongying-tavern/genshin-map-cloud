@@ -55,7 +55,7 @@
         from
         item, id_list
         <if test="ew.customSqlSegment == null or ew.customSqlSegment == ''">
-            where true and
+            where true
         </if>
         ${ew.customSqlSegment} and del_flag = false and item.id=id_list.id2
     </select>
@@ -70,7 +70,7 @@
         from
         item, id_list
         <if test="ew.customSqlSegment == null or ew.customSqlSegment == ''">
-            where true and
+            where true
         </if>
         ${ew.customSqlSegment} and del_flag = false and item.${column} = id_list."${column}2"
     </select>
