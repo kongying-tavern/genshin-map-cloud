@@ -181,9 +181,20 @@ public class MarkerDaoImpl implements MarkerDao {
      * @return 压缩后的字节数组
      */
     @Override
-    @Cacheable(value = "listPageMarkerByBz2", cacheManager = "neverRefreshCacheManager")
-    public byte[] listPageMarkerByBz2(Integer index) {
-        throw new GenshinApiException("缓存未创建或超出索引范围");
+    public byte[] listPageMarkerByBz2(List<Integer> flagList, Integer index) {
+        return new byte[]{};
+    }
+
+    /**
+     * 返回MD5列表
+     *
+     * @param flagList 权限标记
+     * @return 过滤后的MD5数组
+     */
+    @Override
+    public List<String> listMarkerMD5(List<Integer> flagList) {
+        LinkedHashMap<String, String> md5Map = getMarkerMd5ByFlags(flagList);
+        return new ArrayList<>(md5Map.values());
     }
 
     /**
@@ -234,6 +245,39 @@ public class MarkerDaoImpl implements MarkerDao {
         } catch (Exception e) {
             throw new GenshinApiException("创建压缩失败", e);
         }
+    }
+
+    private LinkedHashMap<String, String> getMarkerMd5ByFlags(List<Integer> flagList) {
+        LinkedHashMap<String, String> result = new LinkedHashMap<>();
+        if(CollUtil.isEmpty(flagList)) {
+            return result;
+        }
+        Set<Integer> flagSet = new HashSet<>(flagList);
+
+        Cache bz2Cache = neverRefreshCacheManager.getCache("listMarkerBz2MD5");
+        if (bz2Cache == null) throw new GenshinApiException("缓存未初始化");
+        Map<String, String> md5Map = (Map<String, String>) bz2Cache.get("").get();
+        for(Map.Entry<String, String> md5Entry : md5Map.entrySet()) {
+            if(md5Entry == null) {
+                continue;
+            }
+            String key = md5Entry.getKey();
+            String val = md5Entry.getValue();
+            if(key == null || val == null) {
+                continue;
+            }
+            String keyFlag = key.replaceAll("_\\d+", "");
+            int keyFlagNum = 0;
+            try {
+                keyFlagNum = Integer.valueOf(keyFlag);
+            } catch(Exception e) {
+                continue;
+            }
+            if(flagSet.contains(keyFlagNum)) {
+                result.put(key, val);
+            }
+        }
+        return result;
     }
 
     private List<MarkerVo> getAllMarkerVo(Integer hiddenFlag) {

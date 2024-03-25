@@ -29,12 +29,12 @@ public class MarkerDocService {
      *
      * @return 分页字节数组的md5
      */
-    @Cacheable(value = "listMarkerBz2MD5", cacheManager = "neverRefreshCacheManager")
+    @Cacheable(value = "listMarkerBz2MD5", key = "''", cacheManager = "neverRefreshCacheManager")
     public Map<String, String> listAllMarkerBz2MD5() {
         return new LinkedHashMap<>();
     }
 
-    @CachePut(value = "listMarkerBz2MD5", cacheManager = "neverRefreshCacheManager")
+    @CachePut(value = "listMarkerBz2MD5", key = "''", cacheManager = "neverRefreshCacheManager")
     public Map<String, String> refreshMarkerBz2MD5() {
         long startTime = System.currentTimeMillis();
         Map<String, String> result = new LinkedHashMap<>();
