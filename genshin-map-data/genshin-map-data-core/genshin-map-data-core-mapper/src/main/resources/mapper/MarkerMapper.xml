@@ -95,10 +95,10 @@
         <include refid="Base_Column_List"/>
         from marker
             join valid_id_list on marker.id = valid_id_list.id
-        <if test="ew.customSqlSegment ==null or ew.customSqlSegment == ''">
+        <if test="ew.customSqlSegment == null or ew.customSqlSegment == ''">
             where true
         </if>
-        ${ew.customSqlSegment}
+        ${ew.customSqlSegment} and
         marker.hidden_flag in
         <foreach collection="hiddenFlags" item="hiddenFlag" open="(" close=")" separator=",">
             #{hiddenFlag}
