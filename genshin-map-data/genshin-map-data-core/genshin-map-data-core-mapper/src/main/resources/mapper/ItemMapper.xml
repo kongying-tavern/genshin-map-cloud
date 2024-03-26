@@ -54,25 +54,25 @@
         ${ew.SqlSelect}
         from
         item, id_list
-        <if test="ew.customSqlSegment ==null or ew.customSqlSegment == ''">
-            where true and
+        <if test="ew.customSqlSegment == null or ew.customSqlSegment == ''">
+            where true
         </if>
-        ${ew.customSqlSegment} del_flag = false and item.id=id_list.id2
+        ${ew.customSqlSegment} and del_flag = false and item.id=id_list.id2
     </select>
 
     <select id="selectWithLargeCustomIn" resultType="site.yuanshen.data.entity.Item">
         with id_list as ( select unnest(${unnest}::bigint[]) "${column}2")
         select
-        <if test="ew.SqlSelect ==null or ew.SqlSelect == ''">
+        <if test="ew.SqlSelect == null or ew.SqlSelect == ''">
             <include refid="Base_Column_List"/>
         </if>
         ${ew.SqlSelect}
         from
         item, id_list
-        <if test="ew.customSqlSegment ==null or ew.customSqlSegment == ''">
-            where true and
+        <if test="ew.customSqlSegment == null or ew.customSqlSegment == ''">
+            where true
         </if>
-        ${ew.customSqlSegment} del_flag = false and item.${column} = id_list."${column}2"
+        ${ew.customSqlSegment} and del_flag = false and item.${column} = id_list."${column}2"
     </select>
 
 

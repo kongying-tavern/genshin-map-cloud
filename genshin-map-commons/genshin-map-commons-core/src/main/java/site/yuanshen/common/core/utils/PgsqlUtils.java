@@ -25,10 +25,18 @@ public class PgsqlUtils {
         return "'{" + s.substring(1,s.length()-1) + "}'";
     }
 
+    public static String unnestLongStr(Set<Long> longSet) {
+        return unnestLongStr(new ArrayList<>(longSet));
+    }
+
     public static String unnestStringStr(List<String> strList) {
         String s = JSON.toJSONString(strList);
         s = s.replace("\"", "");
         return "'{" + s.substring(1,s.length()-1) + "}'";
+    }
+
+    public static String unnestStringStr(Set<String> strSet) {
+        return unnestStringStr(new ArrayList<>(strSet));
     }
 
     public enum Order {

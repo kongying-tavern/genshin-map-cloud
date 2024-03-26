@@ -8,9 +8,9 @@
         select *
         from marker inner join id_list on marker.id = id_list.id2
         <if test="ew.customSqlSegment ==null or ew.customSqlSegment == ''">
-            where true and
+            where true
         </if>
-         ${ew.customSqlSegment} del_flag = false
+         ${ew.customSqlSegment} and del_flag = false
     </select>
 
     <select id="selectWithLargeCustomIn" resultMap="BaseResultMap">
@@ -18,9 +18,9 @@
         select * from
         marker inner join id_list on marker.${column}=id_list."${column}2"
         <if test="ew.customSqlSegment ==null or ew.customSqlSegment == ''">
-            where true and
+            where true
         </if>
-        ${ew.customSqlSegment}  del_flag = false
+        ${ew.customSqlSegment} and del_flag = false
     </select>
 
     <select id="selectListByMarkerItemLink" resultMap="BaseResultMap">
@@ -29,7 +29,7 @@
         <include refid="Base_Column_List"/>
         from marker as m inner join ( select distinct marker_id from marker_item_link, id_list
         <if test="ew.customSqlSegment ==null or ew.customSqlSegment == ''">
-            where true and
+            where true
         </if>
         ${ew.customSqlSegment} marker_item_link.${column}=id_list."${column}2" ) marker_id_list
         on m.id = marker_id_list.marker_id
@@ -62,7 +62,7 @@
         from marker
             join valid_id_list on marker.id = valid_id_list.id
         <if test="ew.customSqlSegment ==null or ew.customSqlSegment == ''">
-            where true and
+            where true
         </if>
         ${ew.customSqlSegment}
         marker.hidden_flag in
@@ -95,10 +95,10 @@
         <include refid="Base_Column_List"/>
         from marker
             join valid_id_list on marker.id = valid_id_list.id
-        <if test="ew.customSqlSegment ==null or ew.customSqlSegment == ''">
-            where true and
+        <if test="ew.customSqlSegment == null or ew.customSqlSegment == ''">
+            where true
         </if>
-        ${ew.customSqlSegment}
+        ${ew.customSqlSegment} and
         marker.hidden_flag in
         <foreach collection="hiddenFlags" item="hiddenFlag" open="(" close=")" separator=",">
             #{hiddenFlag}
