@@ -10,13 +10,12 @@ import lombok.NoArgsConstructor;
 import lombok.With;
 import site.yuanshen.common.core.exception.GenshinApiException;
 import site.yuanshen.common.core.utils.BeanUtils;
+import site.yuanshen.common.core.utils.TimeUtils;
 import site.yuanshen.data.entity.SysUserArchive;
 import site.yuanshen.data.vo.SysArchiveSlotVo;
 import site.yuanshen.data.vo.SysArchiveVo;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Objects;
@@ -81,21 +80,21 @@ public class SysUserArchiveSlotDto {
         BeanUtils.copy(sysUserArchive, this);
         archiveHistory = sysUserArchive.getData().stream()
                 .map(archiveHistory -> {
+                    Map<String, Object> archive = (Map<String, Object>) archiveHistory;
+                    Timestamp ts = null;
                     try {
-                        Map<String, Object> archive = (Map<String, Object>) archiveHistory;
                         Object time = archive.get("time");
-                        Timestamp ts = null;
                         if(time instanceof String) {
-                            ts = Timestamp.from(LocalDateTime.parse((String) time).atZone(ZoneId.of("Asia/Shanghai")).toInstant());
+                            ts = TimeUtils.parseTime((String) time);
                         } else if(time instanceof Long) {
                             ts = new Timestamp((Long) time);
                         }
-                        return (new SysUserArchiveDto())
-                                .withArchive((String) archive.get("archive"))
-                                .withTime(ts);
                     } catch(Exception ex) {
-                        return null;
+                        // nothing to do;
                     }
+                    return (new SysUserArchiveDto())
+                            .withArchive((String) archive.get("archive"))
+                            .withTime(ts);
                 })
                 .filter(Objects::nonNull)
                 .collect(Collectors.toCollection(LinkedList::new));
