@@ -111,8 +111,7 @@ public final class MarkerLinkageDataHelper {
             case EQUIVALENT:
                 relation.setType(linkAction.getValue());
                 for(LinkRefDto linkRef : linkRefs) {
-                    relation.addRelation(RelationTypeEnum.GROUP, IdTypeEnum.FROM, linkRef);
-                    relation.addRelation(RelationTypeEnum.GROUP, IdTypeEnum.TO, linkRef);
+                    relation.addRelation(RelationTypeEnum.GROUP, IdTypeEnum.BIDI, linkRef);
                 }
                 break;
             default:
