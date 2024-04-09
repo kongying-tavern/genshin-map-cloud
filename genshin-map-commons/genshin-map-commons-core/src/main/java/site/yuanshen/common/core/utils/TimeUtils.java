@@ -6,12 +6,60 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 
 public class TimeUtils {
     public static final int ONE_DAY_SECOND = 86400;
     public static final int ONE_DAY_MILLISECOND = ONE_DAY_SECOND * 1000;
+    public static final String DEFAULT_ZONE_OFFSET = "+08:00";
+
+    /**
+     * 解析时间
+     * @param time 时间文本
+     * @return 时间
+     */
+    public static Timestamp parseTime(String time) {
+        LocalDateTime ldt = null;
+        // yyyy-MM-dd HH:mm:ss.SSS
+        try {
+            DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+            ldt = LocalDateTime.parse(time, df);
+        } catch (Exception e) {}
+        if(ldt != null) return new Timestamp(ldt.toEpochSecond(ZoneOffset.of(DEFAULT_ZONE_OFFSET)) * 1000L);
+
+        // yyyy-MM-dd HH:mm:ss
+        try {
+            DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            ldt = LocalDateTime.parse(time, df);
+        } catch (Exception e) {}
+        if(ldt != null) return new Timestamp(ldt.toEpochSecond(ZoneOffset.of(DEFAULT_ZONE_OFFSET)) * 1000L);
+
+        // yyyy-MM-dd HH:mm:ss +0800
+        try {
+            DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss +0800");
+            ldt = LocalDateTime.parse(time, df);
+        } catch (Exception e) {}
+        if(ldt != null) return new Timestamp(ldt.toEpochSecond(ZoneOffset.of(DEFAULT_ZONE_OFFSET)) * 1000L);
+
+        // yyyy-MM-dd'T'HH:mm:ss.SSS
+        try {
+            DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS");
+            ldt = LocalDateTime.parse(time, df);
+        } catch (Exception e) {}
+        if(ldt != null) return new Timestamp(ldt.toEpochSecond(ZoneOffset.of(DEFAULT_ZONE_OFFSET)) * 1000L);
+
+        // yyyy-MM-dd'T'HH:mm:ss
+        try {
+            DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+            ldt = LocalDateTime.parse(time, df);
+        } catch (Exception e) {}
+        if(ldt != null) return new Timestamp(ldt.toEpochSecond(ZoneOffset.of(DEFAULT_ZONE_OFFSET)) * 1000L);
+
+        return null;
+    }
 
     /**
      * 获取当前时间戳

@@ -1,6 +1,5 @@
 package site.yuanshen.genshin.core.service;
 
-import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -11,7 +10,6 @@ import site.yuanshen.data.entity.SysUserArchive;
 import site.yuanshen.data.mapper.SysUserArchiveMapper;
 import site.yuanshen.data.vo.SysArchiveSlotVo;
 import site.yuanshen.data.vo.SysArchiveVo;
-import site.yuanshen.genshin.core.service.SysUserArchiveService;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -62,7 +60,9 @@ public class SysUserArchiveService {
      */
     public List<SysArchiveSlotVo> getAllSlot(Long userId) {
         return sysUserArchiveMapper.selectList(Wrappers.<SysUserArchive>lambdaQuery().eq(SysUserArchive::getUserId, userId))
-                .parallelStream().map(SysUserArchiveSlotDto::new).sorted(Comparator.comparingLong(SysUserArchiveSlotDto::getSlotIndex))
+                .parallelStream()
+                .map(SysUserArchiveSlotDto::new)
+                .sorted(Comparator.comparingLong(SysUserArchiveSlotDto::getSlotIndex))
                 .map(SysUserArchiveSlotDto::getSlotVo)
                 .collect(Collectors.toList());
     }

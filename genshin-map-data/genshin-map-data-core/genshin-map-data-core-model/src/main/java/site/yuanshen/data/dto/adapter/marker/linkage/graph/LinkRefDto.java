@@ -29,6 +29,11 @@ public class LinkRefDto {
                 return new LinkRefVo()
                         .withMarkerId(this.toId)
                         .withPathRefId(this.pathRefId);
+            case BIDI:
+                return new LinkRefVo()
+                        .withSrcId(this.fromId)
+                        .withTarId(this.toId)
+                        .withPathRefId(this.pathRefId);
             default:
                 return null;
         }
