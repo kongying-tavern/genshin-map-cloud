@@ -2,16 +2,19 @@ package site.yuanshen.genshin.core.websocket;
 
 import com.alibaba.fastjson2.JSON;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.util.TriConsumer;
 import org.springframework.stereotype.Component;
+import site.yuanshen.common.web.response.A;
 import site.yuanshen.common.web.response.W;
+import site.yuanshen.common.web.response.WUtils;
 
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.function.BiConsumer;
 
 @Component
 @Slf4j
@@ -23,7 +26,13 @@ public class WebSocketEntrypoint {
 
     private static CopyOnWriteArraySet<WebSocketEntrypoint> webSockets =new CopyOnWriteArraySet<>();
     // 用来存在线连接用户信息
-    private static ConcurrentHashMap<String,Session> sessionPool = new ConcurrentHashMap<String, Session>();
+    private static ConcurrentHashMap<String, Session> sessionPool = new ConcurrentHashMap<String, Session>();
+
+    private static Map<String, TriConsumer<WebSocketEntrypoint, String, A<?>>> handlerMap = new HashMap<>(){{
+        put("Ping", (ws, id, data) -> {
+            ws.sendToUsers(new String[]{ id }, WUtils.create("Pong", null));
+        });
+    }};
 
     @OnOpen
     public void onOpen(Session session, @PathParam(value = "userId") String userId) {
@@ -48,8 +57,17 @@ public class WebSocketEntrypoint {
     }
 
     @OnMessage
-    public void onMessage(String message) {
-        log.info("[websocket] message received: " + message);
+    public <T> void onMessage(String messageText) {
+        log.info("[websocket] message received: " + messageText);
+        try {
+            A<T> message = JSON.parseObject(messageText, A.class);
+            TriConsumer<WebSocketEntrypoint, String, A<?>> handler = handlerMap.get(message.getAction());
+            if(handler != null) {
+                handler.accept(this, userId, message);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @OnError
