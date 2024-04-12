@@ -18,6 +18,7 @@ import java.awt.geom.Point2D;
 import java.nio.ByteOrder;
 import java.util.*;
 import java.util.function.BiConsumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -128,9 +129,13 @@ public final class MarkerLinkageDataHelper {
         Map<AccumulatorKey, List<AccumulatorCache>> accumulateMap = new HashMap<>();
         accumulateGraphData(accumulateMap, graphSearchMap);
 
+        // 合并行为分组
+        Map<AccumulatorKey, List<AccumulatorCache>> accumulateGroupMap = new HashMap<>();
+        groupGraphData(accumulateGroupMap, accumulateMap);
+
         // 分散分组为与点位关联的数据
         Map<DistributorKey, DistributorDto> graphDistributeMap = new HashMap<>();
-        distributeGraphData(graphDistributeMap, accumulateMap);
+        distributeGraphData(graphDistributeMap, accumulateGroupMap);
 
         // 聚合点位关联数据为 API 数据
         Map<String, GraphVo> graphData = restructureGraphData(graphDistributeMap);
@@ -182,11 +187,31 @@ public final class MarkerLinkageDataHelper {
         }
     }
 
-    private static void distributeGraphData(
-            Map<DistributorKey, DistributorDto> graphDistributeMap,
+    private static void groupGraphData(
+            Map<AccumulatorKey, List<AccumulatorCache>> accumulateGroupMap,
             Map<AccumulatorKey, List<AccumulatorCache>> accumulateMap
     ) {
         for(Map.Entry<AccumulatorKey, List<AccumulatorCache>> accEntry : accumulateMap.entrySet()) {
+            final AccumulatorKey key = accEntry.getKey();
+            final List<AccumulatorCache> valList = accEntry.getValue();
+
+            final LinkActionEnum linkAction = key.getLinkAction();
+            if(linkAction == null) {
+                return;
+            }
+
+            final Function<List<AccumulatorCache>, List<AccumulatorCache>> linkGrouper = linkAction.getGrouper();
+            if(linkGrouper != null && CollUtil.isNotEmpty(valList)) {
+                accumulateGroupMap.putIfAbsent(key, linkGrouper.apply(valList));
+            }
+        }
+    }
+
+    private static void distributeGraphData(
+            Map<DistributorKey, DistributorDto> graphDistributeMap,
+            Map<AccumulatorKey, List<AccumulatorCache>> accumulateGroupMap
+    ) {
+        for(Map.Entry<AccumulatorKey, List<AccumulatorCache>> accEntry : accumulateGroupMap.entrySet()) {
             final AccumulatorKey key = accEntry.getKey();
             final LinkActionEnum linkAction = key.getLinkAction();
             if(linkAction == null) {
