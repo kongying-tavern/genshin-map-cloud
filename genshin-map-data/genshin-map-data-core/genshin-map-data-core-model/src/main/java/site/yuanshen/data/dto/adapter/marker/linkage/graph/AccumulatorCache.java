@@ -72,6 +72,15 @@ public class AccumulatorCache {
     // 路径相关数据
     private Map<Long, List<PathEdgeVo>> pathMap = new HashMap<>();
 
+    public void addPath(Long pathRefId, List<PathEdgeVo> pathEdges) {
+        if(pathRefId == null) {
+            return;
+        } else if(pathEdges == null) {
+            return;
+        }
+        this.pathMap.putIfAbsent(pathRefId, pathEdges);
+    }
+
     public void addPath(MarkerLinkageVo linkage) {
         if(linkage == null) {
             return;
