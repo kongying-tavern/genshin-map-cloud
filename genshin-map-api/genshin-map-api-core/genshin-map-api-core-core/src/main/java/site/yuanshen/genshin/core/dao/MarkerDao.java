@@ -33,13 +33,13 @@ public interface MarkerDao {
     List<MarkerVo> listMarkerById(List<Long> markerIdList, List<Integer> hiddenFlagList);
 
     /**
-     * 通过bz2返回点位分页
+     * 返回点位分页压缩文档
      *
      * @param flagList 权限标记
-     * @param md5 bz2数据的MD5
+     * @param md5 压缩文档数据的MD5
      * @return 压缩后的字节数组
      */
-    byte[] listPageMarkerByBz2(List<Integer> flagList, String md5);
+    byte[] listPageMarkerByBinary(List<Integer> flagList, String md5);
 
     /**
      * 返回MD5列表
@@ -50,9 +50,9 @@ public interface MarkerDao {
     List<String> listMarkerMD5(List<Integer> flagList);
 
     /**
-     * 刷新bz2返回点位分页
+     * 刷新并返回点位分页压缩文档
      * @return 刷新后的各个分页
      */
-    Map<String, byte[]> refreshPageMarkerByBz2();
+    Map<String, byte[]> refreshPageMarkerByBinary();
 
 }

@@ -97,12 +97,12 @@ public class ItemDaoImpl implements ItemDao {
     }
 
     /**
-     * @return 所有的物品信息的Bz2压缩
+     * @return 所有的物品信息的压缩
      */
     @Override
-    @Cacheable(value = "listAllItemBz2", cacheManager = "neverRefreshCacheManager")
-    public byte[] listAllItemBz2() {
-        //通过refreshAllItemBz2()刷新失败
+    @Cacheable(value = "listAllItemBinary", cacheManager = "neverRefreshCacheManager")
+    public byte[] listAllItemBinary() {
+        //通过refreshAllItemBinary()刷新失败
         throw new GenshinApiException("缓存未创建");
     }
 
@@ -112,8 +112,8 @@ public class ItemDaoImpl implements ItemDao {
      * @return 物品压缩文档
      */
     @Override
-    @CachePut(value = "listAllItemBz2", cacheManager = "neverRefreshCacheManager")
-    public byte[] refreshAllItemBz2() {
+    @CachePut(value = "listAllItemBinary", cacheManager = "neverRefreshCacheManager")
+    public byte[] refreshAllItemBinary() {
         try {
             List<ItemVo> itemList = listAllItem();
             byte[] result = JSON.toJSONString(itemList).getBytes(StandardCharsets.UTF_8);

@@ -25,22 +25,22 @@ public class MarkerDocService {
     private final MarkerDao markerDao;
 
     /**
-     * 返回点位分页bz2的md5数组
+     * 返回点位分页的md5数组
      *
      * @return 分页字节数组的md5
      */
-    @Cacheable(value = "listMarkerBz2MD5", key = "''", cacheManager = "neverRefreshCacheManager")
-    public Map<String, String> listAllMarkerBz2MD5() {
+    @Cacheable(value = "listMarkerBinaryMD5", key = "''", cacheManager = "neverRefreshCacheManager")
+    public Map<String, String> listAllMarkerBinaryMD5() {
         return new LinkedHashMap<>();
     }
 
-    @CachePut(value = "listMarkerBz2MD5", key = "''", cacheManager = "neverRefreshCacheManager")
-    public Map<String, String> refreshMarkerBz2MD5() {
+    @CachePut(value = "listMarkerBinaryMD5", key = "''", cacheManager = "neverRefreshCacheManager")
+    public Map<String, String> refreshMarkerBinaryMD5() {
         long startTime = System.currentTimeMillis();
         Map<String, String> result = new LinkedHashMap<>();
-        Map<String, byte[]> bz2Map = markerDao.refreshPageMarkerByBz2();
-        for(Map.Entry<String, byte[]> bz2Entry : bz2Map.entrySet()) {
-            result.put(bz2Entry.getKey(), DigestUtils.md5DigestAsHex(bz2Entry.getValue()));
+        Map<String, byte[]> binaryMap = markerDao.refreshPageMarkerByBinary();
+        for(Map.Entry<String, byte[]> binaryEntry : binaryMap.entrySet()) {
+            result.put(binaryEntry.getKey(), DigestUtils.md5DigestAsHex(binaryEntry.getValue()));
         }
         log.info("点位MD5生成, cost:{}, result: {}", System.currentTimeMillis() - startTime, JSON.toJSONString(result));
         return result;

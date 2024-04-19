@@ -17,12 +17,12 @@ public interface IconTagDao {
     List<TagVo> listAllTag();
 
     /**
-     * @return 所有的标签信息的Bz2压缩
+     * @return 所有的标签信息的压缩
      */
-    byte[] listAllTagBz2();
+    byte[] listAllTagBinary();
 
     /**
-     * @return 所有的标签信息的Bz2压缩的md5
+     * @return 所有的标签信息的压缩的md5
      */
-    String listAllTagBz2Md5();
+    String listAllTagBinaryMd5();
 }

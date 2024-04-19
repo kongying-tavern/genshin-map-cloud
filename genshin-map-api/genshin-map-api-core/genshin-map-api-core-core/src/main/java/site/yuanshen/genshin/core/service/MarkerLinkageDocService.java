@@ -21,47 +21,47 @@ public class MarkerLinkageDocService {
     private final MarkerLinkageDao markerLinkageDao;
 
     /**
-     * 生成点位关联列表的bz2压缩字节数组
+     * 生成点位关联列表的压缩字节数组
      *
      * @return 字节数组的md5
      */
-    @Cacheable(value = "listMarkerLinkageBz2MD5", cacheManager = "neverRefreshCacheManager")
-    public String listMarkerLinkageBz2MD5() {
+    @Cacheable(value = "listMarkerLinkageBinaryMD5", cacheManager = "neverRefreshCacheManager")
+    public String listMarkerLinkageBinaryMD5() {
         return "缓存未生成或生成失败";
     }
 
     /**
-     * 刷新点位关联列表的bz2和对应的md5数组
+     * 刷新点位关联列表和对应的md5数组
      *
      * @return 字节数组的md5
      */
-    @CachePut(value = "listMarkerLinkageBz2MD5", cacheManager = "neverRefreshCacheManager")
-    public String refreshMarkerLinkageListBz2MD5() {
+    @CachePut(value = "listMarkerLinkageBinaryMD5", cacheManager = "neverRefreshCacheManager")
+    public String refreshMarkerLinkageListBinaryMD5() {
         final long startTime = System.currentTimeMillis();
-        final String result = DigestUtils.md5DigestAsHex(markerLinkageDao.refreshAllMarkerLinkageListBz2());
+        final String result = DigestUtils.md5DigestAsHex(markerLinkageDao.refreshAllMarkerLinkageListBinary());
         log.info("点位关联列表MD5生成, cost:{}, result: {}", System.currentTimeMillis() - startTime, JSON.toJSONString(result));
         return result;
     }
 
     /**
-     * 生成点位关联有向图的bz2压缩字节数组
+     * 生成点位关联有向图的压缩字节数组
      *
      * @return 字节数组的md5
      */
-    @Cacheable(value = "graphMarkerLinkageBz2MD5", cacheManager = "neverRefreshCacheManager")
-    public String graphMarkerLinkageBz2MD5() {
+    @Cacheable(value = "graphMarkerLinkageBinaryMD5", cacheManager = "neverRefreshCacheManager")
+    public String graphMarkerLinkageBinaryMD5() {
         return "缓存未生成或生成失败";
     }
 
     /**
-     * 刷新点位关联有向图的bz2和对应的md5数组
+     * 刷新点位关联有向图和对应的md5数组
      *
      * @return 字节数组的md5
      */
-    @CachePut(value = "graphMarkerLinkageBz2MD5", cacheManager = "neverRefreshCacheManager")
-    public String refreshMarkerLinkageGraphBz2MD5() {
+    @CachePut(value = "graphMarkerLinkageBinaryMD5", cacheManager = "neverRefreshCacheManager")
+    public String refreshMarkerLinkageGraphBinaryMD5() {
         final long startTime = System.currentTimeMillis();
-        final String result = DigestUtils.md5DigestAsHex(markerLinkageDao.refreshAllMarkerLinkageGraphBz2());
+        final String result = DigestUtils.md5DigestAsHex(markerLinkageDao.refreshAllMarkerLinkageGraphBinary());
         log.info("点位关联有向图MD5生成, cost:{}, result: {}", System.currentTimeMillis() - startTime, JSON.toJSONString(result));
         return result;
     }

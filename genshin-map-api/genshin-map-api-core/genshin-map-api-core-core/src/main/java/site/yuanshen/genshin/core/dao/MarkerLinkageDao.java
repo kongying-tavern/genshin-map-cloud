@@ -45,22 +45,22 @@ public interface MarkerLinkageDao {
     Map<String, GraphVo> graphAllMarkerLinkage();
 
     /**
-     * 所有的点位关联列表的Bz2压缩
+     * 所有的点位关联列表的压缩
      */
-    byte[] listAllMarkerLinkageBz2();
+    byte[] listAllMarkerLinkageBinary();
 
     /**
      * 刷新点位关联列表压缩缓存并返回压缩文档
      */
-    byte[] refreshAllMarkerLinkageListBz2();
+    byte[] refreshAllMarkerLinkageListBinary();
 
     /**
-     * 所有的点位关联有向图的Bz2压缩
+     * 所有的点位关联有向图的压缩
      */
-    byte[] graphAllMarkerLinkageBz2();
+    byte[] graphAllMarkerLinkageBinary();
 
     /**
      * 刷新点位关联有向图压缩缓存并返回压缩文档
      */
-    byte[] refreshAllMarkerLinkageGraphBz2();
+    byte[] refreshAllMarkerLinkageGraphBinary();
 }
