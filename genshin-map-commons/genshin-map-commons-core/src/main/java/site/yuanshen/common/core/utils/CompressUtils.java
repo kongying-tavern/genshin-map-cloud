@@ -1,5 +1,7 @@
 package site.yuanshen.common.core.utils;
 
+import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream;
+
 import java.io.*;
 import java.util.zip.Deflater;
 import java.util.zip.DeflaterOutputStream;
@@ -17,7 +19,7 @@ public class CompressUtils {
 
     public static byte[] gzipCompress(byte[] inputData) throws IOException {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        DeflaterOutputStream gzipOS = new DeflaterOutputStream(os, new Deflater(Deflater.DEFAULT_COMPRESSION, true));
+        GzipCompressorOutputStream gzipOS = new GzipCompressorOutputStream(os);
         gzipOS.write(inputData);
         gzipOS.finish();
         gzipOS.close();
