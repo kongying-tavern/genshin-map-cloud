@@ -92,11 +92,18 @@ docker_up "${ENV_FILE}" "${PROJECT_NAME}" "./composer/docker-compose.img-local-r
 # img-alist: image alist host
 [tasks.img-alist] # !! build & run image alist host
 dependencies = [
-    { name = "img-alist-build" },
-    { name = "img-alist-run" }
+    { name = "img-alist-minio-build" },
+    { name = "img-alist-dash-build" },
+    { name = "img-alist-dash-run" },
 ]
 
-[tasks.img-alist-build] # >!! build image alist host
+[tasks.img-alist-minio] # >!! build & run image alist host (minio)
+dependencies = [
+    { name = "img-alist-minio-build" },
+    { name = "img-alist-minio-run" }
+]
+
+[tasks.img-alist-minio-build] # >!! build image alist host (minio)
 script = '''
 #!@duckscript
 !include_files ./makefile/util.env.ds ./makefile/util.docker.ds
@@ -106,10 +113,10 @@ check_env
 ENV_FILE = get_env ENV_FILE
 PROJECT_NAME = get_env PROJECT_NAME
 
-docker_build "${ENV_FILE}" "${PROJECT_NAME}" "./composer/docker-compose.img-alist-build.yml"
+docker_build "${ENV_FILE}" "${PROJECT_NAME}" "./composer/docker-compose.img-alist-minio-build.yml"
 '''
 
-[tasks.img-alist-run] # >!! run image alist host
+[tasks.img-alist-minio-run] # >!! run image alist host (minio)
 script = '''
 #!@duckscript
 !include_files ./makefile/util.env.ds ./makefile/util.docker.ds
@@ -119,8 +126,35 @@ check_env
 ENV_FILE = get_env ENV_FILE
 PROJECT_NAME = get_env PROJECT_NAME
 
-docker_down "${ENV_FILE}" "${PROJECT_NAME}" "./composer/docker-compose.img-alist-run.yml"
-docker_up "${ENV_FILE}" "${PROJECT_NAME}" "./composer/docker-compose.img-alist-run.yml"
+docker_down "${ENV_FILE}" "${PROJECT_NAME}" "./composer/docker-compose.img-alist-minio-run.yml"
+docker_up "${ENV_FILE}" "${PROJECT_NAME}" "./composer/docker-compose.img-alist-minio-run.yml"
+'''
+
+[tasks.img-alist-dash-build] # >!! build image alist host (minio + alist)
+script = '''
+#!@duckscript
+!include_files ./makefile/util.env.ds ./makefile/util.docker.ds
+prepare_envvars
+check_env
+
+ENV_FILE = get_env ENV_FILE
+PROJECT_NAME = get_env PROJECT_NAME
+
+docker_build "${ENV_FILE}" "${PROJECT_NAME}" "./composer/docker-compose.img-alist-dash-build.yml"
+'''
+
+[tasks.img-alist-dash-run] # >!! run image alist host (minio + alist)
+script = '''
+#!@duckscript
+!include_files ./makefile/util.env.ds ./makefile/util.docker.ds
+prepare_envvars
+check_env
+
+ENV_FILE = get_env ENV_FILE
+PROJECT_NAME = get_env PROJECT_NAME
+
+docker_down "${ENV_FILE}" "${PROJECT_NAME}" "./composer/docker-compose.img-alist-dash-run.yml"
+docker_up "${ENV_FILE}" "${PROJECT_NAME}" "./composer/docker-compose.img-alist-dash-run.yml"
 '''
 
 # help
