@@ -2,6 +2,7 @@ package site.yuanshen.genshin.core.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Caching;
@@ -37,6 +38,9 @@ public class CacheService {
     ThreadPoolExecutor executor = new ThreadPoolExecutor(10, 20, 200, TimeUnit.MILLISECONDS,
             new ArrayBlockingQueue<>(5));
 
+    @Value("server.cache.debounce-delay:30")
+    private String debounceDelay = "30";
+
     /**
      * 删除所有标签缓存
      */
@@ -67,7 +71,7 @@ public class CacheService {
                             this.refreshIconTagBinary();
                             webSocket.broadcast(null, WUtils.create("IconTagBinaryPurged", null));
                         },
-                        FunctionKeyEnum.refreshIconTagBinary, 5
+                        FunctionKeyEnum.refreshIconTagBinary, Integer.parseInt(debounceDelay)
                 );
             else
                 log.error("cleanIconTagCache执行失败,未知原因");
@@ -100,7 +104,7 @@ public class CacheService {
                     itemDocService.refreshItemBinaryMD5();
                     webSocket.broadcast(null, WUtils.create("ItemBinaryPurged", null));
                 },
-                FunctionKeyEnum.refreshItemBinary, 5
+                FunctionKeyEnum.refreshItemBinary, Integer.parseInt(debounceDelay)
         );
     }
 
@@ -126,7 +130,7 @@ public class CacheService {
                     markerDocService.refreshMarkerBinaryMD5();
                     webSocket.broadcast(null, WUtils.create("MarkerBinaryPurged", null));
                 },
-                FunctionKeyEnum.refreshMarkerBinary, 5
+                FunctionKeyEnum.refreshMarkerBinary, Integer.parseInt(debounceDelay)
         );
     }
 
@@ -153,7 +157,7 @@ public class CacheService {
                     markerLinkageDocService.refreshMarkerLinkageGraphBinaryMD5();
                     webSocket.broadcast(null, WUtils.create("MarkerLinkageBinaryPurged", null));
                 },
-                FunctionKeyEnum.refreshMarkerLinkageBinary, 5
+                FunctionKeyEnum.refreshMarkerLinkageBinary, Integer.parseInt(debounceDelay)
         );
     }
 
