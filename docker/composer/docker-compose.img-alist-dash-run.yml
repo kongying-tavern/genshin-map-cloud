@@ -1,0 +1,70 @@
+include:
+  - docker-compose.network.yml
+  - docker-compose.img-alist-minio-run.yml
+
+services:
+  # Main services
+  minio-proxy:
+    container_name: gsapi-minio-proxy
+    hostname: gsapi-minio-proxy
+    image: gsapi/minio-proxy
+    depends_on:
+      minio-init:
+        condition: service_completed_successfully
+    networks:
+      gsapi-img-alist:
+        aliases:
+          - minio-proxy.local
+    volumes:
+      - ${DATA_DIR}/minio-proxy/cache:/data/cache
+      - ${DATA_DIR}/minio-proxy/log:/data/log
+    ports:
+      - ${MINIO_PORT_PROXY:-9010}:80
+    restart: always
+  alist:
+    container_name: gsapi-alist
+    hostname: gsapi-alist
+    image: gsapi/alist
+    networks:
+      gsapi-img-alist:
+        aliases:
+          - alist.local
+    environment:
+      PUID: ${ALIST_PUID:-0}
+      PGID: ${ALIST_PGID:-0}
+      UMASK: ${ALIST_UMASK:-022}
+      ADMIN_PASSWORD: ${ALIST_ROOT_PASSWORD}
+    volumes:
+      - ${DATA_DIR}/alist:/alist/data
+    ports:
+      - ${ALIST_PORT:-5244}:5244
+    restart: always
+    healthcheck:
+      test: ["CMD", "bash", "/alist/healthcheck.sh"]
+      interval: 30s
+      timeout: 30s
+      retries: 3
+      start_period: 2m
+
+  # Initialization services
+  alist-init:
+    container_name: gsapi-alist-init
+    hostname: gsapi-alist-init
+    image: gsapi/alist-init
+    depends_on:
+      alist:
+        condition: service_healthy
+    networks:
+      - gsapi-img-alist
+    environment:
+      ALIST_ROOT_PASSWORD: ${ALIST_ROOT_PASSWORD}
+      ALIST_USERNAME: ${ALIST_USERNAME}
+      ALIST_PASSWORD: ${ALIST_PASSWORD}
+      ALIST_MOUNT_PATH: ${ALIST_MOUNT_PATH}
+      ALIST_CACHE_EXPIRE: ${ALIST_CACHE_EXPIRE}
+      MINIO_BUCKET_IMAGE: ${MINIO_BUCKET_IMAGE}
+      MINIO_KEY: ${MINIO_KEY}
+      MINIO_SECRET: ${MINIO_SECRET}
+    volumes:
+      - ${DATA_DIR}/init/alist-init:/data/record
+    restart: no

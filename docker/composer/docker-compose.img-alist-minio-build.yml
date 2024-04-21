@@ -1,0 +1,19 @@
+services:
+  # Main services
+  minio:
+    image: gsapi/minio
+    build:
+      context: ${PROJECT_BASE}
+      dockerfile: docker/composer/docker-compose.img-alist-build.minio.Dockerfile
+  minio-img2webp:
+    image: gsapi/minio-img2webp
+    build:
+      context: ${PROJECT_BASE}
+      dockerfile: docker/composer/docker-compose.img-alist-build.minio-img2webp.Dockerfile
+
+  # Initialization services
+  minio-init:
+    image: gsapi/minio-init
+    build:
+      context: ${PROJECT_BASE}
+      dockerfile: docker/composer/docker-compose.img-alist-build.minio-init.Dockerfile
