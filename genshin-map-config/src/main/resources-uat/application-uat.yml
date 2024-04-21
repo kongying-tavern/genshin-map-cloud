@@ -1,6 +1,7 @@
 spring:
   profiles:
     include:
+      - server-uat
       - nacos-uat
       - datasource-uat
       - image-uat
