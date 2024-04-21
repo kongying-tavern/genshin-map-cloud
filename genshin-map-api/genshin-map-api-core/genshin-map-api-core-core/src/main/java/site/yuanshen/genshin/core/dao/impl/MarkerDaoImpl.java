@@ -176,14 +176,14 @@ public class MarkerDaoImpl implements MarkerDao {
     }
 
     /**
-     * 通过bz2返回点位分页
+     * 返回点位分页压缩文档
      *
      * @param flagList 权限标记
-     * @param md5 bz2数据的MD5
+     * @param md5 压缩文档数据的MD5
      * @return 压缩后的字节数组
      */
     @Override
-    public byte[] listPageMarkerByBz2(List<Integer> flagList, String md5) {
+    public byte[] listPageMarkerByBinary(List<Integer> flagList, String md5) {
         try {
             if(StrUtil.isBlank(md5)) {
                 throw new GenshinApiException("MD5不能为空");
@@ -203,9 +203,9 @@ public class MarkerDaoImpl implements MarkerDao {
                 throw new GenshinApiException("分页数据未生成或超出获取范围");
             }
 
-            Cache bz2Cache = neverRefreshCacheManager.getCache("listPageMarkerByBz2");
-            if (bz2Cache == null) throw new GenshinApiException("缓存未初始化");
-            byte[] result = bz2Cache.get(md5Key, byte[].class);
+            Cache binaryCache = neverRefreshCacheManager.getCache("listPageMarkerByBinary");
+            if (binaryCache == null) throw new GenshinApiException("缓存未初始化");
+            byte[] result = binaryCache.get(md5Key, byte[].class);
             if(result == null) throw new GenshinApiException("分页数据未生成或超出获取范围");
             return result;
         } catch (Exception e) {
@@ -226,15 +226,14 @@ public class MarkerDaoImpl implements MarkerDao {
     }
 
     /**
-     * 刷新bz2返回点位分页
-     *
+     * 刷新并返回点位分页压缩文档
      * @return 刷新后的各个分页
      */
     @Override
-    public Map<String, byte[]> refreshPageMarkerByBz2() {
+    public Map<String, byte[]> refreshPageMarkerByBinary() {
         try {
-            Cache bz2Cache = neverRefreshCacheManager.getCache("listPageMarkerByBz2");
-            if (bz2Cache == null) throw new GenshinApiException("缓存未初始化");
+            Cache binaryCache = neverRefreshCacheManager.getCache("listPageMarkerByBinary");
+            if (binaryCache == null) throw new GenshinApiException("缓存未初始化");
 
             Map<String, byte[]> result = new LinkedHashMap<>();
             for(HiddenFlagEnum flagEnum : HiddenFlagEnum.values()) {
@@ -255,7 +254,7 @@ public class MarkerDaoImpl implements MarkerDao {
                         byte[] compress = CompressUtils.compress(page);
                         String cacheKey = flagEnum.getCode() + "_" + i;
                         result.put(cacheKey, compress);
-                        bz2Cache.put(cacheKey, compress);
+                        binaryCache.put(cacheKey, compress);
                     }
                 } else {
                     int totalPages = (int) ((markerList.size() + chunkSize - 1) / chunkSize);
@@ -264,7 +263,7 @@ public class MarkerDaoImpl implements MarkerDao {
                         byte[] compress = CompressUtils.compress(page);
                         String cacheKey = flagEnum.getCode() + "_" + i;
                         result.put(cacheKey, compress);
-                        bz2Cache.put(cacheKey, compress);
+                        binaryCache.put(cacheKey, compress);
                     }
                 }
             }
@@ -282,9 +281,9 @@ public class MarkerDaoImpl implements MarkerDao {
         }
         Set<Integer> flagSet = new HashSet<>(flagList);
 
-        Cache bz2Cache = neverRefreshCacheManager.getCache("listMarkerBz2MD5");
-        if (bz2Cache == null) throw new GenshinApiException("缓存未初始化");
-        Map<String, String> md5Map = (Map<String, String>) bz2Cache.get("").get();
+        Cache binaryCache = neverRefreshCacheManager.getCache("listMarkerBinaryMD5");
+        if (binaryCache == null) throw new GenshinApiException("缓存未初始化");
+        Map<String, String> md5Map = (Map<String, String>) binaryCache.get("").get();
         for(Map.Entry<String, String> md5Entry : md5Map.entrySet()) {
             if(md5Entry == null) {
                 continue;

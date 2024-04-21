@@ -8,7 +8,6 @@ import site.yuanshen.common.web.response.R;
 import site.yuanshen.common.web.response.RUtils;
 import site.yuanshen.data.enums.HiddenFlagEnum;
 import site.yuanshen.genshin.core.dao.MarkerDao;
-import site.yuanshen.genshin.core.service.MarkerDocService;
 
 import java.util.List;
 
@@ -26,15 +25,15 @@ public class MarkerDocController {
 
     private final MarkerDao markerDao;
 
-    @Operation(summary = "通过bz2返回点位分页", description = "查询分页点位信息，返回bz2压缩格式的byte数组")
-    @GetMapping("/list_page_bz2/{md5}")
-    public byte[] listPageMarkerBy7zip(@RequestHeader(value = "userDataLevel",required = false) String userDataLevel, @PathVariable("md5") String md5) {
-        return markerDao.listPageMarkerByBz2(HiddenFlagEnum.getFlagList(userDataLevel), md5);
+    @Operation(summary = "返回点位分页", description = "查询分页点位信息，返回压缩格式的byte数组")
+    @GetMapping("/list_page_bin/{md5}")
+    public byte[] listPageMarkerByBinary(@RequestHeader(value = "userDataLevel",required = false) String userDataLevel, @PathVariable("md5") String md5) {
+        return markerDao.listPageMarkerByBinary(HiddenFlagEnum.getFlagList(userDataLevel), md5);
     }
 
-    @Operation(summary = "返回点位分页bz2的md5数组", description = "返回点位分页bz2的md5数组")
-    @GetMapping("/list_page_bz2_md5")
-    public R<List<String>> listMarkerBz2MD5(@RequestHeader(value = "userDataLevel",required = false) String userDataLevel) {
+    @Operation(summary = "返回点位分页的md5数组", description = "返回点位分页的md5数组")
+    @GetMapping("/list_page_bin_md5")
+    public R<List<String>> listMarkerBinaryMD5(@RequestHeader(value = "userDataLevel",required = false) String userDataLevel) {
         return RUtils.create(
                 markerDao.listMarkerMD5(HiddenFlagEnum.getFlagList(userDataLevel))
         );

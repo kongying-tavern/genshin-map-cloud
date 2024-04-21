@@ -201,11 +201,11 @@ public class MarkerLinkageDaoImpl implements MarkerLinkageDao {
     }
 
     /**
-     * 所有的点位关联列表的Bz2压缩
+     * 所有的点位关联列表的压缩
      */
     @Override
-    @Cacheable(value = "listAllMarkerLinkageBz2", cacheManager = "neverRefreshCacheManager")
-    public byte[] listAllMarkerLinkageBz2() {
+    @Cacheable(value = "listAllMarkerLinkageBinary", cacheManager = "neverRefreshCacheManager")
+    public byte[] listAllMarkerLinkageBinary() {
         throw new GenshinApiException("缓存未创建");
     }
 
@@ -213,8 +213,8 @@ public class MarkerLinkageDaoImpl implements MarkerLinkageDao {
      * 刷新点位关联列表压缩缓存并返回压缩文档
      */
     @Override
-    @CachePut(value = "listAllMarkerLinkageBz2", cacheManager = "neverRefreshCacheManager")
-    public byte[] refreshAllMarkerLinkageListBz2() {
+    @CachePut(value = "listAllMarkerLinkageBinary", cacheManager = "neverRefreshCacheManager")
+    public byte[] refreshAllMarkerLinkageListBinary() {
         try {
             final Map<String, List<MarkerLinkageVo>> linkageList = listAllMarkerLinkage();
             final byte[] result = JSON.toJSONString(linkageList, JsonUtils.defaultWriteFeatures).getBytes(StandardCharsets.UTF_8);
@@ -225,11 +225,11 @@ public class MarkerLinkageDaoImpl implements MarkerLinkageDao {
     }
 
     /**
-     * 所有的点位关联有向图的Bz2压缩
+     * 所有的点位关联有向图的压缩
      */
     @Override
-    @Cacheable(value = "graphAllMarkerLinkageBz2", cacheManager = "neverRefreshCacheManager")
-    public byte[] graphAllMarkerLinkageBz2() {
+    @Cacheable(value = "graphAllMarkerLinkageBinary", cacheManager = "neverRefreshCacheManager")
+    public byte[] graphAllMarkerLinkageBinary() {
         throw new GenshinApiException("缓存未创建");
     }
 
@@ -237,8 +237,8 @@ public class MarkerLinkageDaoImpl implements MarkerLinkageDao {
      * 刷新点位关联有向图压缩缓存并返回压缩文档
      */
     @Override
-    @CachePut(value = "graphAllMarkerLinkageBz2", cacheManager = "neverRefreshCacheManager")
-    public byte[] refreshAllMarkerLinkageGraphBz2() {
+    @CachePut(value = "graphAllMarkerLinkageBinary", cacheManager = "neverRefreshCacheManager")
+    public byte[] refreshAllMarkerLinkageGraphBinary() {
         try {
             final Map<String, GraphVo> linkageGraph = graphAllMarkerLinkage();
             final byte[] result = JSON.toJSONString(linkageGraph, JsonUtils.defaultWriteFeatures).getBytes(StandardCharsets.UTF_8);

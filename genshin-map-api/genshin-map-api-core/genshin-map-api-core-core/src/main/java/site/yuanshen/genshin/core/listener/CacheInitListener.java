@@ -33,15 +33,15 @@ public class CacheInitListener implements ApplicationListener<ApplicationReadyEv
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
         long startTime = System.currentTimeMillis();
-        markerDocService.refreshMarkerBz2MD5();
-        markerDocService.listAllMarkerBz2MD5();
-        markerLinkageDocService.refreshMarkerLinkageListBz2MD5();
-        markerLinkageDocService.listMarkerLinkageBz2MD5();
-        markerLinkageDocService.refreshMarkerLinkageGraphBz2MD5();
-        markerLinkageDocService.graphMarkerLinkageBz2MD5();
-        itemDocService.refreshItemBz2MD5();
-        itemDocService.listItemBz2MD5();
-        iconTagDao.listAllTagBz2Md5();
+        markerDocService.refreshMarkerBinaryMD5();
+        markerDocService.listAllMarkerBinaryMD5();
+        markerLinkageDocService.refreshMarkerLinkageListBinaryMD5();
+        markerLinkageDocService.listMarkerLinkageBinaryMD5();
+        markerLinkageDocService.refreshMarkerLinkageGraphBinaryMD5();
+        markerLinkageDocService.graphMarkerLinkageBinaryMD5();
+        itemDocService.refreshItemBinaryMD5();
+        itemDocService.listItemBinaryMD5();
+        iconTagDao.listAllTagBinaryMd5();
         log.info("完成缓存初始化，花费{}", System.currentTimeMillis() - startTime);
     }
 }

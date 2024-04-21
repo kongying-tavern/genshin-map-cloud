@@ -75,11 +75,11 @@ public class IconTagDaoImpl implements IconTagDao {
     }
 
     /**
-     * @return 所有的标签信息的Bz2压缩
+     * @return 所有的标签信息的压缩
      */
     @Override
-    @Cacheable("listAllTagBz2")
-    public byte[] listAllTagBz2() {
+    @Cacheable("listAllTagBinary")
+    public byte[] listAllTagBinary() {
         try {
             return CompressUtils.compress(JSON.toJSONString(
                             listAllTag())
@@ -90,27 +90,27 @@ public class IconTagDaoImpl implements IconTagDao {
     }
 
     /**
-     * @return 所有的标签信息的Bz2压缩的md5
+     * @return 所有的标签信息的压缩的md5
      */
     @Override
-    @Cacheable("listAllTagBz2Md5")
-    public String listAllTagBz2Md5() {
-        CaffeineCache tagBz2Cache = (CaffeineCache) cacheManager.getCache("listAllTag");
-        byte[] allTagBz2;
-        if (tagBz2Cache != null) {
-            if (!tagBz2Cache.getNativeCache().asMap().isEmpty()) {
-                allTagBz2 = (byte[]) tagBz2Cache.getNativeCache().getIfPresent("allTagBz2");
-                if (allTagBz2 == null) {
-                    tagBz2Cache.evict("allTagBz2");
-                    allTagBz2 = listAllTagBz2();
+    @Cacheable("listAllTagBinaryMd5")
+    public String listAllTagBinaryMd5() {
+        CaffeineCache tagBinaryCache = (CaffeineCache) cacheManager.getCache("listAllTag");
+        byte[] allTagBinary;
+        if (tagBinaryCache != null) {
+            if (!tagBinaryCache.getNativeCache().asMap().isEmpty()) {
+                allTagBinary = (byte[]) tagBinaryCache.getNativeCache().getIfPresent("allTagBinary");
+                if (allTagBinary == null) {
+                    tagBinaryCache.evict("allTagBinary");
+                    allTagBinary = listAllTagBinary();
                 }
             } else {
-                tagBz2Cache.evict("allTagBz2");
-                allTagBz2 = listAllTagBz2();
+                tagBinaryCache.evict("allTagBinary");
+                allTagBinary = listAllTagBinary();
             }
         } else {
-            allTagBz2 = listAllTagBz2();
+            allTagBinary = listAllTagBinary();
         }
-        return DigestUtils.md5DigestAsHex(allTagBz2);
+        return DigestUtils.md5DigestAsHex(allTagBinary);
     }
 }

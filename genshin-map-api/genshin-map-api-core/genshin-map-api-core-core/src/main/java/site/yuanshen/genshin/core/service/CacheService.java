@@ -64,10 +64,10 @@ public class CacheService {
             if (futureTask.get() == Status.OK)
                 runAfterTransactionDebounceByKey(
                         () -> {
-                            this.refreshIconTagBz2();
-                            webSocket.broadcast(null, WUtils.create("IconTagBz2Purged", null));
+                            this.refreshIconTagBinary();
+                            webSocket.broadcast(null, WUtils.create("IconTagBinaryPurged", null));
                         },
-                        FunctionKeyEnum.refreshIconTagBz2, 5
+                        FunctionKeyEnum.refreshIconTagBinary, 5
                 );
             else
                 log.error("cleanIconTagCache执行失败,未知原因");
@@ -97,10 +97,10 @@ public class CacheService {
     public void cleanItemCache() {
         runAfterTransactionDebounceByKey(
                 () -> {
-                    itemDocService.refreshItemBz2MD5();
-                    webSocket.broadcast(null, WUtils.create("ItemBz2Purged", null));
+                    itemDocService.refreshItemBinaryMD5();
+                    webSocket.broadcast(null, WUtils.create("ItemBinaryPurged", null));
                 },
-                FunctionKeyEnum.refreshItemBz2, 5
+                FunctionKeyEnum.refreshItemBinary, 5
         );
     }
 
@@ -123,10 +123,10 @@ public class CacheService {
         log.info("cleanMarkerCache");
         runAfterTransactionDebounceByKey(
                 () -> {
-                    markerDocService.refreshMarkerBz2MD5();
-                    webSocket.broadcast(null, WUtils.create("MarkerBz2Purged", null));
+                    markerDocService.refreshMarkerBinaryMD5();
+                    webSocket.broadcast(null, WUtils.create("MarkerBinaryPurged", null));
                 },
-                FunctionKeyEnum.refreshMarkerBz2, 5
+                FunctionKeyEnum.refreshMarkerBinary, 5
         );
     }
 
@@ -149,11 +149,11 @@ public class CacheService {
         log.info("cleanMarkerLinkageCache");
         runAfterTransactionDebounceByKey(
                 () -> {
-                    markerLinkageDocService.refreshMarkerLinkageListBz2MD5();
-                    markerLinkageDocService.refreshMarkerLinkageGraphBz2MD5();
-                    webSocket.broadcast(null, WUtils.create("MarkerLinkageBz2Purged", null));
+                    markerLinkageDocService.refreshMarkerLinkageListBinaryMD5();
+                    markerLinkageDocService.refreshMarkerLinkageGraphBinaryMD5();
+                    webSocket.broadcast(null, WUtils.create("MarkerLinkageBinaryPurged", null));
                 },
-                FunctionKeyEnum.refreshMarkerLinkageBz2, 5
+                FunctionKeyEnum.refreshMarkerLinkageBinary, 5
         );
     }
 
@@ -168,20 +168,20 @@ public class CacheService {
 
     @Caching(
             evict = {
-                    @CacheEvict(value = "listAllTagBz2", allEntries = true, beforeInvocation = true),
-                    @CacheEvict(value = "listAllTagBz2Md5", allEntries = true, beforeInvocation = true)
+                    @CacheEvict(value = "listAllTagBinary", allEntries = true, beforeInvocation = true),
+                    @CacheEvict(value = "listAllTagBinaryMd5", allEntries = true, beforeInvocation = true)
             }
     )
-    public void refreshIconTagBz2() {
+    public void refreshIconTagBinary() {
         log.info("refreshIconTag");
-        iconTagDao.listAllTagBz2Md5();
+        iconTagDao.listAllTagBinaryMd5();
     }
 
     enum FunctionKeyEnum {
-        refreshIconTagBz2,
-        refreshItemBz2,
-        refreshMarkerBz2,
-        refreshMarkerLinkageBz2,
+        refreshIconTagBinary,
+        refreshItemBinary,
+        refreshMarkerBinary,
+        refreshMarkerLinkageBinary,
     }
 
     enum Status {
