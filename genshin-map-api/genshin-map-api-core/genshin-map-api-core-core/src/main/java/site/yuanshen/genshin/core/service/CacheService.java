@@ -38,7 +38,7 @@ public class CacheService {
     ThreadPoolExecutor executor = new ThreadPoolExecutor(10, 20, 200, TimeUnit.MILLISECONDS,
             new ArrayBlockingQueue<>(5));
 
-    @Value("server.cache.debounce-delay:30")
+    @Value("${server.cache.debounce-delay}")
     private String debounceDelay = "30";
 
     /**

@@ -2,6 +2,7 @@ env: prd
 spring:
   profiles:
     include:
+      - server-prod
       - nacos-prod
       - datasource-prod
       - image-prod
