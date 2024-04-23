@@ -5,7 +5,9 @@ import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.Cache;
@@ -27,7 +29,6 @@ import site.yuanshen.data.vo.helper.PageListVo;
 import site.yuanshen.genshin.core.dao.MarkerDao;
 
 import java.nio.charset.StandardCharsets;
-import java.sql.Array;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
@@ -62,6 +63,18 @@ public class MarkerDaoImpl implements MarkerDao {
         this.itemMapper = itemMapper;
         this.areaMapper = areaMapper;
         this.neverRefreshCacheManager = neverRefreshCacheManager;
+    }
+
+    @Data
+    class MarkerHiddenFlagListPack<T> {
+        private List<T> canOverride = new ArrayList<>();
+        private List<T> mustExact = new ArrayList<>();
+    }
+
+    @Data
+    class MarkerHiddenFlagMapPack<K, V> {
+        private Map<K, V> canOverride = new HashMap<>();
+        private Map<K, V> mustExact = new HashMap<>();
     }
 
     /**
@@ -235,9 +248,12 @@ public class MarkerDaoImpl implements MarkerDao {
             Cache binaryCache = neverRefreshCacheManager.getCache("listPageMarkerByBinary");
             if (binaryCache == null) throw new GenshinApiException("缓存未初始化");
 
+            // 创建总缓存
+            Map<Integer, List<MarkerVo>> markerGroups = getAllMarkerVoGroups();
+
             Map<String, byte[]> result = new LinkedHashMap<>();
             for(HiddenFlagEnum flagEnum : HiddenFlagEnum.values()) {
-                List<MarkerVo> markerList = getAllMarkerVo(flagEnum.getCode());
+                List<MarkerVo> markerList = getAllMarkerVo(markerGroups, flagEnum.getCode());
                 markerList.sort(Comparator.comparingLong(MarkerVo::getId));
                 boolean chunkById = flagEnum.getChunkById();
                 int chunkSize = flagEnum.getChunkSize();
@@ -307,43 +323,25 @@ public class MarkerDaoImpl implements MarkerDao {
         return result;
     }
 
-    private List<MarkerVo> getAllMarkerVo(Integer hiddenFlag) {
-        List<Integer> overrideFlags = HiddenFlagEnum.getOverrideList(hiddenFlag);
-        overrideFlags = CollUtil.isEmpty(overrideFlags) ? List.of(hiddenFlag) : overrideFlags;
-
-        Set<Long> areaIds = areaMapper.selectList(Wrappers.<Area>lambdaQuery().select(Area::getId).eq(Area::getHiddenFlag, hiddenFlag))
-                .stream().map(Area::getId).collect(Collectors.toSet());
-        Map<Long, Item> itemMap = CollUtil.isEmpty(areaIds) ? new HashMap<>() : itemMapper.selectWithLargeCustomIn(
-                        "area_id",
-                        PgsqlUtils.unnestLongStr(areaIds),
-                        Wrappers.<Item>lambdaQuery().select(Item::getId).in(Item::getHiddenFlag, overrideFlags)
-                )
-                .stream().collect(Collectors.toMap(
-                        Item::getId,
-                        item -> item,
-                        (o, n) -> n
-                ));
-        Set<Long> itemIds = itemMap.keySet();
-        List<MarkerItemLink> markerItemLinks = CollUtil.isEmpty(itemIds) ? List.of() : new ArrayList<>(markerItemLinkMapper.selectWithLargeCustomIn(
-                "item_id",
-                PgsqlUtils.unnestLongStr(itemIds),
-                Wrappers.<MarkerItemLink>lambdaQuery().select(MarkerItemLink::getItemId, MarkerItemLink::getMarkerId)
-        ));
-        Set<Long> markerIds = markerItemLinks.stream().map(MarkerItemLink::getMarkerId).collect(Collectors.toSet());
-        List<Marker> markerList = CollUtil.isEmpty(markerIds) ? List.of() : markerMapper.selectListWithLargeIn(
-                PgsqlUtils.unnestLongStr(markerIds),
-                Wrappers.<Marker>lambdaQuery().in(Marker::getHiddenFlag, overrideFlags)
-        );
-        Set<Long> markerListIds = markerList.parallelStream().map(Marker::getId).collect(Collectors.toSet());
+    private Map<Integer, List<MarkerVo>> getAllMarkerVoGroups() {
+        Map<Integer, List<Integer>> overrideFlags = new HashMap<>();
+        for(HiddenFlagEnum flagEnum : HiddenFlagEnum.values()) {
+            List<Integer> overrides = HiddenFlagEnum.getOverrideList(flagEnum.getCode());
+            overrides = CollUtil.isEmpty(overrides) ? List.of(flagEnum.getCode()) : overrides;
+            overrideFlags.put(flagEnum.getCode(), overrides);
+        }
+        List<Area> areas = areaMapper.selectList(Wrappers.<Area>lambdaQuery().select(Area::getId, Area::getHiddenFlag));
+        Map<Long, Integer> areaFlagMap = areas.stream().collect(Collectors.toMap(Area::getId, Area::getHiddenFlag, (o, n) -> n));
+        List<Item> items = itemMapper.selectList(Wrappers.<Item>lambdaQuery().select(Item::getId, Item::getHiddenFlag, Item::getAreaId, Item::getIconTag));
+        Map<Long, Long> itemAreaIdMap = items.stream().collect(Collectors.toMap(Item::getId, Item::getAreaId, (o, n) -> n));
+        Map<Long, Integer> itemFlagMap = items.stream().collect(Collectors.toMap(Item::getId, Item::getHiddenFlag, (o, n) -> n));
+        Map<Long, String> itemIconTagMap = items.stream().collect(Collectors.toMap(Item::getId, Item::getIconTag, (o, n) -> n));
+        List<MarkerItemLink> markerItemLinks = markerItemLinkMapper.selectList(Wrappers.<MarkerItemLink>lambdaQuery());
+        List<Marker> markers = markerMapper.selectList(Wrappers.<Marker>lambdaQuery());
 
         // 合并点位-物品关联数据
         ConcurrentHashMap<Long, List<MarkerItemLink>> itemLinkMap = new ConcurrentHashMap<>();
         markerItemLinks.parallelStream().forEach(markerItemLink -> {
-            if (!itemMap.containsKey(markerItemLink.getItemId())) {
-                return;
-            } else if(!markerListIds.contains(markerItemLink.getMarkerId())) {
-                return;
-            }
             itemLinkMap.compute(
                     markerItemLink.getMarkerId(),
                     (markerId, linkList) -> {
@@ -356,7 +354,7 @@ public class MarkerDaoImpl implements MarkerDao {
             );
         });
 
-        // 获取点位管理组关联
+        // 获取点位关联
         ConcurrentHashMap<Long, String> markerLinkageMap = new ConcurrentHashMap<>();
         List<MarkerLinkage> markerLinkages = markerLinkageMapper.selectList(Wrappers.<MarkerLinkage>lambdaQuery());
         markerLinkages.parallelStream().forEach(markerLinkage -> {
@@ -366,29 +364,85 @@ public class MarkerDaoImpl implements MarkerDao {
                 }
                 markerLinkageMap.putIfAbsent(markerLinkage.getFromId(), groupId);
                 markerLinkageMap.putIfAbsent(markerLinkage.getToId(), groupId);
+        });
+
+        // 构造点位分组缓存，后续重新整理为点位分组
+        ConcurrentHashMap<ImmutablePair<Integer, Long>, MarkerVo> markerCache = new ConcurrentHashMap<>();
+        markers.parallelStream().forEach(m -> {
+            if(m == null)
+                return;
+
+            // 判断层级标识
+            Integer mFlag = m.getHiddenFlag();
+            if(mFlag == null)
+                return;
+            List<MarkerItemLink> mItemLink = itemLinkMap.get(m.getId());
+            if(CollUtil.isEmpty(mItemLink))
+                return;
+            mItemLink.forEach(itemLink -> {
+                // 由于可能存在一个点位属于多个物品的情况，所以对于点位中不同物品进行分别处理
+                Integer curFlag = mFlag;
+
+                // 判断物品是否可以覆盖当前点位的隐藏标识
+                Integer mItemFlag = itemFlagMap.get(itemLink.getItemId());
+                if(mItemFlag == null)
+                    return;
+                if(overrideFlags.getOrDefault(mItemFlag, List.of()).contains(curFlag))
+                    curFlag = mItemFlag;
+
+                // 判断地区是否可以覆盖当前点位的隐藏标识
+                Long mAreaId = itemAreaIdMap.get(itemLink.getItemId());
+                if(mAreaId == null)
+                    return;
+                Integer mAreaFlag = areaFlagMap.get(mAreaId);
+                if(mAreaFlag == null)
+                    return;
+                if(overrideFlags.getOrDefault(mAreaFlag, List.of()).contains(curFlag))
+                    curFlag = mAreaFlag;
+
+                // 将当前点位放入数据池
+                markerCache.computeIfAbsent(
+                        ImmutablePair.of(curFlag, m.getId()),
+                        (flagIdPair) -> {
+                            return new MarkerDto(m)
+                                    .withItemList(
+                                            itemLinkMap.getOrDefault(m.getId(), Collections.emptyList())
+                                                    .stream()
+                                                    .sorted(Comparator.comparingLong(MarkerItemLink::getId))
+                                                    .map(MarkerItemLinkDto::new)
+                                                    .map(MarkerItemLinkDto::getVo)
+                                                    .map(vo -> vo.withIconTag(itemIconTagMap.get(vo.getItemId())))
+                                                    .collect(Collectors.toList())
+                                    )
+                                    .withLinkageId(markerLinkageMap.getOrDefault(m.getId(), ""))
+                                    .getVo();
+                        }
+                );
             });
 
-        return markerList.parallelStream()
-                .map(MarkerDto::new)
-                .map(dto -> dto
-                        .withItemList(
-                                itemLinkMap.getOrDefault(dto.getId(), Collections.emptyList()).stream()
-                                        .sorted(Comparator.comparingLong(MarkerItemLink::getId))
-                                        .map(MarkerItemLinkDto::new)
-                                        .map(MarkerItemLinkDto::getVo)
-                                        .map(vo->{
-                                            Long itemId = vo.getItemId();
-                                            if (itemMap.containsKey(itemId))
-                                                return vo.withIconTag(itemMap.get(itemId).getIconTag());
-                                            else log.error("点位关联物品缺失:{}", itemId);
-                                            return null;
-                                        })
-                                        .filter(Objects::nonNull)
-                                        .collect(Collectors.toList())
-                        )
-                        .withLinkageId(markerLinkageMap.getOrDefault(dto.getId(), ""))
-                )
-                .map(MarkerDto::getVo)
-                .collect(Collectors.toList());
+
+        });
+
+        // 构造点位分组
+        ConcurrentHashMap<Integer, List<MarkerVo>> markerGroups = new ConcurrentHashMap<>();
+        markerCache.forEach(1, (flagIdPair, markerVo) -> {
+            Integer flag = flagIdPair.getLeft();
+            markerGroups.compute(
+                    flag,
+                    (f, markerVoList) -> {
+                        if (markerVoList == null) {
+                            return new ArrayList<>(Collections.singletonList(markerVo));
+                        }
+                        markerVoList.add(markerVo);
+                        return markerVoList;
+                    }
+            );
+        });
+
+        return markerGroups;
+    }
+
+    private List<MarkerVo> getAllMarkerVo(Map<Integer, List<MarkerVo>> groups, Integer hiddenFlag) {
+        return groups.getOrDefault(hiddenFlag, List.of());
     }
 }
