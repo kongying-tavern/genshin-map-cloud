@@ -1,6 +1,8 @@
 package site.yuanshen.genshin.core.dao.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.date.TimeInterval;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -248,19 +250,25 @@ public class MarkerDaoImpl implements MarkerDao {
             Cache binaryCache = neverRefreshCacheManager.getCache("listPageMarkerByBinary");
             if (binaryCache == null) throw new GenshinApiException("缓存未初始化");
 
+            TimeInterval timer = DateUtil.timer();
             // 创建总缓存
             Map<Integer, List<MarkerVo>> markerGroups = getAllMarkerVoGroups();
+            log.info("[binary][marker] group creation cost: {}", timer.intervalPretty());
 
             Map<String, byte[]> result = new LinkedHashMap<>();
             for(HiddenFlagEnum flagEnum : HiddenFlagEnum.values()) {
+                timer.restart();
                 List<MarkerVo> markerList = getAllMarkerVo(markerGroups, flagEnum.getCode());
                 markerList.sort(Comparator.comparingLong(MarkerVo::getId));
+                log.info("[binary][marker] marker list fetch and sort, cost: {}, hiddenFlag: {}", timer.intervalPretty(), flagEnum.getCode());
+
                 boolean chunkById = flagEnum.getChunkById();
                 int chunkSize = flagEnum.getChunkSize();
                 if (chunkById) {
                     Long lastId = markerList.get(markerList.size() - 1).getId();
                     int totalPages = (int) ((lastId + chunkSize - 1) / chunkSize);
                     for (int i = 0; i < totalPages; i++) {
+                        timer.restart();
                         int finalI = i;
                         byte[] page = JSON.toJSONString(
                                         markerList.parallelStream()
@@ -271,15 +279,18 @@ public class MarkerDaoImpl implements MarkerDao {
                         String cacheKey = flagEnum.getCode() + "_" + i;
                         result.put(cacheKey, compress);
                         binaryCache.put(cacheKey, compress);
+                        log.info("[binary][marker] marker chunk compressed, cost: {}, key: {}", timer.intervalPretty(), cacheKey);
                     }
                 } else {
                     int totalPages = (int) ((markerList.size() + chunkSize - 1) / chunkSize);
                     for (int i = 0; i < totalPages; i++) {
+                        timer.restart();
                         byte[] page = JSON.toJSONString(CollUtil.page(i, chunkSize, markerList)).getBytes(StandardCharsets.UTF_8);
                         byte[] compress = CompressUtils.compress(page);
                         String cacheKey = flagEnum.getCode() + "_" + i;
                         result.put(cacheKey, compress);
                         binaryCache.put(cacheKey, compress);
+                        log.info("[binary][marker] marker chunk compressed, cost: {}, key: {}", timer.intervalPretty(), cacheKey);
                     }
                 }
             }
