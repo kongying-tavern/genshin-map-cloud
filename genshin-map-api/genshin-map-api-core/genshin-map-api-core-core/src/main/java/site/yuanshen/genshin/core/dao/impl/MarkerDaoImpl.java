@@ -252,6 +252,7 @@ public class MarkerDaoImpl implements MarkerDao {
 
             TimeInterval timer = DateUtil.timer();
             // 创建总缓存
+            timer.restart();
             Map<Integer, List<MarkerVo>> markerGroups = getAllMarkerVoGroups();
             log.info("[binary][marker] group creation cost: {}", timer.intervalPretty());
 
@@ -335,12 +336,17 @@ public class MarkerDaoImpl implements MarkerDao {
     }
 
     private Map<Integer, List<MarkerVo>> getAllMarkerVoGroups() {
+        TimeInterval timer = DateUtil.timer();
+
+        timer.restart();
         Map<Integer, List<Integer>> overrideFlags = new HashMap<>();
         for(HiddenFlagEnum flagEnum : HiddenFlagEnum.values()) {
             List<Integer> overrides = HiddenFlagEnum.getOverrideList(flagEnum.getCode());
             overrides = CollUtil.isEmpty(overrides) ? List.of(flagEnum.getCode()) : overrides;
             overrideFlags.put(flagEnum.getCode(), overrides);
         }
+        log.info("[binary][marker] marker data-less data prepare, cost: {}", timer.intervalPretty());
+        timer.restart();
         List<Area> areas = areaMapper.selectList(Wrappers.<Area>lambdaQuery().select(Area::getId, Area::getHiddenFlag));
         Map<Long, Integer> areaFlagMap = areas.stream().collect(Collectors.toMap(Area::getId, Area::getHiddenFlag, (o, n) -> n));
         List<Item> items = itemMapper.selectList(Wrappers.<Item>lambdaQuery().select(Item::getId, Item::getHiddenFlag, Item::getAreaId, Item::getIconTag));
@@ -349,8 +355,10 @@ public class MarkerDaoImpl implements MarkerDao {
         Map<Long, String> itemIconTagMap = items.stream().collect(Collectors.toMap(Item::getId, Item::getIconTag, (o, n) -> n));
         List<MarkerItemLink> markerItemLinks = markerItemLinkMapper.selectList(Wrappers.<MarkerItemLink>lambdaQuery());
         List<Marker> markers = markerMapper.selectList(Wrappers.<Marker>lambdaQuery());
+        log.info("[binary][marker] marker database-related data prepare, cost: {}", timer.intervalPretty());
 
         // 合并点位-物品关联数据
+        timer.restart();
         ConcurrentHashMap<Long, List<MarkerItemLink>> itemLinkMap = new ConcurrentHashMap<>();
         markerItemLinks.parallelStream().forEach(markerItemLink -> {
             itemLinkMap.compute(
@@ -364,8 +372,10 @@ public class MarkerDaoImpl implements MarkerDao {
                     }
             );
         });
+        log.info("[binary][marker] marker item link map prepare, cost: {}", timer.intervalPretty());
 
         // 获取点位关联
+        timer.restart();
         ConcurrentHashMap<Long, String> markerLinkageMap = new ConcurrentHashMap<>();
         List<MarkerLinkage> markerLinkages = markerLinkageMapper.selectList(Wrappers.<MarkerLinkage>lambdaQuery());
         markerLinkages.parallelStream().forEach(markerLinkage -> {
@@ -376,8 +386,10 @@ public class MarkerDaoImpl implements MarkerDao {
                 markerLinkageMap.putIfAbsent(markerLinkage.getFromId(), groupId);
                 markerLinkageMap.putIfAbsent(markerLinkage.getToId(), groupId);
         });
+        log.info("[binary][marker] marker linkage map prepare, cost: {}", timer.intervalPretty());
 
         // 构造点位分组缓存，后续重新整理为点位分组
+        timer.restart();
         ConcurrentHashMap<ImmutablePair<Integer, Long>, MarkerVo> markerCache = new ConcurrentHashMap<>();
         markers.parallelStream().forEach(m -> {
             if(m == null)
@@ -433,8 +445,10 @@ public class MarkerDaoImpl implements MarkerDao {
 
 
         });
+        log.info("[binary][marker] marker first cache prepare, cost: {}", timer.intervalPretty());
 
         // 构造点位分组
+        timer.restart();
         ConcurrentHashMap<Integer, List<MarkerVo>> markerGroups = new ConcurrentHashMap<>();
         markerCache.forEach(1, (flagIdPair, markerVo) -> {
             Integer flag = flagIdPair.getLeft();
@@ -449,6 +463,7 @@ public class MarkerDaoImpl implements MarkerDao {
                     }
             );
         });
+        log.info("[binary][marker] marker group compose, cost: {}", timer.intervalPretty());
 
         return markerGroups;
     }
