@@ -112,6 +112,12 @@ public enum TweakHandlerEnum {
             TweakPropertyEnum.HIDDEN_FLAG,
             TweakTypeEnum.UPDATE
     ),
+    // VIDEO_PATH
+    VIDEO_PATH$$UPDATE(
+            "videoPath", "update",
+            TweakPropertyEnum.VIDEO_PATH,
+            TweakTypeEnum.UPDATE
+    ),
     // EXTRA
     EXTRA$$MERGE(
             "extra", "merge",
