@@ -35,6 +35,11 @@ public enum TweakPropertyEnum {
             MarkerDto::getHiddenFlag,
             (marker, data) -> marker.setHiddenFlag(NumberUtil.parseInt(data.toString()))
     ),
+    VIDEO_PATH(
+            "videoPath",
+            MarkerDto::getVideoPath,
+            (marker, data) -> marker.setVideoPath((String) data)
+    ),
     EXTRA(
             "extra",
             MarkerDto::getExtra,
