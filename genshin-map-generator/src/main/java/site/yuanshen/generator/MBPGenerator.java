@@ -1,7 +1,11 @@
 package site.yuanshen.generator;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import site.yuanshen.generator.utils.FastGenerator;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * MybatisPlus 代码生成器
@@ -23,7 +27,9 @@ public class MBPGenerator {
 
     private static String password = System.getenv("GSAPI_DB_PASS");
 
-    private static String author = System.getenv("GSAPI_AUTHOR");
+    private static String author = StrUtil.blankToDefault(System.getenv("GSAPI_AUTHOR"), System.getenv("USERNAME"));
+
+    private static String outputDir = StrUtil.blankToDefault(System.getenv("GSAPI_OUTDIR"), "/generator");
 
     /**
      * 此处使用逗号分隔的表名，可以只对部分表进行生成，如果为空则生成所有实体。
@@ -31,13 +37,23 @@ public class MBPGenerator {
     private static String entity = System.getenv("GSAPI_ENTITY");
 
     public static void main(String[] args) throws Exception {
+        List<String> missingFieldNames = new ArrayList<>();
+        if(StrUtil.isBlankIfStr(url)) missingFieldNames.add("数据库地址 (GSAPI_DB_URL)");
+        if(StrUtil.isBlankIfStr(username)) missingFieldNames.add("数据库用户名 (GSAPI_DB_USER)");
+        if(StrUtil.isBlankIfStr(password)) missingFieldNames.add("数据库密码 (GSAPI_DB_PASS)");
+        if(StrUtil.isBlankIfStr(author)) missingFieldNames.add("代码作者 (GSAPI_AUTHOR)");
+        if(StrUtil.isBlankIfStr(outputDir)) missingFieldNames.add("生成目录 (GSAPI_OUTDIR)");
+        if(CollUtil.isNotEmpty(missingFieldNames)) {
+            throw new RuntimeException("以下环境变量缺失：\n" + StrUtil.join("\n", missingFieldNames));
+        }
+
         FastGenerator generator = FastGenerator.getFastGenerator()
                 .url(url)
                 .userName(username)
                 .password(password)
                 .author(author)
                 .entity(StrUtil.isBlank(entity) ? null : entity)
-                .outputDir("/generator")
+                .outputDir(outputDir)
                 .commentDateFormat("yyyy-MM-dd hh:mm:ss");
         generator.entityPackage("site.yuanshen.data.entity")
                 .mapperPackage("site.yuanshen.data.mapper")
