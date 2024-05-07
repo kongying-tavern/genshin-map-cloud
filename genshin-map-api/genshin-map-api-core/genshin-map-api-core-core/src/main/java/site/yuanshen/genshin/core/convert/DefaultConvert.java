@@ -2,15 +2,10 @@ package site.yuanshen.genshin.core.convert;
 
 import cn.hutool.core.lang.Pair;
 import cn.hutool.crypto.SecureUtil;
-import cn.hutool.extra.servlet.ServletUtil;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
+import site.yuanshen.genshin.core.utils.ClientUtils;
 import site.yuanshen.data.entity.History;
 import site.yuanshen.data.enums.HistoryEditType;
 import site.yuanshen.data.enums.HistoryType;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.Objects;
 
 public abstract class DefaultConvert implements Convert {
 
@@ -18,12 +13,7 @@ public abstract class DefaultConvert implements Convert {
     public History convert(Object o, HistoryEditType editType) {
         History history = new History();
 
-        String ipv4 = "N/A";
-        ServletRequestAttributes servletRequestAttributes;
-        if (Objects.nonNull(servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes())) {
-            HttpServletRequest request = servletRequestAttributes.getRequest();
-            ipv4 = ServletUtil.getClientIP(request);
-        }
+        String ipv4 = ClientUtils.getClientIpv4("N/A");
 
         Pair<String, Long> contentAndId = getContentAndId(o);
         String content = contentAndId.getKey();
