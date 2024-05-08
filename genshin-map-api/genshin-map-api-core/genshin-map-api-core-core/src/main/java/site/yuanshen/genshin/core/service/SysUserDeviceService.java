@@ -11,6 +11,7 @@ import site.yuanshen.genshin.core.dao.SysUserDeviceDao;
 import site.yuanshen.genshin.core.utils.ClientUtils;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.function.BiFunction;
 
 /**
@@ -41,7 +42,9 @@ public class SysUserDeviceService {
             currentDevice = sysUserDeviceDao.addNewDevice(userDevice);
         }
         boolean accessRes = checkDeviceAccessPolicies(deviceList, accessPolicyList, currentDevice);
-        sysUserDeviceDao.updateDeviceLoginTime(currentDevice.getId());
+        if(Objects.equals(accessRes, true)) {
+            sysUserDeviceDao.updateDeviceLoginTime(currentDevice.getId());
+        }
         return accessRes;
     }
 
