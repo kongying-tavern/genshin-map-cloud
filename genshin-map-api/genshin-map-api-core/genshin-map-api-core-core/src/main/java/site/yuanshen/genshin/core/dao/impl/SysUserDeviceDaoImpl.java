@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import site.yuanshen.data.dto.SysUserDeviceDto;
 import site.yuanshen.data.entity.SysUserDevice;
+import site.yuanshen.data.enums.user.device.UserDeviceStatusEnum;
 import site.yuanshen.data.mapper.SysUserDeviceMapper;
 import site.yuanshen.genshin.core.dao.SysUserDeviceDao;
 
@@ -45,7 +46,9 @@ public class SysUserDeviceDaoImpl implements SysUserDeviceDao {
         SysUserDevice device = new SysUserDevice()
                 .withUserId(userId)
                 .withIpv4(ipv4)
-                .withDeviceId(devId);
+                .withDeviceId(devId)
+                .withStatus(UserDeviceStatusEnum.UNKNOWN)
+                .withLastLoginTime(null);
         return new SysUserDeviceDto(device);
     }
 

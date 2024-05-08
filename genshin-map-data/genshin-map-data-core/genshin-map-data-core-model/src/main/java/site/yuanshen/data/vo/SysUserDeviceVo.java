@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.With;
+import site.yuanshen.data.enums.user.device.UserDeviceStatusEnum;
 
 import java.sql.Timestamp;
 
@@ -63,5 +64,18 @@ public class SysUserDeviceVo {
      */
     @Schema(title = "IPv4")
     private String ipv4;
+
+    /**
+     * 设备状态
+     */
+    @Schema(title = "设备状态")
+    private UserDeviceStatusEnum status;
+
+    /**
+     * 上次登录时间
+     */
+    @Schema(title = "上次登录时间")
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
+    private Timestamp lastLoginTime;
 
 }

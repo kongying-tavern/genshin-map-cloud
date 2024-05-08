@@ -14,6 +14,8 @@
         <result column="user_id" property="userId"/>
         <result column="device_id" property="deviceId"/>
         <result column="ipv4" property="ipv4"/>
+        <result column="status" property="status" typeHandler="com.baomidou.mybatisplus.core.handlers.MybatisEnumTypeHandler"/>
+        <result column="last_login_time" property="lastLoginTime"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
@@ -27,7 +29,9 @@
         sys_user_device.update_time,
         sys_user_device.user_id,
         sys_user_device.device_id,
-        sys_user_device.ipv4
+        sys_user_device.ipv4,
+        sys_user_device.status,
+        sys_user_device.last_login_time
     </sql>
 
 </mapper>

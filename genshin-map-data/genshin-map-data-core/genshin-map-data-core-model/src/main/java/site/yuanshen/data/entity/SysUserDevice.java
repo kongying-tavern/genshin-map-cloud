@@ -1,12 +1,13 @@
 package site.yuanshen.data.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.core.handlers.MybatisEnumTypeHandler;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import site.yuanshen.data.base.BaseEntity;
+import site.yuanshen.data.enums.user.device.UserDeviceStatusEnum;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 
 /**
  * 用户设备表;用户设备
@@ -18,7 +19,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-@TableName("sys_user_device")
+@TableName(value = "sys_user_device", autoResultMap = true)
 public class SysUserDevice extends BaseEntity {
 
     /**
@@ -64,5 +65,18 @@ public class SysUserDevice extends BaseEntity {
      */
     @TableField("ipv4")
     private String ipv4;
+
+    /**
+     * 设备状态
+     */
+    @TableField(value = "status", typeHandler = MybatisEnumTypeHandler.class)
+    private UserDeviceStatusEnum status;
+
+    /**
+     * 上次登录时间
+     */
+    @TableField("last_login_time")
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
+    private Timestamp lastLoginTime;
 
 }

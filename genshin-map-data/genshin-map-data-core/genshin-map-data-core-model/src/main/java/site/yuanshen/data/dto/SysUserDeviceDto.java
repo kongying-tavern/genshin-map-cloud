@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.With;
 import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.entity.SysUserDevice;
+import site.yuanshen.data.enums.user.device.UserDeviceStatusEnum;
 import site.yuanshen.data.vo.SysUserDeviceVo;
 
 import java.sql.Timestamp;
@@ -61,6 +62,17 @@ public class SysUserDeviceDto {
      * IPv4
      */
     private String ipv4;
+
+    /**
+     * 设备状态
+     */
+    private UserDeviceStatusEnum status;
+
+    /**
+     * 上次登录时间
+     */
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
+    private Timestamp lastLoginTime;
 
     public SysUserDeviceDto(SysUserDevice sysUserDevice) {
         BeanUtils.copy(sysUserDevice, this);
