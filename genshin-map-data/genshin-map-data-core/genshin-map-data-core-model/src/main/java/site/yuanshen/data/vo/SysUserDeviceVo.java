@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.With;
-import site.yuanshen.data.enums.user.device.UserDeviceStatusEnum;
+import site.yuanshen.data.enums.DeviceStatusEnum;
 
 import java.sql.Timestamp;
 
@@ -69,7 +69,7 @@ public class SysUserDeviceVo {
      * 设备状态
      */
     @Schema(title = "设备状态")
-    private UserDeviceStatusEnum status;
+    private DeviceStatusEnum status;
 
     /**
      * 上次登录时间

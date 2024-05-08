@@ -40,6 +40,6 @@ public class SysUserDeviceService {
         if(currentDevice == null) {
             currentDevice = sysUserDeviceDao.addNewDevice(userDevice);
         }
-        return false;
+        return true;
     }
 }

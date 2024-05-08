@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.handlers.MybatisEnumTypeHandler;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import site.yuanshen.data.base.BaseEntity;
-import site.yuanshen.data.enums.user.device.UserDeviceStatusEnum;
+import site.yuanshen.data.enums.DeviceStatusEnum;
 
 import java.sql.Timestamp;
 
@@ -70,7 +70,7 @@ public class SysUserDevice extends BaseEntity {
      * 设备状态
      */
     @TableField(value = "status", typeHandler = MybatisEnumTypeHandler.class)
-    private UserDeviceStatusEnum status;
+    private DeviceStatusEnum status;
 
     /**
      * 上次登录时间

@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.With;
 import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.entity.SysUserDevice;
-import site.yuanshen.data.enums.user.device.UserDeviceStatusEnum;
+import site.yuanshen.data.enums.DeviceStatusEnum;
 import site.yuanshen.data.vo.SysUserDeviceVo;
 
 import java.sql.Timestamp;
@@ -66,7 +66,7 @@ public class SysUserDeviceDto {
     /**
      * 设备状态
      */
-    private UserDeviceStatusEnum status;
+    private DeviceStatusEnum status;
 
     /**
      * 上次登录时间
