@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import site.yuanshen.common.core.utils.TimeUtils;
 import site.yuanshen.data.dto.SysUserDeviceDto;
 import site.yuanshen.data.entity.SysUserDevice;
 import site.yuanshen.data.enums.DeviceStatusEnum;
@@ -71,5 +72,15 @@ public class SysUserDeviceDaoImpl implements SysUserDeviceDao {
                 .filter(devItem -> devItem != null && Objects.equals(devItem.getIpv4(), device.getIpv4()) && Objects.equals(devItem.getDeviceId(), device.getDeviceId()))
                 .findFirst()
                 .orElse(null);
+    }
+
+    @Override
+    public void updateDeviceLoginTime(Long id) {
+        if(id == null) {
+            return;
+        }
+        sysUserDeviceMapper.update(null, Wrappers.<SysUserDevice>lambdaUpdate()
+                .set(SysUserDevice::getLastLoginTime, TimeUtils.getCurrentTimestamp())
+                .eq(SysUserDevice::getId, id));
     }
 }

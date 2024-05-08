@@ -40,7 +40,9 @@ public class SysUserDeviceService {
         if(currentDevice == null) {
             currentDevice = sysUserDeviceDao.addNewDevice(userDevice);
         }
-        return checkDeviceAccessPolicies(deviceList, accessPolicyList, currentDevice);
+        boolean accessRes = checkDeviceAccessPolicies(deviceList, accessPolicyList, currentDevice);
+        sysUserDeviceDao.updateDeviceLoginTime(currentDevice.getId());
+        return accessRes;
     }
 
     public boolean checkDeviceAccessPolicies(

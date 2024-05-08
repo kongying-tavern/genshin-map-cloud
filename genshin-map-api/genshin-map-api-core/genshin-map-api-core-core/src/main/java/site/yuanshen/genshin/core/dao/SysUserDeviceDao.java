@@ -29,4 +29,9 @@ public interface SysUserDeviceDao {
      * 在列表查找设备
      */
     SysUserDeviceDto findDevice(List<SysUserDeviceDto> deviceList, SysUserDeviceDto device);
+
+    /**
+     * 更新设备登录时间
+     */
+    void updateDeviceLoginTime(Long id);
 }
