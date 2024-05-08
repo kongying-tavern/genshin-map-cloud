@@ -1,14 +1,18 @@
 package site.yuanshen.data.vo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.With;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 /**
 * 用户设备表;用户设备前端封装
 *
-* @since 2024-05-07 02:36:49
+* @since 2024-05-08 08:38:30
 */
 @Data
 @With
@@ -39,7 +43,8 @@ public class SysUserDeviceVo {
      * 更新时间
      */
     @Schema(title = "更新时间")
-    private LocalDateTime updateTime;
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
+    private Timestamp updateTime;
 
     /**
      * 用户ID

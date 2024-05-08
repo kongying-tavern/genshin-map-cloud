@@ -1,18 +1,23 @@
 package site.yuanshen.data.dto;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
 import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.With;
 import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.entity.SysUserDevice;
 import site.yuanshen.data.vo.SysUserDeviceVo;
-import java.time.LocalDateTime;
+
+import java.sql.Timestamp;
 
 
 /**
  * 用户设备表;用户设备数据封装
  *
- * @since 2024-05-07 02:36:49
+ * @since 2024-05-08 08:38:30
  */
 @Data
 @With
@@ -39,7 +44,8 @@ public class SysUserDeviceDto {
     /**
      * 更新时间
      */
-    private LocalDateTime updateTime;
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
+    private Timestamp updateTime;
 
     /**
      * 用户ID

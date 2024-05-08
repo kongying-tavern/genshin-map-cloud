@@ -1,14 +1,12 @@
 package site.yuanshen.data.entity;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.annotation.Version;
-import java.time.LocalDateTime;
-import site.yuanshen.data.base.BaseEntity;
+import com.baomidou.mybatisplus.annotation.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
+import site.yuanshen.data.base.BaseEntity;
+
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 /**
  * 用户设备表;用户设备
@@ -46,7 +44,8 @@ public class SysUserDevice extends BaseEntity {
      * 更新时间
      */
     @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
-    private LocalDateTime updateTime;
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
+    private Timestamp updateTime;
 
     /**
      * 用户ID
