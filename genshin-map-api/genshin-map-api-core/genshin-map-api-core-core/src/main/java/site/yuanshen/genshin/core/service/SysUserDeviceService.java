@@ -1,17 +1,17 @@
 package site.yuanshen.genshin.core.service;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import site.yuanshen.data.dto.SysUserDeviceDto;
-import site.yuanshen.data.entity.SysUserDevice;
+import site.yuanshen.data.enums.AccessPolicyEnum;
 import site.yuanshen.genshin.core.dao.SysUserDeviceDao;
 import site.yuanshen.genshin.core.utils.ClientUtils;
 
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
+import java.util.function.BiFunction;
 
 /**
  * 用户设备详情服务
@@ -30,7 +30,7 @@ public class SysUserDeviceService {
     /**
      * 检查设备是否有登录权限
      */
-    public boolean checkDeviceAccess(Long userId) {
+    public boolean checkDeviceAccess(Long userId, List<AccessPolicyEnum> accessPolicyList) {
         List<SysUserDeviceDto> deviceList = sysUserDeviceDao.getDeviceList(userId.toString());
         String ip = ClientUtils.getClientIpv4(DEVICE_IP_DEFAULT);
         String ua = StrUtil.sub(ClientUtils.getClientUa(), 0, DEVICE_ID_LEN_LIMIT);
@@ -40,6 +40,32 @@ public class SysUserDeviceService {
         if(currentDevice == null) {
             currentDevice = sysUserDeviceDao.addNewDevice(userDevice);
         }
-        return true;
+        return checkDeviceAccessPolicies(deviceList, accessPolicyList, currentDevice);
+    }
+
+    public boolean checkDeviceAccessPolicies(
+            List<SysUserDeviceDto> deviceList,
+            List<AccessPolicyEnum> accessPolicyList,
+            SysUserDeviceDto currentDevice
+    ) {
+        if(currentDevice == null) {
+            return false;
+        }
+        if(CollUtil.isEmpty(accessPolicyList)) {
+            return true;
+        }
+
+        boolean policyPass = false;
+        for(AccessPolicyEnum accessPolicyEnum : accessPolicyList) {
+            BiFunction<List<SysUserDeviceDto>, SysUserDeviceDto, Boolean> policyTester = accessPolicyEnum.getTester();
+            if(policyTester != null) {
+                Boolean policyResult = policyTester.apply(deviceList, currentDevice);
+                if(policyResult != null) {
+                    policyPass |= policyResult;
+                }
+            }
+        }
+
+        return policyPass;
     }
 }

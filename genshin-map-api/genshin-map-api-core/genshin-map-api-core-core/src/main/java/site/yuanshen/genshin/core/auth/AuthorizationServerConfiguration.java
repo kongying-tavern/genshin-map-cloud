@@ -65,7 +65,7 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
             Map<String, Object> additionalInfo = new HashMap<>();
             if (principal instanceof SysUserSecurityDto) {
                 SysUserSecurityDto userPrincipal = (SysUserSecurityDto) principal;
-                if(!sysUserDeviceService.checkDeviceAccess(userPrincipal.getUserId())) {
+                if(!sysUserDeviceService.checkDeviceAccess(userPrincipal.getUserId(), userPrincipal.getAccessPolicyList())) {
                     throw new InsufficientAuthenticationException("账户因安全策略暂时无法登录，请联系管理员");
                 }
                 List<RoleEnum> roleList = userPrincipal.getRoleEnumList();
