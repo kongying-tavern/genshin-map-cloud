@@ -9,11 +9,13 @@ import org.springframework.web.bind.annotation.*;
 import site.yuanshen.common.core.exception.GenshinApiException;
 import site.yuanshen.common.web.response.R;
 import site.yuanshen.common.web.response.RUtils;
+import site.yuanshen.common.web.response.WUtils;
 import site.yuanshen.data.enums.RoleEnum;
 import site.yuanshen.data.vo.*;
 import site.yuanshen.data.vo.helper.PageListVo;
 import site.yuanshen.genshin.core.service.SysUserService;
 import site.yuanshen.genshin.core.utils.UserUtils;
+import site.yuanshen.genshin.core.websocket.WebSocketEntrypoint;
 
 import static site.yuanshen.genshin.core.utils.UserUtils.*;
 
@@ -29,6 +31,7 @@ import static site.yuanshen.genshin.core.utils.UserUtils.*;
 public class SysUserController {
 
     private final SysUserService userService;
+    private final WebSocketEntrypoint webSocket;
 
     @Operation(summary = "用户注册(管理员权限)", description = "用户注册(管理员权限)，可以注册任意用户名密码的用户")
     @PostMapping("/register")
@@ -102,5 +105,12 @@ public class SysUserController {
     @DeleteMapping("/{workId}")
     public R<Boolean> deleteUser(@PathVariable("workId") Long workId) {
         return RUtils.create(userService.deleteUser(workId));
+    }
+
+    @Operation(summary = "用户踢出", description = "用户踢出")
+    @DeleteMapping("/kick_out/{workId}")
+    public R<Boolean> kicOutkUser(@PathVariable("workId") Long workId) {
+        webSocket.sendToUsers(new String[]{workId.toString()}, WUtils.create("UserKickedOut", null));
+        return RUtils.create(true);
     }
 }
