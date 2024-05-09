@@ -1,7 +1,6 @@
 package site.yuanshen.common.core.utils;
 
 import cn.hutool.core.io.resource.ClassPathResource;
-import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import lombok.Data;
 import lombok.NoArgsConstructor;
