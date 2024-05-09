@@ -18,6 +18,7 @@
         <result column="nickname" property="nickname"/>
         <result column="logo" property="logo"/>
         <result column="role_id" property="roleId"/>
+        <result column="access_policy" property="accessPolicy" typeHandler="site.yuanshen.handler.MBPJsonArrayTypeHandler"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
@@ -35,7 +36,8 @@
         su.qq,
         su.phone,
         su.logo,
-        su.role_id
+        su.role_id,
+        su.access_policy
     </sql>
 
 </mapper>

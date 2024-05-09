@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
@@ -21,6 +22,7 @@ import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenCo
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFactory;
 import site.yuanshen.data.enums.RoleEnum;
+import site.yuanshen.genshin.core.service.SysUserDeviceService;
 
 import java.security.KeyPair;
 import java.util.*;
@@ -42,6 +44,8 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 
     @Autowired
     private ClientDetailsServiceImpl clientDetailsServiceImpl;
+    @Autowired
+    private SysUserDeviceService sysUserDeviceService;
 
     @Value("${env:prd}")
     private String env;
@@ -61,6 +65,9 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
             Map<String, Object> additionalInfo = new HashMap<>();
             if (principal instanceof SysUserSecurityDto) {
                 SysUserSecurityDto userPrincipal = (SysUserSecurityDto) principal;
+                if(!sysUserDeviceService.checkDeviceAccess(userPrincipal.getUserId(), userPrincipal.getAccessPolicyList())) {
+                    throw new InsufficientAuthenticationException("账户因安全策略暂时无法登录，请联系管理员");
+                }
                 List<RoleEnum> roleList = userPrincipal.getRoleEnumList();
                 List<String> roleCodeList = Optional.of(roleList).orElse(new ArrayList<>()).stream().map(RoleEnum::getCode).collect(Collectors.toList());
                 additionalInfo.put("userId", userPrincipal.getUserId());

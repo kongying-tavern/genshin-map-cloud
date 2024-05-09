@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.entity.SysUser;
+import site.yuanshen.data.enums.AccessPolicyEnum;
 import site.yuanshen.data.enums.RoleEnum;
 import site.yuanshen.data.mapper.SysUserMapper;
 
@@ -40,6 +41,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             throw new InsufficientAuthenticationException("用户未获得角色授权");
         }
         sysUserSecurityDto.setRoleEnumList(Collections.singletonList(RoleEnum.getRoleFromId(roleId)));
+        sysUserSecurityDto.setAccessPolicyList(AccessPolicyEnum.getPoliciesFromCodes(sysUser.getAccessPolicy()));
         return sysUserSecurityDto;
     }
 

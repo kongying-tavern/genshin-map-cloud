@@ -13,6 +13,7 @@ import site.yuanshen.data.vo.SysUserRegisterVo;
 import site.yuanshen.data.vo.SysUserVo;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 
 /**
@@ -82,6 +83,11 @@ public class SysUserDto {
      * 角色ID
      */
     private Integer roleId;
+
+    /**
+     * 权限策略
+     */
+    private List<String> accessPolicy;
 
     public SysUserDto(SysUser sysUser) {
         BeanUtils.copy(sysUser, this);

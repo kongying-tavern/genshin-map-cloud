@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.With;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 /**
 * 系统用户表前端封装
@@ -81,5 +82,12 @@ public class SysUserVo {
      */
     @Schema(title = "角色ID")
     private Integer roleId;
+
+    /**
+     * 权限策略
+     */
+    @Schema(title = "access_policy")
+    private List<String> accessPolicy;
+
 
 }
