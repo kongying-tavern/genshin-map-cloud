@@ -35,7 +35,7 @@ public enum AccessPolicyEnum {
             AccessPolicyTester::testIpWithPassAllowRegion
     ),
     IP$$BLOCK_DISALLOW_REGION(
-            "ip:block_disallow_region", "对列表中禁用的IP拦截",
+            "ip:block_disallow_region", "对列表中禁用的地区拦截",
             AccessPolicyTester::testIpWithBlockDisallowRegion
     ),
     DEV$$SAME_LAST_DEVICE(

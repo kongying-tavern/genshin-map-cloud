@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.With;
 import site.yuanshen.common.core.utils.BeanUtils;
+import site.yuanshen.common.core.utils.ClientUtils;
 import site.yuanshen.data.entity.SysUserDevice;
 import site.yuanshen.data.enums.DeviceStatusEnum;
 import site.yuanshen.data.vo.SysUserDeviceVo;
@@ -64,6 +65,11 @@ public class SysUserDeviceDto {
     private String ipv4;
 
     /**
+     * IP地区
+     */
+    private ClientUtils.Region ipRegion;
+
+    /**
      * 设备状态
      */
     private DeviceStatusEnum status;
@@ -76,10 +82,12 @@ public class SysUserDeviceDto {
 
     public SysUserDeviceDto(SysUserDevice sysUserDevice) {
         BeanUtils.copy(sysUserDevice, this);
+        this.ipRegion = ClientUtils.getClientIpRegion(this.ipv4);
     }
 
     public SysUserDeviceDto(SysUserDeviceVo sysUserDeviceVo) {
         BeanUtils.copy(sysUserDeviceVo, this);
+        this.ipRegion = ClientUtils.getClientIpRegion(this.ipv4);
     }
 
     @JSONField(serialize = false)

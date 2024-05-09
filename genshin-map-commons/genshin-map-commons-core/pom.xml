@@ -64,6 +64,12 @@
             <artifactId>mybatis-plus-core</artifactId>
         </dependency>
 
+        <!-- ip2region -->
+        <dependency>
+            <groupId>org.lionsoul</groupId>
+            <artifactId>ip2region</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>
