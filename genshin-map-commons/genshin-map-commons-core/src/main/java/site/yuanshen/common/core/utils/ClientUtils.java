@@ -32,12 +32,7 @@ public class ClientUtils {
                 InputStream is = classPathResource.getStream();
                 File dbTmpPath = new File(SYS_TEMP_DIR + dbName);
                 OutputStream os = new FileOutputStream(dbTmpPath);
-                int bytesRead;
-                int len = 8192;
-                byte[] buffer = new byte[len];
-                while ((bytesRead = is.read(buffer, 0, len)) != -1) {
-                    os.write(buffer, 0, bytesRead);
-                }
+                os.write(is.readAllBytes());
                 os.close();
                 is.close();
                 dbBuff = Searcher.loadContentFromFile(dbTmpPath.getAbsolutePath());
