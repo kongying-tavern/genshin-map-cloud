@@ -109,7 +109,7 @@ public class SysUserController {
 
     @Operation(summary = "用户踢出", description = "用户踢出")
     @DeleteMapping("/kick_out/{workId}")
-    public R<Boolean> kicOutkUser(@PathVariable("workId") Long workId) {
+    public R<Boolean> kickOutkUser(@PathVariable("workId") Long workId) {
         webSocket.sendToUsers(new String[]{workId.toString()}, WUtils.create("UserKickedOut", null));
         return RUtils.create(true);
     }
