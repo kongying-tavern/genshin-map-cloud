@@ -35,7 +35,14 @@ public class AccessPolicyTester {
     }
 
     public static boolean testIpWithBlockDisallowIp(List<SysUserDeviceDto> deviceList, SysUserDeviceDto currentDevice) {
-        return true;
+        if(currentDevice == null)
+            return false;
+        final Set<String> disallowIps = deviceList.stream()
+                .filter(Objects::nonNull)
+                .filter(v -> v.getStatus().equals(DeviceStatusEnum.BLOCKED))
+                .map(SysUserDeviceDto::getIpv4)
+                .collect(Collectors.toSet());
+        return !disallowIps.contains(currentDevice.getIpv4());
     }
 
     public static boolean testIpWithSameLastRegion(List<SysUserDeviceDto> deviceList, SysUserDeviceDto currentDevice) {
