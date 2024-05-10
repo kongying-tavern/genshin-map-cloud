@@ -1,16 +1,19 @@
 package site.yuanshen.data.helper.user.access;
 
 import site.yuanshen.data.dto.SysUserDeviceDto;
+import site.yuanshen.data.enums.DeviceStatusEnum;
 
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class AccessPolicyTester {
     public static boolean testIpWithSameLastIp(List<SysUserDeviceDto> deviceList, SysUserDeviceDto currentDevice) {
         if(currentDevice == null)
             return false;
-        SysUserDeviceDto lastLoginDevice = deviceList.stream()
+        final SysUserDeviceDto lastLoginDevice = deviceList.stream()
                 .filter(v -> v != null && v.getLastLoginTime() != null)
                 .sorted(Comparator.comparing(SysUserDeviceDto::getLastLoginTime).reversed())
                 .findFirst()
@@ -21,7 +24,14 @@ public class AccessPolicyTester {
     }
 
     public static boolean testIpWithPassAllowIp(List<SysUserDeviceDto> deviceList, SysUserDeviceDto currentDevice) {
-        return true;
+        if(currentDevice == null)
+            return false;
+        final Set<String> allowIps = deviceList.stream()
+                .filter(Objects::nonNull)
+                .filter(v -> v.getStatus().equals(DeviceStatusEnum.VALID))
+                .map(SysUserDeviceDto::getIpv4)
+                .collect(Collectors.toSet());
+        return allowIps.contains(currentDevice.getIpv4());
     }
 
     public static boolean testIpWithBlockDisallowIp(List<SysUserDeviceDto> deviceList, SysUserDeviceDto currentDevice) {
