@@ -58,7 +58,16 @@ public class AccessPolicyTester {
     }
 
     public static boolean testDevWithSameLastDevice(List<SysUserDeviceDto> deviceList, SysUserDeviceDto currentDevice) {
-        return true;
+        if(currentDevice == null)
+            return false;
+        final SysUserDeviceDto lastLoginDevice = deviceList.stream()
+                .filter(v -> v != null && v.getLastLoginTime() != null)
+                .sorted(Comparator.comparing(SysUserDeviceDto::getLastLoginTime).reversed())
+                .findFirst()
+                .orElse(null);
+        if(lastLoginDevice == null)
+            return true;
+        return Objects.equals(lastLoginDevice.getDeviceId(), currentDevice.getDeviceId());
     }
 
     public static boolean testDevWithPassAllowDevice(List<SysUserDeviceDto> deviceList, SysUserDeviceDto currentDevice) {
