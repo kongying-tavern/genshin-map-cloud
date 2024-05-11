@@ -75,7 +75,17 @@ public class AccessPolicyTester {
     }
 
     public static boolean testIpWithBlockDisallowRegion(List<SysUserDeviceDto> deviceList, SysUserDeviceDto currentDevice) {
-        return true;
+        if(currentDevice == null)
+            return false;
+        else if(currentDevice.getIpRegion() == null)
+            return false;
+        final Set<String> disallowRegions = deviceList.stream()
+                .filter(Objects::nonNull)
+                .filter(v -> v.getStatus().equals(DeviceStatusEnum.BLOCKED))
+                .filter(v -> v.getIpRegion() != null)
+                .map(v -> v.getIpRegion().getHash())
+                .collect(Collectors.toSet());
+        return !disallowRegions.contains(currentDevice.getIpRegion().getHash());
     }
 
     public static boolean testDevWithSameLastDevice(List<SysUserDeviceDto> deviceList, SysUserDeviceDto currentDevice) {
