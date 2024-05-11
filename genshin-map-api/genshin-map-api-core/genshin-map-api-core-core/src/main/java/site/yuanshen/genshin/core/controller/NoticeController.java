@@ -45,28 +45,28 @@ public class NoticeController {
 
     @Operation(summary = "修改公告", description = "修改公告")
     @PostMapping("/update")
-    public R<Boolean> updateNotice(@RequestBody NoticeVo noticeVo, @RequestHeader("userId") String userId) {
+    public R<Boolean> updateNotice(@RequestBody NoticeVo noticeVo) {
         final Boolean success = noticeService.updateNotice(new NoticeDto(noticeVo));
         cacheService.cleanNoticeCache();
-        webSocket.broadcast(userId, WUtils.create("NoticeUpdated", noticeVo.getId()));
+        webSocket.broadcast(WUtils.create("NoticeUpdated", noticeVo.getId()));
         return RUtils.create(success);
     }
 
     @Operation(summary = "新增公告", description = "返回新增公告ID")
     @PutMapping("/add")
-    public R<Long> createNotice(@RequestBody NoticeVo noticeVo, @RequestHeader("userId") String userId) {
+    public R<Long> createNotice(@RequestBody NoticeVo noticeVo) {
         final Long noticeId = noticeService.createNotice(new NoticeDto(noticeVo));
         cacheService.cleanNoticeCache();
-        webSocket.broadcast(userId, WUtils.create("NoticeAdded", noticeId));
+        webSocket.broadcast(WUtils.create("NoticeAdded", noticeId));
         return RUtils.create(noticeId);
     }
 
     @Operation(summary = "删除公告", description = "删除公告，请在前端做二次确认")
     @DeleteMapping("/{noticeId}")
-    public R<Boolean> deleteNotice(@PathVariable("noticeId") Long noticeId, @RequestHeader("userId") String userId) {
+    public R<Boolean> deleteNotice(@PathVariable("noticeId") Long noticeId) {
         final Boolean success = noticeService.deleteNotice(noticeId);
         cacheService.cleanNoticeCache();
-        webSocket.broadcast(userId, WUtils.create("NoticeDeleted", noticeId));
+        webSocket.broadcast(WUtils.create("NoticeDeleted", noticeId));
         return RUtils.create(success);
     }
 }

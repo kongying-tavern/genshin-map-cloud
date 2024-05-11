@@ -86,35 +86,35 @@ public class MarkerController {
 
     @Operation(summary = "新增点位（不包括额外字段）", description = "新增完成后返回点位ID")
     @PutMapping("/single")
-    public R<Long> createMarker(@RequestBody MarkerVo markerVo, @RequestHeader("userId") String userId) {
+    public R<Long> createMarker(@RequestBody MarkerVo markerVo) {
         Long newId = markerService.createMarker(new MarkerDto(markerVo));
         cacheService.cleanItemCache();
         cacheService.cleanMarkerCache();
         // For new marker, no need to clean marker linkage related path cache
         // since new marker will not be linked in path list.
-        webSocket.broadcast(userId, WUtils.create("MarkerAdded", newId));
+        webSocket.broadcast(WUtils.create("MarkerAdded", newId));
         return RUtils.create(newId);
     }
 
     @Operation(summary = "修改点位（不包括额外字段）", description = "根据点位ID修改点位")
     @PostMapping("/single")
-    public R<Boolean> updateMarker(@RequestBody MarkerVo markerVo, @RequestHeader("userId") String userId) {
+    public R<Boolean> updateMarker(@RequestBody MarkerVo markerVo) {
         Boolean result = markerService.updateMarker(new MarkerDto(markerVo));
         cacheService.cleanItemCache();
         cacheService.cleanMarkerCache();
         cacheService.cleanMarkerLinkageCache();
-        webSocket.broadcast(userId, WUtils.create("MarkerUpdated", markerVo.getId()));
+        webSocket.broadcast(WUtils.create("MarkerUpdated", markerVo.getId()));
         return RUtils.create(result);
     }
 
     @Operation(summary = "删除点位", description = "根据点位ID列表批量删除点位")
     @DeleteMapping("/{markerId}")
-    public R<Boolean> deleteMarker(@PathVariable("markerId") Long markerId, @RequestHeader("userId") String userId) {
+    public R<Boolean> deleteMarker(@PathVariable("markerId") Long markerId) {
         Boolean result = markerService.deleteMarker(markerId);
         cacheService.cleanItemCache();
         cacheService.cleanMarkerCache();
         cacheService.cleanMarkerLinkageCache();
-        webSocket.broadcast(userId, WUtils.create("MarkerDeleted", markerId));
+        webSocket.broadcast(WUtils.create("MarkerDeleted", markerId));
         return RUtils.create(result);
     }
 
@@ -124,12 +124,12 @@ public class MarkerController {
     //////////////START:点位调整的API//////////////
     @Operation(summary = "调整点位", description = "对点位数据进行微调")
     @PostMapping("/tweak")
-    public R<List<MarkerVo>> tweakMarkers(@RequestBody TweakVo tweakVo, @RequestHeader("userId") String userId) {
+    public R<List<MarkerVo>> tweakMarkers(@RequestBody TweakVo tweakVo) {
         List<MarkerVo> result = markerService.tweakMarkers(tweakVo);
         cacheService.cleanItemCache();
         cacheService.cleanMarkerCache();
         cacheService.cleanMarkerLinkageCache();
-        webSocket.broadcast(userId, WUtils.create("MarkerTweaked", result.parallelStream().map(MarkerVo::getId).collect(Collectors.toList())));
+        webSocket.broadcast(WUtils.create("MarkerTweaked", result.parallelStream().map(MarkerVo::getId).collect(Collectors.toList())));
         return RUtils.create(result);
     }
     //////////////END:点位调整的API//////////////

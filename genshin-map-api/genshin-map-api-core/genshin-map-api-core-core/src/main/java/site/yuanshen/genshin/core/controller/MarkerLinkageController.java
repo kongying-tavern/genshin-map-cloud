@@ -52,12 +52,12 @@ public class MarkerLinkageController {
 
     @Operation(summary = "关联点位", description = "关联点位数据")
     @PostMapping("/link")
-    public R<String> linkMarker(@RequestBody List<MarkerLinkageVo> markerLinkageVoList, @RequestHeader("userId") String userId) {
+    public R<String> linkMarker(@RequestBody List<MarkerLinkageVo> markerLinkageVoList) {
         LinkChangeVo linkChangeVo = new LinkChangeVo();
         String groupId = markerLinkageService.linkMarker(markerLinkageVoList, linkChangeVo);
         cacheService.cleanMarkerCache();
         cacheService.cleanMarkerLinkageCache();
-        webSocket.broadcast(userId, WUtils.create("MarkerLinked", linkChangeVo));
+        webSocket.broadcast(WUtils.create("MarkerLinked", linkChangeVo));
         return RUtils.create(groupId);
     }
 }
