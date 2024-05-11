@@ -86,18 +86,14 @@ public class WebSocketEntrypoint {
 
     /**
      * 广播消息
-     * @param userId 用户ID，如果用户ID存在，则不对指定ID进行广播，如果用户ID为null则广播给所有人
      * @param message 用户消息
      */
-    public <T> void broadcast(String userId, W<T> message) {
+    public <T> void broadcast(W<T> message) {
         final String messageText = JSON.toJSONString(message);
         log.info("[websocket] broadcast:" + messageText);
         for (WebSocketEntrypoint webSocket : webSockets) {
             try {
                 if(webSocket.session.isOpen()) {
-                    if (userId != null && Objects.equals(userId, webSocket.userId)) {
-                        return;
-                    }
                     webSocket.session.getAsyncRemote().sendText(messageText);
                 }
             } catch (Exception e) {

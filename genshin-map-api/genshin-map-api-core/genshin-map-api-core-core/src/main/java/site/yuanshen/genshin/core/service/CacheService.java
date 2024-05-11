@@ -69,7 +69,7 @@ public class CacheService {
                 runAfterTransactionDebounceByKey(
                         () -> {
                             this.refreshIconTagBinary();
-                            webSocket.broadcast(null, WUtils.create("IconTagBinaryPurged", null));
+                            webSocket.broadcast(WUtils.create("IconTagBinaryPurged", null));
                         },
                         FunctionKeyEnum.refreshIconTagBinary, Integer.parseInt(debounceDelay)
                 );
@@ -102,7 +102,7 @@ public class CacheService {
         runAfterTransactionDebounceByKey(
                 () -> {
                     itemDocService.refreshItemBinaryMD5();
-                    webSocket.broadcast(null, WUtils.create("ItemBinaryPurged", null));
+                    webSocket.broadcast(WUtils.create("ItemBinaryPurged", null));
                 },
                 FunctionKeyEnum.refreshItemBinary, Integer.parseInt(debounceDelay)
         );
@@ -128,7 +128,7 @@ public class CacheService {
         runAfterTransactionDebounceByKey(
                 () -> {
                     markerDocService.refreshMarkerBinaryMD5();
-                    webSocket.broadcast(null, WUtils.create("MarkerBinaryPurged", null));
+                    webSocket.broadcast(WUtils.create("MarkerBinaryPurged", null));
                 },
                 FunctionKeyEnum.refreshMarkerBinary, Integer.parseInt(debounceDelay)
         );
@@ -155,7 +155,7 @@ public class CacheService {
                 () -> {
                     markerLinkageDocService.refreshMarkerLinkageListBinaryMD5();
                     markerLinkageDocService.refreshMarkerLinkageGraphBinaryMD5();
-                    webSocket.broadcast(null, WUtils.create("MarkerLinkageBinaryPurged", null));
+                    webSocket.broadcast(WUtils.create("MarkerLinkageBinaryPurged", null));
                 },
                 FunctionKeyEnum.refreshMarkerLinkageBinary, Integer.parseInt(debounceDelay)
         );
