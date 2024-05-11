@@ -46,7 +46,18 @@ public class AccessPolicyTester {
     }
 
     public static boolean testIpWithSameLastRegion(List<SysUserDeviceDto> deviceList, SysUserDeviceDto currentDevice) {
-        return true;
+        if(currentDevice == null)
+            return false;
+        final SysUserDeviceDto lastLoginDevice = deviceList.stream()
+                .filter(v -> v != null && v.getLastLoginTime() != null)
+                .sorted(Comparator.comparing(SysUserDeviceDto::getLastLoginTime).reversed())
+                .findFirst()
+                .orElse(null);
+        if(lastLoginDevice == null)
+            return true;
+        final String lastLoginRegionHash = lastLoginDevice.getIpRegion() != null ? lastLoginDevice.getIpRegion().getHash() : "";
+        final String currentRegionHash = currentDevice.getIpRegion() != null ? currentDevice.getIpRegion().getHash() : "";
+        return Objects.equals(lastLoginRegionHash, currentRegionHash);
     }
 
     public static boolean testIpWithPassAllowRegion(List<SysUserDeviceDto> deviceList, SysUserDeviceDto currentDevice) {
