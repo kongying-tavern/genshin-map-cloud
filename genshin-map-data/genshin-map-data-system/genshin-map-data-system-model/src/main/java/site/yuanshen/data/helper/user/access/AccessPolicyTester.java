@@ -71,7 +71,14 @@ public class AccessPolicyTester {
     }
 
     public static boolean testDevWithPassAllowDevice(List<SysUserDeviceDto> deviceList, SysUserDeviceDto currentDevice) {
-        return true;
+        if(currentDevice == null)
+            return false;
+        final Set<String> allowDevices = deviceList.stream()
+                .filter(Objects::nonNull)
+                .filter(v -> v.getStatus().equals(DeviceStatusEnum.VALID))
+                .map(SysUserDeviceDto::getDeviceId)
+                .collect(Collectors.toSet());
+        return allowDevices.contains(currentDevice.getDeviceId());
     }
 
     public static boolean testDevWithBlockDisallowDevice(List<SysUserDeviceDto> deviceList, SysUserDeviceDto currentDevice) {
