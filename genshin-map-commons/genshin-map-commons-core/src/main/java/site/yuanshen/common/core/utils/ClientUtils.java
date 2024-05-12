@@ -1,6 +1,9 @@
 package site.yuanshen.common.core.utils;
 
 import cn.hutool.core.util.StrUtil;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,17 +44,31 @@ public class ClientUtils {
         private static String UNKNOWN_REGION = "未知";
         private static String DEFAULT_REGION_TEXT = "0";
 
-        private boolean isUnknown = false;
+        @Schema(title = "是否是未知地区")
+        @JsonProperty("isUnknown")
+        private boolean unknown = false;
+
+        @JsonIgnore
         private String hash = "";
+
+        @Schema(title = "国家")
         private String country = "";
+
+        @Schema(title = "地区")
         private String region = "";
+
+        @Schema(title = "省/州")
         private String province = "";
+
+        @Schema(title = "城市")
         private String city = "";
+
+        @Schema(title = "网络运营商")
         private String isp = "";
 
         public void setFullRegion(String fullRegion) {
             if(fullRegion == null) {
-                this.setIsUnknown(true);
+                this.setUnknown(true);
             } else {
                 List<String> ipRegionParts = StrUtil.split(fullRegion, "|");
                 int ipRegionLevelCount = ipRegionParts.size();
@@ -68,8 +85,8 @@ public class ClientUtils {
             this.hash = DigestUtils.md5DigestAsHex(fullKey.getBytes());
         }
 
-        public void setIsUnknown(boolean isUnknown) {
-            this.isUnknown = isUnknown;
+        public void setUnknown(boolean isUnknown) {
+            this.unknown = isUnknown;
             if(isUnknown) {
                 this.country = UNKNOWN_REGION;
                 this.region = "";
