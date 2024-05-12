@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import site.yuanshen.data.dto.SysUserDeviceDto;
+import site.yuanshen.data.dto.adapter.BoolLogicPair;
 import site.yuanshen.data.enums.AccessPolicyEnum;
 import site.yuanshen.genshin.core.dao.SysUserDeviceDao;
 import site.yuanshen.genshin.core.utils.ClientUtils;
@@ -60,13 +61,23 @@ public class SysUserDeviceService {
             return true;
         }
 
-        boolean policyPass = false;
+        Boolean policyPass = null;
         for(AccessPolicyEnum accessPolicyEnum : accessPolicyList) {
-            BiFunction<List<SysUserDeviceDto>, SysUserDeviceDto, Boolean> policyTester = accessPolicyEnum.getTester();
+            BiFunction<List<SysUserDeviceDto>, SysUserDeviceDto, BoolLogicPair> policyTester = accessPolicyEnum.getTester();
             if(policyTester != null) {
-                Boolean policyResult = policyTester.apply(deviceList, currentDevice);
+                BoolLogicPair policyResult = policyTester.apply(deviceList, currentDevice);
                 if(policyResult != null) {
-                    policyPass |= policyResult;
+                    switch(policyResult.getLogic()) {
+                        case OR:
+                            policyPass = policyPass == null ? policyResult.getBoolValue() : policyPass | policyResult.getBoolValue();
+                            break;
+                        case AND:
+                            policyPass = policyPass == null ? policyResult.getBoolValue() : policyPass & policyResult.getBoolValue();
+                            break;
+                    }
+                    if(policyResult.getTruncated()) {
+                        return policyPass;
+                    }
                 }
             }
         }
