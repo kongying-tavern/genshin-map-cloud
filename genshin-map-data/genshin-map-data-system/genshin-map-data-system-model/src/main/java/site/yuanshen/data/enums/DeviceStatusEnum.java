@@ -1,7 +1,7 @@
 package site.yuanshen.data.enums;
 
 import com.baomidou.mybatisplus.annotation.EnumValue;
-import lombok.Getter;
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -11,11 +11,10 @@ public enum DeviceStatusEnum {
     BLOCKED(2, "禁用")
     ;
 
-    @Getter
     @EnumValue
+    @JsonValue
     private final Integer code;
 
-    @Getter
     private final String name;
 
 }
