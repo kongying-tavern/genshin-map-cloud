@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.With;
+import site.yuanshen.common.core.utils.ClientUtils;
 import site.yuanshen.data.enums.DeviceStatusEnum;
 
 import java.sql.Timestamp;
@@ -64,6 +65,12 @@ public class SysUserDeviceVo {
      */
     @Schema(title = "IPv4")
     private String ipv4;
+
+    /**
+     * IP地区
+     */
+    @Schema(title = "IP地区信息")
+    private ClientUtils.Region ipRegion;
 
     /**
      * 设备状态
