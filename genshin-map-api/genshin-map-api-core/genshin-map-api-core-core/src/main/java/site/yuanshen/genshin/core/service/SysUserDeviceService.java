@@ -2,18 +2,33 @@ package site.yuanshen.genshin.core.service;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import site.yuanshen.common.core.exception.GenshinApiException;
+import site.yuanshen.common.core.utils.PgsqlUtils;
+import site.yuanshen.common.core.utils.TimeUtils;
+import site.yuanshen.common.web.utils.UserUtils;
 import site.yuanshen.data.dto.SysUserDeviceDto;
+import site.yuanshen.data.dto.SysUserDeviceSearchDto;
 import site.yuanshen.data.dto.adapter.BoolLogicPair;
+import site.yuanshen.data.entity.SysUserDevice;
 import site.yuanshen.data.enums.AccessPolicyEnum;
+import site.yuanshen.data.mapper.SysUserDeviceMapper;
+import site.yuanshen.data.vo.SysUserDeviceVo;
+import site.yuanshen.data.vo.helper.PageListVo;
 import site.yuanshen.genshin.core.dao.SysUserDeviceDao;
 import site.yuanshen.genshin.core.utils.ClientUtils;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.BiFunction;
+import java.util.stream.Collectors;
 
 /**
  * 用户设备详情服务
@@ -25,6 +40,7 @@ import java.util.function.BiFunction;
 @RequiredArgsConstructor
 public class SysUserDeviceService {
     private final SysUserDeviceDao sysUserDeviceDao;
+    private final SysUserDeviceMapper sysUserDeviceMapper;
 
     private static final String DEVICE_IP_DEFAULT = "N/A";
     private static final int DEVICE_ID_LEN_LIMIT = 500;
@@ -83,5 +99,43 @@ public class SysUserDeviceService {
         }
 
         return policyPass;
+    }
+
+    public PageListVo<SysUserDeviceVo> listPage(SysUserDeviceSearchDto deviceSearchDto) {
+        QueryWrapper<SysUserDevice> wrapper = Wrappers.<SysUserDevice>query();
+
+        // 处理排序
+        final List<PgsqlUtils.Sort<SysUserDevice>> sortList = PgsqlUtils.toSort(deviceSearchDto.getSort(), SysUserDevice.class, Set.of("deviceId", "ipv4", "status", "lastLoginTime", "updateTime"));
+        wrapper = PgsqlUtils.sortWrapper(wrapper, sortList);
+
+        LambdaQueryWrapper<SysUserDevice> queryWrapper = wrapper.lambda()
+                .eq(SysUserDevice::getUserId, deviceSearchDto.getUserId())
+                .like(StrUtil.isNotBlank(deviceSearchDto.getDeviceId()), SysUserDevice::getDeviceId, deviceSearchDto.getDeviceId())
+                .like(StrUtil.isNotBlank(deviceSearchDto.getIpv4()), SysUserDevice::getIpv4, deviceSearchDto.getIpv4())
+                .eq(deviceSearchDto.getStatus() != null, SysUserDevice::getStatus, deviceSearchDto.getStatus());
+
+        Page<SysUserDevice> historyPage = sysUserDeviceMapper.selectPage(deviceSearchDto.getPageEntity(), queryWrapper);
+
+        List<SysUserDeviceVo> result = historyPage.getRecords().stream()
+                .map(SysUserDeviceDto::new)
+                .map(SysUserDeviceDto::getVo)
+                .collect(Collectors.toList());
+        return new PageListVo<SysUserDeviceVo>()
+                .setRecord(result)
+                .setTotal(historyPage.getTotal())
+                .setSize(historyPage.getSize());
+
+    }
+
+    public Boolean updateDevice(SysUserDeviceDto deviceDto) {
+        if(deviceDto.getId() == null) {
+            return false;
+        }
+        return 1 == sysUserDeviceMapper.update(null, Wrappers.<SysUserDevice>lambdaUpdate()
+                .eq(SysUserDevice::getId, deviceDto.getId())
+                .set(deviceDto.getStatus() != null, SysUserDevice::getStatus, deviceDto.getStatus())
+                .set(SysUserDevice::getUpdateTime, TimeUtils.getCurrentTimestamp())
+                .set(SysUserDevice::getUpdaterId, UserUtils.getUserId())
+        );
     }
 }
