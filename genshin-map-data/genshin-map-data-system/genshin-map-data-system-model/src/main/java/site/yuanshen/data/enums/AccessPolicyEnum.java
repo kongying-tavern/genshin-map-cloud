@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollUtil;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import site.yuanshen.data.dto.SysUserDeviceDto;
+import site.yuanshen.data.dto.adapter.BoolLogicPair;
 import site.yuanshen.data.helper.user.access.AccessPolicyTester;
 
 import java.util.ArrayList;
@@ -58,7 +59,7 @@ public enum AccessPolicyEnum {
     private final String desc;
 
     @Getter
-    private final BiFunction<List<SysUserDeviceDto>, SysUserDeviceDto, Boolean> tester;
+    private final BiFunction<List<SysUserDeviceDto>, SysUserDeviceDto, BoolLogicPair> tester;
 
     private static Map<String, AccessPolicyEnum> getAccessPolicyMap() {
         Map<String, AccessPolicyEnum> policyMap = new HashMap<>();

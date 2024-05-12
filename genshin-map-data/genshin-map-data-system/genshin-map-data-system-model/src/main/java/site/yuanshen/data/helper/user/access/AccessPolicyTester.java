@@ -1,7 +1,9 @@
 package site.yuanshen.data.helper.user.access;
 
 import site.yuanshen.data.dto.SysUserDeviceDto;
+import site.yuanshen.data.dto.adapter.BoolLogicPair;
 import site.yuanshen.data.enums.DeviceStatusEnum;
+import site.yuanshen.data.enums.LogicEnum;
 
 import java.util.Comparator;
 import java.util.List;
@@ -10,117 +12,153 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class AccessPolicyTester {
-    public static boolean testIpWithSameLastIp(List<SysUserDeviceDto> deviceList, SysUserDeviceDto currentDevice) {
+    public static BoolLogicPair testIpWithSameLastIp(List<SysUserDeviceDto> deviceList, SysUserDeviceDto currentDevice) {
+        final LogicEnum logic = LogicEnum.OR;
+        final boolean truncated = false;
+
         if(currentDevice == null)
-            return false;
+            return BoolLogicPair.create(false, logic, truncated);
         final SysUserDeviceDto lastLoginDevice = deviceList.stream()
                 .filter(v -> v != null && v.getLastLoginTime() != null)
                 .sorted(Comparator.comparing(SysUserDeviceDto::getLastLoginTime).reversed())
                 .findFirst()
                 .orElse(null);
         if(lastLoginDevice == null)
-            return true;
-        return Objects.equals(lastLoginDevice.getIpv4(), currentDevice.getIpv4());
+            return BoolLogicPair.create(true, logic, truncated);
+        final boolean isAccess = Objects.equals(lastLoginDevice.getIpv4(), currentDevice.getIpv4());
+        return BoolLogicPair.create(isAccess, logic, truncated);
     }
 
-    public static boolean testIpWithPassAllowIp(List<SysUserDeviceDto> deviceList, SysUserDeviceDto currentDevice) {
+    public static BoolLogicPair testIpWithPassAllowIp(List<SysUserDeviceDto> deviceList, SysUserDeviceDto currentDevice) {
+        final LogicEnum logic = LogicEnum.OR;
+        final boolean truncated = false;
+
         if(currentDevice == null)
-            return false;
+            return BoolLogicPair.create(false, logic, truncated);
         final Set<String> allowIps = deviceList.stream()
                 .filter(Objects::nonNull)
                 .filter(v -> v.getStatus().equals(DeviceStatusEnum.VALID))
                 .map(SysUserDeviceDto::getIpv4)
                 .collect(Collectors.toSet());
-        return allowIps.contains(currentDevice.getIpv4());
+        final boolean isAccess = allowIps.contains(currentDevice.getIpv4());
+        return BoolLogicPair.create(isAccess, logic, truncated);
     }
 
-    public static boolean testIpWithBlockDisallowIp(List<SysUserDeviceDto> deviceList, SysUserDeviceDto currentDevice) {
+    public static BoolLogicPair testIpWithBlockDisallowIp(List<SysUserDeviceDto> deviceList, SysUserDeviceDto currentDevice) {
+        final LogicEnum logic = LogicEnum.AND;
+        final boolean truncated = true;
+
         if(currentDevice == null)
-            return false;
+            return BoolLogicPair.create(false, logic, truncated);
         final Set<String> disallowIps = deviceList.stream()
                 .filter(Objects::nonNull)
                 .filter(v -> v.getStatus().equals(DeviceStatusEnum.BLOCKED))
                 .map(SysUserDeviceDto::getIpv4)
                 .collect(Collectors.toSet());
-        return !disallowIps.contains(currentDevice.getIpv4());
+        final boolean isAccess = !disallowIps.contains(currentDevice.getIpv4());
+        return BoolLogicPair.create(isAccess, logic, isAccess != truncated);
     }
 
-    public static boolean testIpWithSameLastRegion(List<SysUserDeviceDto> deviceList, SysUserDeviceDto currentDevice) {
+    public static BoolLogicPair testIpWithSameLastRegion(List<SysUserDeviceDto> deviceList, SysUserDeviceDto currentDevice) {
+        final LogicEnum logic = LogicEnum.OR;
+        final boolean truncated = false;
+
         if(currentDevice == null)
-            return false;
+            return BoolLogicPair.create(false, logic, truncated);
         final SysUserDeviceDto lastLoginDevice = deviceList.stream()
                 .filter(v -> v != null && v.getLastLoginTime() != null)
                 .sorted(Comparator.comparing(SysUserDeviceDto::getLastLoginTime).reversed())
                 .findFirst()
                 .orElse(null);
         if(lastLoginDevice == null)
-            return true;
+            return BoolLogicPair.create(true, logic, truncated);
         final String lastLoginRegionHash = lastLoginDevice.getIpRegion() != null ? lastLoginDevice.getIpRegion().getHash() : "";
         final String currentRegionHash = currentDevice.getIpRegion() != null ? currentDevice.getIpRegion().getHash() : "";
-        return Objects.equals(lastLoginRegionHash, currentRegionHash);
+        final boolean isAccess = Objects.equals(lastLoginRegionHash, currentRegionHash);
+        return BoolLogicPair.create(isAccess, logic, truncated);
     }
 
-    public static boolean testIpWithPassAllowRegion(List<SysUserDeviceDto> deviceList, SysUserDeviceDto currentDevice) {
+    public static BoolLogicPair testIpWithPassAllowRegion(List<SysUserDeviceDto> deviceList, SysUserDeviceDto currentDevice) {
+        final LogicEnum logic = LogicEnum.OR;
+        final boolean truncated = false;
+
         if(currentDevice == null)
-            return false;
+            return BoolLogicPair.create(false, logic, truncated);
         else if(currentDevice.getIpRegion() == null)
-            return false;
+            return BoolLogicPair.create(false, logic, truncated);
         final Set<String> allowRegions = deviceList.stream()
                 .filter(Objects::nonNull)
                 .filter(v -> v.getStatus().equals(DeviceStatusEnum.VALID))
                 .filter(v -> v.getIpRegion() != null)
                 .map(v -> v.getIpRegion().getHash())
                 .collect(Collectors.toSet());
-        return allowRegions.contains(currentDevice.getIpRegion().getHash());
+        final boolean isAllowRegion = allowRegions.contains(currentDevice.getIpRegion().getHash());
+        return BoolLogicPair.create(isAllowRegion, logic, truncated);
     }
 
-    public static boolean testIpWithBlockDisallowRegion(List<SysUserDeviceDto> deviceList, SysUserDeviceDto currentDevice) {
+    public static BoolLogicPair testIpWithBlockDisallowRegion(List<SysUserDeviceDto> deviceList, SysUserDeviceDto currentDevice) {
+        final LogicEnum logic = LogicEnum.AND;
+        final boolean truncated = true;
+
         if(currentDevice == null)
-            return false;
+            return BoolLogicPair.create(false, logic, truncated);
         else if(currentDevice.getIpRegion() == null)
-            return false;
+            return BoolLogicPair.create(false, logic, truncated);
         final Set<String> disallowRegions = deviceList.stream()
                 .filter(Objects::nonNull)
                 .filter(v -> v.getStatus().equals(DeviceStatusEnum.BLOCKED))
                 .filter(v -> v.getIpRegion() != null)
                 .map(v -> v.getIpRegion().getHash())
                 .collect(Collectors.toSet());
-        return !disallowRegions.contains(currentDevice.getIpRegion().getHash());
+        final boolean isAccess = !disallowRegions.contains(currentDevice.getIpRegion().getHash());
+        return BoolLogicPair.create(isAccess, logic, isAccess != truncated);
     }
 
-    public static boolean testDevWithSameLastDevice(List<SysUserDeviceDto> deviceList, SysUserDeviceDto currentDevice) {
+    public static BoolLogicPair testDevWithSameLastDevice(List<SysUserDeviceDto> deviceList, SysUserDeviceDto currentDevice) {
+        final LogicEnum logic = LogicEnum.OR;
+        final boolean truncated = false;
+
         if(currentDevice == null)
-            return false;
+            return BoolLogicPair.create(false, logic, truncated);
         final SysUserDeviceDto lastLoginDevice = deviceList.stream()
                 .filter(v -> v != null && v.getLastLoginTime() != null)
                 .sorted(Comparator.comparing(SysUserDeviceDto::getLastLoginTime).reversed())
                 .findFirst()
                 .orElse(null);
         if(lastLoginDevice == null)
-            return true;
-        return Objects.equals(lastLoginDevice.getDeviceId(), currentDevice.getDeviceId());
+            return BoolLogicPair.create(true, logic, truncated);
+        final boolean isAccess = Objects.equals(lastLoginDevice.getDeviceId(), currentDevice.getDeviceId());
+        return BoolLogicPair.create(isAccess, logic, truncated);
     }
 
-    public static boolean testDevWithPassAllowDevice(List<SysUserDeviceDto> deviceList, SysUserDeviceDto currentDevice) {
+    public static BoolLogicPair testDevWithPassAllowDevice(List<SysUserDeviceDto> deviceList, SysUserDeviceDto currentDevice) {
+        final LogicEnum logic = LogicEnum.OR;
+        final boolean truncated = false;
+
         if(currentDevice == null)
-            return false;
+            return BoolLogicPair.create(false, logic, truncated);
         final Set<String> allowDevices = deviceList.stream()
                 .filter(Objects::nonNull)
                 .filter(v -> v.getStatus().equals(DeviceStatusEnum.VALID))
                 .map(SysUserDeviceDto::getDeviceId)
                 .collect(Collectors.toSet());
-        return allowDevices.contains(currentDevice.getDeviceId());
+        final boolean isAccess = allowDevices.contains(currentDevice.getDeviceId());
+        return BoolLogicPair.create(isAccess, logic, truncated);
     }
 
-    public static boolean testDevWithBlockDisallowDevice(List<SysUserDeviceDto> deviceList, SysUserDeviceDto currentDevice) {
+    public static BoolLogicPair testDevWithBlockDisallowDevice(List<SysUserDeviceDto> deviceList, SysUserDeviceDto currentDevice) {
+        final LogicEnum logic = LogicEnum.AND;
+        final boolean truncated = true;
+
         if(currentDevice == null)
-            return false;
+            return BoolLogicPair.create(false, logic, truncated);
         final Set<String> disallowDevices = deviceList.stream()
                 .filter(Objects::nonNull)
                 .filter(v -> v.getStatus().equals(DeviceStatusEnum.BLOCKED))
                 .map(SysUserDeviceDto::getDeviceId)
                 .collect(Collectors.toSet());
-        return !disallowDevices.contains(currentDevice.getDeviceId());
+        final boolean isAccess = !disallowDevices.contains(currentDevice.getDeviceId());
+        return BoolLogicPair.create(isAccess, logic, isAccess != truncated);
     }
 
 }
