@@ -23,6 +23,7 @@
         <minio.version>8.5.7</minio.version>
         <okhttp.version>4.12.0</okhttp.version>
         <jsoup.version>1.17.2</jsoup.version>
+        <ip2region.version>2.7.0</ip2region.version>
         <commons-compress.version>1.21</commons-compress.version>
         <cglib.version>3.3.0</cglib.version>
     </properties>
@@ -170,6 +171,13 @@
                 <groupId>org.jsoup</groupId>
                 <artifactId>jsoup</artifactId>
                 <version>${jsoup.version}</version>
+            </dependency>
+
+            <!-- ip2region -->
+            <dependency>
+                <groupId>org.lionsoul</groupId>
+                <artifactId>ip2region</artifactId>
+                <version>${ip2region.version}</version>
             </dependency>
 
             <dependency>

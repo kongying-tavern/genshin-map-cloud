@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.With;
 
+import java.util.List;
+
 /**
  * 用户信息更新前端封装
  *
@@ -50,4 +52,10 @@ public class SysUserUpdateVo {
      */
     private Integer roleId;
 
+    /**
+     * 权限策略
+     *
+     * @see site.yuanshen.data.enums.AccessPolicyEnum
+     */
+    private List<String> accessPolicy;
 }

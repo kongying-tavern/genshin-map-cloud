@@ -2,6 +2,7 @@ package site.yuanshen.genshin.core.auth;
 
 import lombok.Data;
 import org.springframework.security.core.userdetails.UserDetails;
+import site.yuanshen.data.enums.AccessPolicyEnum;
 import site.yuanshen.data.enums.RoleEnum;
 
 import java.util.List;
@@ -49,6 +50,11 @@ public class SysUserSecurityDto  implements UserDetails {
      * 角色
      */
     private List<RoleEnum> roleEnumList;
+
+    /**
+     *
+     */
+    private List<AccessPolicyEnum> accessPolicyList;
 
     @Override
     public String getUsername() {

@@ -11,10 +11,12 @@ import site.yuanshen.common.web.response.WUtils;
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
-import java.util.function.BiConsumer;
 
 @Component
 @Slf4j
@@ -26,7 +28,7 @@ public class WebSocketEntrypoint {
 
     private static CopyOnWriteArraySet<WebSocketEntrypoint> webSockets =new CopyOnWriteArraySet<>();
     // 用来存在线连接用户信息
-    private static ConcurrentHashMap<String, Session> sessionPool = new ConcurrentHashMap<String, Session>();
+    private static ConcurrentHashMap<String, ConcurrentHashMap<String, Session>> sessionPool = new ConcurrentHashMap<>();
 
     private static Map<String, TriConsumer<WebSocketEntrypoint, String, A<?>>> handlerMap = new HashMap<>(){{
         put("Ping", (ws, id, data) -> {
@@ -40,7 +42,13 @@ public class WebSocketEntrypoint {
             this.session = session;
             this.userId = userId;
             webSockets.add(this);
-            sessionPool.put(userId, session);
+            sessionPool.compute(userId, (uId, sessionMap) -> {
+                if(sessionMap == null) {
+                    sessionMap = new ConcurrentHashMap<>();
+                }
+                sessionMap.put(session.getId(), session);
+                return sessionMap;
+            });
             log.info("[websocket] new connection, connection size: " + webSockets.size());
         } catch (Exception e) {
         }
@@ -78,18 +86,14 @@ public class WebSocketEntrypoint {
 
     /**
      * 广播消息
-     * @param userId 用户ID，如果用户ID存在，则不对指定ID进行广播，如果用户ID为null则广播给所有人
      * @param message 用户消息
      */
-    public <T> void broadcast(String userId, W<T> message) {
+    public <T> void broadcast(W<T> message) {
         final String messageText = JSON.toJSONString(message);
         log.info("[websocket] broadcast:" + messageText);
         for (WebSocketEntrypoint webSocket : webSockets) {
             try {
                 if(webSocket.session.isOpen()) {
-                    if (userId != null && Objects.equals(userId, webSocket.userId)) {
-                        return;
-                    }
                     webSocket.session.getAsyncRemote().sendText(messageText);
                 }
             } catch (Exception e) {
@@ -106,13 +110,15 @@ public class WebSocketEntrypoint {
     public <T> void sendToUsers(String[] userIds, W<T> message) {
         final String messageText = JSON.toJSONString(message);
         for (String userId : userIds) {
-            Session session = sessionPool.get(userId);
-            if (session != null && session.isOpen()) {
-                try {
-                    log.info("[websocket] send message to users (" + userId + "): " + messageText);
-                    session.getAsyncRemote().sendText(messageText);
-                } catch (Exception e) {
-                    e.printStackTrace();
+            Map<String, Session> sessionMap = sessionPool.getOrDefault(userId, new ConcurrentHashMap<>());
+            for(Session session : sessionMap.values()) {
+                if (session != null && session.isOpen()) {
+                    try {
+                        log.info("[websocket] send message to users (" + userId + "): " + messageText);
+                        session.getAsyncRemote().sendText(messageText);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }

@@ -4,8 +4,10 @@ import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import site.yuanshen.data.base.BaseEntity;
+import site.yuanshen.handler.MBPJsonArrayTypeHandler;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 /**
  * 系统用户表
@@ -17,7 +19,7 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-@TableName("sys_user")
+@TableName(value = "sys_user", autoResultMap = true)
 public class SysUser extends BaseEntity {
 
     /**
@@ -87,5 +89,11 @@ public class SysUser extends BaseEntity {
      */
     @TableField("role_id")
     private Integer roleId;
+
+    /**
+     * 权限策略
+     */
+    @TableField(value = "access_policy", typeHandler = MBPJsonArrayTypeHandler.class)
+    private List<String> accessPolicy;
 
 }
