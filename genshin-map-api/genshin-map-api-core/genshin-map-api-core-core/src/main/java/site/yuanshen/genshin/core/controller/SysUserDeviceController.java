@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import site.yuanshen.common.core.exception.GenshinApiException;
 import site.yuanshen.common.web.response.R;
 import site.yuanshen.common.web.response.RUtils;
+import site.yuanshen.data.dto.SysUserDeviceDto;
 import site.yuanshen.data.dto.SysUserDeviceSearchDto;
 import site.yuanshen.data.vo.SysUserDeviceSearchVo;
 import site.yuanshen.data.vo.SysUserDeviceVo;
@@ -43,5 +44,12 @@ public class SysUserDeviceController {
             throw new GenshinApiException("用户ID不能为空");
         }
         return RUtils.create(userDeviceService.listPage(searchDto));
+    }
+
+    @Operation(summary = "更新用户设备信息", description = "更新用户设备信息")
+    @PostMapping("/update")
+    public R<Boolean> updateDevice(@RequestBody SysUserDeviceVo updateVo) {
+        final Boolean success = userDeviceService.updateDevice(new SysUserDeviceDto(updateVo));
+        return RUtils.create(success);
     }
 }

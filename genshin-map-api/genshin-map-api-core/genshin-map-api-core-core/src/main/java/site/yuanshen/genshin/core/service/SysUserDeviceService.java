@@ -9,7 +9,10 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import site.yuanshen.common.core.exception.GenshinApiException;
 import site.yuanshen.common.core.utils.PgsqlUtils;
+import site.yuanshen.common.core.utils.TimeUtils;
+import site.yuanshen.common.web.utils.UserUtils;
 import site.yuanshen.data.dto.SysUserDeviceDto;
 import site.yuanshen.data.dto.SysUserDeviceSearchDto;
 import site.yuanshen.data.dto.adapter.BoolLogicPair;
@@ -122,5 +125,17 @@ public class SysUserDeviceService {
                 .setTotal(historyPage.getTotal())
                 .setSize(historyPage.getSize());
 
+    }
+
+    public Boolean updateDevice(SysUserDeviceDto deviceDto) {
+        if(deviceDto.getId() == null) {
+            return false;
+        }
+        return 1 == sysUserDeviceMapper.update(null, Wrappers.<SysUserDevice>lambdaUpdate()
+                .eq(SysUserDevice::getId, deviceDto.getId())
+                .set(deviceDto.getStatus() != null, SysUserDevice::getStatus, deviceDto.getStatus())
+                .set(SysUserDevice::getUpdateTime, TimeUtils.getCurrentTimestamp())
+                .set(SysUserDevice::getUpdaterId, UserUtils.getUserId())
+        );
     }
 }
