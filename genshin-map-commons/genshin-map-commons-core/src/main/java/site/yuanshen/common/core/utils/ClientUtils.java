@@ -1,16 +1,14 @@
 package site.yuanshen.common.core.utils;
 
-import cn.hutool.core.io.resource.ClassPathResource;
 import cn.hutool.core.util.StrUtil;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.lionsoul.ip2region.xdb.Searcher;
 import org.springframework.util.DigestUtils;
+import org.springframework.util.FileCopyUtils;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.List;
 
 /**
@@ -18,33 +16,21 @@ import java.util.List;
  *
  * @author Alex Fang
  */
+@Slf4j
 public class ClientUtils {
     static class Ip2RegionHolder {
-        private static final String SYS_TEMP_DIR = System.getProperty("java.io.tmpdir") + File.separator;
         public static Searcher searcher;
 
         static {
-            String dbPath = "ip2region/ip2region.xdb";
-            String dbName = "ip2region.xdb";
+            String dbPath = "/ip2region/ip2region.xdb";
             byte[] dbBuff;
             try {
-                ClassPathResource classPathResource = new ClassPathResource(dbPath);
-                InputStream is = classPathResource.getStream();
-                File dbTmpPath = new File(SYS_TEMP_DIR + dbName);
-                OutputStream os = new FileOutputStream(dbTmpPath);
-                os.write(is.readAllBytes());
-                os.close();
-                is.close();
-                dbBuff = Searcher.loadContentFromFile(dbTmpPath.getAbsolutePath());
-                dbTmpPath.delete();
+                InputStream ris = ClientUtils.class.getResourceAsStream(dbPath);
+                dbBuff = FileCopyUtils.copyToByteArray(ris);
+                searcher = Searcher.newWithBuffer(dbBuff);
+                log.info("加载ip2region数据成功");
             } catch (Exception e) {
                 throw new RuntimeException("IP地区数据库加载失败");
-            }
-
-            try {
-                searcher = Searcher.newWithBuffer(dbBuff);
-            } catch (Exception e) {
-                throw new RuntimeException("加载IP地区数据库失败");
             }
         }
     }
