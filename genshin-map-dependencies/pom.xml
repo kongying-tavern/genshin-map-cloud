@@ -16,6 +16,7 @@
         <fastjson2.version>2.0.24</fastjson2.version>
         <jackson.version>2.12.4</jackson.version>
         <springdoc.version>1.6.11</springdoc.version>
+        <swagger.version>2.2.2</swagger.version>
         <nimbus-jose-jwt.version>9.21</nimbus-jose-jwt.version>
         <springboot.version>2.3.12.RELEASE</springboot.version>
         <hutool.version>5.8.11</hutool.version>
@@ -119,6 +120,13 @@
                 <groupId>org.springdoc</groupId>
                 <artifactId>springdoc-openapi-webflux-ui</artifactId>
                 <version>${springdoc.version}</version>
+            </dependency>
+
+            <!-- swagger -->
+            <dependency>
+                <groupId>io.swagger.core.v3</groupId>
+                <artifactId>swagger-annotations</artifactId>
+                <version>${swagger.version}</version>
             </dependency>
 
             <dependency>
