@@ -93,7 +93,7 @@ public class HistoryVo {
     /**
      * 修改类型
      */
-    @Schema(title = "修改类型")
+    @Schema(title = "修改类型", format = "integer")
     private HistoryEditType editType;
 
 }

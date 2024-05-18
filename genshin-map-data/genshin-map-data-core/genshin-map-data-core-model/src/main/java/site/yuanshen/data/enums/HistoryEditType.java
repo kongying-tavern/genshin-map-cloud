@@ -18,4 +18,9 @@ public enum HistoryEditType {
     @EnumValue
     private final int value;
 
+    @Override
+    public String toString() {
+        return String.valueOf(this.value);
+    }
+
 }

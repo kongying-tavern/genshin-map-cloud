@@ -25,4 +25,9 @@ public enum DeviceStatusEnum implements IEnum<Integer> {
     public Integer getValue() {
         return this.code;
     }
+
+    @Override
+    public String toString() {
+        return this.code.toString();
+    }
 }

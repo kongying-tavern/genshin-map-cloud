@@ -75,7 +75,7 @@ public class SysUserDeviceVo {
     /**
      * 设备状态
      */
-    @Schema(title = "设备状态")
+    @Schema(title = "设备状态", format = "integer")
     private DeviceStatusEnum status;
 
     /**
