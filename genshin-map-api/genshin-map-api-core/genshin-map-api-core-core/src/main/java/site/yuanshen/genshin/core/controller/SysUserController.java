@@ -51,9 +51,8 @@ public class SysUserController {
     @Operation(summary = "用户信息获取", description = "普通用户可以获取到自己的信息，系统管理员可以查看所有用户的")
     @GetMapping("/info/{userId}")
     public R<SysUserVo> getUserInfo(@PathVariable("userId") Long userId,
-                                    @RequestHeader("userId") Long headerUserId,
-                                    @Parameter(hidden = true)
-                                        @RequestHeader("Authorities") String rolesString) {
+                                    @Parameter(hidden = true) @RequestHeader("userId") Long headerUserId,
+                                    @Parameter(hidden = true) @RequestHeader("Authorities") String rolesString) {
         if (!userId.equals(headerUserId) && !checkRole(rolesString, RoleEnum.MAP_MANAGER))
             throw new GenshinApiException("权限不足，无法查看其他用户信息");
         return RUtils.create(userService.getUserInfo(userId));
@@ -70,9 +69,8 @@ public class SysUserController {
     @Operation(summary = "用户信息更新", description = "普通用户可以更新自己的信息，系统管理员可以更新所有用户的")
     @PostMapping("/update")
     public R<Boolean> updateUser(@RequestBody SysUserUpdateVo updateVo,
-                                 @RequestHeader("userId") Long headerUserId,
-                                 @Parameter(hidden = true)
-                                     @RequestHeader("Authorities") String rolesString) {
+                                 @Parameter(hidden = true) @RequestHeader("userId") Long headerUserId,
+                                 @Parameter(hidden = true) @RequestHeader("Authorities") String rolesString) {
         if (!ObjUtil.equals(headerUserId, updateVo.getUserId()) && !checkRole(rolesString, RoleEnum.ADMIN))
             throw new GenshinApiException("权限不足，无法更新其他用户信息");
         return RUtils.create(userService.updateUser(updateVo));
@@ -81,7 +79,7 @@ public class SysUserController {
     @Operation(summary = "用户密码更新", description = "普通用户接口，可以更新自己的密码，需提供旧密码")
     @PostMapping("/update_password")
     public R<Boolean> updateUserPassword(@RequestBody SysUserPasswordUpdateVo updateVo,
-                                         @RequestHeader("userId") Long headerUserId) {
+                                         @Parameter(hidden = true) @RequestHeader("userId") Long headerUserId) {
         if (!updateVo.getUserId().equals(headerUserId))
             throw new GenshinApiException("无法更改其他用户的密码！");
         //todo ip加入风控链

@@ -1,6 +1,7 @@
 package site.yuanshen.genshin.core.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -37,7 +38,7 @@ public class ItemTypeController {
 
     @Operation(summary = "列出物品类型", description = "不递归遍历，只遍历子级；{self}表示查询自身还是查询子级，0为查询自身，1为查询子级")
     @PostMapping("/get/list/{self}")
-    public R<PageListVo<ItemTypeVo>> listItemType(@RequestHeader(value = "userDataLevel",required = false) String userDataLevel, @RequestBody PageAndTypeSearchVo pageAndTypeSearchVo, @PathVariable("self") Integer self) {
+    public R<PageListVo<ItemTypeVo>> listItemType(@Parameter(hidden = true) @RequestHeader(value = "userDataLevel",required = false) String userDataLevel, @RequestBody PageAndTypeSearchVo pageAndTypeSearchVo, @PathVariable("self") Integer self) {
         R<PageListVo<ItemTypeVo>> result = RUtils.create(
                 itemTypeService.listItemType(new PageAndTypeSearchDto(pageAndTypeSearchVo), self, HiddenFlagEnum.getFlagList(userDataLevel))
         );
@@ -48,7 +49,7 @@ public class ItemTypeController {
 
     @Operation(summary = "列出所有物品类型", description = "返回所有可访问的物品类型")
     @PostMapping("/get/list_all")
-    public R<List<ItemTypeVo>> listItemType(@RequestHeader(value = "userDataLevel",required = false) String userDataLevel) {
+    public R<List<ItemTypeVo>> listItemType(@Parameter(hidden = true) @RequestHeader(value = "userDataLevel",required = false) String userDataLevel) {
         R<List<ItemTypeVo>> result = RUtils.create(
                 itemTypeService.listAllItemType(HiddenFlagEnum.getFlagList(userDataLevel))
         );
