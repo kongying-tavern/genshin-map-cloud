@@ -1,6 +1,7 @@
 package site.yuanshen.genshin.core.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -44,7 +45,7 @@ public class MarkerController {
     @Operation(summary = "根据各种条件筛选查询点位ID",
             description = "支持根据末端地区、末端类型、物品来进行查询，三种查询不能同时生效，同时存在时报错，同时支持测试点位获取")
     @PostMapping("/get/id")
-    public R<List<Long>> searchMarkerId(@RequestHeader(value = "userDataLevel", required = false) String userDataLevel, @RequestBody MarkerSearchVo markerSearchVo) {
+    public R<List<Long>> searchMarkerId(@Parameter(hidden = true) @RequestHeader(value = "userDataLevel", required = false) String userDataLevel, @RequestBody MarkerSearchVo markerSearchVo) {
         return RUtils.create(
                 markerService.searchMarkerId(markerSearchVo, HiddenFlagEnum.getFlagList(userDataLevel))
         );
@@ -53,7 +54,7 @@ public class MarkerController {
     @Operation(summary = "根据各种条件筛选查询点位信息",
             description = "支持根据末端地区、末端类型、物品来进行查询，三种查询不能同时生效，同时存在时报错，同时支持测试点位获取")
     @PostMapping("/get/list_byinfo")
-    public R<List<MarkerVo>> searchMarker(@RequestHeader(value = "userDataLevel", required = false) String userDataLevel, @RequestBody MarkerSearchVo markerSearchVo) {
+    public R<List<MarkerVo>> searchMarker(@Parameter(hidden = true) @RequestHeader(value = "userDataLevel", required = false) String userDataLevel, @RequestBody MarkerSearchVo markerSearchVo) {
         R<List<MarkerVo>> result = RUtils.create(
                 markerService.searchMarker(markerSearchVo, HiddenFlagEnum.getFlagList(userDataLevel))
         );
@@ -64,7 +65,7 @@ public class MarkerController {
 
     @Operation(summary = "通过ID列表查询点位信息", description = "通过ID列表来进行查询点位信息")
     @PostMapping("/get/list_byid")
-    public R<List<MarkerVo>> listMarkerById(@RequestHeader(value = "userDataLevel", required = false) String userDataLevel, @RequestBody List<Long> markerIdList) {
+    public R<List<MarkerVo>> listMarkerById(@Parameter(hidden = true) @RequestHeader(value = "userDataLevel", required = false) String userDataLevel, @RequestBody List<Long> markerIdList) {
         R<List<MarkerVo>> result = RUtils.create(
                 markerService.listMarkerById(markerIdList, HiddenFlagEnum.getFlagList(userDataLevel))
         );
@@ -75,7 +76,7 @@ public class MarkerController {
 
     @Operation(summary = "分页查询所有点位信息", description = "分页查询所有点位信息")
     @PostMapping("/get/page")
-    public R<PageListVo<MarkerVo>> listMarkerPage(@RequestHeader(value = "userDataLevel", required = false) String userDataLevel, @RequestBody PageSearchVo pageSearchVo) {
+    public R<PageListVo<MarkerVo>> listMarkerPage(@Parameter(hidden = true) @RequestHeader(value = "userDataLevel", required = false) String userDataLevel, @RequestBody PageSearchVo pageSearchVo) {
         R<PageListVo<MarkerVo>> result = RUtils.create(
                 markerService.listMarkerPage(new PageSearchDto(pageSearchVo), HiddenFlagEnum.getFlagList(userDataLevel))
         );

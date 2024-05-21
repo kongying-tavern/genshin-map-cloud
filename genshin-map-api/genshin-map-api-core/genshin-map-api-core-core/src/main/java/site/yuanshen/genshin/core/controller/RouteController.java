@@ -2,6 +2,7 @@ package site.yuanshen.genshin.core.controller;
 
 import com.alibaba.fastjson2.JSON;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -40,7 +41,7 @@ public class RouteController {
 
     @Operation(summary = "分页查询所有路线信息", description = "分页查询所有路线信息，会根据当前角色决定不同的显隐等级")
     @PostMapping("/get/page")
-    public R<PageListVo<RouteVo>> listRoutePage(@RequestBody PageSearchVo pageSearchVo, @RequestHeader(value = "userDataLevel", required = false) String userDataLevel) {
+    public R<PageListVo<RouteVo>> listRoutePage(@RequestBody PageSearchVo pageSearchVo, @Parameter(hidden = true) @RequestHeader(value = "userDataLevel", required = false) String userDataLevel) {
         R<PageListVo<RouteVo>> result = RUtils.create(
                 routeService.listRoutePage(new PageSearchDto(pageSearchVo), HiddenFlagEnum.getFlagList(userDataLevel))
         );
@@ -51,7 +52,7 @@ public class RouteController {
 
     @Operation(summary = "根据条件筛选分页查询路线信息", description = "根据条件筛选分页查询路线信息，会根据当前角色决定不同的显隐等级")
     @PostMapping("/get/search")
-    public R<PageListVo<RouteVo>> listRoutePageSearch(@RequestBody RouteSearchVo searchVo, @RequestHeader(value = "userDataLevel", required = false) String userDataLevel) {
+    public R<PageListVo<RouteVo>> listRoutePageSearch(@RequestBody RouteSearchVo searchVo, @Parameter(hidden = true) @RequestHeader(value = "userDataLevel", required = false) String userDataLevel) {
         RouteSearchDto searchDto = new RouteSearchDto(searchVo);
         searchDto.checkParams();
         R<PageListVo<RouteVo>> result = RUtils.create(
@@ -64,7 +65,7 @@ public class RouteController {
 
     @Operation(summary = "根据id列表查询路线信息", description = "根据id列表查询路线信息，会根据当前角色决定不同的显隐等级")
     @PostMapping("/get/list_byid")
-    public R<List<RouteVo>> listRouteById(@RequestBody List<Long> idList, @RequestHeader(value = "userDataLevel", required = false) String userDataLevel) {
+    public R<List<RouteVo>> listRouteById(@RequestBody List<Long> idList, @Parameter(hidden = true) @RequestHeader(value = "userDataLevel", required = false) String userDataLevel) {
         R<List<RouteVo>> result = RUtils.create(
                 routeService.listRouteById(idList, HiddenFlagEnum.getFlagList(userDataLevel))
                         .parallelStream().map(RouteDto::getVo).collect(Collectors.toList())
@@ -76,7 +77,7 @@ public class RouteController {
 
     @Operation(summary = "新增路线", description = "返回新增路线ID")
     @PutMapping("/add")
-    public R<Long> createRoute(@RequestBody RouteVo routeVo, @RequestHeader("userId") Long userId) {
+    public R<Long> createRoute(@RequestBody RouteVo routeVo, @Parameter(hidden = true) @RequestHeader("userId") Long userId) {
         routeVo.setUpdaterId(userId);
         return RUtils.create(
                 routeService.createRoute(new RouteDto(routeVo))
@@ -85,7 +86,7 @@ public class RouteController {
 
     @Operation(summary = "修改路线", description = "修改路线")
     @PostMapping
-    public R<Boolean> updateRoute(@RequestBody RouteVo routeVo, @RequestHeader("userId") Long userId, @RequestHeader("Authorities") String authoritiesString) {
+    public R<Boolean> updateRoute(@RequestBody RouteVo routeVo, @Parameter(hidden = true) @RequestHeader("userId") Long userId, @Parameter(hidden = true) @RequestHeader("Authorities") String authoritiesString) {
         checkRole(routeVo.getUpdaterId(), userId, authoritiesString);
         return RUtils.create(
                 routeService.updateRoute(new RouteDto(routeVo))
@@ -94,7 +95,7 @@ public class RouteController {
 
     @Operation(summary = "删除路线", description = "删除路线，请在前端做二次确认")
     @DeleteMapping("/{routeId}")
-    public R<Boolean> deleteRoute(@PathVariable("routeId") Long routeId, @RequestHeader("userId") Long userId, @RequestHeader("Authorities") String authoritiesString) {
+    public R<Boolean> deleteRoute(@PathVariable("routeId") Long routeId, @Parameter(hidden = true) @RequestHeader("userId") Long userId, @Parameter(hidden = true) @RequestHeader("Authorities") String authoritiesString) {
         RouteDto route = routeService.listRouteById(Collections.singletonList(routeId), HiddenFlagEnum.getAllFlagList()).get(0);
         checkRole(route.getUpdaterId(), userId, authoritiesString);
         return RUtils.create(
