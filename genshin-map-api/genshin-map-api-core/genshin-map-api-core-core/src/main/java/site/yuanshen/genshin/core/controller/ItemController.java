@@ -1,9 +1,10 @@
 package site.yuanshen.genshin.core.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import site.yuanshen.common.web.response.R;
 import site.yuanshen.common.web.response.RUtils;
@@ -39,7 +40,7 @@ public class ItemController {
 
     @Operation(summary = "根据物品ID查询物品", description = "输入ID列表查询，单个查询也用此API")
     @PostMapping("/get/list_byid")
-    public R<List<ItemVo>> listItemById(@RequestHeader(value = "userDataLevel",required = false) String userDataLevel,@RequestBody List<Long> itemIdList) {
+    public R<List<ItemVo>> listItemById(@Schema(hidden = true)  @RequestHeader(value = "userDataLevel",required = false) String userDataLevel, @RequestBody List<Long> itemIdList) {
         R<List<ItemVo>> result = RUtils.create(
                 itemService.listItemById(itemIdList, HiddenFlagEnum.getFlagList(userDataLevel))
                         .stream().map(ItemDto::getVo).collect(Collectors.toList())
@@ -51,7 +52,7 @@ public class ItemController {
 
     @Operation(summary = "根据筛选条件列出物品信息", description = "传入的物品类型ID和地区ID列表，必须为末端的类型或地区")
     @PostMapping("/get/list")
-    public R<PageListVo<ItemVo>> listItemIdByType(@RequestHeader(value = "userDataLevel",required = false) String userDataLevel,@RequestBody ItemSearchVo itemSearchVo) {
+    public R<PageListVo<ItemVo>> listItemIdByType(@Parameter(hidden = true) @RequestHeader(value = "userDataLevel",required = false) String userDataLevel, @RequestBody ItemSearchVo itemSearchVo) {
         R<PageListVo<ItemVo>> result = RUtils.create(
                 itemService.listItem(new ItemSearchDto(itemSearchVo).setHiddenFlagList(HiddenFlagEnum.getFlagList(userDataLevel)))
         );

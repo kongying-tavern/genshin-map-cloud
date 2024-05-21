@@ -2,11 +2,10 @@ package site.yuanshen.genshin.core.controller;
 
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import site.yuanshen.common.web.response.R;
 import site.yuanshen.common.web.response.RUtils;
@@ -36,7 +35,7 @@ public class AreaController {
 
     @Operation(summary = "列出地区", description = "可根据父级地区id列出子地区列表")
     @PostMapping("/get/list")
-    public R<List<AreaVo>> listArea(@RequestHeader(value = "userDataLevel",required = false) String userDataLevel, @RequestBody AreaSearchVo areaSearchVo) {
+    public R<List<AreaVo>> listArea(@Schema(hidden = true)  @RequestHeader(value = "userDataLevel",required = false) String userDataLevel, @RequestBody AreaSearchVo areaSearchVo) {
         //todo userDataLevel应该作为参数传入，vo作为前端传值不应该加userDataLevel
         areaSearchVo.setHiddenFlagList(HiddenFlagEnum.getFlagList(userDataLevel));
         R<List<AreaVo>> result = RUtils.create(
@@ -50,7 +49,7 @@ public class AreaController {
 
     @Operation(summary = "获取单个地区信息", description = "获取单个地区信息")
     @PostMapping("/get/{areaId}")
-    public R<AreaVo> getArea(@RequestHeader(value = "userDataLevel",required = false) String userDataLevel,@PathVariable("areaId") Long areaId) {
+    public R<AreaVo> getArea(@Parameter(hidden = true) @RequestHeader(value = "userDataLevel",required = false) String userDataLevel, @PathVariable("areaId") Long areaId) {
         R<AreaVo> result = RUtils.create(
                 areaService.getArea(areaId, HiddenFlagEnum.getFlagList(userDataLevel)).getVo()
         );

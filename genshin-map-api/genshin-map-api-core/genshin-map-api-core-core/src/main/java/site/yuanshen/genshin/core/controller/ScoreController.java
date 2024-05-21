@@ -1,6 +1,7 @@
 package site.yuanshen.genshin.core.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +30,7 @@ public class ScoreController {
 
     @Operation(summary = "生成评分", description = "生成评分数据")
     @PostMapping("/generate")
-    public R<Object> generate(@RequestBody ScoreParamsVo scoreParamsVo, @RequestHeader("userId") Long userId) {
+    public R<Object> generate(@RequestBody ScoreParamsVo scoreParamsVo, @Parameter(hidden = true) @RequestHeader("userId") Long userId) {
         scoreParamsVo.setGeneratorId(userId);
         scoreGenerateService.generateScore(scoreParamsVo);
         return RUtils.create("ok");
