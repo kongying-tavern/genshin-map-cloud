@@ -114,6 +114,11 @@ public class AreaService {
             itemMBPService.saveBatch(commonItemList);
             itemMBPService.updateBatchById(commonItemList);
         }
+
+        //更新父级的末端标志
+        areaMapper.update(null, Wrappers.<Area>lambdaUpdate()
+                    .eq(Area::getId, areaDto.getParentId())
+                    .set(Area::getIsFinal, false));
         return area.getId();
     }
 
@@ -174,6 +179,8 @@ public class AreaService {
             }
     )
     public Boolean deleteArea(Long areaId) {
+        final Long parentAreaId = areaMapper.selectById(areaId).getParentId();
+
         //用于递归遍历删除的地区ID列表
         List<Long> nowAreaIdList = Collections.singletonList(areaId);
         while (!nowAreaIdList.isEmpty()) {
@@ -182,6 +189,18 @@ public class AreaService {
             nowAreaIdList = areaMapper.selectList(Wrappers.<Area>lambdaQuery().in(Area::getParentId, nowAreaIdList))
                     .parallelStream().map(Area::getId).collect(Collectors.toList());
         }
+
+        //更新父地区是否为最终地区的标记
+        if(parentAreaId != null) {
+            final boolean parentIsFinal = areaMapper.selectCount(Wrappers.<Area>lambdaQuery()
+                .eq(Area::getParentId, parentAreaId))
+                == 0;
+            areaMapper.update(null, Wrappers.<Area>lambdaUpdate()
+                .eq(Area::getId, parentAreaId)
+                .set(Area::getIsFinal, parentIsFinal)
+            );
+        }
+
         return true;
     }
 
