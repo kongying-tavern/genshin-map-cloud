@@ -9,7 +9,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import site.yuanshen.common.core.exception.GenshinApiException;
 import site.yuanshen.common.core.utils.PgsqlUtils;
 import site.yuanshen.common.core.utils.TimeUtils;
 import site.yuanshen.common.web.utils.UserUtils;
@@ -26,7 +25,6 @@ import site.yuanshen.genshin.core.utils.ClientUtils;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
@@ -105,7 +103,16 @@ public class SysUserDeviceService {
         QueryWrapper<SysUserDevice> wrapper = Wrappers.<SysUserDevice>query();
 
         // 处理排序
-        final List<PgsqlUtils.Sort<SysUserDevice>> sortList = PgsqlUtils.toSort(deviceSearchDto.getSort(), SysUserDevice.class, Set.of("deviceId", "ipv4", "status", "lastLoginTime", "updateTime"));
+        final List<PgsqlUtils.Sort<SysUserDevice>> sortList = PgsqlUtils.toSortConfigurations(
+            deviceSearchDto.getSort(),
+            PgsqlUtils.SortConfig.<SysUserDevice>create()
+                .addEntry(PgsqlUtils.SortConfigItem.<SysUserDevice>create().withProp("id"))
+                .addEntry(PgsqlUtils.SortConfigItem.<SysUserDevice>create().withProp("deviceId"))
+                .addEntry(PgsqlUtils.SortConfigItem.<SysUserDevice>create().withProp("ipv4"))
+                .addEntry(PgsqlUtils.SortConfigItem.<SysUserDevice>create().withProp("status"))
+                .addEntry(PgsqlUtils.SortConfigItem.<SysUserDevice>create().withProp("lastLoginTime"))
+                .addEntry(PgsqlUtils.SortConfigItem.<SysUserDevice>create().withProp("updateTime"))
+        );
         wrapper = PgsqlUtils.sortWrapper(wrapper, sortList);
 
         LambdaQueryWrapper<SysUserDevice> queryWrapper = wrapper.lambda()

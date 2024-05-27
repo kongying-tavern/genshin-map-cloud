@@ -17,7 +17,6 @@ import site.yuanshen.data.vo.helper.PageListVo;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import static cn.hutool.core.text.CharSequenceUtil.isNotBlank;
@@ -82,7 +81,14 @@ public class SysUserDao {
 
     public PageListVo<SysUserVo> searchPage(SysUserSearchDto searchDto) {
         QueryWrapper<SysUser> wrapper = Wrappers.<SysUser>query();
-        final List<PgsqlUtils.Sort<SysUser>> sortList = PgsqlUtils.toSort(searchDto.getSort(), SysUser.class, Set.of("id", "nickname", "createTime", "updateTime"));
+        final List<PgsqlUtils.Sort<SysUser>> sortList = PgsqlUtils.toSortConfigurations(
+            searchDto.getSort(),
+            PgsqlUtils.SortConfig.<SysUser>create()
+                .addEntry(PgsqlUtils.SortConfigItem.<SysUser>create().withProp("id"))
+                .addEntry(PgsqlUtils.SortConfigItem.<SysUser>create().withProp("nickname"))
+                .addEntry(PgsqlUtils.SortConfigItem.<SysUser>create().withProp("createTime"))
+                .addEntry(PgsqlUtils.SortConfigItem.<SysUser>create().withProp("updateTime"))
+        );
         wrapper = PgsqlUtils.sortWrapper(wrapper, sortList);
 
         LambdaQueryWrapper<SysUser> queryWrapper = wrapper.lambda()

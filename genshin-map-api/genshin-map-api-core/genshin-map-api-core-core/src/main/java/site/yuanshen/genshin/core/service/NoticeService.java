@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import site.yuanshen.common.core.exception.GenshinApiException;
 import site.yuanshen.common.core.utils.PgsqlUtils;
 import site.yuanshen.common.core.utils.TimeUtils;
-import site.yuanshen.data.base.BaseEntity;
 import site.yuanshen.data.dto.NoticeDto;
 import site.yuanshen.data.dto.NoticeSearchDto;
 import site.yuanshen.data.entity.Notice;
@@ -26,7 +25,6 @@ import site.yuanshen.data.vo.helper.PageListVo;
 
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -49,7 +47,16 @@ public class NoticeService {
         }
 
         // 处理排序
-        final List<PgsqlUtils.Sort<Notice>> sortList = PgsqlUtils.toSort(noticeSearchDto.getSort(), Notice.class, Set.of("title", "sortIndex", "validTimeStart", "validTimeEnd", "updateTime"));
+        final List<PgsqlUtils.Sort<Notice>> sortList = PgsqlUtils.toSortConfigurations(
+            noticeSearchDto.getSort(),
+            PgsqlUtils.SortConfig.<Notice>create()
+                .addEntry(PgsqlUtils.SortConfigItem.<Notice>create().withProp("title"))
+                .addEntry(PgsqlUtils.SortConfigItem.<Notice>create().withProp("sortIndex"))
+                .addEntry(PgsqlUtils.SortConfigItem.<Notice>create().withProp("validTimeStart"))
+                .addEntry(PgsqlUtils.SortConfigItem.<Notice>create().withProp("validTimeEnd"))
+                .addEntry(PgsqlUtils.SortConfigItem.<Notice>create().withProp("updateTime"))
+                .addEntry(PgsqlUtils.SortConfigItem.<Notice>create().withProp("id"))
+        );
         wrapper = PgsqlUtils.sortWrapper(wrapper, sortList);
 
         final LambdaQueryWrapper<Notice> queryWrapper = wrapper.lambda()
