@@ -114,6 +114,11 @@ public class AreaService {
             itemMBPService.saveBatch(commonItemList);
             itemMBPService.updateBatchById(commonItemList);
         }
+
+        //更新父级的末端标志
+        areaMapper.update(null, Wrappers.<Area>lambdaUpdate()
+                    .eq(Area::getId, areaDto.getParentId())
+                    .set(Area::getIsFinal, false));
         return area.getId();
     }
 
