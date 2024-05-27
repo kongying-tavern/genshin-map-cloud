@@ -4,7 +4,9 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.text.NamingCase;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson2.JSON;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -93,7 +95,7 @@ public class PgsqlUtils {
         // 数据库字段
         private String prop = "";
         // 代码字段
-        private Function<E, ?> propGetter;
+        private SFunction<E, ?> propGetter;
         // 比较器
         private Comparator<E> comparator;
     }
@@ -115,13 +117,18 @@ public class PgsqlUtils {
         // 代码字段
         private String prop = "";
         // 代码字段获取
-        private Function<E, ?> propGetter;
+        private SFunction<E, ?> propGetter;
         // 比较器
         private Comparator<E> comparator;
         // 排序方式
         private Order order;
     }
 
+    /**
+     * 将排序列表转换为排序配置
+     * @param sorts 排序列表
+     * @param config 排序字段配置
+     */
     public static <E> List<Sort<E>> toSortConfigurations(List<String> sorts, SortConfig<E> config) {
         if (CollUtil.isEmpty(sorts)) {
             return List.of();
@@ -163,13 +170,35 @@ public class PgsqlUtils {
         return sortList;
     }
 
+    /**
+     * 对 QueryWrapper 使用排序
+     * @param wrapper QueryWrapper 对象
+     * @param sortList 排序配置列表
+     */
     public static <E> QueryWrapper<E> sortWrapper(QueryWrapper<E> wrapper, List<Sort<E>> sortList) {
-        for (Sort<E> sortItem : sortList) {
+        for(Sort<E> sortItem : sortList) {
             final String sortField = sortItem.getField();
             wrapper = wrapper.orderBy(
                     StrUtil.isNotEmpty(sortField),
                     Order.ASC.equals(sortItem.getOrder()),
                     sortField
+            );
+        }
+        return wrapper;
+    }
+
+    /**
+     * 对 LambdaQueryWrapper 使用排序
+     * @param wrapper LambdaQueryWrapper 对象
+     * @param sortList 排序配置列表
+     */
+    public static <E> LambdaQueryWrapper<E> sortWrapper(LambdaQueryWrapper<E> wrapper, List<Sort<E>> sortList) {
+        for(Sort<E> sortItem : sortList) {
+            final SFunction<E, ?> sortPropGetter = sortItem.getPropGetter();
+            wrapper = wrapper.orderBy(
+                sortPropGetter != null,
+                Order.ASC.equals(sortItem.getOrder()),
+                sortPropGetter
             );
         }
         return wrapper;
