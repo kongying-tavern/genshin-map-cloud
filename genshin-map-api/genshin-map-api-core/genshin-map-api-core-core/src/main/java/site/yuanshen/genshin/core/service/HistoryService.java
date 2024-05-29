@@ -9,7 +9,6 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import site.yuanshen.common.core.utils.PgsqlUtils;
-import site.yuanshen.data.base.BaseEntity;
 import site.yuanshen.data.dto.HistoryDto;
 import site.yuanshen.data.dto.HistorySearchDto;
 import site.yuanshen.data.entity.History;
@@ -17,9 +16,7 @@ import site.yuanshen.data.mapper.HistoryMapper;
 import site.yuanshen.data.vo.HistoryVo;
 import site.yuanshen.data.vo.helper.PageListVo;
 
-import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,7 +28,11 @@ public class HistoryService extends ServiceImpl<HistoryMapper, History> {
     public PageListVo<HistoryVo> listPage(HistorySearchDto historySearchDto) {
         QueryWrapper<History> wrapper = Wrappers.<History>query();
         // 处理排序
-        final List<PgsqlUtils.Sort<History>> sortList = PgsqlUtils.toSort(historySearchDto.getSort(), History.class, Set.of("updateTime"));
+        final List<PgsqlUtils.Sort<History>> sortList = PgsqlUtils.toSortConfigurations(
+            historySearchDto.getSort(),
+            PgsqlUtils.SortConfig.<History>create()
+                .addEntry(PgsqlUtils.SortConfigItem.<History>create().withProp("updateTime"))
+        );
         wrapper = PgsqlUtils.sortWrapper(wrapper, sortList);
 
         LambdaQueryWrapper<History> queryWrapper = wrapper.lambda()
