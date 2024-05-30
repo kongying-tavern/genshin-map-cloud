@@ -14,6 +14,8 @@ import lombok.With;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * 为了应付pg里的奇妙查询格式
@@ -202,5 +204,38 @@ public class PgsqlUtils {
             );
         }
         return wrapper;
+    }
+
+    /**
+     * 对列表使用排序
+     * @param list 列表
+     * @param sortList 排序配置列表
+     */
+    public static <E> List<E> sortWrapper(List<E> list, List<Sort<E>> sortList) {
+        if(CollUtil.isEmpty(sortList)) {
+            return list;
+        }
+
+        // 构造组合式排序规则
+        Comparator<E> combinedComparator = null;
+        for(Sort<E> sortItem : sortList) {
+            final Comparator<E> sortComparator = sortItem.getComparator();
+            final Comparator<E> sortComparatorOrderd = Order.ASC.equals(sortItem.getOrder()) ? sortComparator : sortComparator.reversed();
+            if(sortComparator == null) {
+                continue;
+            }
+            if(combinedComparator == null) {
+                combinedComparator = sortComparatorOrderd;
+            } else {
+                combinedComparator = combinedComparator.thenComparing(sortComparatorOrderd);
+            }
+        }
+
+        // 应用排序规则
+        if(combinedComparator == null) {
+            return list;
+        } else {
+            return list.stream().sorted(combinedComparator).collect(Collectors.toList());
+        }
     }
 }
