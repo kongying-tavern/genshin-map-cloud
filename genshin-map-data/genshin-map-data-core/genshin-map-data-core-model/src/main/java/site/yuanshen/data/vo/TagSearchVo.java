@@ -34,9 +34,9 @@ public class TagSearchVo {
     private List<Long> typeIdList;
 
     /**
-     * 当前页，从0开始
+     * 当前页，从1开始
      */
-    @Schema(title = "当前页，从0开始")
+    @Schema(title = "当前页，从1开始")
     private Long current;
 
     /**
