@@ -15,9 +15,9 @@ import java.util.List;
 @Schema(title = "历史记录列表查询前端封装", description = "历史记录列表查询前端封装")
 public class HistorySearchVo {
     /**
-     * 当前页，从0开始
+     * 当前页，从1开始
      */
-    @Schema(title = "当前页，从0开始")
+    @Schema(title = "当前页，从1开始")
     private Long current;
 
     /**

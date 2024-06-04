@@ -22,9 +22,9 @@ import java.util.List;
 @Schema(title = "用户设备分页查询数据封装", description = "用户设备分页查询数据封装")
 public class SysUserDeviceSearchDto {
     /**
-     * 当前页，从0开始
+     * 当前页，从1开始
      */
-    @Schema(title = "当前页，从0开始")
+    @Schema(title = "当前页，从1开始")
     private Long current;
 
     /**

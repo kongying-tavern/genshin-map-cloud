@@ -45,9 +45,9 @@ public class NoticeSearchVo {
     private List<String> sort;
 
     /**
-     * 当前页，从0开始
+     * 当前页，从1开始
      */
-    @Schema(title = "当前页，从0开始")
+    @Schema(title = "当前页，从1开始")
     private Long current;
 
     /**
