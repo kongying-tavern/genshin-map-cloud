@@ -23,6 +23,7 @@ import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFactory;
 import site.yuanshen.data.enums.RoleEnum;
 import site.yuanshen.genshin.core.service.SysUserDeviceService;
+import site.yuanshen.genshin.core.utils.ClientUtils;
 
 import java.security.KeyPair;
 import java.util.*;
@@ -65,7 +66,8 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
             Map<String, Object> additionalInfo = new HashMap<>();
             if (principal instanceof SysUserSecurityDto) {
                 SysUserSecurityDto userPrincipal = (SysUserSecurityDto) principal;
-                if(!sysUserDeviceService.checkDeviceAccess(userPrincipal.getUserId(), userPrincipal.getAccessPolicyList())) {
+                ClientUtils.ClientInfo clientInfo = ClientUtils.getClientInfo(null, null);
+                if(!sysUserDeviceService.checkDeviceAccess(userPrincipal.getUserId(), userPrincipal.getAccessPolicyList(), clientInfo)) {
                     throw new InsufficientAuthenticationException("账户因安全策略暂时无法登录，请联系管理员");
                 }
                 List<RoleEnum> roleList = userPrincipal.getRoleEnumList();

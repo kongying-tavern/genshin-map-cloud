@@ -40,17 +40,20 @@ public class SysUserDeviceService {
     private final SysUserDeviceDao sysUserDeviceDao;
     private final SysUserDeviceMapper sysUserDeviceMapper;
 
-    private static final String DEVICE_IP_DEFAULT = "N/A";
-    private static final int DEVICE_ID_LEN_LIMIT = 500;
-
     /**
      * 检查设备是否有登录权限
      */
     public boolean checkDeviceAccess(Long userId, List<AccessPolicyEnum> accessPolicyList) {
+        final ClientUtils.ClientInfo clientInfo = ClientUtils.getClientInfo(null, null);
+        return checkDeviceAccess(userId, accessPolicyList, clientInfo);
+    }
+
+    /**
+     * 检查设备是否有登录权限
+     */
+    public boolean checkDeviceAccess(Long userId, List<AccessPolicyEnum> accessPolicyList, ClientUtils.ClientInfo clientInfo) {
         List<SysUserDeviceDto> deviceList = sysUserDeviceDao.getDeviceList(userId.toString());
-        String ip = ClientUtils.getClientIpv4(DEVICE_IP_DEFAULT);
-        String ua = StrUtil.sub(ClientUtils.getClientUa(), 0, DEVICE_ID_LEN_LIMIT);
-        SysUserDeviceDto userDevice = sysUserDeviceDao.createNewDevice(userId, ip, ua);
+        SysUserDeviceDto userDevice = sysUserDeviceDao.createNewDevice(userId, clientInfo.getIpv4(), clientInfo.getUa());
 
         SysUserDeviceDto currentDevice = sysUserDeviceDao.findDevice(deviceList, userDevice);
         if(currentDevice == null) {
