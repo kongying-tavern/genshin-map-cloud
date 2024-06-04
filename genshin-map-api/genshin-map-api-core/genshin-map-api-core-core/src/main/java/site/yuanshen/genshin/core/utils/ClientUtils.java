@@ -22,12 +22,18 @@ import java.util.function.Function;
  */
 public class ClientUtils {
 
+    /**
+     * 客户端信息数据结构
+     */
     @Data
     public static class ClientInfo {
         String ipv4 = "";
         String ua = "";
     }
 
+    /**
+     * 客户端信息生成配置
+     */
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
