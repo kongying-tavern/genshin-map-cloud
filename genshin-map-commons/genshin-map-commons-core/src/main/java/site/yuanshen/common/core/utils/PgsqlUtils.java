@@ -13,9 +13,7 @@ import lombok.NoArgsConstructor;
 import lombok.With;
 
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * 为了应付pg里的奇妙查询格式
@@ -237,5 +235,26 @@ public class PgsqlUtils {
         } else {
             return list.stream().sorted(combinedComparator).collect(Collectors.toList());
         }
+    }
+
+    /**
+     * 获取分页后的列表
+     * @param list 列表
+     * @param current 当前页码
+     * @param size 每页条数
+     */
+    public static <E> List<E> paginateWrapper(List<E> list, Long current, Long size) {
+        if(current == null) {
+            current = 1L;
+        }
+        if(size == null) {
+            size = 10L;
+        }
+
+        long offset = current <= 1L ? 0L : Math.max((current - 1L) * size, 0L);
+        int offsetNum = Math.toIntExact(offset);
+        int sizeNum = Math.toIntExact(size);
+        List<E> subList = CollUtil.sub(list, offsetNum, offsetNum + sizeNum);
+        return subList;
     }
 }

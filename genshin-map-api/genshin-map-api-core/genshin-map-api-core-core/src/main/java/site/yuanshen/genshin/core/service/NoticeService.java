@@ -22,7 +22,6 @@ import site.yuanshen.genshin.core.dao.NoticeDao;
 import java.sql.Timestamp;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -87,7 +86,7 @@ public class NoticeService {
         List<Notice> fullList = noticeDao.getList(searchDto);
         fullList = noticeDao.postGetList(fullList, noticeSearchDto);
         fullList = PgsqlUtils.sortWrapper(fullList, sortList);
-        List<Notice> list = CollUtil.sub(fullList, Math.toIntExact(noticeSearchDto.getCurrent()), Math.toIntExact(noticeSearchDto.getSize()));
+        List<Notice> list = PgsqlUtils.paginateWrapper(fullList, noticeSearchDto.getCurrent(), noticeSearchDto.getSize());
 
         final PageListVo<NoticeVo> res = new PageListVo<NoticeVo>()
             .setRecord(list.stream()
