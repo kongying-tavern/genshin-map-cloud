@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
@@ -23,6 +22,7 @@ import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFactory;
 import site.yuanshen.data.dto.adapter.user.access.AccessPathVo;
 import site.yuanshen.data.enums.RoleEnum;
+import site.yuanshen.genshin.core.service.SysActionLogService;
 import site.yuanshen.genshin.core.service.SysUserDeviceService;
 import site.yuanshen.genshin.core.utils.ClientUtils;
 
@@ -47,6 +47,8 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
     @Autowired
     private ClientDetailsServiceImpl clientDetailsServiceImpl;
     @Autowired
+    private SysActionLogService sysActionLogService;
+    @Autowired
     private SysUserDeviceService sysUserDeviceService;
 
     @Value("${env:prd}")
@@ -67,17 +69,21 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
             Map<String, Object> additionalInfo = new HashMap<>();
             if (principal instanceof SysUserSecurityDto) {
                 SysUserSecurityDto userPrincipal = (SysUserSecurityDto) principal;
+                Long userId = userPrincipal.getUserId();
                 List<AccessPathVo> accessPaths = new ArrayList<>();
                 ClientUtils.ClientInfo clientInfo = ClientUtils.getClientInfo(null, null);
+
                 boolean isDeviceAccessible = sysUserDeviceService.checkDeviceAccess(userPrincipal.getUserId(), userPrincipal.getAccessPolicyList(), accessPaths, clientInfo);
-                if(!isDeviceAccessible) {
-                    throw new InsufficientAuthenticationException("账户因安全策略暂时无法登录，请联系管理员");
-                }
+                Map<String, Object> logExtraData = new HashMap<>();
+                logExtraData.put("accessPaths", accessPaths);
+
+                sysActionLogService.addNewLog(userId, "LOGIN", !isDeviceAccessible, logExtraData, clientInfo);
                 List<RoleEnum> roleList = userPrincipal.getRoleEnumList();
                 List<String> roleCodeList = Optional.of(roleList).orElse(new ArrayList<>()).stream().map(RoleEnum::getCode).collect(Collectors.toList());
-                additionalInfo.put("userId", userPrincipal.getUserId());
+                additionalInfo.put("userId", userId);
                 additionalInfo.put("userRoles", roleCodeList);
                 additionalInfo.put("env", env);
+                additionalInfo.put("message", isDeviceAccessible ? "" : "账户登录设备或IP存在波动，请注意账号安全");
             }
             ((DefaultOAuth2AccessToken) oAuth2AccessToken).setAdditionalInformation(additionalInfo);
             return oAuth2AccessToken;
