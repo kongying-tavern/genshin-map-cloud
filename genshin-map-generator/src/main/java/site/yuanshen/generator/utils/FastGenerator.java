@@ -1,6 +1,5 @@
 package site.yuanshen.generator.utils;
 
-import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.generator.FastAutoGenerator;
@@ -8,7 +7,10 @@ import com.baomidou.mybatisplus.generator.config.DataSourceConfig;
 import com.baomidou.mybatisplus.generator.config.OutputFile;
 import com.baomidou.mybatisplus.generator.config.TemplateType;
 import com.baomidou.mybatisplus.generator.config.converts.PostgreSqlTypeConvert;
+import com.baomidou.mybatisplus.generator.config.po.TableField;
+import com.baomidou.mybatisplus.generator.config.po.TableInfo;
 import com.baomidou.mybatisplus.generator.config.querys.PostgreSqlQuery;
+import com.baomidou.mybatisplus.generator.config.rules.DateType;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
 import com.baomidou.mybatisplus.generator.fill.Property;
 import com.baomidou.mybatisplus.generator.query.SQLQuery;
@@ -26,6 +28,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
 
 @Component
 
@@ -64,6 +67,7 @@ public class FastGenerator {
                 //全局配置
                 .globalConfig(builder -> builder
                         .author(author)
+                        .dateType(DateType.SQL_PACK)
                         .outputDir(System.getProperty("user.dir") + outputDir)
                         //关闭生成后自动打开文件夹
                         .disableOpenDir()
@@ -119,6 +123,7 @@ public class FastGenerator {
                         .mapper("/templates/mapper.java")
                         .xml("/templates/mapper.xml"))
                 .injectionConfig(builder -> builder
+                        .beforeOutputFile(getBeforeOutputFileHandler())
                         .customFile(fileBuilder -> fileBuilder
                                 .fileName("Dto.java")
                                 .templatePath("/templates/dto.java.ftl")
@@ -133,6 +138,16 @@ public class FastGenerator {
                                 .enableFileOverride()))
                 .templateEngine(new FreemarkerTemplateEngine())
                 .execute();
+    }
+
+    private BiConsumer<TableInfo, Map<String, Object>> getBeforeOutputFileHandler() {
+        return (tableInfo, stringObjectMap) -> {
+            for(TableField field : tableInfo.getFields()) {
+                if("Timestamp".equals(field.getPropertyType())) {
+                    tableInfo.addImportPackages("com.fasterxml.jackson.annotation.JsonFormat");
+                }
+            }
+        };
     }
 
     private String getPathLocation(String base, String pathTag, boolean expandPackage) {

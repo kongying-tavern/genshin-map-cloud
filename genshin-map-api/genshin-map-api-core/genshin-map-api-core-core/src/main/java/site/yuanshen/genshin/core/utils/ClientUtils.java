@@ -2,6 +2,10 @@ package site.yuanshen.genshin.core.utils;
 
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.servlet.ServletUtil;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.With;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -17,6 +21,55 @@ import java.util.function.Function;
  * @author Alex Fang
  */
 public class ClientUtils {
+
+    /**
+     * 客户端信息数据结构
+     */
+    @Data
+    public static class ClientInfo {
+        String ipv4 = "";
+        String ua = "";
+    }
+
+    /**
+     * 客户端信息生成配置
+     */
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @With
+    public static class ClientConfig {
+        public static ClientConfig create() {
+            return new ClientConfig();
+        }
+
+        private String ipv4Default = "N/A";
+        private int uaMaxLength = 500;
+    }
+
+    /**
+     * 获取客户端信息
+     */
+    public static ClientInfo getClientInfo(ClientInfo info, ClientConfig config) {
+        if(info == null) {
+            info = new ClientInfo();
+        }
+        if(config == null) {
+            config = ClientConfig.create();
+        }
+
+        if(StrUtil.isBlank(info.getIpv4())) {
+            final String ipv4 = ClientUtils.getClientIpv4(config.getIpv4Default());
+            info.setIpv4(ipv4);
+        }
+        if(StrUtil.isBlank(info.getUa())) {
+            final String ua = StrUtil.sub(ClientUtils.getClientUa(), 0, config.getUaMaxLength());
+            info.setUa(ua);
+        }
+
+        return info;
+    }
+
     /**
      * 获取客户端IPv4
      */

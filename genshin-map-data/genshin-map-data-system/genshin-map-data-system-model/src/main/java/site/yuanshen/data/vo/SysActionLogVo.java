@@ -6,22 +6,21 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.With;
-import site.yuanshen.common.core.utils.ClientUtils;
-import site.yuanshen.data.enums.DeviceStatusEnum;
 
 import java.sql.Timestamp;
+import java.util.Map;
 
 /**
-* 用户设备表;用户设备前端封装
+* 系统操作日志表;系统操作日志前端封装
 *
-* @since 2024-05-08 08:38:30
+* @since 2024-06-04 05:15:23
 */
 @Data
 @With
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(title = "SysUserDevice前端封装", description = "用户设备表;用户设备前端封装")
-public class SysUserDeviceVo {
+@Schema(title = "SysActionLog前端封装", description = "系统操作日志表;系统操作日志前端封装")
+public class SysActionLogVo {
 
     /**
      * 乐观锁
@@ -68,34 +67,33 @@ public class SysUserDeviceVo {
     private Long userId;
 
     /**
-     * 设备编码
-     */
-    @Schema(title = "设备编码")
-    private String deviceId;
-
-    /**
      * IPv4
      */
     @Schema(title = "IPv4")
     private String ipv4;
 
     /**
-     * IP地区
+     * 设备编码
      */
-    @Schema(title = "IP地区信息")
-    private ClientUtils.Region ipRegion;
+    @Schema(title = "设备编码")
+    private String deviceId;
 
     /**
-     * 设备状态
+     * 操作名
      */
-    @Schema(title = "设备状态", format = "integer")
-    private DeviceStatusEnum status;
+    @Schema(title = "操作名")
+    private String action;
 
     /**
-     * 上次登录时间
+     * 是否是错误
      */
-    @Schema(title = "上次登录时间")
-    @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
-    private Timestamp lastLoginTime;
+    @Schema(title = "是否是错误")
+    private Boolean isError;
+
+    /**
+     * JSON对象
+     */
+    @Schema(title = "JSON对象")
+    private Map<String, Object> extraData;
 
 }
