@@ -1,6 +1,7 @@
 package site.yuanshen.genshin.core.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,12 +21,13 @@ import site.yuanshen.genshin.core.service.SysUserDeviceService;
 /**
  * 系统用户设备API
  *
- * @author Moment
+ * @author Alex Fang
  */
 @Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/system/device")
+@Tag(name = "device", description = "系统用户设备API")
 public class SysUserDeviceController {
 
     private final SysUserDeviceService userDeviceService;
