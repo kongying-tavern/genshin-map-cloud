@@ -33,6 +33,17 @@ public class SysActionLogDto {
     private Long version;
 
     /**
+     * 创建人
+     */
+    private Long creatorId;
+
+    /**
+     * 创建时间
+     */
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
+    private Timestamp createTime;
+
+    /**
      * ID
      */
     private Long id;
@@ -40,6 +51,7 @@ public class SysActionLogDto {
     /**
      * 更新人
      */
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
     private Long updaterId;
 
     /**

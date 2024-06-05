@@ -35,6 +35,19 @@ public class SysActionLogVo {
     private Long id;
 
     /**
+     * 创建人
+     */
+    @Schema(title = "创建人")
+    private Long creatorId;
+
+    /**
+     * 创建时间
+     */
+    @Schema(title = "创建时间")
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
+    private Timestamp createTime;
+
+    /**
      * 更新人
      */
     @Schema(title = "更新人")
