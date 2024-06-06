@@ -62,6 +62,9 @@ public class ${entity} {
     <#elseif field.convert>
     @TableField("${field.annotationColumnName}")
     </#if>
+    <#if field.propertyType == 'Timestamp'>
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
+    </#if>
     <#-- 乐观锁注解 -->
     <#if field.versionField>
     @Version

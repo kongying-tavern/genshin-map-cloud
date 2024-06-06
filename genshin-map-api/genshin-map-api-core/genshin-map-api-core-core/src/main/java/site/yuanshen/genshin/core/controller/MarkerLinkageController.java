@@ -36,7 +36,7 @@ public class MarkerLinkageController {
 
     @Operation(summary = "关联点位列表", description = "关联点位列表")
     @PostMapping("/get/list")
-    public R<Map<String, List<MarkerLinkageVo>>> getList(@RequestBody MarkerLinkageSearchVo markerLinkageSearchVo) {
+    public R<Map<String, List<MarkerLinkageVo>>> getMarkerLinkageList(@RequestBody MarkerLinkageSearchVo markerLinkageSearchVo) {
         return RUtils.create(
                 markerLinkageService.listMarkerLinkage(markerLinkageSearchVo)
         );
@@ -44,7 +44,7 @@ public class MarkerLinkageController {
 
     @Operation(summary = "关联点位图数据", description = "关联点位图数据")
     @PostMapping("/get/graph")
-    public R<Map<String, GraphVo>> getGraph(@RequestBody MarkerLinkageSearchVo markerLinkageSearchVo) {
+    public R<Map<String, GraphVo>> getMarkerLinkageGraph(@RequestBody MarkerLinkageSearchVo markerLinkageSearchVo) {
         return RUtils.create(
                 markerLinkageService.graphMarkerLinkage(markerLinkageSearchVo)
         );

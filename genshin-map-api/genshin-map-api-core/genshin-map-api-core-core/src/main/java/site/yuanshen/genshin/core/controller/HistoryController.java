@@ -4,7 +4,10 @@ package site.yuanshen.genshin.core.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import site.yuanshen.common.web.response.R;
 import site.yuanshen.common.web.response.RUtils;
 import site.yuanshen.data.dto.HistorySearchDto;
@@ -28,7 +31,7 @@ public class HistoryController {
 
     @Operation(summary = "历史记录分页", description = "历史记录分页")
     @PostMapping("/get/list")
-    public R<PageListVo<HistoryVo>> getList(@RequestBody HistorySearchVo historySearchVo) {
+    public R<PageListVo<HistoryVo>> searchHistory(@RequestBody HistorySearchVo historySearchVo) {
         R<PageListVo<HistoryVo>> result = RUtils.create(
                 historyService.listPage(new HistorySearchDto(historySearchVo))
         );

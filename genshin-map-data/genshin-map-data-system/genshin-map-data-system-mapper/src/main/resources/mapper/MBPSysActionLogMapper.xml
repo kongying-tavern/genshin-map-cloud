@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="site.yuanshen.data.mapper.SysActionLogMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="site.yuanshen.data.entity.SysActionLog">
+        <id column="id" property="id"/>
+        <result column="creator_id" property="creatorId"/>
+        <result column="create_time" property="createTime"/>
+        <result column="del_flag" property="delFlag"/>
+        <result column="version" property="version"/>
+        <result column="updater_id" property="updaterId"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="user_id" property="userId"/>
+        <result column="ipv4" property="ipv4"/>
+        <result column="device_id" property="deviceId"/>
+        <result column="action" property="action"/>
+        <result column="is_error" property="isError"/>
+        <result column="extra_data" property="extraData" typeHandler="site.yuanshen.handler.MBPJsonObjectTypeHandler"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        sys_action_log.creator_id,
+        sys_action_log.create_time,
+        sys_action_log.del_flag,
+        sys_action_log.version,
+        sys_action_log.id,
+        sys_action_log.updater_id,
+        sys_action_log.update_time,
+        sys_action_log.user_id,
+        sys_action_log.ipv4,
+        sys_action_log.device_id,
+        sys_action_log.action,
+        sys_action_log.is_error,
+        sys_action_log.extra_data
+    </sql>
+
+</mapper>

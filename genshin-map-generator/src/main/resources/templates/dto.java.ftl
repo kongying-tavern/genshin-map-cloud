@@ -35,6 +35,9 @@ public class ${entity}Dto {
      * ${field.comment}
      */
 </#if>
+<#if field.propertyType == 'Timestamp'>
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
+</#if>
     private ${field.propertyType} ${field.propertyName};
 </#list>
 <#------------  END 字段循环遍历  ---------->

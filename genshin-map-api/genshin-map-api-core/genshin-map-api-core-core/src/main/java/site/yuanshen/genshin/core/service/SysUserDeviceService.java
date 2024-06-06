@@ -15,6 +15,7 @@ import site.yuanshen.common.web.utils.UserUtils;
 import site.yuanshen.data.dto.SysUserDeviceDto;
 import site.yuanshen.data.dto.SysUserDeviceSearchDto;
 import site.yuanshen.data.dto.adapter.BoolLogicPair;
+import site.yuanshen.data.dto.adapter.user.access.AccessPathVo;
 import site.yuanshen.data.entity.SysUserDevice;
 import site.yuanshen.data.enums.AccessPolicyEnum;
 import site.yuanshen.data.mapper.SysUserDeviceMapper;
@@ -40,23 +41,35 @@ public class SysUserDeviceService {
     private final SysUserDeviceDao sysUserDeviceDao;
     private final SysUserDeviceMapper sysUserDeviceMapper;
 
-    private static final String DEVICE_IP_DEFAULT = "N/A";
-    private static final int DEVICE_ID_LEN_LIMIT = 500;
+    /**
+     * 检查设备是否有登录权限
+     */
+    public boolean checkDeviceAccess(
+        Long userId,
+        List<AccessPolicyEnum> accessPolicyList,
+        List<AccessPathVo> accessPaths
+    ) {
+        final ClientUtils.ClientInfo clientInfo = ClientUtils.getClientInfo(null, null);
+        return checkDeviceAccess(userId, accessPolicyList, accessPaths, clientInfo);
+    }
 
     /**
      * 检查设备是否有登录权限
      */
-    public boolean checkDeviceAccess(Long userId, List<AccessPolicyEnum> accessPolicyList) {
+    public boolean checkDeviceAccess(
+        Long userId,
+        List<AccessPolicyEnum> accessPolicyList,
+        List<AccessPathVo> accessPaths,
+        ClientUtils.ClientInfo clientInfo
+    ) {
         List<SysUserDeviceDto> deviceList = sysUserDeviceDao.getDeviceList(userId.toString());
-        String ip = ClientUtils.getClientIpv4(DEVICE_IP_DEFAULT);
-        String ua = StrUtil.sub(ClientUtils.getClientUa(), 0, DEVICE_ID_LEN_LIMIT);
-        SysUserDeviceDto userDevice = sysUserDeviceDao.createNewDevice(userId, ip, ua);
+        SysUserDeviceDto userDevice = sysUserDeviceDao.createNewDevice(userId, clientInfo.getIpv4(), clientInfo.getUa());
 
         SysUserDeviceDto currentDevice = sysUserDeviceDao.findDevice(deviceList, userDevice);
         if(currentDevice == null) {
             currentDevice = sysUserDeviceDao.addNewDevice(userDevice);
         }
-        boolean accessRes = checkDeviceAccessPolicies(deviceList, accessPolicyList, currentDevice);
+        boolean accessRes = checkDeviceAccessPolicies(deviceList, accessPolicyList, currentDevice, accessPaths);
         if(Objects.equals(accessRes, true)) {
             sysUserDeviceDao.updateDeviceLoginTime(currentDevice.getId());
         }
@@ -66,7 +79,8 @@ public class SysUserDeviceService {
     public boolean checkDeviceAccessPolicies(
             List<SysUserDeviceDto> deviceList,
             List<AccessPolicyEnum> accessPolicyList,
-            SysUserDeviceDto currentDevice
+            SysUserDeviceDto currentDevice,
+            List<AccessPathVo> accessPaths
     ) {
         if(currentDevice == null) {
             return false;
@@ -76,6 +90,7 @@ public class SysUserDeviceService {
         }
 
         Boolean policyPass = null;
+        boolean policyAccessPathExists = accessPaths != null;
         for(AccessPolicyEnum accessPolicyEnum : accessPolicyList) {
             BiFunction<List<SysUserDeviceDto>, SysUserDeviceDto, BoolLogicPair> policyTester = accessPolicyEnum.getTester();
             if(policyTester != null) {
@@ -89,6 +104,16 @@ public class SysUserDeviceService {
                             policyPass = policyPass == null ? policyResult.getBoolValue() : policyPass & policyResult.getBoolValue();
                             break;
                     }
+
+                    // 将当前策略判断追加到权限路径中
+                    if(policyAccessPathExists) {
+                        accessPaths.add(new AccessPathVo()
+                            .withPolicy(accessPolicyEnum.getCode())
+                            .withPassed(policyResult.getBoolValue())
+                        );
+                    }
+
+                    // 处理提前退出拦截
                     if(policyResult.getTruncated()) {
                         return policyPass;
                     }

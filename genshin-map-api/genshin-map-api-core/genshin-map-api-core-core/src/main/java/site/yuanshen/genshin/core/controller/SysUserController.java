@@ -3,6 +3,7 @@ package site.yuanshen.genshin.core.controller;
 import cn.hutool.core.util.ObjUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +29,7 @@ import static site.yuanshen.genshin.core.utils.UserUtils.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/system/user")
+@Tag(name = "user", description = "操作用户API")
 public class SysUserController {
 
     private final SysUserService userService;
