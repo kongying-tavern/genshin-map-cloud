@@ -86,7 +86,7 @@ public class SysActionLogDto {
     private Boolean isError;
 
     /**
-     * JSON对象
+     * 附加信息
      */
     private Map<String, Object> extraData;
 
