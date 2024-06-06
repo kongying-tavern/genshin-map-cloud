@@ -91,9 +91,9 @@ public class SysActionLogVo {
     private Boolean isError;
 
     /**
-     * JSON对象
+     * 附加信息
      */
-    @Schema(title = "JSON对象")
+    @Schema(title = "附加信息")
     private Map<String, Object> extraData;
 
 }

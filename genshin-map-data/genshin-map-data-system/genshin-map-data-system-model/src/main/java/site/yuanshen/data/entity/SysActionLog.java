@@ -79,7 +79,7 @@ public class SysActionLog extends BaseEntity {
     private Boolean isError;
 
     /**
-     * JSON对象
+     * 附加信息
      */
     @TableField(value = "extra_data", typeHandler = MBPJsonObjectTypeHandler.class)
     private Map<String, Object> extraData;
