@@ -33,7 +33,7 @@ public class SysActionLogController {
 
     @Operation(summary = "历史记录分页", description = "历史记录分页")
     @PostMapping("/list")
-    public R<PageListVo<SysActionLogVo>> getList(@RequestBody SysActionLogSearchVo historySearchVo) {
+    public R<PageListVo<SysActionLogVo>> searchActionLog(@RequestBody SysActionLogSearchVo historySearchVo) {
         R<PageListVo<SysActionLogVo>> result = RUtils.create(
                 sysActionLogService.listPage(new SysActionLogSearchDto(historySearchVo))
         );

@@ -31,7 +31,7 @@ public class HistoryController {
 
     @Operation(summary = "历史记录分页", description = "历史记录分页")
     @PostMapping("/get/list")
-    public R<PageListVo<HistoryVo>> getList(@RequestBody HistorySearchVo historySearchVo) {
+    public R<PageListVo<HistoryVo>> searchHistory(@RequestBody HistorySearchVo historySearchVo) {
         R<PageListVo<HistoryVo>> result = RUtils.create(
                 historyService.listPage(new HistorySearchDto(historySearchVo))
         );
