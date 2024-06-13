@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import site.yuanshen.common.core.exception.GenshinApiException;
 import site.yuanshen.data.base.BaseEntity;
 import site.yuanshen.data.dto.RouteDto;
 import site.yuanshen.data.dto.RouteSearchDto;
@@ -130,6 +131,6 @@ public class RouteService {
 
     private SysUser getUserNotNull(Long id) {
         return Optional.ofNullable(userMapper.selectOne(Wrappers.lambdaQuery(SysUser.class).eq(SysUser::getId, id)))
-                .orElseThrow(() -> new RuntimeException("用户不存在"));
+                .orElseThrow(() -> new GenshinApiException("用户不存在"));
     }
 }
