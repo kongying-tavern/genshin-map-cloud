@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import site.yuanshen.common.core.exception.GenshinApiException;
 import site.yuanshen.common.core.utils.PgsqlUtils;
 import site.yuanshen.data.dto.SysUserDto;
 import site.yuanshen.data.dto.SysUserSearchDto;
@@ -50,7 +51,7 @@ public class SysUserDao {
      * @return 用户实体类
      */
     public SysUserDto getUserNotNull(Long id) {
-        return new SysUserDto(getUser(id).orElseThrow(() -> new RuntimeException("用户不存在")));
+        return new SysUserDto(getUser(id).orElseThrow(() -> new GenshinApiException("用户不存在")));
     }
 
     /**
