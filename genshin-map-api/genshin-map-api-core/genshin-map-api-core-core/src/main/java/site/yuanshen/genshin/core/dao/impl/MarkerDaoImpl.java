@@ -134,7 +134,7 @@ public class MarkerDaoImpl implements MarkerDao {
 
         return markerList.parallelStream()
                         .map(marker -> new MarkerDto(marker)
-                            .withItemList(itemLinkMap.getOrDefault(marker.getId(), ""))
+                            .withItemList(itemLinkMap.getOrDefault(marker.getId(), List.of()))
                             .withLinkageId(markerLinkageMap.getOrDefault(marker.getId(), ""))
                             .getVo())
                         .collect(Collectors.toList());
