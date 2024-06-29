@@ -103,7 +103,7 @@ public class MarkerDaoImpl implements MarkerDao {
         return new PageListVo<MarkerVo>()
                 .setRecord(markerPage.getRecords().parallelStream()
                         .map(marker -> new MarkerDto(marker)
-                            .withItemList(itemLinkMap.get(marker.getId()))
+                            .withItemList(itemLinkMap.getOrDefault(marker.getId(), List.of()))
                             .withLinkageId(markerLinkageMap.getOrDefault(marker.getId(), ""))
                             .getVo())
                         .collect(Collectors.toList()))
@@ -134,7 +134,7 @@ public class MarkerDaoImpl implements MarkerDao {
 
         return markerList.parallelStream()
                         .map(marker -> new MarkerDto(marker)
-                            .withItemList(itemLinkMap.get(marker.getId()))
+                            .withItemList(itemLinkMap.getOrDefault(marker.getId(), ""))
                             .withLinkageId(markerLinkageMap.getOrDefault(marker.getId(), ""))
                             .getVo())
                         .collect(Collectors.toList());
@@ -434,7 +434,7 @@ public class MarkerDaoImpl implements MarkerDao {
                                                     .sorted(Comparator.comparingLong(MarkerItemLink::getId))
                                                     .map(MarkerItemLinkDto::new)
                                                     .map(MarkerItemLinkDto::getVo)
-                                                    .map(vo -> vo.withIconTag(itemIconTagMap.get(vo.getItemId())))
+                                                    .map(vo -> vo.withIconTag(itemIconTagMap.getOrDefault(vo.getItemId(), "")))
                                                     .collect(Collectors.toList())
                                     )
                                     .withLinkageId(markerLinkageMap.getOrDefault(m.getId(), ""))
