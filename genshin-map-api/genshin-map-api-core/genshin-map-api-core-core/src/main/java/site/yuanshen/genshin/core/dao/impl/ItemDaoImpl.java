@@ -91,7 +91,7 @@ public class ItemDaoImpl implements ItemDao {
                 .map(ItemDto::new)
                 .map(itemDto -> itemDto
                     .withCount(markerItemLinkCount.getOrDefault(itemDto.getId(), 0))
-                    .withTypeIdList(itemToTypeMap.get(itemDto.getId())))
+                    .withTypeIdList(itemToTypeMap.getOrDefault(itemDto.getId(), List.of())))
                 .map(ItemDto::getVo)
                 .sorted(Comparator.comparing(ItemVo::getSortIndex).reversed()).collect(Collectors.toList());
     }
