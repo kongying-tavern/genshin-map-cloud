@@ -1,3 +1,4 @@
+env: dev
 spring:
   profiles:
     include:
