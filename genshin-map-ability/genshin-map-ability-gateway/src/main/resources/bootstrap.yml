@@ -1,7 +1,5 @@
 server:
   port: 8101
-
-env: prd
 #logging:
 #  level:
 #    org:
