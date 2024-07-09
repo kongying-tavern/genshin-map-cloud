@@ -67,4 +67,3 @@ services:
       MINIO_SECRET: ${MINIO_SECRET}
     volumes:
       - ${DATA_DIR}/init/alist-init:/data/record
-    restart: no

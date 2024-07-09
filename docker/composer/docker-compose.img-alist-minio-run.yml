@@ -92,4 +92,3 @@ services:
       MINIO_SECRET: ${MINIO_SECRET}
     volumes:
       - ${DATA_DIR}/init/minio-init:/data/record
-    restart: no
