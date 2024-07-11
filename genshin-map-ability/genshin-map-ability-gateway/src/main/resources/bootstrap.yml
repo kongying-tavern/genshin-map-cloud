@@ -1,7 +1,5 @@
 server:
   port: 8101
-
-env: prd
 #logging:
 #  level:
 #    org:
@@ -78,7 +76,8 @@ ribbon:
 spring:
   profiles:
     include:
-      - nacos
+      - "nacos-@runtime-profile@"
+      - "env-@runtime-profile@"
 
   application:
     name: oauth2-gateway

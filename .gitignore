@@ -43,9 +43,6 @@ sql
 database/**/.back_*
 
 .flattened-pom.xml
-application-server-dev.yml
-application-server-prod.yml
-application-server-uat.yml
 application-datasource-dev.yml
 application-datasource-prod.yml
 application-datasource-uat.yml

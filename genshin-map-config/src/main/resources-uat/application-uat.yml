@@ -1,32 +1,10 @@
 spring:
   profiles:
     include:
-      - server-uat
-      - nacos-uat
+      - base
+      - env-uat
+      - log-uat
+      - doc-uat
+      - database-uat
       - datasource-uat
       - image-uat
-  datasource:
-    driver-class-name: org.postgresql.Driver
-    type: com.alibaba.druid.pool.DruidDataSource
-    datasource:
-      druid:
-        time-between-eviction-runs-millis: 10000
-        min-evictable-idle-time-millis: 30000
-        max-evictable-idle-time-millis: 7200000
-        validation-query-timeout: 3
-        validation-query: SELECT 1
-        test-on-borrow: false
-        test-on-return: false
-        test-while-idle: true
-        max-active: 20
-        max-pool-prepared-statement-per-connection-size: 20
-        initial-size: 2
-        max-wait: 6000
-        min-idle: 2
-        pool-prepared-statements: true
-        max-open-prepared-statements: 20
-        async-init: true
-
-springdoc:
-  api-docs:
-    enabled: false
