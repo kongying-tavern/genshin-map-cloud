@@ -1,22 +1,10 @@
-env: dev
 spring:
   profiles:
     include:
-      - server-dev
-      - nacos-dev
+      - base
+      - env-dev
+      - log-dev
+      - doc-dev
+      - database-dev
       - datasource-dev
       - image-dev
-  datasource:
-    driver-class-name: org.postgresql.Driver
-    type: com.alibaba.druid.pool.DruidDataSource
-
-logging:
-  level:
-    site:
-      yuanshen:
-        genshin:
-          core: debug
-    site.yuanshen.data.mapper: debug
-#    org.springframework:
-#        security: debug
-#        cache: debug

@@ -1,0 +1,7 @@
+logging:
+  level:
+    site:
+      yuanshen:
+        genshin:
+          core: debug
+    site.yuanshen.data.mapper: debug

@@ -1,0 +1,6 @@
+spring:
+  profiles:
+    include:
+      - "env-@runtime-profile@"
+server:
+  port: 8092

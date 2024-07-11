@@ -1,0 +1,10 @@
+server:
+  cache:
+    debounce-delay: 30
+spring:
+  servlet:
+    multipart:
+      max-file-size: 10MB
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    type: com.alibaba.druid.pool.DruidDataSource

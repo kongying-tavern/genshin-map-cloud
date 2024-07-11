@@ -3,9 +3,7 @@ spring:
     name: api-core
   profiles:
     active: "@runtime-profile@"
-
+    include:
+      - "nacos-@runtime-profile@"
 server:
   port: 8092
-
-
-
