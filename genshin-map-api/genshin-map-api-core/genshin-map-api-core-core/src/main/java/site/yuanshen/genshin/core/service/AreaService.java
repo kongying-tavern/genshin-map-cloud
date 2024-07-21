@@ -116,9 +116,7 @@ public class AreaService {
         }
 
         //更新父级的末端标志
-        areaMapper.update(null, Wrappers.<Area>lambdaUpdate()
-                    .eq(Area::getId, areaDto.getParentId())
-                    .set(Area::getIsFinal, false));
+        updateAreaIsFinal(areaDto.getParentId(), false);
         return area.getId();
     }
 
@@ -139,29 +137,20 @@ public class AreaService {
         //获取地区实体
         Area area = areaMapper.selectOne(Wrappers.<Area>lambdaQuery()
                 .eq(Area::getId, areaDto.getId()));
-        //更新父级的末端标志
-        if (!areaDto.getParentId().equals(area.getParentId())) {
-            areaMapper.update(null, Wrappers.<Area>lambdaUpdate()
-                        .eq(Area::getId, areaDto.getParentId())
-                    .set(Area::getIsFinal, false));
-            //更改原父级的末端标志(如果原父级只剩这个子级的话)
-            if (areaMapper.selectCount(Wrappers.<Area>lambdaQuery()
-                    .eq(Area::getParentId, area.getParentId()))
-                    == 1) {
-                areaMapper.update(null, Wrappers.<Area>lambdaUpdate()
-                        .eq(Area::getId, area.getParentId())
-                        .set(Area::getIsFinal, true));
-            }
-        }
         if (areaDto.getId().equals(areaDto.getParentId())) {
             throw new GenshinApiException("地区ID不允许与父ID相同，会造成自身父子");
+        }
+        //更新父级的末端标志
+        if (!areaDto.getParentId().equals(area.getParentId())) {
+            // 更改新父级的末端标识
+            updateAreaIsFinal(areaDto.getParentId(), false);
+            //更改原父级的末端标志(如果原父级只剩这个子级的话)
+            recalculateAreaIsFinal(area.getParentId(), true);
         }
         //更新实体
         BeanUtils.copyNotNull(areaDto.getEntity(),area);
         //判断是否是末端地区
-        area.setIsFinal(areaMapper.selectCount(Wrappers.<Area>lambdaQuery()
-                .eq(Area::getParentId, areaDto.getId()))
-                == 0);
+        updateAreaIsFinal(area);
         return areaMapper.updateById(area) == 1;
     }
 
@@ -191,17 +180,39 @@ public class AreaService {
         }
 
         //更新父地区是否为最终地区的标记
-        if(parentAreaId != null) {
-            final boolean parentIsFinal = areaMapper.selectCount(Wrappers.<Area>lambdaQuery()
-                .eq(Area::getParentId, parentAreaId))
-                == 0;
-            areaMapper.update(null, Wrappers.<Area>lambdaUpdate()
-                .eq(Area::getId, parentAreaId)
-                .set(Area::getIsFinal, parentIsFinal)
-            );
-        }
+        updateAreaIsFinal(parentAreaId, false);
 
         return true;
+    }
+
+    private void updateAreaIsFinal(Long parentId, boolean isFinal) {
+        if(parentId != null) {
+            areaMapper.update(null, Wrappers.<Area>lambdaUpdate()
+                .eq(Area::getId, parentId)
+                .set(Area::getIsFinal, isFinal));
+        }
+    }
+
+    private void updateAreaIsFinal(Area area) {
+        if(area != null) {
+            area.setIsFinal(areaMapper.selectCount(Wrappers.<Area>lambdaQuery()
+                .eq(Area::getParentId, area.getId()))
+                == 0);
+        }
+    }
+
+    private void recalculateAreaIsFinal(Long parentId, boolean beforeModify) {
+        if(parentId != null) {
+            if (
+                areaMapper.selectCount(Wrappers.<Area>lambdaQuery()
+                    .eq(Area::getParentId, parentId))
+                    == (beforeModify ? 1 : 0)
+            ) {
+                areaMapper.update(null, Wrappers.<Area>lambdaUpdate()
+                        .eq(Area::getId, parentId)
+                        .set(Area::getIsFinal, true));
+            }
+        }
     }
 
     private void deleteMarkerAndItemInArea(List<Long> areaIdList) {
