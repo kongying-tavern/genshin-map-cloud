@@ -97,18 +97,13 @@ public class ItemTypeService {
      */
     @Transactional
     public Long addItemType(ItemTypeDto itemTypeDto) {
-        ItemType itemType = itemTypeDto.getEntity();
-        //临时id
-//				.setTypeId(-1L);
+        ItemType itemType = itemTypeDto.getEntity()
+            .withIsFinal(true);
         itemTypeMapper.insert(itemType);
-        //正式更新id
-//		itemTypeMapper.updateById(itemType.setTypeId(itemType.getId()));
-        //设置父级
-        if (!itemType.getParentId().equals(-1L)) {
-            itemTypeMapper.update(null, Wrappers.<ItemType>lambdaUpdate()
-                    .eq(ItemType::getId, itemType.getParentId())
-                    .set(ItemType::getIsFinal, false));
-        }
+
+        //更新父级的末端标志
+        updateItemTypeIsFinal(itemTypeDto.getParentId(), false);
+
         return itemType.getId();
     }
 
@@ -209,6 +204,36 @@ public class ItemTypeService {
                     .map(ItemType::getId).distinct().collect(Collectors.toList());
         }
         return true;
+    }
+
+    private void updateItemTypeIsFinal(Long parentId, boolean isFinal) {
+            if(parentId != null && parentId > 0L) {
+            itemTypeMapper.update(null, Wrappers.<ItemType>lambdaUpdate()
+                .eq(ItemType::getId, parentId)
+                .set(ItemType::getIsFinal, isFinal));
+        }
+    }
+
+    private void updateItemTypeIsFinal(ItemType itemType) {
+        if(itemType != null) {
+            itemType.setIsFinal(itemTypeMapper.selectCount(Wrappers.<ItemType>lambdaQuery()
+                .eq(ItemType::getParentId, itemType.getId()))
+                == 0);
+        }
+    }
+
+    private void recalculateItemTypeIsFinal(Long parentId, boolean beforeModify) {
+        if(parentId != null) {
+            if (
+                itemTypeMapper.selectCount(Wrappers.<ItemType>lambdaQuery()
+                    .eq(ItemType::getParentId, parentId))
+                    == (beforeModify ? 1 : 0)
+            ) {
+                itemTypeMapper.update(null, Wrappers.<ItemType>lambdaUpdate()
+                        .eq(ItemType::getId, parentId)
+                        .set(ItemType::getIsFinal, true));
+            }
+        }
     }
 
 }
