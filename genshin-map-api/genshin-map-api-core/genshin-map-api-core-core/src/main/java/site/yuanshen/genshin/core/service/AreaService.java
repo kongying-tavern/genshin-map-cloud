@@ -186,7 +186,7 @@ public class AreaService {
     }
 
     private void updateAreaIsFinal(Long parentId, boolean isFinal) {
-        if(parentId != null) {
+        if(parentId != null && parentId > 0L) {
             areaMapper.update(null, Wrappers.<Area>lambdaUpdate()
                 .eq(Area::getId, parentId)
                 .set(Area::getIsFinal, isFinal));
