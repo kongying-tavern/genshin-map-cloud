@@ -99,6 +99,10 @@ public class AreaService {
             }
     )
     public Long createArea(AreaDto areaDto) {
+        if (Objects.equals(areaDto.getId(), areaDto.getParentId())) {
+            throw new GenshinApiException("地区ID不允许与父ID相同，会造成自身父子");
+        }
+
         Area area = areaDto.getEntity()
                 .withIsFinal(true);
         areaMapper.insert(area);
@@ -134,12 +138,13 @@ public class AreaService {
             }
     )
     public Boolean updateArea(AreaDto areaDto) {
+        if (Objects.equals(areaDto.getId(), areaDto.getParentId())) {
+            throw new GenshinApiException("地区ID不允许与父ID相同，会造成自身父子");
+        }
+
         //获取地区实体
         Area area = areaMapper.selectOne(Wrappers.<Area>lambdaQuery()
                 .eq(Area::getId, areaDto.getId()));
-        if (areaDto.getId().equals(areaDto.getParentId())) {
-            throw new GenshinApiException("地区ID不允许与父ID相同，会造成自身父子");
-        }
         //更新父级的末端标志
         if (!Objects.equals(area.getParentId(), areaDto.getParentId())) {
             // 更改新父级的末端标识
