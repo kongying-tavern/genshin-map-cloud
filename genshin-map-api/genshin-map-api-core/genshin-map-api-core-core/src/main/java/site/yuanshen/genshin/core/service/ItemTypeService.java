@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.dto.ItemTypeDto;
 import site.yuanshen.data.dto.helper.PageAndTypeSearchDto;
 import site.yuanshen.data.entity.ItemType;
@@ -19,6 +20,7 @@ import site.yuanshen.genshin.core.service.mbp.ItemTypeMBPService;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -118,35 +120,18 @@ public class ItemTypeService {
         //获取类型实体
         ItemType itemType = itemTypeMapper.selectOne(Wrappers.<ItemType>lambdaQuery()
                 .eq(ItemType::getId, itemTypeDto.getId()));
-        //设置内容 TODO 检查所有的set是否包含了所有的属性 或者直接替换成属性复制工具
-        itemType.setIconTag(itemTypeDto.getIconTag());
-        itemType.setName(itemTypeDto.getName());
-        itemType.setContent(itemTypeDto.getContent());
-        //判断是否是末端类型
-        itemType.setIsFinal(
-                itemTypeMapper.selectCount(Wrappers.<ItemType>lambdaQuery()
-                        .eq(ItemType::getParentId, itemType.getId()))
-                        <= 0);
-        //更改分类类型末端标志
-        if (!itemType.getParentId().equals(itemTypeDto.getParentId())) {
-            itemTypeMapper.update(null, Wrappers.<ItemType>lambdaUpdate()
-                    .eq(ItemType::getId, itemTypeDto.getParentId())
-                    .set(ItemType::getIsFinal, false));
+        //更新父级的末端标志
+        if (!Objects.equals(itemType.getParentId(), itemTypeDto.getParentId())) {
+            // 更改新父级的末端标识
+            updateItemTypeIsFinal(itemTypeDto.getParentId(), false);
             //更改原父级的末端标志(如果原父级只剩这个子级的话)
-            if (itemTypeMapper.selectCount(Wrappers.<ItemType>lambdaQuery()
-                    .eq(ItemType::getParentId, itemType.getParentId()))
-                    > 0) {
-                itemTypeMapper.update(null, Wrappers.<ItemType>lambdaUpdate()
-                        .eq(ItemType::getId, itemType.getParentId())
-                        .set(ItemType::getIsFinal, true));
-            } else {
-                itemTypeMapper.update(null, Wrappers.<ItemType>lambdaUpdate()
-                        .eq(ItemType::getId, itemType.getParentId())
-                        .set(ItemType::getIsFinal, false));
-            }
-            itemType.setParentId(itemTypeDto.getParentId());
+            recalculateItemTypeIsFinal(itemType.getParentId(), true);
         }
         //更新实体
+        //更新实体
+        BeanUtils.copyNotNull(itemTypeDto.getEntity(), itemType);
+        //判断是否是末端地区
+        updateItemTypeIsFinal(itemType);
         itemTypeMapper.updateById(itemType);
         return true;
     }
@@ -232,6 +217,10 @@ public class ItemTypeService {
                 itemTypeMapper.update(null, Wrappers.<ItemType>lambdaUpdate()
                         .eq(ItemType::getId, parentId)
                         .set(ItemType::getIsFinal, true));
+            } else {
+                itemTypeMapper.update(null, Wrappers.<ItemType>lambdaUpdate()
+                        .eq(ItemType::getId, parentId)
+                        .set(ItemType::getIsFinal, false));
             }
         }
     }
