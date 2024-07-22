@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import site.yuanshen.common.core.exception.GenshinApiException;
 import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.dto.ItemTypeDto;
 import site.yuanshen.data.dto.helper.PageAndTypeSearchDto;
@@ -99,6 +100,10 @@ public class ItemTypeService {
      */
     @Transactional
     public Long addItemType(ItemTypeDto itemTypeDto) {
+        if (Objects.equals(itemTypeDto.getId(), itemTypeDto.getParentId())) {
+            throw new GenshinApiException("物品类型ID不允许与父ID相同，会造成自身父子");
+        }
+
         ItemType itemType = itemTypeDto.getEntity()
             .withIsFinal(true);
         itemTypeMapper.insert(itemType);
@@ -117,6 +122,10 @@ public class ItemTypeService {
      */
     @Transactional
     public Boolean updateItemType(ItemTypeDto itemTypeDto) {
+        if (Objects.equals(itemTypeDto.getId(), itemTypeDto.getParentId())) {
+            throw new GenshinApiException("物品类型ID不允许与父ID相同，会造成自身父子");
+        }
+
         //获取类型实体
         ItemType itemType = itemTypeMapper.selectOne(Wrappers.<ItemType>lambdaQuery()
                 .eq(ItemType::getId, itemTypeDto.getId()));
