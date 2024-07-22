@@ -141,7 +141,7 @@ public class AreaService {
             throw new GenshinApiException("地区ID不允许与父ID相同，会造成自身父子");
         }
         //更新父级的末端标志
-        if (!areaDto.getParentId().equals(area.getParentId())) {
+        if (!Objects.equals(area.getParentId(), areaDto.getParentId())) {
             // 更改新父级的末端标识
             updateAreaIsFinal(areaDto.getParentId(), false);
             //更改原父级的末端标志(如果原父级只剩这个子级的话)
@@ -211,6 +211,10 @@ public class AreaService {
                 areaMapper.update(null, Wrappers.<Area>lambdaUpdate()
                         .eq(Area::getId, parentId)
                         .set(Area::getIsFinal, true));
+            } else {
+                areaMapper.update(null, Wrappers.<Area>lambdaUpdate()
+                        .eq(Area::getId, parentId)
+                        .set(Area::getIsFinal, false));
             }
         }
     }
