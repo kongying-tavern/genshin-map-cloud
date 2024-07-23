@@ -9,6 +9,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import site.yuanshen.common.core.exception.GenshinApiException;
 import site.yuanshen.data.dto.IconTypeDto;
 import site.yuanshen.data.dto.helper.PageAndTypeSearchDto;
 import site.yuanshen.data.entity.IconType;
@@ -20,6 +21,7 @@ import site.yuanshen.data.vo.helper.PageListVo;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -72,16 +74,17 @@ public class IconTypeService {
             }
     )
     public Long addIconType(IconTypeDto iconTypeDto) {
-        IconType iconType = iconTypeDto.getEntity()
-                .withIsFinal(true);
-        iconTypeMapper.insert(iconType);
-        //设置父级
-        if (!iconTypeDto.getParentId().equals(-1L)) {
-            iconTypeMapper.update(null, Wrappers.<IconType>lambdaUpdate()
-                    .eq(IconType::getId, iconTypeDto.getParentId())
-                    .set(IconType::getIsFinal, false)
-            );
+        if (Objects.equals(iconTypeDto.getId(), iconTypeDto.getParentId())) {
+            throw new GenshinApiException("图标类型ID不允许与父ID相同，会造成自身父子");
         }
+
+        IconType iconType = iconTypeDto.getEntity()
+            .withIsFinal(true);
+        iconTypeMapper.insert(iconType);
+
+        //更新父级的末端标志
+        updateIconTypeIsFinal(iconTypeDto.getParentId(), false);
+
         return iconType.getId();
     }
 
@@ -159,10 +162,44 @@ public class IconTypeService {
             //删除类型关联
             iconTypeLinkMapper.delete(Wrappers.<IconTypeLink>lambdaQuery().in(IconTypeLink::getTypeId, nowTypeIdList));
             //查找所有子级
-            nowTypeIdList = iconTypeMapper.selectList(Wrappers.<IconType>lambdaQuery().in(IconType::getParent, nowTypeIdList))
+            nowTypeIdList = iconTypeMapper.selectList(Wrappers.<IconType>lambdaQuery().in(IconType::getParentId, nowTypeIdList))
                     .parallelStream()
                     .map(IconType::getId).collect(Collectors.toList());
         }
         return true;
+    }
+
+    private void updateIconTypeIsFinal(Long parentId, boolean isFinal) {
+            if(parentId != null && parentId > 0L) {
+            iconTypeMapper.update(null, Wrappers.<IconType>lambdaUpdate()
+                .eq(IconType::getId, parentId)
+                .set(IconType::getIsFinal, isFinal));
+        }
+    }
+
+    private void updateIconTypeIsFinal(IconType iconType) {
+        if(iconType != null) {
+            iconType.setIsFinal(iconTypeMapper.selectCount(Wrappers.<IconType>lambdaQuery()
+                .eq(IconType::getParentId, iconType.getId()))
+                == 0);
+        }
+    }
+
+    private void recalculateIconTypeIsFinal(Long parentId, boolean beforeModify) {
+        if(parentId != null) {
+            if (
+                iconTypeMapper.selectCount(Wrappers.<IconType>lambdaQuery()
+                    .eq(IconType::getParentId, parentId))
+                    == (beforeModify ? 1 : 0)
+            ) {
+                iconTypeMapper.update(null, Wrappers.<IconType>lambdaUpdate()
+                        .eq(IconType::getId, parentId)
+                        .set(IconType::getIsFinal, true));
+            } else {
+                iconTypeMapper.update(null, Wrappers.<IconType>lambdaUpdate()
+                        .eq(IconType::getId, parentId)
+                        .set(IconType::getIsFinal, false));
+            }
+        }
     }
 }
