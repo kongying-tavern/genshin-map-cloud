@@ -185,7 +185,7 @@ public class AreaService {
         }
 
         //更新父地区是否为最终地区的标记
-        updateAreaIsFinal(parentAreaId, false);
+        recalculateAreaIsFinal(parentAreaId, false);
 
         return true;
     }
