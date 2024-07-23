@@ -17,8 +17,6 @@ import site.yuanshen.data.mapper.TagTypeLinkMapper;
 import site.yuanshen.data.mapper.TagTypeMapper;
 import site.yuanshen.data.vo.TagTypeVo;
 import site.yuanshen.data.vo.helper.PageListVo;
-import site.yuanshen.genshin.core.service.CacheService;
-import site.yuanshen.genshin.core.service.TagTypeService;
 import site.yuanshen.genshin.core.service.mbp.TagMBPService;
 import site.yuanshen.genshin.core.service.mbp.TagTypeLinkMBPService;
 import site.yuanshen.genshin.core.service.mbp.TagTypeMBPService;
@@ -55,7 +53,7 @@ public class TagTypeService {
     public PageListVo<TagTypeVo> listTagType(PageAndTypeSearchDto searchDto) {
         Page<TagType> tagTypePage = tagTypeMapper.selectPage(searchDto.getPageEntity(),
                 Wrappers.<TagType>lambdaQuery()
-                        .in(TagType::getParent,
+                        .in(TagType::getParentId,
                                 Optional.ofNullable(searchDto.getTypeIdList())
                                         .orElse(Collections.singletonList(-1L)))
         );
@@ -82,9 +80,9 @@ public class TagTypeService {
                 .withIsFinal(true);
         tagTypeMapper.insert(tagType);
         //设置父级
-        if (!tagTypeDto.getParent().equals(-1L)) {
+        if (!tagTypeDto.getParentId().equals(-1L)) {
             tagTypeMapper.update(null, Wrappers.<TagType>lambdaUpdate()
-                    .eq(TagType::getId, tagTypeDto.getParent())
+                    .eq(TagType::getId, tagTypeDto.getParentId())
                     .set(TagType::getIsFinal, false));
         }
         return tagType.getId();
@@ -107,22 +105,22 @@ public class TagTypeService {
         //判断是否是末端分类
         tagType.setIsFinal(
                 tagTypeMapper.selectOne(Wrappers.<TagType>lambdaQuery()
-                        .eq(TagType::getParent, tagTypeDto.getId()))
+                        .eq(TagType::getParentId, tagTypeDto.getId()))
                         == null);
         //更改分类父级
-        if (!tagTypeDto.getParent().equals(tagType.getParent())) {
+        if (!tagTypeDto.getParentId().equals(tagType.getParentId())) {
             tagTypeMapper.update(null, Wrappers.<TagType>lambdaUpdate()
-                    .eq(TagType::getId, tagTypeDto.getParent())
+                    .eq(TagType::getId, tagTypeDto.getParentId())
                     .set(TagType::getIsFinal, false));
             //更改原父级的末端标志(如果原父级只剩这个子级的话)
             if (tagTypeMapper.selectCount(Wrappers.<TagType>lambdaQuery()
-                    .eq(TagType::getParent, tagType.getParent()))
+                    .eq(TagType::getParentId, tagType.getParentId()))
                     == 1) {
                 tagTypeMapper.update(null, Wrappers.<TagType>lambdaUpdate()
-                        .eq(TagType::getId, tagType.getParent())
+                        .eq(TagType::getId, tagType.getParentId())
                         .set(TagType::getIsFinal, true));
             }
-            tagType.setParent(tagTypeDto.getParent());
+            tagType.setParentId(tagTypeDto.getParentId());
         }
         //更新实体
         tagTypeMapper.updateById(tagType);
@@ -146,7 +144,7 @@ public class TagTypeService {
             //删除类型关联
             tagTypeLinkMapper.delete(Wrappers.<TagTypeLink>lambdaQuery().in(TagTypeLink::getTypeId, nowTypeIdList));
             //查找所有子级
-            nowTypeIdList = tagTypeMapper.selectList(Wrappers.<TagType>lambdaQuery().in(TagType::getParent, nowTypeIdList))
+            nowTypeIdList = tagTypeMapper.selectList(Wrappers.<TagType>lambdaQuery().in(TagType::getParentId, nowTypeIdList))
                     .parallelStream()
                     .map(TagType::getId).collect(Collectors.toList());
         }

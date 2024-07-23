@@ -69,7 +69,7 @@ public class TagTypeVo {
      * 父级分类ID（-1为根分类）
      */
     @Schema(title = "父级分类ID（-1为根分类）")
-    private Long parent;
+    private Long parentId;
 
     /**
      * 是否为末端类型

@@ -44,7 +44,7 @@ public class IconTypeService {
     public PageListVo<IconTypeVo> listIconType(PageAndTypeSearchDto searchDto) {
         Page<IconType> iconTypePage = iconTypeMapper.selectPage(searchDto.getPageEntity(),
                 Wrappers.<IconType>lambdaQuery()
-                        .in(IconType::getParent,
+                        .in(IconType::getParentId,
                                 Optional.ofNullable(searchDto.getTypeIdList())
                                         .orElse(Collections.singletonList(-1L))));
         List<IconTypeVo> result = iconTypePage
@@ -76,9 +76,9 @@ public class IconTypeService {
                 .withIsFinal(true);
         iconTypeMapper.insert(iconType);
         //设置父级
-        if (!iconTypeDto.getParent().equals(-1L)) {
+        if (!iconTypeDto.getParentId().equals(-1L)) {
             iconTypeMapper.update(null, Wrappers.<IconType>lambdaUpdate()
-                    .eq(IconType::getId, iconTypeDto.getParent())
+                    .eq(IconType::getId, iconTypeDto.getParentId())
                     .set(IconType::getIsFinal, false)
             );
         }
@@ -113,23 +113,23 @@ public class IconTypeService {
         //判断是否是末端分类
         iconType.setIsFinal(
                 iconTypeMapper.selectCount(Wrappers.<IconType>lambdaQuery()
-                        .eq(IconType::getParent, iconTypeDto.getId()))
+                        .eq(IconType::getParentId, iconTypeDto.getId()))
                         > 0);
         //更改分类父级末端标志
-        if (!iconTypeDto.getParent().equals(iconType.getParent())) {
+        if (!iconTypeDto.getParentId().equals(iconType.getParentId())) {
             iconTypeMapper.update(null, Wrappers.<IconType>lambdaUpdate()
-                    .eq(IconType::getId, iconTypeDto.getParent())
+                    .eq(IconType::getId, iconTypeDto.getParentId())
                     .set(IconType::getIsFinal, false)
             );
             //更改原父级的末端标志(如果原父级只剩这个子级的话)
             if (iconTypeMapper.selectCount(Wrappers.<IconType>lambdaQuery()
-                    .eq(IconType::getParent, iconType.getParent()))
+                    .eq(IconType::getParentId, iconType.getParentId()))
                     == 1) {
                 iconTypeMapper.update(null, Wrappers.<IconType>lambdaUpdate()
-                        .eq(IconType::getId, iconType.getParent())
+                        .eq(IconType::getId, iconType.getParentId())
                         .set(IconType::getIsFinal, true));
             }
-            iconType.setParent(iconTypeDto.getParent());
+            iconType.setParentId(iconTypeDto.getParentId());
         }
         //更新实体
         iconTypeMapper.updateById(iconType);
