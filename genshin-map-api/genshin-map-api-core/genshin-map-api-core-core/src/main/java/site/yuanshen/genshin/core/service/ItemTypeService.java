@@ -1,5 +1,6 @@
 package site.yuanshen.genshin.core.service;
 
+import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
@@ -137,7 +138,6 @@ public class ItemTypeService {
             recalculateItemTypeIsFinal(itemType.getParentId(), true);
         }
         //更新实体
-        //更新实体
         BeanUtils.copyNotNull(itemTypeDto.getEntity(), itemType);
         //判断是否是末端地区
         updateItemTypeIsFinal(itemType);
@@ -154,27 +154,26 @@ public class ItemTypeService {
      */
     @Transactional
     public Boolean moveItemType(List<Long> itemTypeIdList, Long targetTypeId) {
-        //选取实体
+        if(CollUtil.contains(itemTypeIdList, targetTypeId)) {
+            throw new GenshinApiException("物品类型ID不允许与父ID相同，会造成自身父子");
+        }
+
+        // 获取实体
         List<ItemType> itemTypeList = itemTypeMapper.selectList(Wrappers.<ItemType>lambdaQuery()
                 .in(ItemType::getId, itemTypeIdList));
-        //读取父级
+        if(CollUtil.isEmpty(itemTypeList))
+            return true;
         List<Long> parentIdList = itemTypeList.parallelStream().map(ItemType::getParentId).distinct().collect(Collectors.toList());
-        //更改父级
-        itemTypeList = itemTypeList.parallelStream().peek(itemType -> itemType.setParentId(targetTypeId)).collect(Collectors.toList());
-        itemTypeMapper.update(null, Wrappers.<ItemType>lambdaUpdate()
-                .eq(ItemType::getId, targetTypeId)
-                .set(ItemType::getIsFinal, false));
+        //更新父级
+        updateItemTypeIsFinal(targetTypeId, false);
         //更新实体
+        itemTypeList = itemTypeList.parallelStream().peek(itemType -> itemType.setParentId(targetTypeId)).collect(Collectors.toList());
         itemTypeMBPService.updateBatchById(itemTypeList);
         //更新原父级
         parentIdList.parallelStream().forEach(parentId -> {
-            if (itemTypeMapper.selectCount(Wrappers.<ItemType>lambdaQuery()
-                    .eq(ItemType::getParentId, parentId)) == 0) {
-                itemTypeMapper.update(null, Wrappers.<ItemType>lambdaUpdate()
-                        .eq(ItemType::getId, parentId)
-                        .set(ItemType::getIsFinal, true));
-            }
+            recalculateItemTypeIsFinal(parentId, false);
         });
+
         return true;
     }
 
