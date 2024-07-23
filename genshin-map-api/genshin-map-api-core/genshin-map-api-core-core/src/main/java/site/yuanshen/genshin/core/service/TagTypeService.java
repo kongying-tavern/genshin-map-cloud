@@ -7,22 +7,19 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import site.yuanshen.common.core.exception.GenshinApiException;
 import site.yuanshen.data.dto.TagTypeDto;
 import site.yuanshen.data.dto.helper.PageAndTypeSearchDto;
 import site.yuanshen.data.entity.TagType;
 import site.yuanshen.data.entity.TagTypeLink;
-import site.yuanshen.data.mapper.IconMapper;
-import site.yuanshen.data.mapper.TagMapper;
 import site.yuanshen.data.mapper.TagTypeLinkMapper;
 import site.yuanshen.data.mapper.TagTypeMapper;
 import site.yuanshen.data.vo.TagTypeVo;
 import site.yuanshen.data.vo.helper.PageListVo;
-import site.yuanshen.genshin.core.service.mbp.TagMBPService;
-import site.yuanshen.genshin.core.service.mbp.TagTypeLinkMBPService;
-import site.yuanshen.genshin.core.service.mbp.TagTypeMBPService;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -35,13 +32,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class TagTypeService {
 
-    private final TagMapper tagMapper;
-    private final TagMBPService tagMBPService;
     private final TagTypeMapper tagTypeMapper;
-    private final TagTypeMBPService tagTypeMBPService;
     private final TagTypeLinkMapper tagTypeLinkMapper;
-    private final TagTypeLinkMBPService tagTypeLinkMBPService;
-    private final IconMapper iconMapper;
 
     /**
      * 列出分类
@@ -76,15 +68,17 @@ public class TagTypeService {
     @Transactional
     @CacheEvict(value = "listIconTagType", allEntries = true)
     public Long addTagType(TagTypeDto tagTypeDto) {
-        TagType tagType = tagTypeDto.getEntity()
-                .withIsFinal(true);
-        tagTypeMapper.insert(tagType);
-        //设置父级
-        if (!tagTypeDto.getParentId().equals(-1L)) {
-            tagTypeMapper.update(null, Wrappers.<TagType>lambdaUpdate()
-                    .eq(TagType::getId, tagTypeDto.getParentId())
-                    .set(TagType::getIsFinal, false));
+        if (Objects.equals(tagTypeDto.getId(), tagTypeDto.getParentId())) {
+            throw new GenshinApiException("标签类型ID不允许与父ID相同，会造成自身父子");
         }
+
+        TagType tagType = tagTypeDto.getEntity()
+            .withIsFinal(true);
+        tagTypeMapper.insert(tagType);
+
+        //更新父级的末端标志
+        updateTagTypeIsFinal(tagTypeDto.getParentId(), false);
+
         return tagType.getId();
     }
 
@@ -149,5 +143,39 @@ public class TagTypeService {
                     .map(TagType::getId).collect(Collectors.toList());
         }
         return true;
+    }
+
+    private void updateTagTypeIsFinal(Long parentId, boolean isFinal) {
+            if(parentId != null && parentId > 0L) {
+            tagTypeMapper.update(null, Wrappers.<TagType>lambdaUpdate()
+                .eq(TagType::getId, parentId)
+                .set(TagType::getIsFinal, isFinal));
+        }
+    }
+
+    private void updateTagTypeIsFinal(TagType tagType) {
+        if(tagType != null) {
+            tagType.setIsFinal(tagTypeMapper.selectCount(Wrappers.<TagType>lambdaQuery()
+                .eq(TagType::getParentId, tagType.getId()))
+                == 0);
+        }
+    }
+
+    private void recalculateTagTypeIsFinal(Long parentId, boolean beforeModify) {
+        if(parentId != null) {
+            if (
+                tagTypeMapper.selectCount(Wrappers.<TagType>lambdaQuery()
+                    .eq(TagType::getParentId, parentId))
+                    == (beforeModify ? 1 : 0)
+            ) {
+                tagTypeMapper.update(null, Wrappers.<TagType>lambdaUpdate()
+                        .eq(TagType::getId, parentId)
+                        .set(TagType::getIsFinal, true));
+            } else {
+                tagTypeMapper.update(null, Wrappers.<TagType>lambdaUpdate()
+                        .eq(TagType::getId, parentId)
+                        .set(TagType::getIsFinal, false));
+            }
+        }
     }
 }
