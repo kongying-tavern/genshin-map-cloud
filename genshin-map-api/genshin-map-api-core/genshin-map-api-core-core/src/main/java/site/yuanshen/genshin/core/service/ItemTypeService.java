@@ -4,7 +4,9 @@ import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.yuanshen.common.core.exception.GenshinApiException;
@@ -100,6 +102,12 @@ public class ItemTypeService {
      * @return 新物品类型ID
      */
     @Transactional
+    @Caching(
+            evict = {
+                @CacheEvict(value = "listItemType", allEntries = true),
+                @CacheEvict(value = "listAllItemType", allEntries = true)
+            }
+    )
     public Long addItemType(ItemTypeDto itemTypeDto) {
         if (Objects.equals(itemTypeDto.getId(), itemTypeDto.getParentId())) {
             throw new GenshinApiException("物品类型ID不允许与父ID相同，会造成自身父子");
@@ -122,6 +130,12 @@ public class ItemTypeService {
      * @return 是否成功
      */
     @Transactional
+    @Caching(
+            evict = {
+                @CacheEvict(value = "listItemType", allEntries = true),
+                @CacheEvict(value = "listAllItemType", allEntries = true)
+            }
+    )
     public Boolean updateItemType(ItemTypeDto itemTypeDto) {
         if (Objects.equals(itemTypeDto.getId(), itemTypeDto.getParentId())) {
             throw new GenshinApiException("物品类型ID不允许与父ID相同，会造成自身父子");
@@ -152,6 +166,12 @@ public class ItemTypeService {
      * @return 是否成功
      */
     @Transactional
+    @Caching(
+            evict = {
+                @CacheEvict(value = "listItemType", allEntries = true),
+                @CacheEvict(value = "listAllItemType", allEntries = true)
+            }
+    )
     public Boolean moveItemType(List<Long> itemTypeIdList, Long targetTypeId) {
         if(CollUtil.contains(itemTypeIdList, targetTypeId)) {
             throw new GenshinApiException("物品类型ID不允许与父ID相同，会造成自身父子");
@@ -183,6 +203,12 @@ public class ItemTypeService {
      * @return 是否成功
      */
     @Transactional
+    @Caching(
+            evict = {
+                @CacheEvict(value = "listItemType", allEntries = true),
+                @CacheEvict(value = "listAllItemType", allEntries = true)
+            }
+    )
     public Boolean deleteItemType(Long itemTypeId) {
         final Long parentItemTypeId = itemTypeMapper.selectById(itemTypeId).getParentId();
 
