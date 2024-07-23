@@ -10,6 +10,7 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.yuanshen.common.core.exception.GenshinApiException;
+import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.dto.IconTypeDto;
 import site.yuanshen.data.dto.helper.PageAndTypeSearchDto;
 import site.yuanshen.data.entity.IconType;
@@ -103,38 +104,27 @@ public class IconTypeService {
             }
     )
     public Boolean updateIconType(IconTypeDto iconTypeDto) {
+        if (Objects.equals(iconTypeDto.getId(), iconTypeDto.getParentId())) {
+            throw new GenshinApiException("图标类型ID不允许与父ID相同，会造成自身父子");
+        }
+
         //获取图标分类实体
         IconType iconType = iconTypeMapper.selectOne(Wrappers.<IconType>lambdaQuery()
                 .eq(IconType::getId, iconTypeDto.getId()));
-
         if(ObjUtil.isNull(iconType)){
             return false;
         }
 
-        //更改名称
-        iconType.setName(iconTypeDto.getName());
-        //判断是否是末端分类
-        iconType.setIsFinal(
-                iconTypeMapper.selectCount(Wrappers.<IconType>lambdaQuery()
-                        .eq(IconType::getParentId, iconTypeDto.getId()))
-                        > 0);
-        //更改分类父级末端标志
-        if (!iconTypeDto.getParentId().equals(iconType.getParentId())) {
-            iconTypeMapper.update(null, Wrappers.<IconType>lambdaUpdate()
-                    .eq(IconType::getId, iconTypeDto.getParentId())
-                    .set(IconType::getIsFinal, false)
-            );
+        //更新父级的末端标志
+        if (!Objects.equals(iconType.getParentId(), iconTypeDto.getParentId())) {
+            // 更改新父级的末端标识
+            updateIconTypeIsFinal(iconTypeDto.getParentId(), false);
             //更改原父级的末端标志(如果原父级只剩这个子级的话)
-            if (iconTypeMapper.selectCount(Wrappers.<IconType>lambdaQuery()
-                    .eq(IconType::getParentId, iconType.getParentId()))
-                    == 1) {
-                iconTypeMapper.update(null, Wrappers.<IconType>lambdaUpdate()
-                        .eq(IconType::getId, iconType.getParentId())
-                        .set(IconType::getIsFinal, true));
-            }
-            iconType.setParentId(iconTypeDto.getParentId());
+            recalculateIconTypeIsFinal(iconType.getParentId(), true);
         }
         //更新实体
+        BeanUtils.copyNotNull(iconTypeDto.getEntity(), iconType);
+        updateIconTypeIsFinal(iconType);
         iconTypeMapper.updateById(iconType);
         return true;
     }
