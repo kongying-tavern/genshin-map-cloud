@@ -8,6 +8,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.yuanshen.common.core.exception.GenshinApiException;
+import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.dto.TagTypeDto;
 import site.yuanshen.data.dto.helper.PageAndTypeSearchDto;
 import site.yuanshen.data.entity.TagType;
@@ -91,32 +92,24 @@ public class TagTypeService {
     @Transactional
     @CacheEvict(value = "listIconTagType", allEntries = true)
     public Boolean updateTagType(TagTypeDto tagTypeDto) {
+        if (Objects.equals(tagTypeDto.getId(), tagTypeDto.getParentId())) {
+            throw new GenshinApiException("标签类型ID不允许与父ID相同，会造成自身父子");
+        }
+
         //获取标签分类实体
         TagType tagType = tagTypeMapper.selectOne(Wrappers.<TagType>lambdaQuery()
                 .eq(TagType::getId, tagTypeDto.getId()));
-        //更改名称
-        tagType.setName(tagTypeDto.getName());
-        //判断是否是末端分类
-        tagType.setIsFinal(
-                tagTypeMapper.selectOne(Wrappers.<TagType>lambdaQuery()
-                        .eq(TagType::getParentId, tagTypeDto.getId()))
-                        == null);
-        //更改分类父级
-        if (!tagTypeDto.getParentId().equals(tagType.getParentId())) {
-            tagTypeMapper.update(null, Wrappers.<TagType>lambdaUpdate()
-                    .eq(TagType::getId, tagTypeDto.getParentId())
-                    .set(TagType::getIsFinal, false));
+
+        //更新父级的末端标志
+        if (!Objects.equals(tagType.getParentId(), tagTypeDto.getParentId())) {
+            // 更改新父级的末端标识
+            updateTagTypeIsFinal(tagTypeDto.getParentId(), false);
             //更改原父级的末端标志(如果原父级只剩这个子级的话)
-            if (tagTypeMapper.selectCount(Wrappers.<TagType>lambdaQuery()
-                    .eq(TagType::getParentId, tagType.getParentId()))
-                    == 1) {
-                tagTypeMapper.update(null, Wrappers.<TagType>lambdaUpdate()
-                        .eq(TagType::getId, tagType.getParentId())
-                        .set(TagType::getIsFinal, true));
-            }
-            tagType.setParentId(tagTypeDto.getParentId());
+            recalculateTagTypeIsFinal(tagType.getParentId(), true);
         }
         //更新实体
+        BeanUtils.copyNotNull(tagTypeDto.getEntity(), tagType);
+        updateTagTypeIsFinal(tagType);
         tagTypeMapper.updateById(tagType);
         return true;
     }
