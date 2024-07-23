@@ -66,7 +66,7 @@ public class TagTypeDto {
     /**
      * 父级分类ID（-1为根分类）
      */
-    private Long parent;
+    private Long parentId;
 
     /**
      * 是否为末端类型
