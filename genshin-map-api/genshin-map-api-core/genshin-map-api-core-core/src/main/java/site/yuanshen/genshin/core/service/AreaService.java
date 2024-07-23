@@ -184,7 +184,7 @@ public class AreaService {
                     .parallelStream().map(Area::getId).collect(Collectors.toList());
         }
 
-        //更新父地区是否为最终地区的标记
+        //更新父级标记
         recalculateAreaIsFinal(parentAreaId, false);
 
         return true;

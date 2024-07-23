@@ -185,6 +185,8 @@ public class ItemTypeService {
      */
     @Transactional
     public Boolean deleteItemType(Long itemTypeId) {
+        final Long parentItemTypeId = itemTypeMapper.selectById(itemTypeId).getParentId();
+
         List<Long> nowTypeIdList = Collections.singletonList(itemTypeId);
         while (!nowTypeIdList.isEmpty()) {
             //删除类型信息
@@ -196,6 +198,10 @@ public class ItemTypeService {
                     .parallelStream()
                     .map(ItemType::getId).distinct().collect(Collectors.toList());
         }
+
+        //更新父级标记
+        recalculateItemTypeIsFinal(parentItemTypeId, false);
+
         return true;
     }
 
