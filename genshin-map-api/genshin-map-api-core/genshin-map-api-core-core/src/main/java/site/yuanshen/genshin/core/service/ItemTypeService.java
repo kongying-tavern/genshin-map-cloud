@@ -139,7 +139,6 @@ public class ItemTypeService {
         }
         //更新实体
         BeanUtils.copyNotNull(itemTypeDto.getEntity(), itemType);
-        //判断是否是末端地区
         updateItemTypeIsFinal(itemType);
         itemTypeMapper.updateById(itemType);
         return true;

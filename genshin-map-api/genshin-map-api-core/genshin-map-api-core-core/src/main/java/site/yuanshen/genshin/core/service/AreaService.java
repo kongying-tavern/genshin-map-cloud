@@ -154,7 +154,6 @@ public class AreaService {
         }
         //更新实体
         BeanUtils.copyNotNull(areaDto.getEntity(),area);
-        //判断是否是末端地区
         updateAreaIsFinal(area);
         return areaMapper.updateById(area) == 1;
     }
