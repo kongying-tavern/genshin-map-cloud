@@ -132,7 +132,7 @@ public class IconTypeService {
     /**
      * 删除分类，递归删除
      *
-     * @param typeId 图标分类ID
+     * @param iconTypeId 图标分类ID
      * @return 是否成功
      */
     @Transactional
@@ -143,9 +143,10 @@ public class IconTypeService {
                     @CacheEvict(value = "listIconType", allEntries = true)
             }
     )
-    public Boolean deleteIconType(Long typeId) {
-        //用于递归遍历删除的类型ID列表
-        List<Long> nowTypeIdList = Collections.singletonList(typeId);
+    public Boolean deleteIconType(Long iconTypeId) {
+        final Long parentIconTypeId = iconTypeMapper.selectById(iconTypeId).getParentId();
+
+        List<Long> nowTypeIdList = Collections.singletonList(iconTypeId);
         while (!nowTypeIdList.isEmpty()) {
             //删除类型信息
             iconTypeMapper.delete(Wrappers.<IconType>lambdaQuery().in(IconType::getId, nowTypeIdList));
@@ -156,6 +157,10 @@ public class IconTypeService {
                     .parallelStream()
                     .map(IconType::getId).collect(Collectors.toList());
         }
+
+        //更新父级标记
+        recalculateIconTypeIsFinal(parentIconTypeId, false);
+
         return true;
     }
 
