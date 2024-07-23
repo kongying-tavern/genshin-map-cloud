@@ -117,14 +117,15 @@ public class TagTypeService {
     /**
      * 删除分类，递归删除
      *
-     * @param typeId 图标标签分类ID
+     * @param tagTypeId 图标标签分类ID
      * @return 是否成功
      */
     @Transactional
     @CacheEvict(value = "listIconTagType", allEntries = true)
-    public Boolean deleteTagType(Long typeId) {
-        //用于递归遍历删除的类型ID列表
-        List<Long> nowTypeIdList = Collections.singletonList(typeId);
+    public Boolean deleteTagType(Long tagTypeId) {
+        final Long parentTagTypeId = tagTypeMapper.selectById(tagTypeId).getParentId();
+
+        List<Long> nowTypeIdList = Collections.singletonList(tagTypeId);
         while (!nowTypeIdList.isEmpty()) {
             //删除类型信息
             tagTypeMapper.delete(Wrappers.<TagType>lambdaQuery().in(TagType::getId, nowTypeIdList));
@@ -135,6 +136,10 @@ public class TagTypeService {
                     .parallelStream()
                     .map(TagType::getId).collect(Collectors.toList());
         }
+
+        //更新父级标记
+        recalculateTagTypeIsFinal(parentTagTypeId, false);
+
         return true;
     }
 
