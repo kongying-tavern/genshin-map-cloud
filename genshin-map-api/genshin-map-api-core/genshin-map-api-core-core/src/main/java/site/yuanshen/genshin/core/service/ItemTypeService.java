@@ -1,11 +1,16 @@
 package site.yuanshen.genshin.core.service;
 
+import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import site.yuanshen.common.core.exception.GenshinApiException;
+import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.dto.ItemTypeDto;
 import site.yuanshen.data.dto.helper.PageAndTypeSearchDto;
 import site.yuanshen.data.entity.ItemType;
@@ -19,6 +24,7 @@ import site.yuanshen.genshin.core.service.mbp.ItemTypeMBPService;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -96,19 +102,24 @@ public class ItemTypeService {
      * @return 新物品类型ID
      */
     @Transactional
+    @Caching(
+            evict = {
+                @CacheEvict(value = "listItemType", allEntries = true),
+                @CacheEvict(value = "listAllItemType", allEntries = true)
+            }
+    )
     public Long addItemType(ItemTypeDto itemTypeDto) {
-        ItemType itemType = itemTypeDto.getEntity();
-        //临时id
-//				.setTypeId(-1L);
-        itemTypeMapper.insert(itemType);
-        //正式更新id
-//		itemTypeMapper.updateById(itemType.setTypeId(itemType.getId()));
-        //设置父级
-        if (!itemType.getParentId().equals(-1L)) {
-            itemTypeMapper.update(null, Wrappers.<ItemType>lambdaUpdate()
-                    .eq(ItemType::getId, itemType.getParentId())
-                    .set(ItemType::getIsFinal, false));
+        if (Objects.equals(itemTypeDto.getId(), itemTypeDto.getParentId())) {
+            throw new GenshinApiException("物品类型ID不允许与父ID相同，会造成自身父子");
         }
+
+        ItemType itemType = itemTypeDto.getEntity()
+            .withIsFinal(true);
+        itemTypeMapper.insert(itemType);
+
+        //更新父级的末端标志
+        updateItemTypeIsFinal(itemTypeDto.getParentId(), false);
+
         return itemType.getId();
     }
 
@@ -119,39 +130,30 @@ public class ItemTypeService {
      * @return 是否成功
      */
     @Transactional
+    @Caching(
+            evict = {
+                @CacheEvict(value = "listItemType", allEntries = true),
+                @CacheEvict(value = "listAllItemType", allEntries = true)
+            }
+    )
     public Boolean updateItemType(ItemTypeDto itemTypeDto) {
+        if (Objects.equals(itemTypeDto.getId(), itemTypeDto.getParentId())) {
+            throw new GenshinApiException("物品类型ID不允许与父ID相同，会造成自身父子");
+        }
+
         //获取类型实体
         ItemType itemType = itemTypeMapper.selectOne(Wrappers.<ItemType>lambdaQuery()
                 .eq(ItemType::getId, itemTypeDto.getId()));
-        //设置内容 TODO 检查所有的set是否包含了所有的属性 或者直接替换成属性复制工具
-        itemType.setIconTag(itemTypeDto.getIconTag());
-        itemType.setName(itemTypeDto.getName());
-        itemType.setContent(itemTypeDto.getContent());
-        //判断是否是末端类型
-        itemType.setIsFinal(
-                itemTypeMapper.selectCount(Wrappers.<ItemType>lambdaQuery()
-                        .eq(ItemType::getParentId, itemType.getId()))
-                        <= 0);
-        //更改分类类型末端标志
-        if (!itemType.getParentId().equals(itemTypeDto.getParentId())) {
-            itemTypeMapper.update(null, Wrappers.<ItemType>lambdaUpdate()
-                    .eq(ItemType::getId, itemTypeDto.getParentId())
-                    .set(ItemType::getIsFinal, false));
+        //更新父级的末端标志
+        if (!Objects.equals(itemType.getParentId(), itemTypeDto.getParentId())) {
+            // 更改新父级的末端标识
+            updateItemTypeIsFinal(itemTypeDto.getParentId(), false);
             //更改原父级的末端标志(如果原父级只剩这个子级的话)
-            if (itemTypeMapper.selectCount(Wrappers.<ItemType>lambdaQuery()
-                    .eq(ItemType::getParentId, itemType.getParentId()))
-                    > 0) {
-                itemTypeMapper.update(null, Wrappers.<ItemType>lambdaUpdate()
-                        .eq(ItemType::getId, itemType.getParentId())
-                        .set(ItemType::getIsFinal, true));
-            } else {
-                itemTypeMapper.update(null, Wrappers.<ItemType>lambdaUpdate()
-                        .eq(ItemType::getId, itemType.getParentId())
-                        .set(ItemType::getIsFinal, false));
-            }
-            itemType.setParentId(itemTypeDto.getParentId());
+            recalculateItemTypeIsFinal(itemType.getParentId(), true);
         }
         //更新实体
+        BeanUtils.copyNotNull(itemTypeDto.getEntity(), itemType);
+        updateItemTypeIsFinal(itemType);
         itemTypeMapper.updateById(itemType);
         return true;
     }
@@ -164,28 +166,33 @@ public class ItemTypeService {
      * @return 是否成功
      */
     @Transactional
+    @Caching(
+            evict = {
+                @CacheEvict(value = "listItemType", allEntries = true),
+                @CacheEvict(value = "listAllItemType", allEntries = true)
+            }
+    )
     public Boolean moveItemType(List<Long> itemTypeIdList, Long targetTypeId) {
-        //选取实体
+        if(CollUtil.contains(itemTypeIdList, targetTypeId)) {
+            throw new GenshinApiException("物品类型ID不允许与父ID相同，会造成自身父子");
+        }
+
+        // 获取实体
         List<ItemType> itemTypeList = itemTypeMapper.selectList(Wrappers.<ItemType>lambdaQuery()
                 .in(ItemType::getId, itemTypeIdList));
-        //读取父级
+        if(CollUtil.isEmpty(itemTypeList))
+            return true;
         List<Long> parentIdList = itemTypeList.parallelStream().map(ItemType::getParentId).distinct().collect(Collectors.toList());
-        //更改父级
-        itemTypeList = itemTypeList.parallelStream().peek(itemType -> itemType.setParentId(targetTypeId)).collect(Collectors.toList());
-        itemTypeMapper.update(null, Wrappers.<ItemType>lambdaUpdate()
-                .eq(ItemType::getId, targetTypeId)
-                .set(ItemType::getIsFinal, false));
+        //更新父级
+        updateItemTypeIsFinal(targetTypeId, false);
         //更新实体
+        itemTypeList = itemTypeList.parallelStream().peek(itemType -> itemType.setParentId(targetTypeId)).collect(Collectors.toList());
         itemTypeMBPService.updateBatchById(itemTypeList);
         //更新原父级
         parentIdList.parallelStream().forEach(parentId -> {
-            if (itemTypeMapper.selectCount(Wrappers.<ItemType>lambdaQuery()
-                    .eq(ItemType::getParentId, parentId)) == 0) {
-                itemTypeMapper.update(null, Wrappers.<ItemType>lambdaUpdate()
-                        .eq(ItemType::getId, parentId)
-                        .set(ItemType::getIsFinal, true));
-            }
+            recalculateItemTypeIsFinal(parentId, false);
         });
+
         return true;
     }
 
@@ -196,7 +203,15 @@ public class ItemTypeService {
      * @return 是否成功
      */
     @Transactional
+    @Caching(
+            evict = {
+                @CacheEvict(value = "listItemType", allEntries = true),
+                @CacheEvict(value = "listAllItemType", allEntries = true)
+            }
+    )
     public Boolean deleteItemType(Long itemTypeId) {
+        final Long parentItemTypeId = itemTypeMapper.selectById(itemTypeId).getParentId();
+
         List<Long> nowTypeIdList = Collections.singletonList(itemTypeId);
         while (!nowTypeIdList.isEmpty()) {
             //删除类型信息
@@ -208,7 +223,45 @@ public class ItemTypeService {
                     .parallelStream()
                     .map(ItemType::getId).distinct().collect(Collectors.toList());
         }
+
+        //更新父级标记
+        recalculateItemTypeIsFinal(parentItemTypeId, false);
+
         return true;
+    }
+
+    private void updateItemTypeIsFinal(Long parentId, boolean isFinal) {
+            if(parentId != null && parentId > 0L) {
+            itemTypeMapper.update(null, Wrappers.<ItemType>lambdaUpdate()
+                .eq(ItemType::getId, parentId)
+                .set(ItemType::getIsFinal, isFinal));
+        }
+    }
+
+    private void updateItemTypeIsFinal(ItemType itemType) {
+        if(itemType != null) {
+            itemType.setIsFinal(itemTypeMapper.selectCount(Wrappers.<ItemType>lambdaQuery()
+                .eq(ItemType::getParentId, itemType.getId()))
+                == 0);
+        }
+    }
+
+    private void recalculateItemTypeIsFinal(Long parentId, boolean beforeModify) {
+        if(parentId != null) {
+            if (
+                itemTypeMapper.selectCount(Wrappers.<ItemType>lambdaQuery()
+                    .eq(ItemType::getParentId, parentId))
+                    == (beforeModify ? 1 : 0)
+            ) {
+                itemTypeMapper.update(null, Wrappers.<ItemType>lambdaUpdate()
+                        .eq(ItemType::getId, parentId)
+                        .set(ItemType::getIsFinal, true));
+            } else {
+                itemTypeMapper.update(null, Wrappers.<ItemType>lambdaUpdate()
+                        .eq(ItemType::getId, parentId)
+                        .set(ItemType::getIsFinal, false));
+            }
+        }
     }
 
 }
