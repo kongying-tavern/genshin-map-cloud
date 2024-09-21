@@ -28,11 +28,27 @@ public class MarkerLinkageGraphGrouper {
         return caches;
     }
 
+    public static List<AccumulatorCache> withDirected(List<AccumulatorCache> caches) {
+        return caches;
+    }
+
     public static List<AccumulatorCache> withEquivalent(List<AccumulatorCache> caches) {
         return caches;
     }
 
-    // 辅助方法
+    public static List<AccumulatorCache> withPathUniDir(List<AccumulatorCache> caches) {
+        return caches;
+    }
+
+    public static List<AccumulatorCache> withPathBiDir(List<AccumulatorCache> caches) {
+        return caches;
+    }
+
+    /**
+     * --------------------------------------------------
+     * Helper Functions
+     * --------------------------------------------------
+     */
     private static List<AccumulatorCache> groupByTriggers(List<AccumulatorCache> caches) {
         final Map<String, String> keyMap = new HashMap<>();
         final Map<String, AccumulatorCache> cacheMap = new HashMap<>();

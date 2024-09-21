@@ -41,6 +41,21 @@ public enum LinkActionEnum implements IEnum<String> {
             MarkerLinkageGraphGrouper::withRelated,
             MarkerLinkageGraphDistributor::withRelated
     ),
+    DIRECTED(
+            MarkerLinkageGraphAccumulator::withDirected,
+            MarkerLinkageGraphGrouper::withDirected,
+            MarkerLinkageGraphDistributor::withDirected
+    ),
+    PATH_UNI_DIR(
+            MarkerLinkageGraphAccumulator::withPathUniDir,
+            MarkerLinkageGraphGrouper::withPathUniDir,
+            MarkerLinkageGraphDistributor::withPathUniDir
+    ),
+    PATH_BI_DIR(
+            MarkerLinkageGraphAccumulator::withPathBiDir,
+            MarkerLinkageGraphGrouper::withPathBiDir,
+            MarkerLinkageGraphDistributor::withPathBiDir
+    ),
     EQUIVALENT(
             MarkerLinkageGraphAccumulator::withEquivalent,
             MarkerLinkageGraphGrouper::withEquivalent,
