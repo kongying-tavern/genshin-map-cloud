@@ -7,6 +7,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import site.yuanshen.data.enums.HistoryEditType;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 @Data
@@ -50,6 +51,18 @@ public class HistorySearchVo {
      */
     @Schema(title = "创建人ID")
     private Long creatorId;
+
+    /**
+     * 创建时间开始时间
+     */
+    @Schema(title = "创建时间开始时间")
+    private Timestamp createTimeStart;
+
+    /**
+     * 创建时间结束时间
+     */
+    @Schema(title = "创建时间结束时间")
+    private Timestamp createTimeEnd;
 
     /**
      * 排序条件
