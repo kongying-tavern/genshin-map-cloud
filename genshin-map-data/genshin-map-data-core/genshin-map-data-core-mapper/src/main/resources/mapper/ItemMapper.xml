@@ -41,8 +41,15 @@
                 and i.name LIKE #{itemSearchName}
             </if>
         </where>
-        order by i.id)
-        order by id
+        )
+        <choose>
+            <when test="ew.customSqlSegment == null or ew.customSqlSegment == ''">
+                ORDER BY id ASC
+            </when>
+            <otherwise>
+                ${ew.customSqlSegment},id ASC
+            </otherwise>
+        </choose>
     </select>
 
     <select id="selectListWithLargeIn" resultType="site.yuanshen.data.entity.Item">
