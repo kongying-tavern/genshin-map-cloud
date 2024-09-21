@@ -51,4 +51,10 @@ public class ItemSearchVo {
     @Schema(title = "每页大小，默认为10")
     private Long size;
 
+    /**
+     * 排序条件
+     */
+    @Schema(title = "排序条件")
+    private List<String> sort;
+
 }

@@ -58,10 +58,14 @@ public class ItemSearchDto {
     @Schema(title = "每页大小，默认为10")
     private Long size = 10L;
 
+    /**
+     * 排序条件
+     */
+    @Schema(title = "排序条件")
+    private List<String> sort;
 
     @Schema(title = "数据等级(hidden_flag范围)")
     private List<Integer> hiddenFlagList;
-
 
     public ItemSearchDto(ItemSearchVo itemSearchVo) {
         BeanUtils.copyNotNull(itemSearchVo, this);
