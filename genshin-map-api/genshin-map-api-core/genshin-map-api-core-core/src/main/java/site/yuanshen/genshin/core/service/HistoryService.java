@@ -37,7 +37,9 @@ public class HistoryService extends ServiceImpl<HistoryMapper, History> {
 
         LambdaQueryWrapper<History> queryWrapper = wrapper.lambda()
                 .eq(ObjectUtil.isNotNull(historySearchDto.getType()), History::getType, historySearchDto.getType())
-                .in(!historySearchDto.getId().isEmpty(), History::getTId, historySearchDto.getId());
+                .in(!historySearchDto.getId().isEmpty(), History::getTId, historySearchDto.getId())
+                .eq(ObjectUtil.isNotNull(historySearchDto.getEditType()), History::getEditType, historySearchDto.getEditType())
+                .eq(ObjectUtil.isNotNull(historySearchDto.getCreatorId()), History::getCreatorId, historySearchDto.getCreatorId());
 
         Page<History> historyPage = historyMapper.selectPage(historySearchDto.getPageEntity(), queryWrapper);
 

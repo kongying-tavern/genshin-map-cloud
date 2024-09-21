@@ -10,6 +10,7 @@ import lombok.With;
 import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.dto.helper.PageSearchDto;
 import site.yuanshen.data.entity.History;
+import site.yuanshen.data.enums.HistoryEditType;
 import site.yuanshen.data.vo.HistorySearchVo;
 
 import java.util.ArrayList;
@@ -35,6 +36,18 @@ public class HistorySearchDto extends PageSearchDto {
     private List<Long> id = new ArrayList<>();
 
     /**
+     * 操作数据类型
+     */
+    @Schema(title = "操作数据类型")
+    private HistoryEditType editType;
+
+    /**
+     * 创建人ID
+     */
+    @Schema(title = "创建人ID")
+    private Long creatorId;
+
+    /**`
      * 排序条件
      */
     @Schema(title = "排序条件")

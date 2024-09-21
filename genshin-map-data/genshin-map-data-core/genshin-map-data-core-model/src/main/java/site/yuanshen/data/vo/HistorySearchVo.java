@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import site.yuanshen.data.enums.HistoryEditType;
 
 import java.util.List;
 
@@ -37,6 +38,18 @@ public class HistorySearchVo {
      */
     @Schema(title = "类型ID(配合记录类型使用)")
     private List<Long> id;
+
+    /**
+     * 操作数据类型
+     */
+    @Schema(title = "操作数据类型")
+    private HistoryEditType editType;
+
+    /**
+     * 创建人ID
+     */
+    @Schema(title = "创建人ID")
+    private Long creatorId;
 
     /**
      * 排序条件
