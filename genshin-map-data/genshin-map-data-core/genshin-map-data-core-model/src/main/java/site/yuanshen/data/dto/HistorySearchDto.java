@@ -10,8 +10,10 @@ import lombok.With;
 import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.dto.helper.PageSearchDto;
 import site.yuanshen.data.entity.History;
+import site.yuanshen.data.enums.HistoryEditType;
 import site.yuanshen.data.vo.HistorySearchVo;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +37,30 @@ public class HistorySearchDto extends PageSearchDto {
     private List<Long> id = new ArrayList<>();
 
     /**
+     * 操作数据类型
+     */
+    @Schema(title = "操作数据类型")
+    private HistoryEditType editType;
+
+    /**
+     * 创建人ID
+     */
+    @Schema(title = "创建人ID")
+    private Long creatorId;
+
+    /**
+     * 创建时间开始时间
+     */
+    @Schema(title = "创建时间开始时间")
+    private Timestamp createTimeStart;
+
+    /**
+     * 创建时间结束时间
+     */
+    @Schema(title = "创建时间结束时间")
+    private Timestamp createTimeEnd;
+
+    /**`
      * 排序条件
      */
     @Schema(title = "排序条件")

@@ -1,6 +1,7 @@
 package site.yuanshen.genshin.core.service;
 
 import cn.hutool.core.util.ObjUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
@@ -8,6 +9,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.yuanshen.common.core.exception.GenshinApiException;
+import site.yuanshen.common.core.utils.PgsqlUtils;
 import site.yuanshen.data.dto.ItemDto;
 import site.yuanshen.data.dto.ItemSearchDto;
 import site.yuanshen.data.entity.*;
@@ -82,8 +84,16 @@ public class ItemService {
      */
     @Cacheable("listItem")
     public PageListVo<ItemVo> listItem(ItemSearchDto itemSearchDto) {
-//        itemSearchDto.setIsTestUser(Boolean.TRUE);
-        Page<Item> itemPage = itemMapper.selectPageItem(itemSearchDto.getPageEntity(), itemSearchDto);
+        QueryWrapper<Item> wrapper = Wrappers.<Item>query();
+        // 处理排序
+        final List<PgsqlUtils.Sort<Item>> sortList = PgsqlUtils.toSortConfigurations(
+            itemSearchDto.getSort(),
+            PgsqlUtils.SortConfig.<Item>create()
+                .addEntry(PgsqlUtils.SortConfigItem.<Item>create().withProp("sortIndex"))
+        );
+        wrapper = PgsqlUtils.sortWrapper(wrapper, sortList);
+
+        Page<Item> itemPage = itemMapper.selectPageItem(itemSearchDto.getPageEntity(), itemSearchDto, wrapper.lambda());
         itemPage.setRecords(itemPage.getRecords().parallelStream().distinct().collect(Collectors.toList()));
         if (itemPage.getTotal() == 0L)
             return new PageListVo<ItemVo>().setRecord(new ArrayList<>()).setSize(itemPage.getSize()).setTotal(0L);
@@ -99,8 +109,6 @@ public class ItemService {
             typeList.add(typeLink.getTypeId());
             itemToTypeMap.put(itemId, typeList);
         }
-
-
 
         //先过滤出正常点位
         //计算各个物品在点位中的数量合计
@@ -133,7 +141,7 @@ public class ItemService {
                     .withTypeIdList((itemToTypeMap.get(dto.getId())))
                 )
                 .map(ItemDto::getVo)
-                .sorted(Comparator.comparing(ItemVo::getSortIndex).thenComparing(ItemVo::getId).reversed()).collect(Collectors.toList());
+                .collect(Collectors.toList());
         return new PageListVo<ItemVo>()
                 .setRecord(result)
                 .setTotal(itemPage.getTotal())

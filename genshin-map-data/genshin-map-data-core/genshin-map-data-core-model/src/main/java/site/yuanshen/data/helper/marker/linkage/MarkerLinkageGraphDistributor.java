@@ -25,11 +25,27 @@ public final class MarkerLinkageGraphDistributor {
         addDistribution(groups, accumulatorKey, cache);
     }
 
+    public static void withDirected(Map<DistributorKey, DistributorDto> groups, AccumulatorKey accumulatorKey, AccumulatorCache cache) {
+        addDistribution(groups, accumulatorKey, cache);
+    }
+
     public static void withEquivalent(Map<DistributorKey, DistributorDto> groups, AccumulatorKey accumulatorKey, AccumulatorCache cache) {
         addDistribution(groups, accumulatorKey, cache);
     }
 
-    // 辅助方法
+    public static void withPathUniDir(Map<DistributorKey, DistributorDto> groups, AccumulatorKey accumulatorKey, AccumulatorCache cache) {
+        addDistribution(groups, accumulatorKey, cache);
+    }
+
+    public static void withPathBiDir(Map<DistributorKey, DistributorDto> groups, AccumulatorKey accumulatorKey, AccumulatorCache cache) {
+        addDistribution(groups, accumulatorKey, cache);
+    }
+
+    /**
+     * --------------------------------------------------
+     * Helper Functions
+     * --------------------------------------------------
+     */
     private static void addDistribution(
             Map<DistributorKey, DistributorDto> groups,
             AccumulatorKey accumulatorKey,
