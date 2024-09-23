@@ -23,22 +23,22 @@ public class RelationDto {
 
     private Set<LinkRefVo> group = new HashSet<>();
 
-    public void addRelation(RelationTypeEnum relationType, IdTypeEnum idType, LinkRefDto link) {
+    public void addRelation(RelationTypeEnum receiveField, IdTypeEnum fillField, LinkRefDto link) {
         if (link == null) {
             return;
         }
-        final LinkRefVo linkVal = link.toVo(idType);
+        final LinkRefVo linkVal = link.toVo(fillField);
         if(linkVal == null) {
             return;
         }
-        this.addRelation(relationType, linkVal);
+        this.addRelation(receiveField, linkVal);
     }
 
-    public void addRelation(RelationTypeEnum type, LinkRefVo link) {
+    public void addRelation(RelationTypeEnum receiveField, LinkRefVo link) {
         if (link == null) {
             return;
         }
-        switch (type) {
+        switch (receiveField) {
             case TRIGGER:
                 this.getTriggers().add(link);
                 break;
