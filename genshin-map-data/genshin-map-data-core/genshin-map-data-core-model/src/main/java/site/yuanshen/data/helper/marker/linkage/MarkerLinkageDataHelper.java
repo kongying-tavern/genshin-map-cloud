@@ -109,6 +109,9 @@ public final class MarkerLinkageDataHelper {
                 }
                 break;
             case RELATED:
+            case DIRECTED:
+            case PATH_UNI_DIR:
+            case PATH_BI_DIR:
             case EQUIVALENT:
                 relation.setType(linkAction.getValue());
                 for(LinkRefDto linkRef : linkRefs) {
