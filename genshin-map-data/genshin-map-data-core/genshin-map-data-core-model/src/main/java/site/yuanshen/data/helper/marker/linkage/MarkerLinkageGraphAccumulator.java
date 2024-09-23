@@ -8,15 +8,15 @@ import java.util.List;
 
 public final class MarkerLinkageGraphAccumulator {
     public static void withTrigger(List<AccumulatorCache> caches, MarkerLinkageVo linkageVo) {
-        accumulateOneToOneTrigger(caches, linkageVo);
+        accumulateOneToOne(caches, linkageVo);
     }
 
     public static void withTriggerAll(List<AccumulatorCache> caches, MarkerLinkageVo linkageVo) {
-        accumulateAnyToAnyTrigger(caches, linkageVo);
+        accumulateAnyToAny(caches, linkageVo);
     }
 
     public static void withTriggerAny(List<AccumulatorCache> caches, MarkerLinkageVo linkageVo) {
-        accumulateAnyToAnyTrigger(caches, linkageVo);
+        accumulateAnyToAny(caches, linkageVo);
     }
 
     public static void withRelated(List<AccumulatorCache> caches, MarkerLinkageVo linkageVo) {
@@ -36,26 +36,7 @@ public final class MarkerLinkageGraphAccumulator {
     }
 
     public static void withEquivalent(List<AccumulatorCache> caches, MarkerLinkageVo linkageVo) {
-        final LinkRefDto linkRef = MarkerLinkageDataHelper.getLinkRef(linkageVo);
-        AccumulatorCache ac = null;
-
-        // Try to find existing matched accumulator cache
-        for (AccumulatorCache cache : caches) {
-            if (cache.inLinkage(linkRef, true, true)) {
-                ac = cache;
-                break;
-            }
-        }
-
-        // No accumulator cache matched, add a new accumulator cache
-        if (ac == null) {
-            ac = new AccumulatorCache();
-            caches.add(ac);
-        }
-
-        // Add data
-        ac.addLinkage(linkRef);
-        ac.addPath(linkageVo);
+        accumulateGroup(caches, linkageVo);
     }
 
     /**
@@ -63,7 +44,7 @@ public final class MarkerLinkageGraphAccumulator {
      * Helper Functions
      * --------------------------------------------------
      */
-    private static void accumulateOneToOneTrigger(List<AccumulatorCache> caches, MarkerLinkageVo linkageVo) {
+    private static void accumulateOneToOne(List<AccumulatorCache> caches, MarkerLinkageVo linkageVo) {
         final LinkRefDto linkRef = MarkerLinkageDataHelper.getLinkRef(linkageVo);
         final AccumulatorCache ac = new AccumulatorCache();
         ac.addLinkage(linkRef);
@@ -71,7 +52,7 @@ public final class MarkerLinkageGraphAccumulator {
         caches.add(ac);
     }
 
-    private static void accumulateAnyToAnyTrigger(List<AccumulatorCache> caches, MarkerLinkageVo linkageVo) {
+    private static void accumulateAnyToAny(List<AccumulatorCache> caches, MarkerLinkageVo linkageVo) {
         final LinkRefDto linkRef = MarkerLinkageDataHelper.getLinkRef(linkageVo);
         AccumulatorCache ac = null;
 
