@@ -7,6 +7,7 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
+import site.yuanshen.data.vo.adapter.cache.MarkerCacheKeyConst;
 import site.yuanshen.genshin.core.dao.MarkerDao;
 
 import java.util.LinkedHashMap;
@@ -29,12 +30,12 @@ public class MarkerDocService {
      *
      * @return 分页字节数组的md5
      */
-    @Cacheable(value = "listMarkerBinaryMD5", key = "''", cacheManager = "neverRefreshCacheManager")
+    @Cacheable(value = MarkerCacheKeyConst.MARKER_LIST_BIN_MD5, key = "''", cacheManager = "neverRefreshCacheManager")
     public Map<String, String> listAllMarkerBinaryMD5() {
         return new LinkedHashMap<>();
     }
 
-    @CachePut(value = "listMarkerBinaryMD5", key = "''", cacheManager = "neverRefreshCacheManager")
+    @CachePut(value = MarkerCacheKeyConst.MARKER_LIST_BIN_MD5, key = "''", cacheManager = "neverRefreshCacheManager")
     public Map<String, String> refreshMarkerBinaryMD5() {
         long startTime = System.currentTimeMillis();
         Map<String, String> result = new LinkedHashMap<>();

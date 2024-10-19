@@ -19,6 +19,7 @@ import site.yuanshen.data.mapper.ItemTypeLinkMapper;
 import site.yuanshen.data.mapper.MarkerItemLinkMapper;
 import site.yuanshen.data.mapper.MarkerMapper;
 import site.yuanshen.data.vo.ItemVo;
+import site.yuanshen.data.vo.adapter.cache.ItemCacheKeyConst;
 import site.yuanshen.genshin.core.dao.ItemDao;
 
 import java.nio.charset.StandardCharsets;
@@ -100,7 +101,7 @@ public class ItemDaoImpl implements ItemDao {
      * @return 所有的物品信息的压缩
      */
     @Override
-    @Cacheable(value = "listAllItemBinary", cacheManager = "neverRefreshCacheManager")
+    @Cacheable(value = ItemCacheKeyConst.ITEM_LIST_BIN, cacheManager = "neverRefreshCacheManager")
     public byte[] listAllItemBinary() {
         //通过refreshAllItemBinary()刷新失败
         throw new GenshinApiException("缓存未创建");
@@ -112,7 +113,7 @@ public class ItemDaoImpl implements ItemDao {
      * @return 物品压缩文档
      */
     @Override
-    @CachePut(value = "listAllItemBinary", cacheManager = "neverRefreshCacheManager")
+    @CachePut(value = ItemCacheKeyConst.ITEM_LIST_BIN, cacheManager = "neverRefreshCacheManager")
     public byte[] refreshAllItemBinary() {
         try {
             List<ItemVo> itemList = listAllItem();

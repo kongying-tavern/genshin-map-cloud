@@ -27,6 +27,7 @@ import site.yuanshen.data.enums.HiddenFlagEnum;
 import site.yuanshen.data.mapper.*;
 import site.yuanshen.data.vo.MarkerItemLinkVo;
 import site.yuanshen.data.vo.MarkerVo;
+import site.yuanshen.data.vo.adapter.cache.MarkerCacheKeyConst;
 import site.yuanshen.data.vo.helper.PageListVo;
 import site.yuanshen.genshin.core.dao.MarkerDao;
 
@@ -218,7 +219,7 @@ public class MarkerDaoImpl implements MarkerDao {
                 throw new GenshinApiException("分页数据未生成或超出获取范围");
             }
 
-            Cache binaryCache = neverRefreshCacheManager.getCache("listPageMarkerByBinary");
+            Cache binaryCache = neverRefreshCacheManager.getCache(MarkerCacheKeyConst.MARKER_LIST_BIN_INDEXED);
             if (binaryCache == null) throw new GenshinApiException("缓存未初始化");
             byte[] result = binaryCache.get(md5Key, byte[].class);
             if(result == null) throw new GenshinApiException("分页数据未生成或超出获取范围");
@@ -247,7 +248,7 @@ public class MarkerDaoImpl implements MarkerDao {
     @Override
     public Map<String, byte[]> refreshPageMarkerByBinary() {
         try {
-            Cache binaryCache = neverRefreshCacheManager.getCache("listPageMarkerByBinary");
+            Cache binaryCache = neverRefreshCacheManager.getCache(MarkerCacheKeyConst.MARKER_LIST_BIN_INDEXED);
             if (binaryCache == null) throw new GenshinApiException("缓存未初始化");
 
             TimeInterval timer = DateUtil.timer();
@@ -309,7 +310,7 @@ public class MarkerDaoImpl implements MarkerDao {
         }
         Set<Integer> flagSet = new HashSet<>(flagList);
 
-        Cache binaryCache = neverRefreshCacheManager.getCache("listMarkerBinaryMD5");
+        Cache binaryCache = neverRefreshCacheManager.getCache(MarkerCacheKeyConst.MARKER_LIST_BIN_MD5);
         if (binaryCache == null) throw new GenshinApiException("缓存未初始化");
         Map<String, String> md5Map = (Map<String, String>) binaryCache.get("").get();
         for(Map.Entry<String, String> md5Entry : md5Map.entrySet()) {

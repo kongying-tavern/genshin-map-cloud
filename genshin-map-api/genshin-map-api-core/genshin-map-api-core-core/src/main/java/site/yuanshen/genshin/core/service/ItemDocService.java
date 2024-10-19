@@ -7,6 +7,7 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
+import site.yuanshen.data.vo.adapter.cache.ItemCacheKeyConst;
 import site.yuanshen.genshin.core.dao.ItemDao;
 
 /**
@@ -26,7 +27,7 @@ public class ItemDocService {
      *
      * @return 字节数组的md5
      */
-    @Cacheable(value = "listItemBinaryMD5", cacheManager = "neverRefreshCacheManager")
+    @Cacheable(value = ItemCacheKeyConst.ITEM_LIST_BIN_MD5, cacheManager = "neverRefreshCacheManager")
     public String listItemBinaryMD5() {
         return "缓存未生成或生成失败";
     }
@@ -36,7 +37,7 @@ public class ItemDocService {
      *
      * @return 字节数组的md5
      */
-    @CachePut(value = "listItemBinaryMD5", cacheManager = "neverRefreshCacheManager")
+    @CachePut(value = ItemCacheKeyConst.ITEM_LIST_BIN_MD5, cacheManager = "neverRefreshCacheManager")
     public String refreshItemBinaryMD5() {
         long startTime = System.currentTimeMillis();
         String result = DigestUtils.md5DigestAsHex(itemDao.refreshAllItemBinary());
