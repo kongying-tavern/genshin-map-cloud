@@ -2,6 +2,7 @@ package site.yuanshen.genshin.core.dao;
 
 import site.yuanshen.data.dto.helper.PageSearchDto;
 import site.yuanshen.data.vo.MarkerVo;
+import site.yuanshen.data.vo.adapter.cache.MarkerListCacheKey;
 import site.yuanshen.data.vo.helper.PageListVo;
 
 import java.util.List;
@@ -39,7 +40,7 @@ public interface MarkerDao {
      * @param md5 压缩文档数据的MD5
      * @return 压缩后的字节数组
      */
-    byte[] listPageMarkerByBinary(List<Integer> flagList, String md5);
+    byte[] getMarkerBinary(List<Integer> flagList, String md5);
 
     /**
      * 返回MD5列表
@@ -47,12 +48,12 @@ public interface MarkerDao {
      * @param flagList 权限标记
      * @return 压缩后的字节数组
      */
-    List<String> listMarkerMD5(List<Integer> flagList);
+    List<String> listMarkerBinaryMD5(List<Integer> flagList);
 
     /**
      * 刷新并返回点位分页压缩文档
      * @return 刷新后的各个分页
      */
-    Map<String, byte[]> refreshPageMarkerByBinary();
+    Map<String, byte[]> refreshMarkerBinaryList();
 
 }

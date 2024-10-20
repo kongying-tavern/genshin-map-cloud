@@ -40,7 +40,7 @@ public class ItemTypeController {
     @PostMapping("/get/list/{self}")
     public R<PageListVo<ItemTypeVo>> listItemType(@Parameter(hidden = true) @RequestHeader(value = "userDataLevel",required = false) String userDataLevel, @RequestBody PageAndTypeSearchVo pageAndTypeSearchVo, @PathVariable("self") Integer self) {
         R<PageListVo<ItemTypeVo>> result = RUtils.create(
-                itemTypeService.listItemType(new PageAndTypeSearchDto(pageAndTypeSearchVo), self, HiddenFlagEnum.getFlagList(userDataLevel))
+                itemTypeService.listItemType(new PageAndTypeSearchDto(pageAndTypeSearchVo), self, HiddenFlagEnum.getFlagListByMask(userDataLevel))
         );
         UserAppenderService.appendUser(result, result.getData().getRecord(), true, ItemTypeVo::getCreatorId);
         UserAppenderService.appendUser(result, result.getData().getRecord(), true, ItemTypeVo::getUpdaterId);
@@ -51,7 +51,7 @@ public class ItemTypeController {
     @PostMapping("/get/list_all")
     public R<List<ItemTypeVo>> listItemType(@Parameter(hidden = true) @RequestHeader(value = "userDataLevel",required = false) String userDataLevel) {
         R<List<ItemTypeVo>> result = RUtils.create(
-                itemTypeService.listAllItemType(HiddenFlagEnum.getFlagList(userDataLevel))
+                itemTypeService.listAllItemType(HiddenFlagEnum.getFlagListByMask(userDataLevel))
         );
         UserAppenderService.appendUser(result, result.getData(), true, ItemTypeVo::getCreatorId);
         UserAppenderService.appendUser(result, result.getData(), true, ItemTypeVo::getUpdaterId);

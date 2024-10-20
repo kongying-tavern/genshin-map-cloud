@@ -30,19 +30,16 @@ public class MarkerDocService {
      *
      * @return 分页字节数组的md5
      */
-    @Cacheable(value = MarkerCacheKeyConst.MARKER_LIST_BIN_MD5, key = "''", cacheManager = "neverRefreshCacheManager")
+//    @Cacheable(value = MarkerCacheKeyConst.MARKER_LIST_BIN_MD5, key = "''", cacheManager = "neverRefreshCacheManager")
     public Map<String, String> listAllMarkerBinaryMD5() {
         return new LinkedHashMap<>();
     }
 
-    @CachePut(value = MarkerCacheKeyConst.MARKER_LIST_BIN_MD5, key = "''", cacheManager = "neverRefreshCacheManager")
+//    @CachePut(value = MarkerCacheKeyConst.MARKER_LIST_BIN_MD5, key = "''", cacheManager = "neverRefreshCacheManager")
     public Map<String, String> refreshMarkerBinaryMD5() {
         long startTime = System.currentTimeMillis();
         Map<String, String> result = new LinkedHashMap<>();
-        Map<String, byte[]> binaryMap = markerDao.refreshPageMarkerByBinary();
-        for(Map.Entry<String, byte[]> binaryEntry : binaryMap.entrySet()) {
-            result.put(binaryEntry.getKey(), DigestUtils.md5DigestAsHex(binaryEntry.getValue()));
-        }
+        markerDao.refreshMarkerBinaryList();
         log.info("点位MD5生成, cost:{}, result: {}", System.currentTimeMillis() - startTime, JSON.toJSONString(result));
         return result;
     }
