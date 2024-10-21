@@ -143,6 +143,7 @@ public class MarkerDaoImpl implements MarkerDao {
      * @param markerItemLinkMap 物品链接Map  key:marker_id, value:marker_item_link[]
      * @param itemMap 物品Map  key:item_id, value:item
      */
+    @Override
     public void generateMarkerItemInfo(
         List<Long> markerIdList,
         Map<Long, Item> itemMap,
@@ -182,6 +183,7 @@ public class MarkerDaoImpl implements MarkerDao {
      * @param markerIdList 点位ID列表
      * @param markerLinkageMap 点位关联Map  key:marker_id, value:linkage_id
      */
+    @Override
     public void generateMarkerLinkageInfo(
         List<Long> markerIdList,
         ConcurrentHashMap<Long, String> markerLinkageMap

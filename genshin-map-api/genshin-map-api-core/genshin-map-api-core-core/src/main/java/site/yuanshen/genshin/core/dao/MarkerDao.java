@@ -1,12 +1,14 @@
 package site.yuanshen.genshin.core.dao;
 
 import site.yuanshen.data.dto.helper.PageSearchDto;
+import site.yuanshen.data.entity.Item;
+import site.yuanshen.data.vo.MarkerItemLinkVo;
 import site.yuanshen.data.vo.MarkerVo;
-import site.yuanshen.data.vo.adapter.cache.MarkerListCacheKey;
 import site.yuanshen.data.vo.helper.PageListVo;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 点位信息的数据查询层
@@ -34,6 +36,23 @@ public interface MarkerDao {
     List<MarkerVo> listMarkerById(List<Long> markerIdList, List<Integer> hiddenFlagList);
 
     /**
+     * 生成点位物品信息 (物品 & 物品关联)
+     *
+     * @param markerIdList 点位ID列表
+     * @param markerItemLinkMap 物品链接Map  key:marker_id, value:marker_item_link[]
+     * @param itemMap 物品Map  key:item_id, value:item
+     */
+    void generateMarkerItemInfo(List<Long> markerIdList, Map<Long, Item> itemMap, ConcurrentHashMap<Long, List<MarkerItemLinkVo>> markerItemLinkMap);
+
+    /**
+     * 生成点位关联信息
+     *
+     * @param markerIdList 点位ID列表
+     * @param markerLinkageMap 点位关联Map  key:marker_id, value:linkage_id
+     */
+    void generateMarkerLinkageInfo(List<Long> markerIdList, ConcurrentHashMap<Long, String> markerLinkageMap);
+
+    /**
      * 返回点位分页压缩文档
      *
      * @param flagList 权限标记
@@ -52,6 +71,7 @@ public interface MarkerDao {
 
     /**
      * 刷新并返回点位分页压缩文档
+     *
      * @return 刷新后的各个分页
      */
     Map<String, byte[]> refreshMarkerBinaryList();
