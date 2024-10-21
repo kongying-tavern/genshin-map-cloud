@@ -22,10 +22,7 @@ import site.yuanshen.common.core.utils.PgsqlUtils;
 import site.yuanshen.data.dto.MarkerDto;
 import site.yuanshen.data.dto.MarkerItemLinkDto;
 import site.yuanshen.data.dto.helper.PageSearchDto;
-import site.yuanshen.data.entity.Area;
-import site.yuanshen.data.entity.Item;
-import site.yuanshen.data.entity.Marker;
-import site.yuanshen.data.entity.MarkerLinkage;
+import site.yuanshen.data.entity.*;
 import site.yuanshen.data.enums.HiddenFlagEnum;
 import site.yuanshen.data.enums.cache.CacheSplitterEnum;
 import site.yuanshen.data.mapper.*;
@@ -39,6 +36,7 @@ import site.yuanshen.genshin.core.dao.MarkerDao;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -84,7 +82,7 @@ public class MarkerDaoImpl implements MarkerDao {
     @Override
     @Cacheable(value = "listMarkerPage")
     public PageListVo<MarkerVo> listMarkerPage(PageSearchDto pageSearchDto, List<Integer> hiddenFlagList) {
-        IPage<Marker> markerPage = markerMapper.selectPageFilterByHiddenFlag(pageSearchDto.getPageEntity(),hiddenFlagList, Wrappers.lambdaQuery());
+        IPage<Marker> markerPage = markerMapper.selectPageFilterByHiddenFlag(pageSearchDto.getPageEntity(),hiddenFlagList, Wrappers.<Marker>lambdaQuery().eq(Marker::getDelFlag, false));
         List<Long> markerIdList = markerPage.getRecords().stream()
                 .map(Marker::getId).collect(Collectors.toList());
 
@@ -116,7 +114,7 @@ public class MarkerDaoImpl implements MarkerDao {
     @Override
     @Cacheable(value = "listMarkerById")
     public List<MarkerVo> listMarkerById(List<Long> markerIdList, List<Integer> hiddenFlagList) {
-        List<Marker> markerList = markerMapper.selectListWithLargeInFilterByHiddenFlag(PgsqlUtils.unnestLongStr(markerIdList),hiddenFlagList, Wrappers.lambdaQuery());
+        List<Marker> markerList = markerMapper.selectListWithLargeInFilterByHiddenFlag(PgsqlUtils.unnestLongStr(markerIdList),hiddenFlagList, Wrappers.<Marker>lambdaQuery().eq(Marker::getDelFlag, false));
 
         markerIdList = markerList.stream().map(Marker::getId).collect(Collectors.toList());
 
@@ -137,36 +135,44 @@ public class MarkerDaoImpl implements MarkerDao {
 
     /**
      * 生成点位物品信息 (物品 & 物品关联)
-     * 物品链接 Map 为 ConcurrentHashMap 是因为对于同一个点位ID需要合并物品关联列表，在大批量处理时可能存在并发问题。
+     * 物品链接 Map 为 ConcurrentMap 是因为对于同一个点位ID需要合并物品关联列表，在大批量处理时可能存在并发问题。
      *
      * @param markerIdList 点位ID列表
-     * @param markerItemLinkMap 物品链接Map  key:marker_id, value:marker_item_link[]
      * @param itemMap 物品Map  key:item_id, value:item
+     * @param markerItemLinkMap 物品链接Map  key:marker_id, value:marker_item_link[]
      */
     @Override
     public void generateMarkerItemInfo(
         List<Long> markerIdList,
         Map<Long, Item> itemMap,
-        ConcurrentHashMap<Long, List<MarkerItemLinkVo>> markerItemLinkMap
+        ConcurrentMap<Long, List<MarkerItemLinkVo>> markerItemLinkMap
     ) {
-        // 获取物品ID
-        final List<Long> itemIdList = markerItemLinkMapper.selectWithLargeCustomIn("marker_id", PgsqlUtils.unnestLongStr(markerIdList), Wrappers.lambdaQuery())
-                .parallelStream().map(markerItemLink -> {
-                    markerItemLinkMap.compute(markerItemLink.getMarkerId(),
-                            (markerId, linkList) -> {
-                                MarkerItemLinkVo vo = new MarkerItemLinkDto(markerItemLink).getVo();
-                                if (linkList == null) return new ArrayList<>(Collections.singletonList(vo));
-                                linkList.add(vo);
-                                return linkList;
-                            });
-                    return markerItemLink.getItemId();
-                })
-                .distinct().collect(Collectors.toList());
+        if (CollUtil.isEmpty(markerIdList))
+            return;
+        // 获取物品数据
+        final List<MarkerItemLink> itemLinkList = markerItemLinkMapper.selectWithLargeCustomIn("marker_id", PgsqlUtils.unnestLongStr(markerIdList), Wrappers.<MarkerItemLink>lambdaQuery().eq(MarkerItemLink::getDelFlag, false));
+        final List<Long> itemIdList = itemLinkList
+            .parallelStream()
+            .map(markerItemLink -> {
+                markerItemLinkMap.compute(markerItemLink.getMarkerId(),
+                    (markerId, linkList) -> {
+                        final MarkerItemLinkVo vo = (new MarkerItemLinkDto(markerItemLink)).getVo();
+                        if (linkList == null)
+                            return new ArrayList<>(Collections.singletonList(vo));
+                        linkList.add(vo);
+                        return linkList;
+                    }
+                );
+                return markerItemLink.getItemId();
+            })
+            .distinct()
+            .collect(Collectors.toList());
+        final List<Item> itemList = itemMapper.selectListWithLargeIn(PgsqlUtils.unnestLongStr(itemIdList), Wrappers.<Item>lambdaQuery().eq(Item::getDelFlag, false));
         // 添加 item_id → item 映射项
         itemMap.putAll(
-                itemMapper.selectListWithLargeIn(PgsqlUtils.unnestLongStr(itemIdList), Wrappers.lambdaQuery())
-                    .stream()
-                    .collect(Collectors.toMap(Item::getId, Item -> Item, (o, n) -> n))
+            itemList
+                .stream()
+                .collect(Collectors.toMap(Item::getId, item -> item, (o, n) -> n))
         );
         // 汇总 marker_id → item_link 映射项
         markerItemLinkMap.forEach((markerId, linkVoList) ->
@@ -186,11 +192,10 @@ public class MarkerDaoImpl implements MarkerDao {
     @Override
     public void generateMarkerLinkageInfo(
         List<Long> markerIdList,
-        ConcurrentHashMap<Long, String> markerLinkageMap
+        ConcurrentMap<Long, String> markerLinkageMap
     ) {
-        if(CollUtil.isEmpty(markerIdList)) {
+        if (CollUtil.isEmpty(markerIdList))
             return;
-        }
         final List<MarkerLinkage> markerLinkageList = markerLinkageMapper.selectWithLargeMarkerIdIn(PgsqlUtils.unnestLongStr(markerIdList), Wrappers.<MarkerLinkage>lambdaQuery().eq(MarkerLinkage::getDelFlag, false));
         markerLinkageList.parallelStream()
             .forEach(markerLinkage -> {
@@ -377,8 +382,8 @@ public class MarkerDaoImpl implements MarkerDao {
 
     private Map<Integer, List<MarkerVo>> getMarkerVoGroups(
         Map<Long, Item> itemMap,
-        ConcurrentHashMap<Long, List<MarkerItemLinkVo>> markerItemLinkMap,
-        ConcurrentHashMap<Long, String> markerLinkageMap
+        ConcurrentMap<Long, List<MarkerItemLinkVo>> markerItemLinkMap,
+        ConcurrentMap<Long, String> markerLinkageMap
     ) {
         TimeInterval timer = DateUtil.timer();
 
@@ -393,12 +398,12 @@ public class MarkerDaoImpl implements MarkerDao {
 
         // 获取点位和点位相关映射数据
         timer.restart();
-        final List<Marker> markerList = markerMapper.selectList(Wrappers.<Marker>lambdaQuery());
+        final List<Marker> markerList = markerMapper.selectList(Wrappers.<Marker>lambdaQuery().eq(Marker::getDelFlag, false));
         final List<Long> markerIdList = markerList.stream().map(Marker::getId).distinct().collect(Collectors.toList());
         generateMarkerItemInfo(markerIdList, itemMap, markerItemLinkMap);
         generateMarkerLinkageInfo(markerIdList, markerLinkageMap);
         // 获取点位合并所需数据
-        final List<Area> areaList = areaMapper.selectList(Wrappers.<Area>lambdaQuery().select(Area::getId, Area::getParentId, Area::getHiddenFlag, Area::getIsFinal));
+        final List<Area> areaList = areaMapper.selectList(Wrappers.<Area>lambdaQuery().eq(Area::getDelFlag, false).select(Area::getId, Area::getParentId, Area::getHiddenFlag, Area::getIsFinal));
         final Map<Long, Long> areaParentMap = areaList.stream().collect(Collectors.toMap(Area::getId, Area::getParentId, (o, n) -> n));
         final Map<Boolean, List<Area>> areaPartition = areaList.stream().collect(Collectors.partitioningBy(Area::getIsFinal));
         final Map<Long, Integer> areaFinalFlagMap = areaPartition.getOrDefault(true, List.of())
