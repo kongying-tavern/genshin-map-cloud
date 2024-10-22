@@ -158,7 +158,8 @@ public class ItemDaoImpl implements ItemDao {
     @Override
     public List<String> listItemBinaryMD5(List<Integer> flagList) {
         final Map<ItemListCacheKey, String> binaryMd5Map = getItemMd5ByFlags(flagList);
-        return new ArrayList<>(binaryMd5Map.values());
+        final LinkedHashMap<ItemListCacheKey, String> binaryMd5MapSorted = sortItemMd5Map(binaryMd5Map);
+        return new ArrayList<>(binaryMd5MapSorted.values());
     }
 
     /**
@@ -264,6 +265,27 @@ public class ItemDaoImpl implements ItemDao {
                 result.put(key, val);
         }
         return result;
+    }
+
+    private LinkedHashMap<ItemListCacheKey, String> sortItemMd5Map(Map<ItemListCacheKey, String> md5Map) {
+        final List<Map.Entry<ItemListCacheKey, String>> md5Entries = new ArrayList<>(md5Map.entrySet());
+        final List<Map.Entry<ItemListCacheKey, String>> md5EntriesSorted = md5Entries.stream()
+            .sorted((a, b) -> {
+                final ItemListCacheKey aKey = a.getKey();
+                final ItemListCacheKey bKey = b.getKey();
+                if (!ObjUtil.equal(aKey.getHiddenFlag(), bKey.getHiddenFlag()))
+                    return aKey.getHiddenFlag() - bKey.getHiddenFlag();
+                else if (!ObjUtil.equal(aKey.getIndex(), bKey.getIndex()))
+                    return aKey.getIndex() - bKey.getIndex();
+                else
+                    return 0;
+            })
+            .collect(Collectors.toList());
+        final LinkedHashMap<ItemListCacheKey, String> md5MapSorted = new LinkedHashMap<>();
+        md5EntriesSorted.forEach(entry -> {
+            md5MapSorted.put(entry.getKey(), entry.getValue());
+        });
+        return md5MapSorted;
     }
 
     private Map<Integer, List<ItemVo>> getItemVoGroups(
