@@ -170,9 +170,9 @@ public class ItemDaoImpl implements ItemDao {
     @Override
     public Map<String, byte[]> refreshItemBinaryList() {
         try {
-            Cache binaryCache = getItemBinaryCache();
-            Cache binaryMd5Cache = getItemBinaryMd5Cache();
-            TimeInterval timer = DateUtil.timer();
+            final Cache binaryCache = getItemBinaryCache();
+            final Cache binaryMd5Cache = getItemBinaryMd5Cache();
+            final TimeInterval timer = DateUtil.timer();
 
             // 创建总缓存与映射关系
             timer.restart();

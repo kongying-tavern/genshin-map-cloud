@@ -262,9 +262,9 @@ public class MarkerDaoImpl implements MarkerDao {
     @Override
     public Map<String, byte[]> refreshMarkerBinaryList() {
         try {
-            Cache binaryCache = getMarkerBinaryCache();
-            Cache binaryMd5Cache = getMarkerBinaryMd5Cache();
-            TimeInterval timer = DateUtil.timer();
+            final Cache binaryCache = getMarkerBinaryCache();
+            final Cache binaryMd5Cache = getMarkerBinaryMd5Cache();
+            final TimeInterval timer = DateUtil.timer();
 
             // 创建总缓存与映射关系
             timer.restart();
