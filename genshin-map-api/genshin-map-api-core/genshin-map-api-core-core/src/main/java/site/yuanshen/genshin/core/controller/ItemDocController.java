@@ -28,13 +28,13 @@ public class ItemDocController {
 
     @Operation(summary = "返回物品分页", description = "查询分页物品信息，返回压缩格式的byte数组")
     @GetMapping("/list_page_bin/{md5}")
-    public byte[] listAllItemBinary(@Parameter(hidden = true) @RequestHeader(value = "userDataLevel",required = false) String userDataLevel, @PathVariable("md5") String md5) {
+    public byte[] listPageItemByBinary(@Parameter(hidden = true) @RequestHeader(value = "userDataLevel",required = false) String userDataLevel, @PathVariable("md5") String md5) {
         return itemDao.getItemBinary(HiddenFlagEnum.getFlagListByMask(userDataLevel), md5);
     }
 
     @Operation(summary = "返回物品分页的md5数组", description = "返回物品分页的md5数组")
     @GetMapping("/list_page_bin_md5")
-    public R<List<String>> listAllItemBinaryMd5(@Parameter(hidden = true) @RequestHeader(value = "userDataLevel",required = false) String userDataLevel) {
+    public R<List<String>> listItemBinaryMD5(@Parameter(hidden = true) @RequestHeader(value = "userDataLevel",required = false) String userDataLevel) {
         return RUtils.create(
             itemDao.listItemBinaryMD5(HiddenFlagEnum.getFlagListByMask(userDataLevel))
         );
