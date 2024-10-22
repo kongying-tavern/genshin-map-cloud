@@ -8,7 +8,9 @@ import lombok.NoArgsConstructor;
 import lombok.With;
 
 import java.sql.Timestamp;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
 * 物品表前端封装
@@ -131,5 +133,12 @@ public class ItemVo {
      */
     @Schema(title = "查询条件下物品总数")
     private Integer count;
+
+    /**
+     * 物品总数区分
+     */
+    @Schema(title = "物品总数区分")
+    Map<Integer, Integer> countSplit = new HashMap<>();
+
 
 }

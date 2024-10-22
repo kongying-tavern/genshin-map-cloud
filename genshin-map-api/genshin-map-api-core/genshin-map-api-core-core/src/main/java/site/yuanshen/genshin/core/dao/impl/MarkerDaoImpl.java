@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 import site.yuanshen.common.core.exception.GenshinApiException;
 import site.yuanshen.common.core.utils.CompressUtils;
+import site.yuanshen.common.core.utils.JsonUtils;
 import site.yuanshen.common.core.utils.PgsqlUtils;
 import site.yuanshen.data.dto.MarkerDto;
 import site.yuanshen.data.dto.MarkerItemLinkDto;
@@ -301,7 +302,7 @@ public class MarkerDaoImpl implements MarkerDao {
                 timer.restart();
                 for (Map.Entry<MarkerListCacheKey, List<MarkerVo>> markerShard : markerShards.entrySet()) {
                     final List<MarkerVo> cacheShardList = ObjUtil.defaultIfNull(markerShard.getValue(), List.of());
-                    final byte[] cacheBinary = JSON.toJSONString(cacheShardList).getBytes(StandardCharsets.UTF_8);
+                    final byte[] cacheBinary = JSON.toJSONString(cacheShardList, JsonUtils.defaultWriteFeatures).getBytes(StandardCharsets.UTF_8);
                     final byte[] cacheBinaryCompressed = CompressUtils.compress(cacheBinary);
                     final String cacheBinaryMd5 = DigestUtils.md5DigestAsHex(cacheBinaryCompressed);
                     final MarkerListCacheKey cacheKey = markerShard.getKey()
