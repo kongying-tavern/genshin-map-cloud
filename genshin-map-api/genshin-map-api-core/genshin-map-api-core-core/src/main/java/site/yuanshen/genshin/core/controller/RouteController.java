@@ -43,7 +43,7 @@ public class RouteController {
     @PostMapping("/get/page")
     public R<PageListVo<RouteVo>> listRoutePage(@RequestBody PageSearchVo pageSearchVo, @Parameter(hidden = true) @RequestHeader(value = "userDataLevel", required = false) String userDataLevel) {
         R<PageListVo<RouteVo>> result = RUtils.create(
-                routeService.listRoutePage(new PageSearchDto(pageSearchVo), HiddenFlagEnum.getFlagList(userDataLevel))
+                routeService.listRoutePage(new PageSearchDto(pageSearchVo), HiddenFlagEnum.getFlagListByMask(userDataLevel))
         );
         UserAppenderService.appendUser(result, result.getData().getRecord(), true, RouteVo::getCreatorId);
         UserAppenderService.appendUser(result, result.getData().getRecord(), true, RouteVo::getUpdaterId);
@@ -56,7 +56,7 @@ public class RouteController {
         RouteSearchDto searchDto = new RouteSearchDto(searchVo);
         searchDto.checkParams();
         R<PageListVo<RouteVo>> result = RUtils.create(
-                routeService.listRoutePageSearch(searchDto, HiddenFlagEnum.getFlagList(userDataLevel))
+                routeService.listRoutePageSearch(searchDto, HiddenFlagEnum.getFlagListByMask(userDataLevel))
         );
         UserAppenderService.appendUser(result, result.getData().getRecord(), true, RouteVo::getCreatorId);
         UserAppenderService.appendUser(result, result.getData().getRecord(), true, RouteVo::getUpdaterId);
@@ -67,7 +67,7 @@ public class RouteController {
     @PostMapping("/get/list_byid")
     public R<List<RouteVo>> listRouteById(@RequestBody List<Long> idList, @Parameter(hidden = true) @RequestHeader(value = "userDataLevel", required = false) String userDataLevel) {
         R<List<RouteVo>> result = RUtils.create(
-                routeService.listRouteById(idList, HiddenFlagEnum.getFlagList(userDataLevel))
+                routeService.listRouteById(idList, HiddenFlagEnum.getFlagListByMask(userDataLevel))
                         .parallelStream().map(RouteDto::getVo).collect(Collectors.toList())
         );
         UserAppenderService.appendUser(result, result.getData(), true, RouteVo::getCreatorId);

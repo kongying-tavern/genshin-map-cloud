@@ -47,7 +47,7 @@ public class MarkerController {
     @PostMapping("/get/id")
     public R<List<Long>> searchMarkerId(@Parameter(hidden = true) @RequestHeader(value = "userDataLevel", required = false) String userDataLevel, @RequestBody MarkerSearchVo markerSearchVo) {
         return RUtils.create(
-                markerService.searchMarkerId(markerSearchVo, HiddenFlagEnum.getFlagList(userDataLevel))
+                markerService.searchMarkerId(markerSearchVo, HiddenFlagEnum.getFlagListByMask(userDataLevel))
         );
     }
 
@@ -56,7 +56,7 @@ public class MarkerController {
     @PostMapping("/get/list_byinfo")
     public R<List<MarkerVo>> searchMarker(@Parameter(hidden = true) @RequestHeader(value = "userDataLevel", required = false) String userDataLevel, @RequestBody MarkerSearchVo markerSearchVo) {
         R<List<MarkerVo>> result = RUtils.create(
-                markerService.searchMarker(markerSearchVo, HiddenFlagEnum.getFlagList(userDataLevel))
+                markerService.searchMarker(markerSearchVo, HiddenFlagEnum.getFlagListByMask(userDataLevel))
         );
         UserAppenderService.appendUser(result, result.getData(), true, MarkerVo::getCreatorId);
         UserAppenderService.appendUser(result, result.getData(), true, MarkerVo::getUpdaterId);
@@ -67,7 +67,7 @@ public class MarkerController {
     @PostMapping("/get/list_byid")
     public R<List<MarkerVo>> listMarkerById(@Parameter(hidden = true) @RequestHeader(value = "userDataLevel", required = false) String userDataLevel, @RequestBody List<Long> markerIdList) {
         R<List<MarkerVo>> result = RUtils.create(
-                markerService.listMarkerById(markerIdList, HiddenFlagEnum.getFlagList(userDataLevel))
+                markerService.listMarkerById(markerIdList, HiddenFlagEnum.getFlagListByMask(userDataLevel))
         );
         UserAppenderService.appendUser(result, result.getData(), true, MarkerVo::getCreatorId);
         UserAppenderService.appendUser(result, result.getData(), true, MarkerVo::getUpdaterId);
@@ -78,7 +78,7 @@ public class MarkerController {
     @PostMapping("/get/page")
     public R<PageListVo<MarkerVo>> listMarkerPage(@Parameter(hidden = true) @RequestHeader(value = "userDataLevel", required = false) String userDataLevel, @RequestBody PageSearchVo pageSearchVo) {
         R<PageListVo<MarkerVo>> result = RUtils.create(
-                markerService.listMarkerPage(new PageSearchDto(pageSearchVo), HiddenFlagEnum.getFlagList(userDataLevel))
+                markerService.listMarkerPage(new PageSearchDto(pageSearchVo), HiddenFlagEnum.getFlagListByMask(userDataLevel))
         );
         UserAppenderService.appendUser(result, result.getData().getRecord(), true, MarkerVo::getCreatorId);
         UserAppenderService.appendUser(result, result.getData().getRecord(), true, MarkerVo::getUpdaterId);

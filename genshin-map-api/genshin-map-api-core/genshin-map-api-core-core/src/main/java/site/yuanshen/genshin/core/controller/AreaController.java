@@ -37,7 +37,7 @@ public class AreaController {
     @PostMapping("/get/list")
     public R<List<AreaVo>> listArea(@Schema(hidden = true)  @RequestHeader(value = "userDataLevel",required = false) String userDataLevel, @RequestBody AreaSearchVo areaSearchVo) {
         //todo userDataLevel应该作为参数传入，vo作为前端传值不应该加userDataLevel
-        areaSearchVo.setHiddenFlagList(HiddenFlagEnum.getFlagList(userDataLevel));
+        areaSearchVo.setHiddenFlagList(HiddenFlagEnum.getFlagListByMask(userDataLevel));
         R<List<AreaVo>> result = RUtils.create(
                 areaService.listArea(areaSearchVo)
                         .stream().map(AreaDto::getVo).collect(Collectors.toList())
@@ -51,7 +51,7 @@ public class AreaController {
     @PostMapping("/get/{areaId}")
     public R<AreaVo> getArea(@Parameter(hidden = true) @RequestHeader(value = "userDataLevel",required = false) String userDataLevel, @PathVariable("areaId") Long areaId) {
         R<AreaVo> result = RUtils.create(
-                areaService.getArea(areaId, HiddenFlagEnum.getFlagList(userDataLevel)).getVo()
+                areaService.getArea(areaId, HiddenFlagEnum.getFlagListByMask(userDataLevel)).getVo()
         );
         UserAppenderService.appendUser(result, result.getData(), false, AreaVo::getCreatorId);
         UserAppenderService.appendUser(result, result.getData(), false, AreaVo::getUpdaterId);

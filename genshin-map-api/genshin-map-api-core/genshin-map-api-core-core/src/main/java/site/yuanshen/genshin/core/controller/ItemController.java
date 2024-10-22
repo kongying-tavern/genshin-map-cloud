@@ -42,7 +42,7 @@ public class ItemController {
     @PostMapping("/get/list_byid")
     public R<List<ItemVo>> listItemById(@Schema(hidden = true)  @RequestHeader(value = "userDataLevel",required = false) String userDataLevel, @RequestBody List<Long> itemIdList) {
         R<List<ItemVo>> result = RUtils.create(
-                itemService.listItemById(itemIdList, HiddenFlagEnum.getFlagList(userDataLevel))
+                itemService.listItemById(itemIdList, HiddenFlagEnum.getFlagListByMask(userDataLevel))
                         .stream().map(ItemDto::getVo).collect(Collectors.toList())
         );
         UserAppenderService.appendUser(result, result.getData(), true, ItemVo::getCreatorId);
@@ -54,7 +54,7 @@ public class ItemController {
     @PostMapping("/get/list")
     public R<PageListVo<ItemVo>> listItemIdByType(@Parameter(hidden = true) @RequestHeader(value = "userDataLevel",required = false) String userDataLevel, @RequestBody ItemSearchVo itemSearchVo) {
         R<PageListVo<ItemVo>> result = RUtils.create(
-                itemService.listItem(new ItemSearchDto(itemSearchVo).setHiddenFlagList(HiddenFlagEnum.getFlagList(userDataLevel)))
+                itemService.listItem(new ItemSearchDto(itemSearchVo).setHiddenFlagList(HiddenFlagEnum.getFlagListByMask(userDataLevel)))
         );
         UserAppenderService.appendUser(result, result.getData().getRecord(), true, ItemVo::getCreatorId);
         UserAppenderService.appendUser(result, result.getData().getRecord(), true, ItemVo::getUpdaterId);

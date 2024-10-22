@@ -1,15 +1,16 @@
 package site.yuanshen.genshin.core.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import site.yuanshen.common.web.response.R;
 import site.yuanshen.common.web.response.RUtils;
+import site.yuanshen.data.enums.HiddenFlagEnum;
 import site.yuanshen.genshin.core.dao.ItemDao;
-import site.yuanshen.genshin.core.service.ItemDocService;
+
+import java.util.List;
 
 /**
  * 物品档案 Controller 层
@@ -25,17 +26,17 @@ public class ItemDocController {
 
     private final ItemDao itemDao;
 
-    private final ItemDocService itemDocService;
-
-    @Operation(summary = "返回所有物品信息", description = "查询所有物品信息，返回压缩格式的byte数组")
-    @GetMapping("/all_bin")
-    public byte[] listAllItemBinary() {
-        return itemDao.listAllItemBinary();
+    @Operation(summary = "返回物品分页", description = "查询分页物品信息，返回压缩格式的byte数组")
+    @GetMapping("/list_page_bin/{md5}")
+    public byte[] listAllItemBinary(@Parameter(hidden = true) @RequestHeader(value = "userDataLevel",required = false) String userDataLevel, @PathVariable("md5") String md5) {
+        return itemDao.getItemBinary(HiddenFlagEnum.getFlagListByMask(userDataLevel), md5);
     }
 
-    @Operation(summary = "返回所有物品信息的md5", description = "返回所有物品信息的md5")
-    @GetMapping("/all_bin_md5")
-    public R<String> listAllItemBinaryMd5() {
-        return RUtils.create(itemDocService.listItemBinaryMD5());
+    @Operation(summary = "返回物品分页的md5数组", description = "返回物品分页的md5数组")
+    @GetMapping("/list_page_bin_md5")
+    public R<List<String>> listAllItemBinaryMd5(@Parameter(hidden = true) @RequestHeader(value = "userDataLevel",required = false) String userDataLevel) {
+        return RUtils.create(
+            itemDao.listItemBinaryMD5(HiddenFlagEnum.getFlagListByMask(userDataLevel))
+        );
     }
 }
