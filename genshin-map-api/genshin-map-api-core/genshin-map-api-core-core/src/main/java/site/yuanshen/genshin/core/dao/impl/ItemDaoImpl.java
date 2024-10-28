@@ -367,7 +367,12 @@ public class ItemDaoImpl implements ItemDao {
                     .withCountSplit(itemCountSplit)
                     .getVo();
             })
-            .sorted(Comparator.comparingLong(ItemVo::getId))
+            .sorted(
+                Comparator
+                    .comparingInt(ItemVo::getSortIndex).reversed()
+                    .thenComparingLong(ItemVo::getAreaId)
+                    .thenComparingLong(ItemVo::getId)
+            )
             .collect(Collectors.groupingBy(item -> itemOverrideFlagMap.getOrDefault(item.getId(), -1)));
         log.info("[binary][item] item composed, cost: {}", timer.intervalPretty());
 
