@@ -34,7 +34,7 @@ public class CacheInitListener implements ApplicationListener<ApplicationReadyEv
     public void onApplicationEvent(ApplicationReadyEvent event) {
         long startTime = System.currentTimeMillis();
         markerDocService.refreshMarkerBinaryMD5();
-        markerDocService.listAllMarkerBinaryMD5();
+        markerDocService.listMarkerBinaryMD5();
         markerLinkageDocService.refreshMarkerLinkageListBinaryMD5();
         markerLinkageDocService.listMarkerLinkageBinaryMD5();
         markerLinkageDocService.refreshMarkerLinkageGraphBinaryMD5();

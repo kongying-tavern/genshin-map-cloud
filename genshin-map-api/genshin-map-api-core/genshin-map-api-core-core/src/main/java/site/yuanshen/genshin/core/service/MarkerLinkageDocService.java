@@ -7,6 +7,7 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
+import site.yuanshen.data.vo.adapter.cache.MarkerLinkageCacheKeyConst;
 import site.yuanshen.genshin.core.dao.MarkerLinkageDao;
 
 /**
@@ -25,7 +26,7 @@ public class MarkerLinkageDocService {
      *
      * @return 字节数组的md5
      */
-    @Cacheable(value = "listMarkerLinkageBinaryMD5", cacheManager = "neverRefreshCacheManager")
+    @Cacheable(value = MarkerLinkageCacheKeyConst.MARKER_LINKAGE_LIST_BIN_MD5, cacheManager = "neverRefreshCacheManager")
     public String listMarkerLinkageBinaryMD5() {
         return "缓存未生成或生成失败";
     }
@@ -35,7 +36,7 @@ public class MarkerLinkageDocService {
      *
      * @return 字节数组的md5
      */
-    @CachePut(value = "listMarkerLinkageBinaryMD5", cacheManager = "neverRefreshCacheManager")
+    @CachePut(value = MarkerLinkageCacheKeyConst.MARKER_LINKAGE_LIST_BIN_MD5, cacheManager = "neverRefreshCacheManager")
     public String refreshMarkerLinkageListBinaryMD5() {
         final long startTime = System.currentTimeMillis();
         final String result = DigestUtils.md5DigestAsHex(markerLinkageDao.refreshAllMarkerLinkageListBinary());
@@ -48,7 +49,7 @@ public class MarkerLinkageDocService {
      *
      * @return 字节数组的md5
      */
-    @Cacheable(value = "graphMarkerLinkageBinaryMD5", cacheManager = "neverRefreshCacheManager")
+    @Cacheable(value = MarkerLinkageCacheKeyConst.MARKER_LINKAGE_GRAPH_BIN_MD5, cacheManager = "neverRefreshCacheManager")
     public String graphMarkerLinkageBinaryMD5() {
         return "缓存未生成或生成失败";
     }
@@ -58,7 +59,7 @@ public class MarkerLinkageDocService {
      *
      * @return 字节数组的md5
      */
-    @CachePut(value = "graphMarkerLinkageBinaryMD5", cacheManager = "neverRefreshCacheManager")
+    @CachePut(value = MarkerLinkageCacheKeyConst.MARKER_LINKAGE_GRAPH_BIN_MD5, cacheManager = "neverRefreshCacheManager")
     public String refreshMarkerLinkageGraphBinaryMD5() {
         final long startTime = System.currentTimeMillis();
         final String result = DigestUtils.md5DigestAsHex(markerLinkageDao.refreshAllMarkerLinkageGraphBinary());

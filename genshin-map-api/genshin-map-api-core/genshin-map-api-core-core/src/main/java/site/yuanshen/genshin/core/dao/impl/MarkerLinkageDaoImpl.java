@@ -18,6 +18,7 @@ import site.yuanshen.data.entity.MarkerLinkage;
 import site.yuanshen.data.helper.marker.linkage.MarkerLinkageDataHelper;
 import site.yuanshen.data.mapper.MarkerLinkageMapper;
 import site.yuanshen.data.vo.MarkerLinkageVo;
+import site.yuanshen.data.vo.adapter.cache.MarkerLinkageCacheKeyConst;
 import site.yuanshen.data.vo.adapter.marker.linkage.graph.GraphVo;
 import site.yuanshen.genshin.core.dao.MarkerLinkageDao;
 import site.yuanshen.genshin.core.service.MarkerLinkageHelperService;
@@ -204,7 +205,7 @@ public class MarkerLinkageDaoImpl implements MarkerLinkageDao {
      * 所有的点位关联列表的压缩
      */
     @Override
-    @Cacheable(value = "listAllMarkerLinkageBinary", cacheManager = "neverRefreshCacheManager")
+    @Cacheable(value = MarkerLinkageCacheKeyConst.MARKER_LINKAGE_LIST_BIN, cacheManager = "neverRefreshCacheManager")
     public byte[] listAllMarkerLinkageBinary() {
         throw new GenshinApiException("缓存未创建");
     }
@@ -213,7 +214,7 @@ public class MarkerLinkageDaoImpl implements MarkerLinkageDao {
      * 刷新点位关联列表压缩缓存并返回压缩文档
      */
     @Override
-    @CachePut(value = "listAllMarkerLinkageBinary", cacheManager = "neverRefreshCacheManager")
+    @CachePut(value = MarkerLinkageCacheKeyConst.MARKER_LINKAGE_LIST_BIN, cacheManager = "neverRefreshCacheManager")
     public byte[] refreshAllMarkerLinkageListBinary() {
         try {
             final Map<String, List<MarkerLinkageVo>> linkageList = listAllMarkerLinkage();
@@ -228,7 +229,7 @@ public class MarkerLinkageDaoImpl implements MarkerLinkageDao {
      * 所有的点位关联有向图的压缩
      */
     @Override
-    @Cacheable(value = "graphAllMarkerLinkageBinary", cacheManager = "neverRefreshCacheManager")
+    @Cacheable(value = MarkerLinkageCacheKeyConst.MARKER_LINKAGE_GRAPH_BIN, cacheManager = "neverRefreshCacheManager")
     public byte[] graphAllMarkerLinkageBinary() {
         throw new GenshinApiException("缓存未创建");
     }
@@ -237,7 +238,7 @@ public class MarkerLinkageDaoImpl implements MarkerLinkageDao {
      * 刷新点位关联有向图压缩缓存并返回压缩文档
      */
     @Override
-    @CachePut(value = "graphAllMarkerLinkageBinary", cacheManager = "neverRefreshCacheManager")
+    @CachePut(value = MarkerLinkageCacheKeyConst.MARKER_LINKAGE_GRAPH_BIN, cacheManager = "neverRefreshCacheManager")
     public byte[] refreshAllMarkerLinkageGraphBinary() {
         try {
             final Map<String, GraphVo> linkageGraph = graphAllMarkerLinkage();

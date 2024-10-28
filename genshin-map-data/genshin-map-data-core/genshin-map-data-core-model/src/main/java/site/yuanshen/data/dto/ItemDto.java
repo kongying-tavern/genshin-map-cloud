@@ -12,7 +12,9 @@ import site.yuanshen.data.entity.Item;
 import site.yuanshen.data.vo.ItemVo;
 
 import java.sql.Timestamp;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -118,6 +120,11 @@ public class ItemDto {
      * 查询条件下物品总数
      */
     private Integer count;
+
+    /**
+     * 物品总数区分
+     */
+    Map<Integer, Integer> countSplit = new HashMap<>();
 
     public ItemDto(Item item) {
         BeanUtils.copy(item, this);

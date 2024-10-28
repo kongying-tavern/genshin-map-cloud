@@ -29,14 +29,14 @@ public class MarkerDocController {
     @Operation(summary = "返回点位分页", description = "查询分页点位信息，返回压缩格式的byte数组")
     @GetMapping("/list_page_bin/{md5}")
     public byte[] listPageMarkerByBinary(@Parameter(hidden = true) @RequestHeader(value = "userDataLevel",required = false) String userDataLevel, @PathVariable("md5") String md5) {
-        return markerDao.listPageMarkerByBinary(HiddenFlagEnum.getFlagList(userDataLevel), md5);
+        return markerDao.getMarkerBinary(HiddenFlagEnum.getFlagListByMask(userDataLevel), md5);
     }
 
     @Operation(summary = "返回点位分页的md5数组", description = "返回点位分页的md5数组")
     @GetMapping("/list_page_bin_md5")
     public R<List<String>> listMarkerBinaryMD5(@Parameter(hidden = true) @RequestHeader(value = "userDataLevel",required = false) String userDataLevel) {
         return RUtils.create(
-                markerDao.listMarkerMD5(HiddenFlagEnum.getFlagList(userDataLevel))
+                markerDao.listMarkerBinaryMD5(HiddenFlagEnum.getFlagListByMask(userDataLevel))
         );
     }
 }
