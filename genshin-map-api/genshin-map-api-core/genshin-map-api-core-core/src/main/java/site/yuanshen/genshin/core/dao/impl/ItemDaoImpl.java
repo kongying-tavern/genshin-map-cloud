@@ -347,15 +347,20 @@ public class ItemDaoImpl implements ItemDao {
                 // 暂存覆盖标记，供后续分组使用
                 itemOverrideFlagMap.put(itemId, flag);
                 // 制作物品计数数据
-                final Set<Integer> itemOverrideableFlagSet = overrideFlagMap.getOrDefault(flag, new HashSet<>());
                 final Integer itemOverrideFlag = flag;
+                final Set<Integer> itemOverrideableFlagSet = overrideFlagMap.getOrDefault(flag, new HashSet<>());
                 final LinkedHashMap<Integer, Integer> itemCountSplit = itemCountMap.getOrDefault(itemId, new HashMap<>())
                     .entrySet()
                     .stream()
                     .map(v -> itemOverrideableFlagSet.contains(v.getKey()) ? Map.entry(itemOverrideFlag, v.getValue()) : v)
                     .sorted(Comparator.comparingInt(Map.Entry::getKey))
                     .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, Integer::sum, LinkedHashMap::new));
-                final Integer itemCount = itemCountSplit.values().stream().reduce(0, Integer::sum);
+                final Integer itemCount = itemCountSplit
+                    .entrySet()
+                    .stream()
+                    .filter(v -> itemOverrideableFlagSet.contains(v.getKey()))
+                    .map(Map.Entry::getValue)
+                    .reduce(0, Integer::sum);
 
                 return new ItemDto(item)
                     .withTypeIdList(
