@@ -37,8 +37,9 @@ genshin:
       - /system/user/info/**
       - /system/user/update
       - /system/user/update_password
-      - /api/route/**
       - /system/archive/**
+      - /api/route/**
+      - /api/history/get/**
     MAP_PUNCTUATE:
       - /api/punctuate/**
       - /api/marker/**
