@@ -1,4 +1,4 @@
-package site.yuanshen.data.helper.notice;
+package site.yuanshen.data.helper.unity;
 
 import cn.hutool.core.img.ColorUtil;
 import cn.hutool.core.util.HexUtil;
@@ -16,7 +16,7 @@ import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public final class NoticeDataHelper {
+public final class UnityHtmlParserHelper {
     public static Map<String, String> getStyleAttrs(Attribute styleAttr) {
         Map<String, String> styleAttrs = new HashMap<>();
         if(styleAttr == null) {
@@ -57,7 +57,7 @@ public final class NoticeDataHelper {
                     return ColorUtil.toHex(red, green, blue);
                 }),
                 // #RGBA
-                ImmutablePair.of("^#([0-9a-f]){4}", m -> {
+                ImmutablePair.of("^#([0-9a-f]){4}$", m -> {
                     final int red = HexUtil.hexToInt(m.group(1)) * 0x011;
                     final int green = HexUtil.hexToInt(m.group(2)) * 0x011;
                     final int blue = HexUtil.hexToInt(m.group(3)) * 0x011;

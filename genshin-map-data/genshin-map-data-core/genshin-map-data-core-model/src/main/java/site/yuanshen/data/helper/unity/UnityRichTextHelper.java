@@ -1,4 +1,4 @@
-package site.yuanshen.data.helper.notice;
+package site.yuanshen.data.helper.unity;
 
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
@@ -14,8 +14,8 @@ import org.jsoup.safety.Safelist;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-public final class NoticeContentTransformer {
-    public static String convertUnity(String str) {
+public final class UnityRichTextHelper {
+    public static String toTextMeshPro(String str) {
         String html = StrUtil.nullToEmpty(str);
         html = ReUtil.replaceAll(html, Pattern.compile("[\\r\\n]"), "");
         Document doc = Jsoup.parse(html);
@@ -52,13 +52,13 @@ public final class NoticeContentTransformer {
                 .select("color")
                 .replaceAll(el -> {
                     final Attribute style = el.attribute("style");
-                    final Map<String, String> styleAttrs = NoticeDataHelper.getStyleAttrs(style);
+                    final Map<String, String> styleAttrs = UnityHtmlParserHelper.getStyleAttrs(style);
                     final String color = styleAttrs.getOrDefault("--color", "");
 
                     el.clearAttributes();
                     String colorValue = "";
                     if(StrUtil.isNotBlank(color)) {
-                        colorValue = NoticeDataHelper.colorToHex(color);
+                        colorValue = UnityHtmlParserHelper.colorToHex(color);
                     }
                     if(StrUtil.isNotBlank(colorValue)) {
                         el.attr("collval", colorValue);
@@ -69,13 +69,13 @@ public final class NoticeContentTransformer {
                 .select("size")
                 .replaceAll(el -> {
                     final Attribute style = el.attribute("style");
-                    final Map<String, String> styleAttrs = NoticeDataHelper.getStyleAttrs(style);
+                    final Map<String, String> styleAttrs = UnityHtmlParserHelper.getStyleAttrs(style);
                     final String size = styleAttrs.getOrDefault("--size", "");
 
                     el.clearAttributes();
                     String sizeValue = "";
                     if(StrUtil.isNotBlank(size)) {
-                        sizeValue = NoticeDataHelper.sizeToNumber(size);
+                        sizeValue = UnityHtmlParserHelper.sizeToNumber(size);
                     }
                     if(StrUtil.isNotBlank(sizeValue)) {
                         el.attr("collval", sizeValue);
