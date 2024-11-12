@@ -2,7 +2,7 @@ package site.yuanshen.data.enums.notice;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import site.yuanshen.data.helper.notice.NoticeContentTransformer;
+import site.yuanshen.data.helper.unity.UnityRichTextHelper;
 
 import java.util.Objects;
 import java.util.function.Function;
@@ -12,7 +12,7 @@ import java.util.function.Function;
 public enum NoticeTransformerEnum {
     UNITY(
             "Unity",
-            NoticeContentTransformer::convertUnity
+            UnityRichTextHelper::toTextMeshPro
     );
 
     private final String transformName;
