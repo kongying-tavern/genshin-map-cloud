@@ -3,24 +3,31 @@ package site.yuanshen.genshin.core.service;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import site.yuanshen.common.core.utils.BeanUtils;
+import site.yuanshen.common.core.utils.PgsqlUtils;
 import site.yuanshen.data.dto.MarkerLinkageDto;
 import site.yuanshen.data.entity.MarkerLinkage;
 import site.yuanshen.data.helper.marker.linkage.MarkerLinkageDataHelper;
+import site.yuanshen.data.mapper.MarkerLinkageMapper;
 import site.yuanshen.data.vo.MarkerLinkageSearchVo;
 import site.yuanshen.data.vo.MarkerLinkageVo;
 import site.yuanshen.data.vo.adapter.marker.linkage.LinkChangeVo;
+import site.yuanshen.data.vo.adapter.marker.linkage.LinkDeleteQueryVo;
+import site.yuanshen.data.vo.adapter.marker.linkage.LinkDeleteVo;
 import site.yuanshen.data.vo.adapter.marker.linkage.graph.GraphVo;
 import site.yuanshen.genshin.core.dao.MarkerLinkageDao;
+import site.yuanshen.genshin.core.service.mbp.MarkerMBPService;
 
 import java.awt.geom.Point2D;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * 点位关联服务接口实现
@@ -31,7 +38,8 @@ import java.util.stream.Collectors;
 @RequestMapping
 @RequiredArgsConstructor
 public class MarkerLinkageService {
-
+    private final MarkerLinkageMapper markerLinkageMapper;
+    private final MarkerMBPService markerMBPService;
     private final MarkerLinkageDao markerLinkageDao;
     private final MarkerLinkageHelperService markerLinkageHelperService;
 
@@ -121,4 +129,65 @@ public class MarkerLinkageService {
         return linkGroupId;
     }
 
+    @Transactional
+    public void deleteMarkerLinkage(LinkDeleteQueryVo linkageDeleteVo, LinkDeleteVo deleteVo) {
+        if (linkageDeleteVo == null)
+            return;
+
+        List<MarkerLinkage> listWithIds = List.of();
+        List<MarkerLinkage> listWithGroupIds = List.of();
+        if (!CollUtil.isEmpty(linkageDeleteVo.getGroupIds())) {
+            listWithIds = markerLinkageMapper.selectWithLargeCustomIn(
+                "id",
+                "bigint",
+                PgsqlUtils.unnestLongStr(linkageDeleteVo.getIds()),
+                Wrappers.<MarkerLinkage>lambdaQuery().eq(MarkerLinkage::getDelFlag, false)
+            );
+        }
+        if (!CollUtil.isEmpty(linkageDeleteVo.getGroupIds())) {
+            listWithGroupIds = markerLinkageMapper.selectWithLargeCustomIn(
+                "group_id",
+                "varchar",
+                PgsqlUtils.unnestStringStr(linkageDeleteVo.getGroupIds()),
+                Wrappers.<MarkerLinkage>lambdaQuery().eq(MarkerLinkage::getDelFlag, false)
+            );
+        }
+
+        // 合并数据
+        List<MarkerLinkageVo> list = new ArrayList<>(
+            Stream.of(listWithIds, listWithGroupIds)
+                .flatMap(List::stream)
+                .collect(Collectors.toMap(
+                        MarkerLinkage::getId,
+                        v -> v,
+                        (o, n) -> n
+                    )
+                )
+                .values())
+            .parallelStream()
+            .map(link -> new MarkerLinkageDto(link).getVo())
+            .collect(Collectors.toList());
+
+        // 获取数据字段
+        List<Long> markerIds = MarkerLinkageDataHelper.getLinkIdList(list);
+        List<String> groupIds = list.stream()
+            .map(link -> link != null ? link.getGroupId() : null)
+            .filter(Objects::nonNull)
+            .distinct()
+            .collect(Collectors.toList());
+        List<Long> idList = list.stream()
+            .map(v -> v != null ? v.getId() : null)
+            .filter(Objects::nonNull)
+            .distinct()
+            .collect(Collectors.toList());
+
+        if (!CollUtil.isEmpty(idList)) {
+            // 删除数据
+            markerLinkageMapper.deleteByIds(PgsqlUtils.unnestLongStr(idList));
+
+            // (*) 将受到影响的数据添加到变更数据中
+            deleteVo.addGroups(groupIds);
+            deleteVo.addMarkers(markerIds);
+        }
+    }
 }
