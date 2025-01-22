@@ -10,6 +10,8 @@ import site.yuanshen.common.web.response.WUtils;
 import site.yuanshen.data.vo.MarkerLinkageSearchVo;
 import site.yuanshen.data.vo.MarkerLinkageVo;
 import site.yuanshen.data.vo.adapter.marker.linkage.LinkChangeVo;
+import site.yuanshen.data.vo.adapter.marker.linkage.LinkDeleteQueryVo;
+import site.yuanshen.data.vo.adapter.marker.linkage.LinkDeleteVo;
 import site.yuanshen.data.vo.adapter.marker.linkage.graph.GraphVo;
 import site.yuanshen.genshin.core.service.CacheService;
 import site.yuanshen.genshin.core.service.MarkerLinkageService;
@@ -59,5 +61,16 @@ public class MarkerLinkageController {
         cacheService.cleanMarkerLinkageCache();
         webSocket.broadcast(WUtils.create("MarkerLinked", linkChangeVo));
         return RUtils.create(groupId);
+    }
+
+    @Operation(summary = "删除点位关联", description = "删除点位关联")
+    @DeleteMapping("/delete")
+    public R<LinkDeleteVo> deleteMarkerLinkage(@RequestBody LinkDeleteQueryVo linkDeleteQueryVo) {
+        LinkDeleteVo linkDeleteVo = new LinkDeleteVo();
+        markerLinkageService.deleteMarkerLinkage(linkDeleteQueryVo, linkDeleteVo);
+        cacheService.cleanMarkerCache();
+        cacheService.cleanMarkerLinkageCache();
+        webSocket.broadcast(WUtils.create("MarkerLinkageDeleted", linkDeleteVo));
+        return RUtils.create(linkDeleteVo);
     }
 }
