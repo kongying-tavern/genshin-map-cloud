@@ -102,14 +102,19 @@ public class ScoreGeneratePunctuateHelper {
         if(CollectionUtil.isEmpty(markerIds)) {
             return new HashMap<>();
         }
-        final List<MarkerItemLink> markerItemLinkList = markerItemLinkMapper.selectWithLargeCustomIn(
-            "marker_id",
-            PgsqlUtils.unnestLongStr(markerIds),
-            Wrappers.<MarkerItemLink>lambdaQuery()
-                .eq(MarkerItemLink::getDelFlag, false)
-                .orderByAsc(MarkerItemLink::getCreateTime)
-                .orderByAsc(MarkerItemLink::getId)
-        );
+        final List<MarkerItemLink> markerItemLinkList = markerItemLinkMapper
+            .selectWithLargeCustomIn(
+                "marker_id",
+                PgsqlUtils.unnestLongStr(markerIds),
+                Wrappers.<MarkerItemLink>lambdaQuery()
+            )
+            .stream()
+            .sorted(Comparator
+                .nullsFirst(Comparator.comparing(MarkerItemLink::getCreateTime))
+                .thenComparing(Comparator.nullsFirst(Comparator.comparing(markerItemLink -> markerItemLink != null ? markerItemLink.getId() : 0)))
+            )
+            .collect(Collectors.toList());
+
         final Map<Long, Long> markerItemLinkMap = markerItemLinkList.stream()
                 .collect(Collectors.toMap(
                         MarkerItemLink::getMarkerId,
@@ -162,15 +167,17 @@ public class ScoreGeneratePunctuateHelper {
             return new HashMap<>();
         }
 
-        final List<History> historyList = historyMapper.selectWithLargeCustomIn(
-            "t_id",
-            PgsqlUtils.unnestLongStr(markerIds),
-            Wrappers.<History>lambdaQuery()
-                .eq(History::getType, 4)
-                .eq(BaseEntity::getDelFlag, false)
-                .lt(BaseEntity::getCreateTime, span.getSpanStartTime())
-                .orderByDesc(History::getCreateTime)
-        );
+        final List<History> historyList = historyMapper
+            .selectWithLargeCustomIn(
+                "t_id",
+                PgsqlUtils.unnestLongStr(markerIds),
+                Wrappers.<History>lambdaQuery()
+                    .eq(History::getType, 4)
+                    .lt(BaseEntity::getCreateTime, span.getSpanStartTime())
+            )
+            .stream()
+            .sorted(Comparator.nullsFirst(Comparator.comparing(History::getCreateTime).reversed()))
+            .collect(Collectors.toList());
         final Map<Long, History> historyMap = historyList.stream()
                 .collect(Collectors.toMap(
                         History::getTId,
@@ -238,15 +245,17 @@ public class ScoreGeneratePunctuateHelper {
             return new HashMap<>();
         }
 
-        final List<History> historyList = historyMapper.selectWithLargeCustomIn(
-            "t_id",
-            PgsqlUtils.unnestLongStr(markerIds),
-            Wrappers.<History>lambdaQuery()
-                .eq(History::getType, 4)
-                .eq(BaseEntity::getDelFlag, false)
-                .gt(BaseEntity::getCreateTime, span.getSpanEndTime())
-                .orderByAsc(History::getCreateTime)
-        );
+        final List<History> historyList = historyMapper
+            .selectWithLargeCustomIn(
+                "t_id",
+                PgsqlUtils.unnestLongStr(markerIds),
+                Wrappers.<History>lambdaQuery()
+                    .eq(History::getType, 4)
+                    .gt(BaseEntity::getCreateTime, span.getSpanEndTime())
+            )
+            .stream()
+            .sorted(Comparator.nullsFirst(Comparator.comparing(History::getCreateTime)))
+            .collect(Collectors.toList());
         final Map<Long, History> historyMap = historyList.stream()
                 .collect(Collectors.toMap(
                         History::getTId,
