@@ -5,4 +5,5 @@ spring:
       username: {{NACOS_USER}}
       password: {{NACOS_PASS}}
       config:
+        server-addr: nacos.local:8848
         file-extension: yaml
