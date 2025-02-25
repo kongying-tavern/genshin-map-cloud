@@ -125,8 +125,8 @@ public class MarkerController {
     //////////////START:点位调整的API//////////////
     @Operation(summary = "调整点位", description = "对点位数据进行微调")
     @PostMapping("/tweak")
-    public R<List<MarkerVo>> tweakMarkers(@RequestBody TweakVo tweakVo) {
-        List<MarkerVo> result = markerService.tweakMarkers(tweakVo);
+    public R<List<MarkerVo>> tweakMarkers(@RequestBody List<TweakVo> tweakVos) {
+        List<MarkerVo> result = markerService.tweakMultiMarkers(tweakVos);
         cacheService.cleanItemCache();
         cacheService.cleanMarkerCache();
         cacheService.cleanMarkerLinkageCache();
