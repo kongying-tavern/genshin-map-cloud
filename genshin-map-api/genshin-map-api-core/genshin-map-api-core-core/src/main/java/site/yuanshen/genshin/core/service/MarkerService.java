@@ -212,12 +212,36 @@ public class MarkerService {
     /**
      * 调整点位数据
      *
-     * @param tweakVo 点位调整配置
+     * @param tweakVos 点位调整配置
      * @return 修改后的点位数据
      */
+    public List<MarkerVo> tweakMultiMarkers(List<TweakVo> tweakVos) {
+        List<MarkerVo> markers = new ArrayList<>();
+        if(CollUtil.isEmpty(tweakVos)) {
+            return new ArrayList<>();
+        }
+
+        for(TweakVo tweakVo : tweakVos) {
+           List<MarkerVo> newMarkers = this.tweakMarkers(tweakVo);
+           markers.addAll(newMarkers);
+        }
+
+        markers = new ArrayList<>(markers.stream()
+            .collect(Collectors.toMap(
+                MarkerVo::getId,
+                v -> v,
+                (o, n) -> n
+            ))
+            .values());
+        return markers;
+    }
+
     @Transactional
     public List<MarkerVo> tweakMarkers(TweakVo tweakVo) {
-        List<Long> markerIds = tweakVo.getMarkerIds();
+        List<Long> markerIds = CollUtil.emptyIfNull(tweakVo.getMarkerIds())
+            .stream()
+            .distinct()
+            .collect(Collectors.toList());
         if(CollUtil.isEmpty(markerIds)) {
             return new ArrayList<>();
         }
@@ -237,7 +261,7 @@ public class MarkerService {
 
         // 保存数据
         this.saveMarker(tweakedMarkers, tweakedMarkers.size());
-        this.saveHistory(originalMarkers, HistoryEditType.UPDATE);
+        this.saveHistory(originalMarkers, HistoryEditType.TWEAK);
 
         // 重新获取数据，防止返回旧数据
         List<MarkerDto> updatedMarkers = this.buildMarkerDto(markerIds);

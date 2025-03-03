@@ -54,6 +54,12 @@ public enum TweakHandlerEnum {
             TweakPropertyEnum.TITLE,
             TweakTypeEnum.REMOVE_RIGHT
     ),
+    // POSITION
+    POSITION$$UPDATE(
+            "position", "update",
+            TweakPropertyEnum.POSITION,
+            TweakTypeEnum.UPDATE
+    ),
     // CONTENT
     CONTENT$$UPDATE(
             "content", "update",
