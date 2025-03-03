@@ -212,7 +212,7 @@ public class MarkerService {
     /**
      * 调整点位数据
      *
-     * @param tweakVo 点位调整配置
+     * @param tweakVos 点位调整配置
      * @return 修改后的点位数据
      */
     public List<MarkerVo> tweakMultiMarkers(List<TweakVo> tweakVos) {
@@ -261,7 +261,7 @@ public class MarkerService {
 
         // 保存数据
         this.saveMarker(tweakedMarkers, tweakedMarkers.size());
-        this.saveHistory(originalMarkers, HistoryEditType.UPDATE);
+        this.saveHistory(originalMarkers, HistoryEditType.TWEAK);
 
         // 重新获取数据，防止返回旧数据
         List<MarkerDto> updatedMarkers = this.buildMarkerDto(markerIds);
