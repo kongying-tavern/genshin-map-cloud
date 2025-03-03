@@ -238,7 +238,10 @@ public class MarkerService {
 
     @Transactional
     public List<MarkerVo> tweakMarkers(TweakVo tweakVo) {
-        List<Long> markerIds = tweakVo.getMarkerIds();
+        List<Long> markerIds = CollUtil.emptyIfNull(tweakVo.getMarkerIds())
+            .stream()
+            .distinct()
+            .collect(Collectors.toList());
         if(CollUtil.isEmpty(markerIds)) {
             return new ArrayList<>();
         }
