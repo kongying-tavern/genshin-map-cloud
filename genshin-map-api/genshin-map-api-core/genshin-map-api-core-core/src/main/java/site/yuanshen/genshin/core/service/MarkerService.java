@@ -260,7 +260,9 @@ public class MarkerService {
         }
 
         // 保存数据
-        this.saveMarker(tweakedMarkers, tweakedMarkers.size());
+        this.saveMarkers(tweakedMarkers, tweakedMarkers.size(), (markerList) -> {
+            return markerMBPService.saveOrUpdateBatch(markerList, 100);
+        });
         this.saveHistory(originalMarkers, HistoryEditType.TWEAK);
 
         // 重新获取数据，防止返回旧数据
@@ -300,10 +302,28 @@ public class MarkerService {
 
     //--------------------点位相关辅助方法----------------------
     private boolean saveMarker(MarkerDto markerDto) {
-        return saveMarker(List.of(markerDto), 1);
+        return saveMarkers(List.of(markerDto), 1, (list) -> {
+            boolean success = true;
+            for(Marker item : list) {
+                try {
+                    int modifiedCount = 0;
+                    if(item.getId() != null && item.getId() > 0) {
+                        modifiedCount = markerMapper.update(item, Wrappers.<Marker>lambdaQuery().eq(Marker::getId, item.getId()));
+                    } else {
+                        modifiedCount = markerMapper.insert(item);
+                    }
+                    if(modifiedCount != 1) {
+                        return false;
+                    }
+                } catch (Exception e) {
+                    return false;
+                }
+            }
+            return success;
+        });
     }
 
-    private boolean saveMarker(List<MarkerDto> markerDtos, int validateCount) {
+    private boolean saveMarkers(List<MarkerDto> markerDtos, int validateCount, Function<List<Marker>, Boolean> saveAction) {
         // Extract data
         final List<Marker> markerList = markerDtos.parallelStream()
                 .map(MarkerDto::getEntity)
@@ -339,7 +359,7 @@ public class MarkerService {
         if(CollUtil.isEmpty(markerIdList)) {
             return validateCount == 0;
         }
-        boolean updated = markerMBPService.saveOrUpdateBatch(markerList, 100);
+        boolean updated = saveAction.apply(markerList);
         if(!updated) {
             return false;
         }
