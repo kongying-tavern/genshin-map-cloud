@@ -20,6 +20,11 @@ public enum TweakPropertyEnum {
             MarkerDto::getMarkerTitle,
             (marker, data) -> marker.setMarkerTitle((String) data)
     ),
+    POSITION(
+            "position",
+            MarkerDto::getPosition,
+            (marker, data) -> marker.setPosition((String) data)
+    ),
     CONTENT(
             "content",
             MarkerDto::getContent,

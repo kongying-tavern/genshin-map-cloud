@@ -11,6 +11,7 @@ public enum HistoryEditType {
     CREATE(1),
     UPDATE(2),
     DELETE(3),
+    TWEAK(10)
     ;
 
 
