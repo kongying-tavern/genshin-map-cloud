@@ -136,7 +136,7 @@ public class MarkerLinkageService {
 
         List<MarkerLinkage> listWithIds = List.of();
         List<MarkerLinkage> listWithGroupIds = List.of();
-        if (!CollUtil.isEmpty(linkageDeleteVo.getGroupIds())) {
+        if (!CollUtil.isEmpty(linkageDeleteVo.getIds())) {
             listWithIds = markerLinkageMapper.selectWithLargeCustomIn(
                 "id",
                 "bigint",
