@@ -84,15 +84,15 @@ public class SysUserVo {
     private Integer roleId;
 
     /**
-     * 权限策略
-     */
-    @Schema(title = "access_policy")
-    private List<String> accessPolicy;
-
-    /**
      * 备注
      */
     @Schema(title = "备注")
     private String remark;
+
+    /**
+     * 权限策略
+     */
+    @Schema(title = "access_policy")
+    private List<String> accessPolicy;
 
 }

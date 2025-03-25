@@ -85,14 +85,14 @@ public class SysUserDto {
     private Integer roleId;
 
     /**
-     * 权限策略
-     */
-    private List<String> accessPolicy;
-
-    /**
      * 备注
      */
     private String remark;
+
+    /**
+     * 权限策略
+     */
+    private List<String> accessPolicy;
 
     public SysUserDto(SysUser sysUser) {
         BeanUtils.copy(sysUser, this);
