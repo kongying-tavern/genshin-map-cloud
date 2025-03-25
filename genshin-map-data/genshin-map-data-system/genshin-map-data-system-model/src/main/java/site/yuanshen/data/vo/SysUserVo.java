@@ -89,5 +89,10 @@ public class SysUserVo {
     @Schema(title = "access_policy")
     private List<String> accessPolicy;
 
+    /**
+     * 备注
+     */
+    @Schema(title = "备注")
+    private String remark;
 
 }

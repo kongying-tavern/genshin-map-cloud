@@ -19,25 +19,27 @@
         <result column="logo" property="logo"/>
         <result column="role_id" property="roleId"/>
         <result column="access_policy" property="accessPolicy" typeHandler="site.yuanshen.handler.MBPJsonArrayTypeHandler"/>
+        <result column="remark" property="remark"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        su.creator_id,
-        su.create_time,
-        su.del_flag,
-        su.version,
-        su.id,
-        su.updater_id,
-        su.update_time,
-        su.username,
-        su.password,
-        su.nickname,
-        su.qq,
-        su.phone,
-        su.logo,
-        su.role_id,
-        su.access_policy
+        sys_user.creator_id,
+        sys_user.create_time,
+        sys_user.del_flag,
+        sys_user.version,
+        sys_user.id,
+        sys_user.updater_id,
+        sys_user.update_time,
+        sys_user.username,
+        sys_user.password,
+        sys_user.nickname,
+        sys_user.qq,
+        sys_user.phone,
+        sys_user.logo,
+        sys_user.role_id,
+        sys_user.access_policy,
+        sys_user.remark
     </sql>
 
 </mapper>

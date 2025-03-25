@@ -89,6 +89,11 @@ public class SysUserDto {
      */
     private List<String> accessPolicy;
 
+    /**
+     * 备注
+     */
+    private String remark;
+
     public SysUserDto(SysUser sysUser) {
         BeanUtils.copy(sysUser, this);
     }

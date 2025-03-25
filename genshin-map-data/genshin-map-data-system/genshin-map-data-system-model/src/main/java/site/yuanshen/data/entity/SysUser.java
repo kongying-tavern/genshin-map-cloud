@@ -96,4 +96,10 @@ public class SysUser extends BaseEntity {
     @TableField(value = "access_policy", typeHandler = MBPJsonArrayTypeHandler.class)
     private List<String> accessPolicy;
 
+    /**
+     * 备注
+     */
+    @TableField("remark")
+    private String remark;
+
 }
