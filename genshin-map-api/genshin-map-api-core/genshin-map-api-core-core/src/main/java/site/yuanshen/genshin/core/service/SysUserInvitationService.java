@@ -1,29 +1,44 @@
 package site.yuanshen.genshin.core.service;
 
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.ObjUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.crypto.SecureUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import site.yuanshen.common.core.exception.GenshinApiException;
 import site.yuanshen.common.core.utils.PgsqlUtils;
 import site.yuanshen.data.dto.SysUserInvitationDto;
 import site.yuanshen.data.dto.SysUserInvitationSearchDto;
 import site.yuanshen.data.entity.SysUserInvitation;
+import site.yuanshen.data.enums.RoleEnum;
 import site.yuanshen.data.mapper.SysUserInvitationMapper;
+import site.yuanshen.data.mapper.SysUserMapper;
+import site.yuanshen.data.vo.SysUserInvitationSmallVo;
 import site.yuanshen.data.vo.SysUserInvitationVo;
 import site.yuanshen.data.vo.helper.PageListVo;
 import site.yuanshen.genshin.core.dao.SysUserDao;
+import site.yuanshen.genshin.core.dao.SysUserInvitationDao;
+import site.yuanshen.genshin.core.service.mbp.SysUserInvitationMBPService;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class SysUserInvitationService {
     private final SysUserDao userDao;
+    private final SysUserInvitationDao invitationDao;
     private final SysUserInvitationMapper invitationMapper;
+    private final SysUserInvitationMBPService invitationMBPService;
 
     public PageListVo<SysUserInvitationVo> searchInvitationPage(SysUserInvitationSearchDto invitationSearchDto) {
         QueryWrapper<SysUserInvitation> wrapper = Wrappers.<SysUserInvitation>query();
@@ -51,5 +66,52 @@ public class SysUserInvitationService {
                 .setRecord(result)
                 .setTotal(invitationPage.getTotal())
                 .setSize(invitationPage.getSize());
+    }
+
+    @Transactional
+    public SysUserInvitationSmallVo updateInvitation(SysUserInvitationDto invitationDto) {
+        String code =  invitationDto.getCode();
+        String username = invitationDto.getUsername();
+
+        if(StrUtil.isBlank(username)) {
+            throw new GenshinApiException("用户名不能为空");
+        }
+
+        // 判断用户是否存在
+        if(userDao.getUser(username).isPresent()) {
+            throw new GenshinApiException("用户【" + username + "】已存在，无法邀请");
+        }
+
+        // 判断用户是否已存在邀请码不相同，但是相同名字的邀请条目
+        Optional<SysUserInvitation> maybeInvitation = invitationDao.getInvitation(code, username);
+        if(maybeInvitation.isEmpty()) {
+            final Optional<SysUserInvitation> sameInvitation = invitationDao.getInvitation(username);
+            if(sameInvitation.isPresent()) {
+                throw new GenshinApiException("已存在用户【" + username + "】的邀请，请编辑已有邀请信息");
+            }
+        }
+
+        // 初始化数据
+        SysUserInvitation invitation = maybeInvitation.orElse(new SysUserInvitation());
+
+        // 更新数据
+        invitation.setCode(invitationDao.createInviteCode(invitation.getCode()));
+        invitation.setUsername(username);
+        invitation.setRoleId(ObjUtil.defaultIfNull(invitationDto.getRoleId(), RoleEnum.VISITOR.ordinal()));
+        invitation.setRemark(StrUtil.blankToDefault(invitationDto.getRemark(), ""));
+        invitation.setAccessPolicy(ObjUtil.defaultIfNull(invitationDto.getAccessPolicy(), List.of()));
+        boolean isUpdate = invitation.getId() != null && invitation.getId() > 0;
+
+        boolean success = invitationMBPService.save(invitation);
+        if(!success) {
+            if(isUpdate)
+                throw new GenshinApiException("编辑用户邀请失败");
+            else
+                throw new GenshinApiException("新增用户邀请失败");
+        }
+
+        final SysUserInvitationSmallVo invitationVo = BeanUtil.copyProperties(invitation, SysUserInvitationSmallVo.class);
+
+        return invitationVo;
     }
 }

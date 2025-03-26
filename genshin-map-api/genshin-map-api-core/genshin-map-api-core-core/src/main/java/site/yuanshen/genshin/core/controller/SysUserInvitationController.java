@@ -10,8 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import site.yuanshen.common.web.response.R;
 import site.yuanshen.common.web.response.RUtils;
+import site.yuanshen.data.dto.SysUserInvitationDto;
 import site.yuanshen.data.dto.SysUserInvitationSearchDto;
 import site.yuanshen.data.vo.SysUserInvitationSearchVo;
+import site.yuanshen.data.vo.SysUserInvitationSmallVo;
 import site.yuanshen.data.vo.SysUserInvitationVo;
 import site.yuanshen.data.vo.helper.PageListVo;
 import site.yuanshen.genshin.core.service.SysUserInvitationService;
@@ -33,6 +35,15 @@ public class SysUserInvitationController {
         );
         UserAppenderService.appendUser(result, result.getData().getRecord(), true, SysUserInvitationVo::getCreatorId);
         UserAppenderService.appendUser(result, result.getData().getRecord(), true, SysUserInvitationVo::getUpdaterId);
+        return result;
+    }
+
+    @Operation(summary = "新增/更新用户邀请", description = "新增/更新用户邀请")
+    @PostMapping("/update")
+    public R<SysUserInvitationSmallVo> updateInvitation(@RequestBody SysUserInvitationVo invitationVo) {
+        R<SysUserInvitationSmallVo> result = RUtils.create(
+                userInvitationService.updateInvitation(new SysUserInvitationDto(invitationVo))
+        );
         return result;
     }
 }
