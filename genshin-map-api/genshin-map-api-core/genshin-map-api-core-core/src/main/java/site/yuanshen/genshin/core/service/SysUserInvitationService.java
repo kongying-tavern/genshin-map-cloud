@@ -11,16 +11,23 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.yuanshen.common.core.exception.GenshinApiException;
 import site.yuanshen.common.core.utils.PgsqlUtils;
+import site.yuanshen.data.dto.SysUserDto;
+import site.yuanshen.data.dto.SysUserInvitationConsumeDto;
 import site.yuanshen.data.dto.SysUserInvitationDto;
 import site.yuanshen.data.dto.SysUserInvitationSearchDto;
+import site.yuanshen.data.entity.SysUser;
 import site.yuanshen.data.entity.SysUserInvitation;
 import site.yuanshen.data.enums.RoleEnum;
 import site.yuanshen.data.mapper.SysUserInvitationMapper;
 import site.yuanshen.data.mapper.SysUserMapper;
+import site.yuanshen.data.vo.SysUserInvitationConsumeResultVo;
+import site.yuanshen.data.vo.SysUserInvitationConsumeVo;
 import site.yuanshen.data.vo.SysUserInvitationSmallVo;
 import site.yuanshen.data.vo.SysUserInvitationVo;
 import site.yuanshen.data.vo.helper.PageListVo;
@@ -137,12 +144,58 @@ public class SysUserInvitationService {
     }
 
     @Transactional
+    public SysUserInvitationConsumeResultVo consumeInvitation(SysUserInvitationConsumeDto invitationDto) {
+        String code = invitationDto.getCode();
+        String username = invitationDto.getUsername();
+        if(StrUtil.isBlank(username)) {
+            throw new GenshinApiException("用户名不能为空");
+        } else if(StrUtil.isBlank(code)) {
+            throw new GenshinApiException("邀请码不能为空");
+        } else if(!invitationDao.validateInviteCode(code)) {
+            throw new GenshinApiException("错误的邀请码，请重试");
+        }
+
+        // 校验邀请数据
+        SysUserInvitation foundInvitation = invitationDao.getInvitation(code, username).orElse(null);
+        if(foundInvitation == null) {
+            throw new GenshinApiException("错误的邀请码，请重试");
+        }
+
+        SysUserInvitationConsumeResultVo result = new SysUserInvitationConsumeResultVo();
+        // 校验当前用户数据
+        SysUser foundUser = userDao.getUser(username).orElse(null);
+        if(foundUser != null) {
+            result.setUserId(foundUser.getId());
+            result.setResult(SysUserInvitationConsumeResultVo.Status.EXISTING);
+            return result;
+        }
+
+        // 创建用户数据
+        PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+        SysUserDto sysUserDto = new SysUserDto();
+        sysUserDto.setUsername(username);
+        sysUserDto.setNickname(StrUtil.blankToDefault(invitationDto.getNickname(), ""));
+        sysUserDto.setPassword(passwordEncoder.encode(invitationDto.getPassword()));
+        sysUserDto.setRoleId(ObjUtil.defaultIfNull(foundInvitation.getRoleId(), RoleEnum.VISITOR.ordinal()));
+        sysUserDto.setRemark(StrUtil.blankToDefault(foundInvitation.getRemark(), ""));
+        sysUserDto.setAccessPolicy(ObjUtil.defaultIfNull(foundInvitation.getAccessPolicy(), List.of()));
+
+        Long userId = userDao.insertUser(sysUserDto);
+        result.setUserId(userId);
+        result.setResult(SysUserInvitationConsumeResultVo.Status.SUCCESS);
+
+        deleteInvitation(foundInvitation.getId());
+
+        return result;
+    }
+
+    @Transactional
     public Boolean deleteInvitation(Long invitationId) {
         if(invitationId == null || invitationId <= 0) {
             return true;
         }
 
-        invitationMapper.delete(Wrappers.<SysUserInvitation>lambdaQuery().eq(SysUserInvitation::getId, invitationId));
+        invitationMapper.deleteById(invitationId);
         return true;
     }
 }

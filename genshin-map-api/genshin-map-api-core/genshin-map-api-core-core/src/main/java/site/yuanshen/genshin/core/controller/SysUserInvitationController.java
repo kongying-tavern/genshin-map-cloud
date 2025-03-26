@@ -7,11 +7,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import site.yuanshen.common.web.response.R;
 import site.yuanshen.common.web.response.RUtils;
+import site.yuanshen.data.dto.SysUserInvitationConsumeDto;
 import site.yuanshen.data.dto.SysUserInvitationDto;
 import site.yuanshen.data.dto.SysUserInvitationSearchDto;
-import site.yuanshen.data.vo.SysUserInvitationSearchVo;
-import site.yuanshen.data.vo.SysUserInvitationSmallVo;
-import site.yuanshen.data.vo.SysUserInvitationVo;
+import site.yuanshen.data.vo.*;
 import site.yuanshen.data.vo.helper.PageListVo;
 import site.yuanshen.genshin.core.service.SysUserInvitationService;
 import site.yuanshen.genshin.core.service.UserAppenderService;
@@ -49,6 +48,15 @@ public class SysUserInvitationController {
     public R<SysUserInvitationSmallVo> checkInvitation(@RequestBody SysUserInvitationSmallVo invitationVo) {
         R<SysUserInvitationSmallVo> result = RUtils.create(
                 userInvitationService.checkInvitation(invitationVo)
+        );
+        return result;
+    }
+
+    @Operation(summary = "检查用户邀请数据", description = "检查用户邀请数据")
+    @PostMapping("/consume")
+    public R<SysUserInvitationConsumeResultVo> consumeInvitation(@RequestBody SysUserInvitationConsumeVo consumeInvitationVo) {
+        R<SysUserInvitationConsumeResultVo> result = RUtils.create(
+                userInvitationService.consumeInvitation(new SysUserInvitationConsumeDto(consumeInvitationVo))
         );
         return result;
     }
