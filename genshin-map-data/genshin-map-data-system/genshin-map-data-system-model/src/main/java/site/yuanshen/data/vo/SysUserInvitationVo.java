@@ -5,6 +5,7 @@ import lombok.*;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.sql.Timestamp;
+import java.util.List;
 
 /**
 * 系统用户邀请表;系统用户邀请前端封装
@@ -29,6 +30,19 @@ public class SysUserInvitationVo {
      */
     @Schema(title = "ID")
     private Long id;
+
+    /**
+     * 创建人
+     */
+    @Schema(title = "创建人")
+    private Long creatorId;
+
+    /**
+     * 创建时间
+     */
+    @Schema(title = "创建时间")
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
+    private Timestamp createTime;
 
     /**
      * 更新人
@@ -71,6 +85,6 @@ public class SysUserInvitationVo {
      * 权限策略
      */
     @Schema(title = "权限策略")
-    private String accessPolicy;
+    private List<String> accessPolicy;
 
 }

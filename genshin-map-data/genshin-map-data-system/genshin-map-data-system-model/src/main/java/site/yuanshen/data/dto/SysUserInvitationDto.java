@@ -8,6 +8,7 @@ import site.yuanshen.data.entity.SysUserInvitation;
 import site.yuanshen.data.vo.SysUserInvitationVo;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.sql.Timestamp;
+import java.util.List;
 
 
 /**
@@ -66,7 +67,7 @@ public class SysUserInvitationDto {
     /**
      * 权限策略
      */
-    private String accessPolicy;
+    private List<String> accessPolicy;
 
     public SysUserInvitationDto(SysUserInvitation sysUserInvitation) {
         BeanUtils.copy(sysUserInvitation, this);
