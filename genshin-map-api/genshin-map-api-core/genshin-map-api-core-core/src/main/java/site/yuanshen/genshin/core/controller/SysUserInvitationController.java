@@ -4,10 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import site.yuanshen.common.web.response.R;
 import site.yuanshen.common.web.response.RUtils;
 import site.yuanshen.data.dto.SysUserInvitationDto;
@@ -54,5 +51,13 @@ public class SysUserInvitationController {
                 userInvitationService.checkInvitation(invitationVo)
         );
         return result;
+    }
+
+    @Operation(summary = "删除用户邀请", description = "删除用户邀请")
+    @DeleteMapping("/{invitationId}")
+    public R<Boolean> deleteInvitation(@PathVariable("invitationId") Long invitationId) {
+        return RUtils.create(
+                userInvitationService.deleteInvitation(invitationId)
+        );
     }
 }

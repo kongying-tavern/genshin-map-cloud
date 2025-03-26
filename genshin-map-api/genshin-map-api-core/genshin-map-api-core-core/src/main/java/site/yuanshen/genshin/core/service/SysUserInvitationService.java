@@ -135,4 +135,14 @@ public class SysUserInvitationService {
         }
         return result;
     }
+
+    @Transactional
+    public Boolean deleteInvitation(Long invitationId) {
+        if(invitationId == null || invitationId <= 0) {
+            return true;
+        }
+
+        invitationMapper.delete(Wrappers.<SysUserInvitation>lambdaQuery().eq(SysUserInvitation::getId, invitationId));
+        return true;
+    }
 }
