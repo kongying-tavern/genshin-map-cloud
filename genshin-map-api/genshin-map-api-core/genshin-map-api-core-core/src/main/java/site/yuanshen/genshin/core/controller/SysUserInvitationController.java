@@ -29,7 +29,7 @@ public class SysUserInvitationController {
     @PostMapping("/list")
     public R<PageListVo<SysUserInvitationVo>> listInvitation(@RequestBody SysUserInvitationSearchVo searchVo) {
         R<PageListVo<SysUserInvitationVo>> result = RUtils.create(
-                userInvitationService.searchInvitation(new SysUserInvitationSearchDto(searchVo))
+                userInvitationService.searchInvitationPage(new SysUserInvitationSearchDto(searchVo))
         );
         UserAppenderService.appendUser(result, result.getData().getRecord(), true, SysUserInvitationVo::getCreatorId);
         UserAppenderService.appendUser(result, result.getData().getRecord(), true, SysUserInvitationVo::getUpdaterId);

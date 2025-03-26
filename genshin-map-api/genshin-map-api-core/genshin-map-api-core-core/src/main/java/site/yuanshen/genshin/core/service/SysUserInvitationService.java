@@ -6,9 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import site.yuanshen.common.core.utils.PgsqlUtils;
 import site.yuanshen.data.dto.SysUserInvitationDto;
 import site.yuanshen.data.dto.SysUserInvitationSearchDto;
@@ -27,7 +25,7 @@ public class SysUserInvitationService {
     private final SysUserDao userDao;
     private final SysUserInvitationMapper invitationMapper;
 
-    public PageListVo<SysUserInvitationVo> searchInvitation(SysUserInvitationSearchDto invitationSearchDto) {
+    public PageListVo<SysUserInvitationVo> searchInvitationPage(SysUserInvitationSearchDto invitationSearchDto) {
         QueryWrapper<SysUserInvitation> wrapper = Wrappers.<SysUserInvitation>query();
         final List<PgsqlUtils.Sort<SysUserInvitation>> sortList = PgsqlUtils.toSortConfigurations(
             invitationSearchDto.getSort(),
