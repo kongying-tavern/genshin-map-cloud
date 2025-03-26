@@ -20,4 +20,7 @@ public class SysUserSmallVo {
 
     @Schema(title = "头像链接")
     private String logo;
+
+    @Schema(title = "备注")
+    private String remark;
 }

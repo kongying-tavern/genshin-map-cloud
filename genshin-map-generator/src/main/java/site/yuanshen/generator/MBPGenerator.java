@@ -31,6 +31,8 @@ public class MBPGenerator {
 
     private static String outputDir = StrUtil.blankToDefault(System.getenv("GSAPI_OUTDIR"), "/generator");
 
+    private static String outputModule = StrUtil.blankToDefault(System.getenv("GSAPI_OUTMODULE"), "api");
+
     /**
      * 此处使用逗号分隔的表名，可以只对部分表进行生成，如果为空则生成所有实体。
      */
@@ -43,6 +45,7 @@ public class MBPGenerator {
         if(StrUtil.isBlankIfStr(password)) missingFieldNames.add("数据库密码 (GSAPI_DB_PASS)");
         if(StrUtil.isBlankIfStr(author)) missingFieldNames.add("代码作者 (GSAPI_AUTHOR)");
         if(StrUtil.isBlankIfStr(outputDir)) missingFieldNames.add("生成目录 (GSAPI_OUTDIR)");
+        if(StrUtil.isBlankIfStr(outputModule)) missingFieldNames.add("生成模块 (GSAPI_OUTMODULE)");
         if(CollUtil.isNotEmpty(missingFieldNames)) {
             throw new RuntimeException("以下环境变量缺失：\n" + StrUtil.join("\n", missingFieldNames));
         }
@@ -54,8 +57,10 @@ public class MBPGenerator {
                 .author(author)
                 .entity(StrUtil.isBlank(entity) ? null : entity)
                 .outputDir(outputDir)
-                .commentDateFormat("yyyy-MM-dd hh:mm:ss");
-        generator.entityPackage("site.yuanshen.data.entity")
+                .commentDateFormat("yyyy-MM-dd hh:mm:ss")
+                .moduleType(outputModule);
+        generator
+                .entityPackage("site.yuanshen.data.entity")
                 .mapperPackage("site.yuanshen.data.mapper")
                 .xmlPackage("mapper")
                 .voPackage("site.yuanshen.data.vo")

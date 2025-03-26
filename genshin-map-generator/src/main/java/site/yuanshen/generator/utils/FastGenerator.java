@@ -14,6 +14,8 @@ import com.baomidou.mybatisplus.generator.config.rules.DateType;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
 import com.baomidou.mybatisplus.generator.fill.Property;
 import com.baomidou.mybatisplus.generator.query.SQLQuery;
+import lombok.*;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
@@ -21,12 +23,9 @@ import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 import site.yuanshen.data.base.BaseEntity;
 
-import java.io.File;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
@@ -42,6 +41,7 @@ public class FastGenerator {
     private String outputDir;
     private String commentDateFormat;
 
+    private String moduleType;
     private String apiPackageName;
     private String apiModuleName;
     private String entityPackage;
@@ -54,9 +54,150 @@ public class FastGenerator {
 
     private static final String defaultSchema = "genshin_map";
 
+    @Getter
+    @RequiredArgsConstructor
+    public enum ResourceType {
+        Resource("资源", "src/main/resources"),
+        JavaSource("Java代码", "src/main/java");
+
+        private final String name;
+
+        private final String path;
+    }
+
+    @With
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public class SourcePath {
+        public String modulePath;
+
+        public ResourceType type;
+
+        public String packageName;
+
+        public String getPath(boolean withPackageName) {
+            final String outputBase = System.getProperty("user.dir") + outputDir;
+            if(this.type == null || StringUtils.isBlank(this.packageName) || StringUtils.isBlank(this.modulePath))
+                return "";
+            return outputBase + this.modulePath + "/" + this.type.getPath() + "/" +
+                (withPackageName ? this.packageName.replace(".", "/") : "");
+        }
+    }
+
+    @With
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public class OutputConfig {
+        public SourcePath entityPath;
+        public SourcePath servicePath;
+        public SourcePath serviceImplPath;
+        public SourcePath mapperPath;
+        public SourcePath xmlPath;
+        public SourcePath dtoPath;
+        public SourcePath voPath;
+
+        public Map<OutputFile, String> getPathInfo() {
+            Map<OutputFile, String> pathInfo = new HashMap<>();
+            pathInfo.put(OutputFile.entity, this.entityPath.getPath(true));
+            pathInfo.put(OutputFile.service, this.servicePath.getPath(true));
+            pathInfo.put(OutputFile.serviceImpl, this.serviceImplPath.getPath(true));
+            pathInfo.put(OutputFile.mapper, this.mapperPath.getPath(true));
+            pathInfo.put(OutputFile.xml, this.xmlPath.getPath(true));
+            return pathInfo;
+        }
+
+        public String getDtoPath() {
+            return this.dtoPath.getPath(false);
+        }
+
+        public String getVoPath() {
+            return this.voPath.getPath(false);
+        }
+    }
+
+    private final Map<String, OutputConfig> TARGET_PATH_MAP = new HashMap<>(){{
+        put("api", (new OutputConfig())
+            .withEntityPath((new SourcePath())
+                .withModulePath("genshin-map-data/genshin-map-data-core/genshin-map-data-core-model")
+                .withType(ResourceType.JavaSource)
+                .withPackageName("site.yuanshen.data.entity")
+            )
+            .withServicePath((new SourcePath())
+                .withModulePath("genshin-map-api/genshin-map-api-core/genshin-map-api-core-core")
+                .withType(ResourceType.JavaSource)
+                .withPackageName("site.yuanshen.genshin.core.service.mbp")
+            )
+            .withServiceImplPath((new SourcePath())
+                .withModulePath("genshin-map-api/genshin-map-api-core/genshin-map-api-core-core")
+                .withType(ResourceType.JavaSource)
+                .withPackageName("site.yuanshen.genshin.core.service.mbp.impl")
+            )
+            .withMapperPath((new SourcePath())
+                .withModulePath("genshin-map-data/genshin-map-data-core/genshin-map-data-core-mapper")
+                .withType(ResourceType.JavaSource)
+                .withPackageName("site.yuanshen.data.mapper")
+            )
+            .withXmlPath((new SourcePath())
+                .withModulePath("genshin-map-data/genshin-map-data-core/genshin-map-data-core-mapper")
+                .withType(ResourceType.Resource)
+                .withPackageName("mapper")
+            )
+            .withDtoPath((new SourcePath())
+                .withModulePath("genshin-map-data/genshin-map-data-core/genshin-map-data-core-model")
+                .withType(ResourceType.JavaSource)
+                .withPackageName("site.yuanshen.data.dto")
+            )
+            .withVoPath((new SourcePath())
+                .withModulePath("genshin-map-data/genshin-map-data-core/genshin-map-data-core-model")
+                .withType(ResourceType.JavaSource)
+                .withPackageName("site.yuanshen.data.vo")
+            )
+        );
+        put("system", (new OutputConfig())
+            .withEntityPath((new SourcePath())
+                .withModulePath("genshin-map-data/genshin-map-data-system/genshin-map-data-system-model")
+                .withType(ResourceType.JavaSource)
+                .withPackageName("site.yuanshen.data.entity")
+            )
+            .withServicePath((new SourcePath())
+                .withModulePath("genshin-map-api/genshin-map-api-core/genshin-map-api-core-core")
+                .withType(ResourceType.JavaSource)
+                .withPackageName("site.yuanshen.genshin.core.service.mbp")
+            )
+            .withServiceImplPath((new SourcePath())
+                .withModulePath("genshin-map-api/genshin-map-api-core/genshin-map-api-core-core")
+                .withType(ResourceType.JavaSource)
+                .withPackageName("site.yuanshen.genshin.core.service.mbp.impl")
+            )
+            .withMapperPath((new SourcePath())
+                .withModulePath("genshin-map-data/genshin-map-data-system/genshin-map-data-system-mapper")
+                .withType(ResourceType.JavaSource)
+                .withPackageName("site.yuanshen.data.mapper")
+            )
+            .withXmlPath((new SourcePath())
+                .withModulePath("genshin-map-data/genshin-map-data-system/genshin-map-data-system-mapper")
+                .withType(ResourceType.Resource)
+                .withPackageName("mapper")
+            )
+            .withDtoPath((new SourcePath())
+                .withModulePath("genshin-map-data/genshin-map-data-system/genshin-map-data-system-model")
+                .withType(ResourceType.JavaSource)
+                .withPackageName("site.yuanshen.data.dto")
+            )
+            .withVoPath((new SourcePath())
+                .withModulePath("genshin-map-data/genshin-map-data-system/genshin-map-data-system-model")
+                .withType(ResourceType.JavaSource)
+                .withPackageName("site.yuanshen.data.vo")
+            )
+        );
+    }};
+
     public void build() {
         System.out.println("Output Dir: " + outputDir);
-        final Map<String, String> customPathMap = this.getCustomPathMap();
+        final OutputConfig targetPaths = this.TARGET_PATH_MAP.get(this.moduleType);
+        if(targetPaths == null) {
+            throw new IllegalArgumentException("Invalid module type `" + this.moduleType + "`");
+        }
 
         FastAutoGenerator.create(new DataSourceConfig.Builder(url,userName,password)
                         //3.5.3之后，默认为DefaultQuery，会使得pg的json数据被识别为object，且无法被mbp的转化器转化
@@ -80,7 +221,7 @@ public class FastGenerator {
                         .serviceImpl(serviceImplPackage)
                         .mapper(mapperPackage)
                         .xml(xmlPackage)
-                        .pathInfo(this.getPathMap())
+                        .pathInfo(targetPaths.getPathInfo())
                 )
                 .strategyConfig(builder -> builder
                         // 添加需要生成模块的白名单列表
@@ -128,13 +269,13 @@ public class FastGenerator {
                                 .fileName("Dto.java")
                                 .templatePath("/templates/dto.java.ftl")
                                 .packageName(dtoPackage)
-                                .filePath(customPathMap.get("dto"))
+                                .filePath(targetPaths.getDtoPath())
                                 .enableFileOverride())
                         .customFile(fileBuilder -> fileBuilder
                                 .fileName("Vo.java")
                                 .templatePath("/templates/vo.java.ftl")
                                 .packageName(voPackage)
-                                .filePath(customPathMap.get("vo"))
+                                .filePath(targetPaths.getVoPath())
                                 .enableFileOverride()))
                 .templateEngine(new FreemarkerTemplateEngine())
                 .execute();
@@ -148,71 +289,6 @@ public class FastGenerator {
                 }
             }
         };
-    }
-
-    private String getPathLocation(String base, String pathTag, boolean expandPackage) {
-        if(StrUtil.isBlank(base))
-            throw new IllegalArgumentException("base path cannot be blank");
-        else if(StrUtil.isBlank(pathTag))
-            throw new IllegalArgumentException("path tag cannot be empty");
-        else if(!StrUtil.startWithAny(pathTag, "R.", "J."))
-            throw new IllegalArgumentException("path tag start with an unexpected prefix");
-
-        final Map<String, String> prefixMap = new LinkedHashMap<>(){{
-            put("mapper", "genshin-map-data/genshin-map-data-core/genshin-map-data-core-mapper");
-            put("site.yuanshen.genshin.core", "genshin-map-api/genshin-map-api-core/genshin-map-api-core-core");
-            put("site.yuanshen.data.mapper", "genshin-map-data/genshin-map-data-core/genshin-map-data-core-mapper");
-            put("site.yuanshen.data", "genshin-map-data/genshin-map-data-core/genshin-map-data-core-model");
-        }};
-        final Map<String, String> slotMap = new HashMap<>(){{
-            put("J", "src/main/java");
-            put("R", "src/main/resources");
-        }};
-
-        final List<String> tagChunks = StrUtil.split(pathTag, '.', 2);
-        if(tagChunks.size() < 2)
-            throw new IllegalArgumentException("path tag does not match a valid path");
-        final String tagClassifier = tagChunks.get(0);
-        final String tagPackageName = tagChunks.get(1);
-
-        // Iterate to find match module base path
-        String pathPrefix = "";
-        for(Map.Entry<String, String> prefixEntry : prefixMap.entrySet()) {
-            if(StrUtil.startWith(tagPackageName,  prefixEntry.getKey())) {
-                pathPrefix = prefixEntry.getValue();
-                break;
-            }
-        }
-        if(StrUtil.isBlank(pathPrefix))
-            throw new IllegalArgumentException("unable to find module base path from path tag: " + tagPackageName);
-
-        final String pathSlot = slotMap.getOrDefault(tagClassifier, "");
-        final String pathPackage = expandPackage ? StrUtil.replace(tagPackageName, ".", File.separator) : "";
-        final String pathFull = base + File.separator + pathPrefix + File.separator + pathSlot + File.separator + pathPackage;
-        return pathFull;
-    }
-
-    private Map<OutputFile, String> getPathMap() {
-        final String outputBase = System.getProperty("user.dir") + outputDir;
-        Map<OutputFile, String> pathMap = new HashMap<>();
-
-        pathMap.put(OutputFile.entity, getPathLocation(outputBase, "J.site.yuanshen.data.entity", true));
-        pathMap.put(OutputFile.service, getPathLocation(outputBase, "J.site.yuanshen.genshin.core.service.mbp", true));
-        pathMap.put(OutputFile.serviceImpl, getPathLocation(outputBase, "J.site.yuanshen.genshin.core.service.mbp.impl", true));
-        pathMap.put(OutputFile.mapper, getPathLocation(outputBase, "J.site.yuanshen.data.mapper", true));
-        pathMap.put(OutputFile.xml, getPathLocation(outputBase, "R.mapper", true));
-
-        return pathMap;
-    }
-
-    private Map<String, String> getCustomPathMap() {
-        final String outputBase = System.getProperty("user.dir") + outputDir;
-        Map<String, String> pathMap = new HashMap<>();
-
-        pathMap.put("dto", getPathLocation(outputBase, "J.site.yuanshen.data.dto", false));
-        pathMap.put("vo", getPathLocation(outputBase, "J.site.yuanshen.data.vo", false));
-
-        return pathMap;
     }
 
     public static FastGenerator getFastGenerator() {
@@ -274,6 +350,11 @@ public class FastGenerator {
 
     public FastGenerator commentDateFormat(String commentDateFormat) {
         this.commentDateFormat = commentDateFormat;
+        return this;
+    }
+
+    public FastGenerator moduleType(String moduleType) {
+        this.moduleType = moduleType;
         return this;
     }
 

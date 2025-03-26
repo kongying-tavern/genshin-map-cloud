@@ -53,6 +53,11 @@ public class SysUserUpdateVo {
     private Integer roleId;
 
     /**
+     * 角色ID
+     */
+    private String remark;
+
+    /**
      * 权限策略
      *
      * @see site.yuanshen.data.enums.AccessPolicyEnum
