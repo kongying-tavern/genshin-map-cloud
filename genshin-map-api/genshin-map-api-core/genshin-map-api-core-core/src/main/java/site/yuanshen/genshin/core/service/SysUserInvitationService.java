@@ -114,4 +114,25 @@ public class SysUserInvitationService {
 
         return invitationVo;
     }
+
+    public SysUserInvitationSmallVo checkInvitation(SysUserInvitationSmallVo invitationVo) {
+        String code = invitationVo.getCode();
+        String username = invitationVo.getUsername();
+        if(StrUtil.isBlank(code)) {
+            throw new GenshinApiException("邀请码不能为空");
+        } else if(StrUtil.isBlank(username)) {
+            throw new GenshinApiException("用户名不能为空");
+        }
+
+        if(!invitationDao.validateInviteCode(code)) {
+            throw new GenshinApiException("错误的邀请码，请重试");
+        }
+
+        SysUserInvitation foundInvitation = invitationDao.getInvitation(code, username).orElse(null);
+        SysUserInvitationSmallVo result = null;
+        if(foundInvitation != null) {
+            result = BeanUtil.copyProperties(foundInvitation, SysUserInvitationSmallVo.class);
+        }
+        return result;
+    }
 }

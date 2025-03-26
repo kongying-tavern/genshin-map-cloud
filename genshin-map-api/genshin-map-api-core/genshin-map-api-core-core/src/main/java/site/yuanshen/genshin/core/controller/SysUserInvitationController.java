@@ -46,4 +46,13 @@ public class SysUserInvitationController {
         );
         return result;
     }
+
+    @Operation(summary = "检查用户邀请数据", description = "检查用户邀请数据")
+    @PostMapping("/info")
+    public R<SysUserInvitationSmallVo> checkInvitation(@RequestBody SysUserInvitationSmallVo invitationVo) {
+        R<SysUserInvitationSmallVo> result = RUtils.create(
+                userInvitationService.checkInvitation(invitationVo)
+        );
+        return result;
+    }
 }

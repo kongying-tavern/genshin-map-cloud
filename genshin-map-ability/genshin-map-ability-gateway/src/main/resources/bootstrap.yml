@@ -16,6 +16,7 @@ genshin:
     - /v3/**
     - /swagger-ui/**
     - /system/user/register/qq
+    - /system/invitation/info
   authorities-filter:
     VISITOR:
       - /api/tag/get/**

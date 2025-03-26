@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.With;
 
 /**
-* 系统用户邀请表;系统用户邀请前端封装
+* 用户邀请
 *
 * @since 2025-03-26 07:46:02
 */
@@ -15,7 +15,7 @@ import lombok.With;
 @With
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(title = "SysUserInvitation前端封装", description = "系统用户邀请表;系统用户邀请前端封装")
+@Schema(title = "用户邀请前端封装", description = "用户邀请前端封装")
 public class SysUserInvitationSmallVo {
 
     @Schema(title = "邀请码")
