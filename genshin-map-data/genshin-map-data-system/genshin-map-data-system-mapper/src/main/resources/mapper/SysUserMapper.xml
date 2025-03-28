@@ -7,17 +7,17 @@
             resultType="site.yuanshen.data.entity.SysUser">
         select
         <include refid="Base_Column_List"/>
-        from sys_user su
+        from sys_user
         where
         <choose>
             <when test="userIdList != null and userIdList.size > 0">
-                su.id IN
+                sys_user.id IN
                 <foreach collection="userIdList" open="(" separator="," close=")" item="userId">
                     #{userId}
                 </foreach>
             </when>
             <otherwise>
-                su.id = 0
+                sys_user.id = 0
             </otherwise>
         </choose>
     </select>
