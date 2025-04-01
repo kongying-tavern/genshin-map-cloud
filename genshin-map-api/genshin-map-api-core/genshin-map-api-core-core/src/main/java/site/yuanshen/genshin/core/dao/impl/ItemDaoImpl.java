@@ -29,6 +29,8 @@ import site.yuanshen.data.vo.adapter.cache.ItemListCacheKey;
 import site.yuanshen.genshin.core.dao.ItemDao;
 
 import java.nio.charset.StandardCharsets;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -70,9 +72,9 @@ public class ItemDaoImpl implements ItemDao {
     /**
      * 生成物品点位相关信息
      *
-     * @param itemIdList 物品ID列表
+     * @param itemIdList    物品ID列表
      * @param itemTypeIdMap 物品类型Map key:item_id, value:item_type_id[]
-     * @param itemCountMap 物品计数Map key:item_id, value:{hiddenFlag: count}
+     * @param itemCountMap  物品计数Map key:item_id, value:{hiddenFlag: count}
      */
     @Override
     public void generateItemMarkerInfo(
@@ -122,7 +124,7 @@ public class ItemDaoImpl implements ItemDao {
      * 返回物品分页压缩文档
      *
      * @param flagList 权限标记
-     * @param md5 压缩文档数据的MD5
+     * @param md5      压缩文档数据的MD5
      * @return 压缩后的字节数组
      */
     @Override
@@ -156,10 +158,18 @@ public class ItemDaoImpl implements ItemDao {
      * @return 过滤后的MD5数组
      */
     @Override
-    public List<String> listItemBinaryMD5(List<Integer> flagList) {
+    public List<Map<String, Object>> listItemBinaryMD5(List<Integer> flagList) {
         final Map<ItemListCacheKey, String> binaryMd5Map = getItemMd5ByFlags(flagList);
         final LinkedHashMap<ItemListCacheKey, String> binaryMd5MapSorted = sortItemMd5Map(binaryMd5Map);
-        return new ArrayList<>(binaryMd5MapSorted.values());
+        return binaryMd5MapSorted.values()
+            .stream()
+            .map(x -> {
+                Map<String, Object> map = new HashMap<>();
+                map.put("md5", x);
+                map.put("time", Timestamp.from(Instant.now()).getTime());
+                return map;
+            })
+            .collect(Collectors.toList());
     }
 
     /**

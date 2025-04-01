@@ -34,7 +34,7 @@ public interface ItemDao {
      * @param flagList 权限标记
      * @return 过滤后的MD5数组
      */
-    List<String> listItemBinaryMD5(List<Integer> flagList);
+    List<Map<String, Object>> listItemBinaryMD5(List<Integer> flagList);
 
     /**
      * 刷新物品压缩缓存并返回压缩文档
