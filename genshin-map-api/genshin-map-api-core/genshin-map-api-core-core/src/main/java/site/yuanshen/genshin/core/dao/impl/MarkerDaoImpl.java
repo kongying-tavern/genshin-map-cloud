@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.caffeine.CaffeineCache;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 import site.yuanshen.common.core.exception.GenshinApiException;
@@ -29,6 +30,7 @@ import site.yuanshen.data.enums.cache.CacheSplitterEnum;
 import site.yuanshen.data.mapper.*;
 import site.yuanshen.data.vo.MarkerItemLinkVo;
 import site.yuanshen.data.vo.MarkerVo;
+import site.yuanshen.data.vo.adapter.cache.ItemCacheKeyConst;
 import site.yuanshen.data.vo.adapter.cache.MarkerCacheKeyConst;
 import site.yuanshen.data.vo.adapter.cache.MarkerListCacheKey;
 import site.yuanshen.data.vo.helper.PageListVo;
@@ -254,12 +256,14 @@ public class MarkerDaoImpl implements MarkerDao {
     public List<Map<String, Object>> listMarkerBinaryMD5(List<Integer> flagList) {
         final Map<MarkerListCacheKey, String> binaryMd5Map = getMarkerMd5ByFlags(flagList);
         final LinkedHashMap<MarkerListCacheKey, String> binaryMd5MapSorted = sortMarkerMd5Map(binaryMd5Map);
+        CaffeineCache binaryMd5CacheGenerateTimestamp = (CaffeineCache) neverRefreshCacheManager.getCache(MarkerCacheKeyConst.MARKER_LIST_BIN_MD5_GENERATE_TIMESTAMP);
+        long time = (long) binaryMd5CacheGenerateTimestamp.getNativeCache().getIfPresent("");
         return binaryMd5MapSorted.values()
             .stream()
             .map(x -> {
                 Map<String, Object> map = new HashMap<>();
                 map.put("md5", x);
-                map.put("time", Timestamp.from(Instant.now()).getTime());
+                map.put("time", time);
                 return map;
             })
             .collect(Collectors.toList());
@@ -275,6 +279,7 @@ public class MarkerDaoImpl implements MarkerDao {
         try {
             final Cache binaryCache = getMarkerBinaryCache();
             final Cache binaryMd5Cache = getMarkerBinaryMd5Cache();
+            final Cache binaryMd5CacheGenerateTimestamp = getBinaryMd5CacheGenerateTimestamp();
             final TimeInterval timer = DateUtil.timer();
 
             // 创建总缓存与映射关系
@@ -331,6 +336,8 @@ public class MarkerDaoImpl implements MarkerDao {
             binaryMap.forEach(binaryCache::put);
             binaryMd5Cache.clear();
             binaryMd5Cache.put("", binaryMd5Map);
+            binaryMd5CacheGenerateTimestamp.clear();
+            binaryMd5CacheGenerateTimestamp.put("", Timestamp.from(Instant.now()).getTime());
             log.info("[binary][marker] marker cache updated, cost: {}", timer.intervalPretty());
 
             return binaryMap;
@@ -351,6 +358,13 @@ public class MarkerDaoImpl implements MarkerDao {
         if (binaryMd5Cache == null)
             throw new GenshinApiException("缓存未初始化");
         return binaryMd5Cache;
+    }
+
+    private Cache getBinaryMd5CacheGenerateTimestamp() {
+        final Cache binaryMd5CacheGenerateTimestamp = neverRefreshCacheManager.getCache(MarkerCacheKeyConst.MARKER_LIST_BIN_MD5_GENERATE_TIMESTAMP);
+        if (binaryMd5CacheGenerateTimestamp == null)
+            throw new GenshinApiException("缓存未初始化");
+        return binaryMd5CacheGenerateTimestamp;
     }
 
     private Map<MarkerListCacheKey, String> getMarkerMd5ByFlags(List<Integer> flagList) {

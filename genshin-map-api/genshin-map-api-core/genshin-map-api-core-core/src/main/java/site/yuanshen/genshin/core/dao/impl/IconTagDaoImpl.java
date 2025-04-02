@@ -3,6 +3,7 @@ package site.yuanshen.genshin.core.dao.impl;
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.caffeine.CaffeineCache;
@@ -18,6 +19,7 @@ import site.yuanshen.data.mapper.IconMapper;
 import site.yuanshen.data.mapper.TagMapper;
 import site.yuanshen.data.mapper.TagTypeLinkMapper;
 import site.yuanshen.data.vo.TagVo;
+import site.yuanshen.data.vo.adapter.cache.MarkerLinkageCacheKeyConst;
 import site.yuanshen.genshin.core.dao.IconTagDao;
 
 import java.nio.charset.StandardCharsets;
@@ -49,6 +51,7 @@ public class IconTagDaoImpl implements IconTagDao {
     @Override
     @Cacheable(value = "listAllTag")
     public List<TagVo> listAllTag() {
+        Cache listAllTagBinaryMd5GenerateTimestamp = getListAllTagBinaryMd5GenerateTimestamp();
         //按照条件进行筛选
         List<Tag> tagPage = tagMapper.selectList(Wrappers.query());
         List<TagDto> tagDtoList = tagPage
@@ -69,6 +72,8 @@ public class IconTagDaoImpl implements IconTagDao {
         List<Long> iconIdList = tagDtoList.stream().map(TagDto::getIconId).distinct().collect(Collectors.toList());
         Map<Long, String> urlMap = iconMapper.selectList(Wrappers.<Icon>lambdaQuery().in(Icon::getId, iconIdList))
             .stream().collect(Collectors.toMap(Icon::getId, Icon::getUrl));
+        listAllTagBinaryMd5GenerateTimestamp.clear();
+        listAllTagBinaryMd5GenerateTimestamp.put("", Timestamp.from(Instant.now()).getTime());
         return tagDtoList.stream().map(dto ->
                 dto.getVo()
                     .withTypeIdList(typeMap.getOrDefault(dto.getTag(), new ArrayList<>()))
@@ -98,6 +103,7 @@ public class IconTagDaoImpl implements IconTagDao {
     @Cacheable("listAllTagBinaryMd5")
     public Map<String, Object> listAllTagBinaryMd5() {
         CaffeineCache tagBinaryCache = (CaffeineCache) cacheManager.getCache("listAllTag");
+        CaffeineCache allTagBinaryMd5GenerateTimestampCache = (CaffeineCache) cacheManager.getCache("listAllTagBinaryMd5GenerateTimestamp");
         byte[] allTagBinary;
         if (tagBinaryCache != null) {
             if (!tagBinaryCache.getNativeCache().asMap().isEmpty()) {
@@ -113,9 +119,17 @@ public class IconTagDaoImpl implements IconTagDao {
         } else {
             allTagBinary = listAllTagBinary();
         }
+        long time = (long) allTagBinaryMd5GenerateTimestampCache.getNativeCache().getIfPresent("");
         Map<String, Object> map = new HashMap<>();
         map.put("md5", DigestUtils.md5DigestAsHex(allTagBinary));
-        map.put("time", Timestamp.from(Instant.now()).getTime());
+        map.put("time", time);
         return map;
+    }
+
+    private Cache getListAllTagBinaryMd5GenerateTimestamp() {
+        final Cache listAllTagBinaryMd5GenerateTimestamp = cacheManager.getCache("listAllTagBinaryMd5GenerateTimestamp");
+        if (listAllTagBinaryMd5GenerateTimestamp == null)
+            throw new GenshinApiException("缓存未初始化");
+        return listAllTagBinaryMd5GenerateTimestamp;
     }
 }

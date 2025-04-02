@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
+import org.springframework.cache.caffeine.CaffeineCache;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 import site.yuanshen.common.core.exception.GenshinApiException;
@@ -160,13 +161,15 @@ public class ItemDaoImpl implements ItemDao {
     @Override
     public List<Map<String, Object>> listItemBinaryMD5(List<Integer> flagList) {
         final Map<ItemListCacheKey, String> binaryMd5Map = getItemMd5ByFlags(flagList);
+        CaffeineCache binaryMd5CacheGenerateTimestamp = (CaffeineCache) neverRefreshCacheManager.getCache(ItemCacheKeyConst.ITEM_LIST_BIN_MD5_GENERATE_TIMESTAMP);
+        long time = (long) binaryMd5CacheGenerateTimestamp.getNativeCache().getIfPresent("");
         final LinkedHashMap<ItemListCacheKey, String> binaryMd5MapSorted = sortItemMd5Map(binaryMd5Map);
         return binaryMd5MapSorted.values()
             .stream()
             .map(x -> {
                 Map<String, Object> map = new HashMap<>();
                 map.put("md5", x);
-                map.put("time", Timestamp.from(Instant.now()).getTime());
+                map.put("time", time);
                 return map;
             })
             .collect(Collectors.toList());
@@ -182,6 +185,7 @@ public class ItemDaoImpl implements ItemDao {
         try {
             final Cache binaryCache = getItemBinaryCache();
             final Cache binaryMd5Cache = getItemBinaryMd5Cache();
+            final Cache listItemBinaryMD5GenerateTimestamp = getListItemBinaryMD5GenerateTimestamp();
             final TimeInterval timer = DateUtil.timer();
 
             // 创建总缓存与映射关系
@@ -237,6 +241,8 @@ public class ItemDaoImpl implements ItemDao {
             binaryMap.forEach(binaryCache::put);
             binaryMd5Cache.clear();
             binaryMd5Cache.put("", binaryMd5Map);
+            listItemBinaryMD5GenerateTimestamp.clear();
+            listItemBinaryMD5GenerateTimestamp.put("", Timestamp.from(Instant.now()).getTime());
             log.info("[binary][item] item cache updated, cost: {}", timer.intervalPretty());
 
             return binaryMap;
@@ -257,6 +263,13 @@ public class ItemDaoImpl implements ItemDao {
         if (binaryMd5Cache == null)
             throw new GenshinApiException("缓存未初始化");
         return binaryMd5Cache;
+    }
+
+    private Cache getListItemBinaryMD5GenerateTimestamp() {
+        final Cache binaryMd5CacheGenerateTimestamp = neverRefreshCacheManager.getCache(ItemCacheKeyConst.ITEM_LIST_BIN_MD5_GENERATE_TIMESTAMP);
+        if (binaryMd5CacheGenerateTimestamp == null)
+            throw new GenshinApiException("缓存未初始化");
+        return binaryMd5CacheGenerateTimestamp;
     }
 
     private Map<ItemListCacheKey, String> getItemMd5ByFlags(List<Integer> flagList) {
