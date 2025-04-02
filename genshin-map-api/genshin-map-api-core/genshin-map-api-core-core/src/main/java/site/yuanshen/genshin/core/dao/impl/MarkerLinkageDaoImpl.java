@@ -11,16 +11,12 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import site.yuanshen.common.core.exception.GenshinApiException;
-import site.yuanshen.common.core.utils.CompressUtils;
-import site.yuanshen.common.core.utils.JsonUtils;
-import site.yuanshen.common.core.utils.PgsqlUtils;
-import site.yuanshen.common.core.utils.SpringContextUtils;
+import site.yuanshen.common.core.utils.*;
 import site.yuanshen.data.dto.MarkerLinkageDto;
 import site.yuanshen.data.entity.MarkerLinkage;
 import site.yuanshen.data.helper.marker.linkage.MarkerLinkageDataHelper;
 import site.yuanshen.data.mapper.MarkerLinkageMapper;
 import site.yuanshen.data.vo.MarkerLinkageVo;
-import site.yuanshen.data.vo.adapter.cache.MarkerCacheKeyConst;
 import site.yuanshen.data.vo.adapter.cache.MarkerLinkageCacheKeyConst;
 import site.yuanshen.data.vo.adapter.marker.linkage.graph.GraphVo;
 import site.yuanshen.genshin.core.dao.MarkerLinkageDao;
@@ -29,8 +25,6 @@ import site.yuanshen.genshin.core.service.mbp.MarkerLinkageMBPService;
 
 import java.awt.geom.Point2D;
 import java.nio.charset.StandardCharsets;
-import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -227,7 +221,7 @@ public class MarkerLinkageDaoImpl implements MarkerLinkageDao {
             final Map<String, List<MarkerLinkageVo>> linkageList = listAllMarkerLinkage();
             final byte[] result = JSON.toJSONString(linkageList, JsonUtils.defaultWriteFeatures).getBytes(StandardCharsets.UTF_8);
             listMarkerLinkageBinaryMD5GenerateTimestamp.clear();
-            listMarkerLinkageBinaryMD5GenerateTimestamp.put("", Timestamp.from(Instant.now()).getTime());
+            listMarkerLinkageBinaryMD5GenerateTimestamp.put("", TimeUtils.getCurrentTimestamp().getTime());
             return CompressUtils.compress(result);
         } catch (Exception e) {
             throw new GenshinApiException("创建压缩失败", e);
@@ -254,7 +248,7 @@ public class MarkerLinkageDaoImpl implements MarkerLinkageDao {
             final Map<String, GraphVo> linkageGraph = graphAllMarkerLinkage();
             final byte[] result = JSON.toJSONString(linkageGraph, JsonUtils.defaultWriteFeatures).getBytes(StandardCharsets.UTF_8);
             graphMarkerLinkageBinaryMD5GenerateTimestamp.clear();
-            graphMarkerLinkageBinaryMD5GenerateTimestamp.put("", Timestamp.from(Instant.now()).getTime());
+            graphMarkerLinkageBinaryMD5GenerateTimestamp.put("", TimeUtils.getCurrentTimestamp().getTime());
             return CompressUtils.compress(result);
         } catch (Exception e) {
             throw new GenshinApiException("创建压缩失败", e);

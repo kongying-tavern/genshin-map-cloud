@@ -21,6 +21,7 @@ import site.yuanshen.common.core.exception.GenshinApiException;
 import site.yuanshen.common.core.utils.CompressUtils;
 import site.yuanshen.common.core.utils.JsonUtils;
 import site.yuanshen.common.core.utils.PgsqlUtils;
+import site.yuanshen.common.core.utils.TimeUtils;
 import site.yuanshen.data.dto.MarkerDto;
 import site.yuanshen.data.dto.MarkerItemLinkDto;
 import site.yuanshen.data.dto.helper.PageSearchDto;
@@ -30,15 +31,12 @@ import site.yuanshen.data.enums.cache.CacheSplitterEnum;
 import site.yuanshen.data.mapper.*;
 import site.yuanshen.data.vo.MarkerItemLinkVo;
 import site.yuanshen.data.vo.MarkerVo;
-import site.yuanshen.data.vo.adapter.cache.ItemCacheKeyConst;
 import site.yuanshen.data.vo.adapter.cache.MarkerCacheKeyConst;
 import site.yuanshen.data.vo.adapter.cache.MarkerListCacheKey;
 import site.yuanshen.data.vo.helper.PageListVo;
 import site.yuanshen.genshin.core.dao.MarkerDao;
 
 import java.nio.charset.StandardCharsets;
-import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -337,7 +335,7 @@ public class MarkerDaoImpl implements MarkerDao {
             binaryMd5Cache.clear();
             binaryMd5Cache.put("", binaryMd5Map);
             binaryMd5CacheGenerateTimestamp.clear();
-            binaryMd5CacheGenerateTimestamp.put("", Timestamp.from(Instant.now()).getTime());
+            binaryMd5CacheGenerateTimestamp.put("", TimeUtils.getCurrentTimestamp().getTime());
             log.info("[binary][marker] marker cache updated, cost: {}", timer.intervalPretty());
 
             return binaryMap;

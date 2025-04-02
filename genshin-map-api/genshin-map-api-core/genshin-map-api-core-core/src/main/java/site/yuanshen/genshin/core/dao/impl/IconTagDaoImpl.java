@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 import site.yuanshen.common.core.exception.GenshinApiException;
 import site.yuanshen.common.core.utils.CompressUtils;
+import site.yuanshen.common.core.utils.TimeUtils;
 import site.yuanshen.data.dto.TagDto;
 import site.yuanshen.data.entity.Icon;
 import site.yuanshen.data.entity.Tag;
@@ -19,12 +20,9 @@ import site.yuanshen.data.mapper.IconMapper;
 import site.yuanshen.data.mapper.TagMapper;
 import site.yuanshen.data.mapper.TagTypeLinkMapper;
 import site.yuanshen.data.vo.TagVo;
-import site.yuanshen.data.vo.adapter.cache.MarkerLinkageCacheKeyConst;
 import site.yuanshen.genshin.core.dao.IconTagDao;
 
 import java.nio.charset.StandardCharsets;
-import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -73,7 +71,7 @@ public class IconTagDaoImpl implements IconTagDao {
         Map<Long, String> urlMap = iconMapper.selectList(Wrappers.<Icon>lambdaQuery().in(Icon::getId, iconIdList))
             .stream().collect(Collectors.toMap(Icon::getId, Icon::getUrl));
         listAllTagBinaryMd5GenerateTimestamp.clear();
-        listAllTagBinaryMd5GenerateTimestamp.put("", Timestamp.from(Instant.now()).getTime());
+        listAllTagBinaryMd5GenerateTimestamp.put("", TimeUtils.getCurrentTimestamp().getTime());
         return tagDtoList.stream().map(dto ->
                 dto.getVo()
                     .withTypeIdList(typeMap.getOrDefault(dto.getTag(), new ArrayList<>()))

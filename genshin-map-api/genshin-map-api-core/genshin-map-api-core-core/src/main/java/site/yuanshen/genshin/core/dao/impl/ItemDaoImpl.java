@@ -19,6 +19,7 @@ import site.yuanshen.common.core.exception.GenshinApiException;
 import site.yuanshen.common.core.utils.CompressUtils;
 import site.yuanshen.common.core.utils.JsonUtils;
 import site.yuanshen.common.core.utils.PgsqlUtils;
+import site.yuanshen.common.core.utils.TimeUtils;
 import site.yuanshen.data.dto.ItemDto;
 import site.yuanshen.data.entity.*;
 import site.yuanshen.data.enums.HiddenFlagEnum;
@@ -30,8 +31,6 @@ import site.yuanshen.data.vo.adapter.cache.ItemListCacheKey;
 import site.yuanshen.genshin.core.dao.ItemDao;
 
 import java.nio.charset.StandardCharsets;
-import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -242,7 +241,7 @@ public class ItemDaoImpl implements ItemDao {
             binaryMd5Cache.clear();
             binaryMd5Cache.put("", binaryMd5Map);
             listItemBinaryMD5GenerateTimestamp.clear();
-            listItemBinaryMD5GenerateTimestamp.put("", Timestamp.from(Instant.now()).getTime());
+            listItemBinaryMD5GenerateTimestamp.put("", TimeUtils.getCurrentTimestamp().getTime());
             log.info("[binary][item] item cache updated, cost: {}", timer.intervalPretty());
 
             return binaryMap;

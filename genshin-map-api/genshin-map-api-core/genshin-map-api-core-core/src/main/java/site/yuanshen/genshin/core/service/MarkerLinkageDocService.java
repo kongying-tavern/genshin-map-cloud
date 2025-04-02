@@ -9,12 +9,10 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.caffeine.CaffeineCache;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
-import site.yuanshen.data.vo.adapter.cache.MarkerCacheKeyConst;
+import site.yuanshen.common.core.utils.TimeUtils;
 import site.yuanshen.data.vo.adapter.cache.MarkerLinkageCacheKeyConst;
 import site.yuanshen.genshin.core.dao.MarkerLinkageDao;
 
-import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,7 +37,7 @@ public class MarkerLinkageDocService {
     public Map<String, Object> listMarkerLinkageBinaryMD5() {
         Map<String, Object> map = new HashMap<>();
         map.put("md5", "缓存未生成或生成失败");
-        map.put("time", Timestamp.from(Instant.now()).getTime());
+        map.put("time", TimeUtils.getCurrentTimestamp().getTime());
         return map;
     }
 
