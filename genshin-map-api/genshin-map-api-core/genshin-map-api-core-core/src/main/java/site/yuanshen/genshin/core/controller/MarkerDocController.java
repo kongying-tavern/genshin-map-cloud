@@ -11,6 +11,7 @@ import site.yuanshen.data.enums.HiddenFlagEnum;
 import site.yuanshen.genshin.core.dao.MarkerDao;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 点位档案 Controller 层
@@ -34,7 +35,7 @@ public class MarkerDocController {
 
     @Operation(summary = "返回点位分页的md5数组", description = "返回点位分页的md5数组")
     @GetMapping("/list_page_bin_md5")
-    public R<List<String>> listMarkerBinaryMD5(@Parameter(hidden = true) @RequestHeader(value = "userDataLevel",required = false) String userDataLevel) {
+    public R<List<Map<String, Object>>> listMarkerBinaryMD5(@Parameter(hidden = true) @RequestHeader(value = "userDataLevel",required = false) String userDataLevel) {
         return RUtils.create(
                 markerDao.listMarkerBinaryMD5(HiddenFlagEnum.getFlagListByMask(userDataLevel))
         );

@@ -14,12 +14,14 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.caffeine.CaffeineCache;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 import site.yuanshen.common.core.exception.GenshinApiException;
 import site.yuanshen.common.core.utils.CompressUtils;
 import site.yuanshen.common.core.utils.JsonUtils;
 import site.yuanshen.common.core.utils.PgsqlUtils;
+import site.yuanshen.common.core.utils.TimeUtils;
 import site.yuanshen.data.dto.MarkerDto;
 import site.yuanshen.data.dto.MarkerItemLinkDto;
 import site.yuanshen.data.dto.helper.PageSearchDto;
@@ -76,16 +78,16 @@ public class MarkerDaoImpl implements MarkerDao {
     /**
      * 分页查询所有点位信息
      *
-     * @param pageSearchDto 分页查询数据封装
-     * @param hiddenFlagList    hidden_flag范围
+     * @param pageSearchDto  分页查询数据封装
+     * @param hiddenFlagList hidden_flag范围
      * @return 点位完整信息的前端封装的分页记录
      */
     @Override
     @Cacheable(value = "listMarkerPage")
     public PageListVo<MarkerVo> listMarkerPage(PageSearchDto pageSearchDto, List<Integer> hiddenFlagList) {
-        IPage<Marker> markerPage = markerMapper.selectPageFilterByHiddenFlag(pageSearchDto.getPageEntity(),hiddenFlagList, Wrappers.<Marker>lambdaQuery().eq(Marker::getDelFlag, false));
+        IPage<Marker> markerPage = markerMapper.selectPageFilterByHiddenFlag(pageSearchDto.getPageEntity(), hiddenFlagList, Wrappers.<Marker>lambdaQuery().eq(Marker::getDelFlag, false));
         List<Long> markerIdList = markerPage.getRecords().stream()
-                .map(Marker::getId).collect(Collectors.toList());
+            .map(Marker::getId).collect(Collectors.toList());
 
         Map<Long, Item> itemMap = new HashMap<>();
         ConcurrentHashMap<Long, List<MarkerItemLinkVo>> markerItemLinkMap = new ConcurrentHashMap<>();
@@ -95,14 +97,14 @@ public class MarkerDaoImpl implements MarkerDao {
         generateMarkerLinkageInfo(markerIdList, markerLinkageMap);
 
         return new PageListVo<MarkerVo>()
-                .setRecord(markerPage.getRecords().parallelStream()
-                        .map(marker -> new MarkerDto(marker)
-                            .withItemList(markerItemLinkMap.getOrDefault(marker.getId(), List.of()))
-                            .withLinkageId(markerLinkageMap.getOrDefault(marker.getId(), ""))
-                            .getVo())
-                        .collect(Collectors.toList()))
-                .setTotal(markerPage.getTotal())
-                .setSize(markerPage.getSize());
+            .setRecord(markerPage.getRecords().parallelStream()
+                .map(marker -> new MarkerDto(marker)
+                    .withItemList(markerItemLinkMap.getOrDefault(marker.getId(), List.of()))
+                    .withLinkageId(markerLinkageMap.getOrDefault(marker.getId(), ""))
+                    .getVo())
+                .collect(Collectors.toList()))
+            .setTotal(markerPage.getTotal())
+            .setSize(markerPage.getSize());
     }
 
     /**
@@ -115,7 +117,7 @@ public class MarkerDaoImpl implements MarkerDao {
     @Override
     @Cacheable(value = "listMarkerById")
     public List<MarkerVo> listMarkerById(List<Long> markerIdList, List<Integer> hiddenFlagList) {
-        List<Marker> markerList = markerMapper.selectListWithLargeInFilterByHiddenFlag(PgsqlUtils.unnestLongStr(markerIdList),hiddenFlagList, Wrappers.<Marker>lambdaQuery().eq(Marker::getDelFlag, false));
+        List<Marker> markerList = markerMapper.selectListWithLargeInFilterByHiddenFlag(PgsqlUtils.unnestLongStr(markerIdList), hiddenFlagList, Wrappers.<Marker>lambdaQuery().eq(Marker::getDelFlag, false));
 
         markerIdList = markerList.stream().map(Marker::getId).collect(Collectors.toList());
 
@@ -127,19 +129,19 @@ public class MarkerDaoImpl implements MarkerDao {
         generateMarkerLinkageInfo(markerIdList, markerLinkageMap);
 
         return markerList.parallelStream()
-                        .map(marker -> new MarkerDto(marker)
-                            .withItemList(markerItemLinkMap.getOrDefault(marker.getId(), List.of()))
-                            .withLinkageId(markerLinkageMap.getOrDefault(marker.getId(), ""))
-                            .getVo())
-                        .collect(Collectors.toList());
+            .map(marker -> new MarkerDto(marker)
+                .withItemList(markerItemLinkMap.getOrDefault(marker.getId(), List.of()))
+                .withLinkageId(markerLinkageMap.getOrDefault(marker.getId(), ""))
+                .getVo())
+            .collect(Collectors.toList());
     }
 
     /**
      * 生成点位物品信息 (物品 & 物品关联)
      * 物品链接 Map 为 ConcurrentMap 是因为对于同一个点位ID需要合并物品关联列表，在大批量处理时可能存在并发问题。
      *
-     * @param markerIdList 点位ID列表
-     * @param itemMap 物品Map  key:item_id, value:item
+     * @param markerIdList      点位ID列表
+     * @param itemMap           物品Map  key:item_id, value:item
      * @param markerItemLinkMap 物品链接Map  key:marker_id, value:marker_item_link[]
      */
     @Override
@@ -187,7 +189,7 @@ public class MarkerDaoImpl implements MarkerDao {
     /**
      * 生成点位关联信息
      *
-     * @param markerIdList 点位ID列表
+     * @param markerIdList     点位ID列表
      * @param markerLinkageMap 点位关联Map  key:marker_id, value:linkage_id
      */
     @Override
@@ -203,7 +205,7 @@ public class MarkerDaoImpl implements MarkerDao {
                 final Long fromId = markerLinkage.getFromId();
                 final Long toId = markerLinkage.getToId();
                 final String groupId = StrUtil.blankToDefault(markerLinkage.getGroupId(), "");
-                if(StrUtil.isBlank(groupId)) {
+                if (StrUtil.isBlank(groupId)) {
                     return;
                 }
                 markerLinkageMap.putIfAbsent(fromId, groupId);
@@ -215,7 +217,7 @@ public class MarkerDaoImpl implements MarkerDao {
      * 返回点位分页压缩文档
      *
      * @param flagList 权限标记
-     * @param md5 压缩文档数据的MD5
+     * @param md5      压缩文档数据的MD5
      * @return 压缩后的字节数组
      */
     @Override
@@ -249,14 +251,25 @@ public class MarkerDaoImpl implements MarkerDao {
      * @return 过滤后的MD5数组
      */
     @Override
-    public List<String> listMarkerBinaryMD5(List<Integer> flagList) {
+    public List<Map<String, Object>> listMarkerBinaryMD5(List<Integer> flagList) {
         final Map<MarkerListCacheKey, String> binaryMd5Map = getMarkerMd5ByFlags(flagList);
         final LinkedHashMap<MarkerListCacheKey, String> binaryMd5MapSorted = sortMarkerMd5Map(binaryMd5Map);
-        return new ArrayList<>(binaryMd5MapSorted.values());
+        CaffeineCache binaryMd5CacheGenerateTimestamp = (CaffeineCache) neverRefreshCacheManager.getCache(MarkerCacheKeyConst.MARKER_LIST_BIN_MD5_GENERATE_TIMESTAMP);
+        long time = (long) binaryMd5CacheGenerateTimestamp.getNativeCache().getIfPresent("");
+        return binaryMd5MapSorted.values()
+            .stream()
+            .map(x -> {
+                Map<String, Object> map = new HashMap<>();
+                map.put("md5", x);
+                map.put("time", time);
+                return map;
+            })
+            .collect(Collectors.toList());
     }
 
     /**
      * 刷新并返回点位分页压缩文档
+     *
      * @return 刷新后的各个分页
      */
     @Override
@@ -264,6 +277,7 @@ public class MarkerDaoImpl implements MarkerDao {
         try {
             final Cache binaryCache = getMarkerBinaryCache();
             final Cache binaryMd5Cache = getMarkerBinaryMd5Cache();
+            final Cache binaryMd5CacheGenerateTimestamp = getBinaryMd5CacheGenerateTimestamp();
             final TimeInterval timer = DateUtil.timer();
 
             // 创建总缓存与映射关系
@@ -320,6 +334,8 @@ public class MarkerDaoImpl implements MarkerDao {
             binaryMap.forEach(binaryCache::put);
             binaryMd5Cache.clear();
             binaryMd5Cache.put("", binaryMd5Map);
+            binaryMd5CacheGenerateTimestamp.clear();
+            binaryMd5CacheGenerateTimestamp.put("", TimeUtils.getCurrentTimestamp().getTime());
             log.info("[binary][marker] marker cache updated, cost: {}", timer.intervalPretty());
 
             return binaryMap;
@@ -340,6 +356,13 @@ public class MarkerDaoImpl implements MarkerDao {
         if (binaryMd5Cache == null)
             throw new GenshinApiException("缓存未初始化");
         return binaryMd5Cache;
+    }
+
+    private Cache getBinaryMd5CacheGenerateTimestamp() {
+        final Cache binaryMd5CacheGenerateTimestamp = neverRefreshCacheManager.getCache(MarkerCacheKeyConst.MARKER_LIST_BIN_MD5_GENERATE_TIMESTAMP);
+        if (binaryMd5CacheGenerateTimestamp == null)
+            throw new GenshinApiException("缓存未初始化");
+        return binaryMd5CacheGenerateTimestamp;
     }
 
     private Map<MarkerListCacheKey, String> getMarkerMd5ByFlags(List<Integer> flagList) {

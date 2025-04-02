@@ -3,6 +3,7 @@ package site.yuanshen.genshin.core.dao.impl;
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.caffeine.CaffeineCache;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 import site.yuanshen.common.core.exception.GenshinApiException;
 import site.yuanshen.common.core.utils.CompressUtils;
+import site.yuanshen.common.core.utils.TimeUtils;
 import site.yuanshen.data.dto.TagDto;
 import site.yuanshen.data.entity.Icon;
 import site.yuanshen.data.entity.Tag;
@@ -47,31 +49,34 @@ public class IconTagDaoImpl implements IconTagDao {
     @Override
     @Cacheable(value = "listAllTag")
     public List<TagVo> listAllTag() {
+        Cache listAllTagBinaryMd5GenerateTimestamp = getListAllTagBinaryMd5GenerateTimestamp();
         //按照条件进行筛选
         List<Tag> tagPage = tagMapper.selectList(Wrappers.query());
         List<TagDto> tagDtoList = tagPage
-                .stream().map(TagDto::new).collect(Collectors.toList());
+            .stream().map(TagDto::new).collect(Collectors.toList());
         List<String> tagNameList = tagDtoList.stream()
-                .map(TagDto::getTag).collect(Collectors.toList());
+            .map(TagDto::getTag).collect(Collectors.toList());
 
         //收集分类信息
         Map<String, List<Long>> typeMap = new HashMap<>();
         tagTypeLinkMapper.selectList(Wrappers.<TagTypeLink>lambdaQuery()
-                        .in(TagTypeLink::getTagName, tagNameList))
-                .forEach(typeLink -> {
-                    List<Long> tempList = typeMap.getOrDefault(typeLink.getTagName(), new ArrayList<>());
-                    tempList.add(typeLink.getTypeId());
-                    typeMap.put(typeLink.getTagName(), tempList);
-                });
+                .in(TagTypeLink::getTagName, tagNameList))
+            .forEach(typeLink -> {
+                List<Long> tempList = typeMap.getOrDefault(typeLink.getTagName(), new ArrayList<>());
+                tempList.add(typeLink.getTypeId());
+                typeMap.put(typeLink.getTagName(), tempList);
+            });
         //收集图标信息
         List<Long> iconIdList = tagDtoList.stream().map(TagDto::getIconId).distinct().collect(Collectors.toList());
         Map<Long, String> urlMap = iconMapper.selectList(Wrappers.<Icon>lambdaQuery().in(Icon::getId, iconIdList))
-                .stream().collect(Collectors.toMap(Icon::getId, Icon::getUrl));
+            .stream().collect(Collectors.toMap(Icon::getId, Icon::getUrl));
+        listAllTagBinaryMd5GenerateTimestamp.clear();
+        listAllTagBinaryMd5GenerateTimestamp.put("", TimeUtils.getCurrentTimestamp().getTime());
         return tagDtoList.stream().map(dto ->
-                                dto.getVo()
-                                        .withTypeIdList(typeMap.getOrDefault(dto.getTag(), new ArrayList<>()))
-                                        .withUrl(urlMap.getOrDefault(dto.getIconId(), "")))
-                        .collect(Collectors.toList());
+                dto.getVo()
+                    .withTypeIdList(typeMap.getOrDefault(dto.getTag(), new ArrayList<>()))
+                    .withUrl(urlMap.getOrDefault(dto.getIconId(), "")))
+            .collect(Collectors.toList());
     }
 
     /**
@@ -82,8 +87,8 @@ public class IconTagDaoImpl implements IconTagDao {
     public byte[] listAllTagBinary() {
         try {
             return CompressUtils.compress(JSON.toJSONString(
-                            listAllTag())
-                    .getBytes(StandardCharsets.UTF_8));
+                    listAllTag())
+                .getBytes(StandardCharsets.UTF_8));
         } catch (Exception e) {
             throw new GenshinApiException("创建压缩失败" + e);
         }
@@ -94,8 +99,9 @@ public class IconTagDaoImpl implements IconTagDao {
      */
     @Override
     @Cacheable("listAllTagBinaryMd5")
-    public String listAllTagBinaryMd5() {
+    public Map<String, Object> listAllTagBinaryMd5() {
         CaffeineCache tagBinaryCache = (CaffeineCache) cacheManager.getCache("listAllTag");
+        CaffeineCache allTagBinaryMd5GenerateTimestampCache = (CaffeineCache) cacheManager.getCache("listAllTagBinaryMd5GenerateTimestamp");
         byte[] allTagBinary;
         if (tagBinaryCache != null) {
             if (!tagBinaryCache.getNativeCache().asMap().isEmpty()) {
@@ -111,6 +117,17 @@ public class IconTagDaoImpl implements IconTagDao {
         } else {
             allTagBinary = listAllTagBinary();
         }
-        return DigestUtils.md5DigestAsHex(allTagBinary);
+        long time = (long) allTagBinaryMd5GenerateTimestampCache.getNativeCache().getIfPresent("");
+        Map<String, Object> map = new HashMap<>();
+        map.put("md5", DigestUtils.md5DigestAsHex(allTagBinary));
+        map.put("time", time);
+        return map;
+    }
+
+    private Cache getListAllTagBinaryMd5GenerateTimestamp() {
+        final Cache listAllTagBinaryMd5GenerateTimestamp = cacheManager.getCache("listAllTagBinaryMd5GenerateTimestamp");
+        if (listAllTagBinaryMd5GenerateTimestamp == null)
+            throw new GenshinApiException("缓存未初始化");
+        return listAllTagBinaryMd5GenerateTimestamp;
     }
 }

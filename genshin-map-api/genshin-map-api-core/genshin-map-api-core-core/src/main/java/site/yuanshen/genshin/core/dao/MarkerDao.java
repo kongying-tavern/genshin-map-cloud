@@ -67,7 +67,7 @@ public interface MarkerDao {
      * @param flagList 权限标记
      * @return 过滤后的MD5数组
      */
-    List<String> listMarkerBinaryMD5(List<Integer> flagList);
+    List<Map<String, Object>> listMarkerBinaryMD5(List<Integer> flagList);
 
     /**
      * 刷新并返回点位分页压缩文档
