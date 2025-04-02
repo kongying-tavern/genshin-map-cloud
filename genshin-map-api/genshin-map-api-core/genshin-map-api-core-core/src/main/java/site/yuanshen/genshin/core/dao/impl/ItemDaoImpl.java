@@ -25,6 +25,7 @@ import site.yuanshen.data.entity.*;
 import site.yuanshen.data.enums.HiddenFlagEnum;
 import site.yuanshen.data.enums.cache.CacheSplitterEnum;
 import site.yuanshen.data.mapper.*;
+import site.yuanshen.data.vo.FileTypeMD5Vo;
 import site.yuanshen.data.vo.ItemVo;
 import site.yuanshen.data.vo.adapter.cache.ItemCacheKeyConst;
 import site.yuanshen.data.vo.adapter.cache.ItemListCacheKey;
@@ -158,7 +159,7 @@ public class ItemDaoImpl implements ItemDao {
      * @return 过滤后的MD5数组
      */
     @Override
-    public List<Map<String, Object>> listItemBinaryMD5(List<Integer> flagList) {
+    public List<FileTypeMD5Vo> listItemBinaryMD5(List<Integer> flagList) {
         final Map<ItemListCacheKey, String> binaryMd5Map = getItemMd5ByFlags(flagList);
         CaffeineCache binaryMd5CacheGenerateTimestamp = (CaffeineCache) neverRefreshCacheManager.getCache(ItemCacheKeyConst.ITEM_LIST_BIN_MD5_GENERATE_TIMESTAMP);
         long time = (long) binaryMd5CacheGenerateTimestamp.getNativeCache().getIfPresent("");
@@ -166,10 +167,10 @@ public class ItemDaoImpl implements ItemDao {
         return binaryMd5MapSorted.values()
             .stream()
             .map(x -> {
-                Map<String, Object> map = new HashMap<>();
-                map.put("md5", x);
-                map.put("time", time);
-                return map;
+                FileTypeMD5Vo fileTypeMD5Vo = new FileTypeMD5Vo();
+                fileTypeMD5Vo.setMd5(x);
+                fileTypeMD5Vo.setTime(time);
+                return fileTypeMD5Vo;
             })
             .collect(Collectors.toList());
     }

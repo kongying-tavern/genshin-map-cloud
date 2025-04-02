@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.*;
 import site.yuanshen.common.web.response.R;
 import site.yuanshen.common.web.response.RUtils;
 import site.yuanshen.data.enums.HiddenFlagEnum;
+import site.yuanshen.data.vo.FileTypeMD5Vo;
 import site.yuanshen.genshin.core.dao.ItemDao;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * 物品档案 Controller 层
@@ -35,7 +35,7 @@ public class ItemDocController {
 
     @Operation(summary = "返回物品分页的md5数组", description = "返回物品分页的md5数组")
     @GetMapping("/list_page_bin_md5")
-    public R<List<Map<String, Object>>> listItemBinaryMD5(@Parameter(hidden = true) @RequestHeader(value = "userDataLevel", required = false) String userDataLevel) {
+    public R<List<FileTypeMD5Vo>> listItemBinaryMD5(@Parameter(hidden = true) @RequestHeader(value = "userDataLevel", required = false) String userDataLevel) {
         return RUtils.create(
             itemDao.listItemBinaryMD5(HiddenFlagEnum.getFlagListByMask(userDataLevel))
         );
