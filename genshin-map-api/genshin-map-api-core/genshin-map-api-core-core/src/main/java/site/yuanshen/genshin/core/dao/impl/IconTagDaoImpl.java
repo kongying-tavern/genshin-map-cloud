@@ -19,6 +19,7 @@ import site.yuanshen.data.entity.TagTypeLink;
 import site.yuanshen.data.mapper.IconMapper;
 import site.yuanshen.data.mapper.TagMapper;
 import site.yuanshen.data.mapper.TagTypeLinkMapper;
+import site.yuanshen.data.vo.BinaryMD5Vo;
 import site.yuanshen.data.vo.TagVo;
 import site.yuanshen.genshin.core.dao.IconTagDao;
 
@@ -99,7 +100,7 @@ public class IconTagDaoImpl implements IconTagDao {
      */
     @Override
     @Cacheable("listAllTagBinaryMd5")
-    public Map<String, Object> listAllTagBinaryMd5() {
+    public BinaryMD5Vo listAllTagBinaryMd5() {
         CaffeineCache tagBinaryCache = (CaffeineCache) cacheManager.getCache("listAllTag");
         CaffeineCache allTagBinaryMd5GenerateTimestampCache = (CaffeineCache) cacheManager.getCache("listAllTagBinaryMd5GenerateTimestamp");
         byte[] allTagBinary;
@@ -118,10 +119,10 @@ public class IconTagDaoImpl implements IconTagDao {
             allTagBinary = listAllTagBinary();
         }
         long time = (long) allTagBinaryMd5GenerateTimestampCache.getNativeCache().getIfPresent("");
-        Map<String, Object> map = new HashMap<>();
-        map.put("md5", DigestUtils.md5DigestAsHex(allTagBinary));
-        map.put("time", time);
-        return map;
+        BinaryMD5Vo binaryMD5Vo = new BinaryMD5Vo();
+        binaryMD5Vo.setTime(time);
+        binaryMD5Vo.setMd5(DigestUtils.md5DigestAsHex(allTagBinary));
+        return binaryMD5Vo;
     }
 
     private Cache getListAllTagBinaryMd5GenerateTimestamp() {

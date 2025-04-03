@@ -10,11 +10,10 @@ import org.springframework.cache.caffeine.CaffeineCache;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 import site.yuanshen.common.core.utils.TimeUtils;
+import site.yuanshen.data.vo.BinaryMD5Vo;
 import site.yuanshen.data.vo.adapter.cache.MarkerLinkageCacheKeyConst;
 import site.yuanshen.genshin.core.dao.MarkerLinkageDao;
 
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 点位关联压缩档案服务层实现
@@ -34,11 +33,11 @@ public class MarkerLinkageDocService {
      * @return 字节数组的md5
      */
     @Cacheable(value = MarkerLinkageCacheKeyConst.MARKER_LINKAGE_LIST_BIN_MD5, cacheManager = "neverRefreshCacheManager")
-    public Map<String, Object> listMarkerLinkageBinaryMD5() {
-        Map<String, Object> map = new HashMap<>();
-        map.put("md5", "缓存未生成或生成失败");
-        map.put("time", TimeUtils.getCurrentTimestamp().getTime());
-        return map;
+    public BinaryMD5Vo listMarkerLinkageBinaryMD5() {
+        BinaryMD5Vo binaryMD5Vo = new BinaryMD5Vo();
+        binaryMD5Vo.setMd5("缓存未生成或生成失败");
+        binaryMD5Vo.setTime(TimeUtils.getCurrentTimestamp().getTime());
+        return binaryMD5Vo;
     }
 
     /**
@@ -47,16 +46,16 @@ public class MarkerLinkageDocService {
      * @return 字节数组的md5
      */
     @CachePut(value = MarkerLinkageCacheKeyConst.MARKER_LINKAGE_LIST_BIN_MD5, cacheManager = "neverRefreshCacheManager")
-    public Map<String, Object> refreshMarkerLinkageListBinaryMD5() {
+    public BinaryMD5Vo refreshMarkerLinkageListBinaryMD5() {
         final long startTime = System.currentTimeMillis();
         final String result = DigestUtils.md5DigestAsHex(markerLinkageDao.refreshAllMarkerLinkageListBinary());
         CaffeineCache binaryMd5CacheGenerateTimestamp = (CaffeineCache) neverRefreshCacheManager.getCache(MarkerLinkageCacheKeyConst.MARKER_LINKAGE_LIST_BIN_MD5_GENERATE_TIMESTAMP);
         long time = (long) binaryMd5CacheGenerateTimestamp.getNativeCache().getIfPresent("");
         log.info("点位关联列表MD5生成, cost:{}, result: {}", System.currentTimeMillis() - startTime, JSON.toJSONString(result));
-        Map<String, Object> map = new HashMap<>();
-        map.put("md5", result);
-        map.put("time", time);
-        return map;
+        BinaryMD5Vo binaryMD5Vo = new BinaryMD5Vo();
+        binaryMD5Vo.setMd5(result);
+        binaryMD5Vo.setTime(time);
+        return binaryMD5Vo;
     }
 
     /**

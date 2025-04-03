@@ -2,6 +2,7 @@ package site.yuanshen.genshin.core.dao;
 
 import site.yuanshen.data.dto.helper.PageSearchDto;
 import site.yuanshen.data.entity.Item;
+import site.yuanshen.data.vo.BinaryMD5Vo;
 import site.yuanshen.data.vo.MarkerItemLinkVo;
 import site.yuanshen.data.vo.MarkerVo;
 import site.yuanshen.data.vo.helper.PageListVo;
@@ -67,7 +68,7 @@ public interface MarkerDao {
      * @param flagList 权限标记
      * @return 过滤后的MD5数组
      */
-    List<Map<String, Object>> listMarkerBinaryMD5(List<Integer> flagList);
+    List<BinaryMD5Vo> listMarkerBinaryMD5(List<Integer> flagList);
 
     /**
      * 刷新并返回点位分页压缩文档
