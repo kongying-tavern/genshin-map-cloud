@@ -1,6 +1,6 @@
 package site.yuanshen.genshin.core.dao;
 
-import site.yuanshen.data.vo.FileTypeMD5Vo;
+import site.yuanshen.data.vo.BinaryMD5Vo;
 import site.yuanshen.data.vo.TagVo;
 
 import java.util.List;
@@ -25,5 +25,5 @@ public interface IconTagDao {
     /**
      * @return 所有的标签信息的压缩的md5
      */
-    FileTypeMD5Vo listAllTagBinaryMd5();
+    BinaryMD5Vo listAllTagBinaryMd5();
 }

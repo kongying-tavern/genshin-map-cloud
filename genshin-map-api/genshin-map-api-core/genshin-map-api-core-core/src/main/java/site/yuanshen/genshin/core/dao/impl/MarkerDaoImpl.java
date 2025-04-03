@@ -29,7 +29,7 @@ import site.yuanshen.data.entity.*;
 import site.yuanshen.data.enums.HiddenFlagEnum;
 import site.yuanshen.data.enums.cache.CacheSplitterEnum;
 import site.yuanshen.data.mapper.*;
-import site.yuanshen.data.vo.FileTypeMD5Vo;
+import site.yuanshen.data.vo.BinaryMD5Vo;
 import site.yuanshen.data.vo.MarkerItemLinkVo;
 import site.yuanshen.data.vo.MarkerVo;
 import site.yuanshen.data.vo.adapter.cache.MarkerCacheKeyConst;
@@ -252,7 +252,7 @@ public class MarkerDaoImpl implements MarkerDao {
      * @return 过滤后的MD5数组
      */
     @Override
-    public List<FileTypeMD5Vo> listMarkerBinaryMD5(List<Integer> flagList) {
+    public List<BinaryMD5Vo> listMarkerBinaryMD5(List<Integer> flagList) {
         final Map<MarkerListCacheKey, String> binaryMd5Map = getMarkerMd5ByFlags(flagList);
         final LinkedHashMap<MarkerListCacheKey, String> binaryMd5MapSorted = sortMarkerMd5Map(binaryMd5Map);
         CaffeineCache binaryMd5CacheGenerateTimestamp = (CaffeineCache) neverRefreshCacheManager.getCache(MarkerCacheKeyConst.MARKER_LIST_BIN_MD5_GENERATE_TIMESTAMP);
@@ -260,10 +260,10 @@ public class MarkerDaoImpl implements MarkerDao {
         return binaryMd5MapSorted.values()
             .stream()
             .map(x -> {
-                FileTypeMD5Vo fileTypeMD5Vo = new FileTypeMD5Vo();
-                fileTypeMD5Vo.setTime(time);
-                fileTypeMD5Vo.setMd5(x);
-                return fileTypeMD5Vo;
+                BinaryMD5Vo binaryMD5Vo = new BinaryMD5Vo();
+                binaryMD5Vo.setTime(time);
+                binaryMD5Vo.setMd5(x);
+                return binaryMD5Vo;
             })
             .collect(Collectors.toList());
     }

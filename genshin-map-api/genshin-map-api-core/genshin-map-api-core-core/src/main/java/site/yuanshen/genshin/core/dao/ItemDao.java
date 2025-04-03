@@ -1,6 +1,6 @@
 package site.yuanshen.genshin.core.dao;
 
-import site.yuanshen.data.vo.FileTypeMD5Vo;
+import site.yuanshen.data.vo.BinaryMD5Vo;
 
 import java.util.List;
 import java.util.Map;
@@ -36,7 +36,7 @@ public interface ItemDao {
      * @param flagList 权限标记
      * @return 过滤后的MD5数组
      */
-    List<FileTypeMD5Vo> listItemBinaryMD5(List<Integer> flagList);
+    List<BinaryMD5Vo> listItemBinaryMD5(List<Integer> flagList);
 
     /**
      * 刷新物品压缩缓存并返回压缩文档

@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 @Schema(title = "归档类MD5前端封装", description = "归档类MD5前端封装")
-public class FileTypeMD5Vo {
+public class BinaryMD5Vo {
 
     /**
      * md5

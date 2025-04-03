@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import site.yuanshen.common.web.response.R;
 import site.yuanshen.common.web.response.RUtils;
-import site.yuanshen.data.vo.FileTypeMD5Vo;
+import site.yuanshen.data.vo.BinaryMD5Vo;
 import site.yuanshen.genshin.core.dao.MarkerLinkageDao;
 import site.yuanshen.genshin.core.service.MarkerLinkageDocService;
 
@@ -35,7 +35,7 @@ public class MarkerLinkageDocController {
 
     @Operation(summary = "返回所有点位关联列表的md5", description = "返回所有点位关联列表的md5")
     @GetMapping("/all_list_bin_md5")
-    public R<FileTypeMD5Vo> listAllMarkerLinkageBinaryMD5() {
+    public R<BinaryMD5Vo> listAllMarkerLinkageBinaryMD5() {
         return RUtils.create(markerLinkageDocService.listMarkerLinkageBinaryMD5());
     }
 

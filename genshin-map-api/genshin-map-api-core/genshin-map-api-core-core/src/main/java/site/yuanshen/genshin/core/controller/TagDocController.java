@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import site.yuanshen.common.web.response.R;
 import site.yuanshen.common.web.response.RUtils;
-import site.yuanshen.data.vo.FileTypeMD5Vo;
+import site.yuanshen.data.vo.BinaryMD5Vo;
 import site.yuanshen.genshin.core.dao.IconTagDao;
 
 /**
@@ -33,7 +33,7 @@ public class TagDocController {
 
     @Operation(summary = "返回所有标签信息的md5", description = "返回所有标签信息的md5")
     @GetMapping("/all_bin_md5")
-    public R<FileTypeMD5Vo> listAllTagBinaryMd5() {
+    public R<BinaryMD5Vo> listAllTagBinaryMd5() {
         return RUtils.create(
             iconTagDao.listAllTagBinaryMd5()
         );
