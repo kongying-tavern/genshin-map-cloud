@@ -34,6 +34,17 @@ public class SysUserInvitationDto {
     private Long id;
 
     /**
+     * 创建人
+     */
+    private Long creatorId;
+
+    /**
+     * 创建时间
+     */
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
+    private Timestamp createTime;
+
+    /**
      * 更新人
      */
     private Long updaterId;
