@@ -1,16 +1,13 @@
 package site.yuanshen.genshin.core.service;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.ObjUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.crypto.SecureUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
-import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -25,9 +22,7 @@ import site.yuanshen.data.entity.SysUser;
 import site.yuanshen.data.entity.SysUserInvitation;
 import site.yuanshen.data.enums.RoleEnum;
 import site.yuanshen.data.mapper.SysUserInvitationMapper;
-import site.yuanshen.data.mapper.SysUserMapper;
 import site.yuanshen.data.vo.SysUserInvitationConsumeResultVo;
-import site.yuanshen.data.vo.SysUserInvitationConsumeVo;
 import site.yuanshen.data.vo.SysUserInvitationSmallVo;
 import site.yuanshen.data.vo.SysUserInvitationVo;
 import site.yuanshen.data.vo.helper.PageListVo;
@@ -109,7 +104,7 @@ public class SysUserInvitationService {
         invitation.setAccessPolicy(ObjUtil.defaultIfNull(invitationDto.getAccessPolicy(), List.of()));
         boolean isUpdate = invitation.getId() != null && invitation.getId() > 0;
 
-        boolean success = invitationMBPService.save(invitation);
+        boolean success = invitationMBPService.saveOrUpdate(invitation);
         if(!success) {
             if(isUpdate)
                 throw new GenshinApiException("编辑用户邀请失败");
