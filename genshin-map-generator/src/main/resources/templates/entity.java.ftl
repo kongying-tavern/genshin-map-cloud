@@ -48,8 +48,6 @@ public class ${entity} {
     @TableId(value = "${field.annotationColumnName}", type = IdType.AUTO)
         <#elseif idType??>
     @TableId(value = "${field.annotationColumnName}", type = IdType.${idType})
-        <#elseif field.convert>
-    @TableId("${field.annotationColumnName}")
         </#if>
         <#-- 普通字段 -->
     <#elseif field.fill??>

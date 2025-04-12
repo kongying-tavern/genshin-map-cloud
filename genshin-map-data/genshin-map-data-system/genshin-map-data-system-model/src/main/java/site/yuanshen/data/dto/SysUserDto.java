@@ -85,6 +85,11 @@ public class SysUserDto {
     private Integer roleId;
 
     /**
+     * 备注
+     */
+    private String remark;
+
+    /**
      * 权限策略
      */
     private List<String> accessPolicy;

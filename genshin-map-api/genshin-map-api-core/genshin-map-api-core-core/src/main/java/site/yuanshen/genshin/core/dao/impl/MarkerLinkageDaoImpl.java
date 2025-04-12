@@ -5,14 +5,13 @@ import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import site.yuanshen.common.core.exception.GenshinApiException;
-import site.yuanshen.common.core.utils.CompressUtils;
-import site.yuanshen.common.core.utils.JsonUtils;
-import site.yuanshen.common.core.utils.PgsqlUtils;
-import site.yuanshen.common.core.utils.SpringContextUtils;
+import site.yuanshen.common.core.utils.*;
 import site.yuanshen.data.dto.MarkerLinkageDto;
 import site.yuanshen.data.entity.MarkerLinkage;
 import site.yuanshen.data.helper.marker.linkage.MarkerLinkageDataHelper;
@@ -43,6 +42,7 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class MarkerLinkageDaoImpl implements MarkerLinkageDao {
 
+    private final CacheManager cacheManager;
     private final MarkerLinkageMapper markerLinkageMapper;
     private final MarkerLinkageMBPService markerLinkageMBPService;
     private final MarkerLinkageHelperService markerLinkageHelperService;
@@ -52,7 +52,7 @@ public class MarkerLinkageDaoImpl implements MarkerLinkageDao {
      */
     @Override
     public List<MarkerLinkage> getRelatedLinkageList(List<Long> idList, boolean includeDeleted) {
-        if(CollUtil.isEmpty(idList)) {
+        if (CollUtil.isEmpty(idList)) {
             return new ArrayList<>();
         }
 
@@ -65,7 +65,7 @@ public class MarkerLinkageDaoImpl implements MarkerLinkageDao {
         // 根据 组ID 获取列表
         final List<String> groupIdList = listWithIds.parallelStream().map(MarkerLinkage::getGroupId).distinct().collect(Collectors.toList());
         List<MarkerLinkage> listWithGroupIds = new ArrayList<>();
-        if(CollUtil.isNotEmpty(groupIdList)) {
+        if (CollUtil.isNotEmpty(groupIdList)) {
             listWithGroupIds = markerLinkageMapper.selectWithLargeCustomIn(
                 "group_id",
                 "varchar",
@@ -76,13 +76,13 @@ public class MarkerLinkageDaoImpl implements MarkerLinkageDao {
 
         // 合并数据
         List<MarkerLinkage> list = new ArrayList<>(Stream.of(listWithIds, listWithGroupIds)
-                .flatMap(List::stream)
-                .collect(Collectors.toMap(
-                        MarkerLinkage::getId,
-                        v -> v,
-                        (o, n) -> n
-                ))
-                .values());
+            .flatMap(List::stream)
+            .collect(Collectors.toMap(
+                MarkerLinkage::getId,
+                v -> v,
+                (o, n) -> n
+            ))
+            .values());
 
         return list;
     }
@@ -93,7 +93,7 @@ public class MarkerLinkageDaoImpl implements MarkerLinkageDao {
     @Override
     public boolean removeRelatedLinkageList(List<Long> idList, boolean includeDeleted) {
         List<MarkerLinkage> linkageList = this.getRelatedLinkageList(idList, includeDeleted);
-        if(CollUtil.isEmpty(linkageList)) {
+        if (CollUtil.isEmpty(linkageList)) {
             return true;
         }
         int deletedCount = markerLinkageMapper.deleteBatchIds(linkageList.stream().map(MarkerLinkage::getId).collect(Collectors.toList()));
@@ -106,40 +106,40 @@ public class MarkerLinkageDaoImpl implements MarkerLinkageDao {
     @Override
     public boolean saveOrUpdateBatch(List<MarkerLinkage> markerLinkageList) {
         final List<Long> allIdList = markerLinkageList
-                .stream()
-                .map(MarkerLinkage::getId)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+            .stream()
+            .map(MarkerLinkage::getId)
+            .filter(Objects::nonNull)
+            .collect(Collectors.toList());
         final List<Long> deleteIdList = markerLinkageList
-                .stream()
-                .filter(v -> v.getId() != null && (v.getDelFlag() == null || Objects.equals(v.getDelFlag(), true)))
-                .map(MarkerLinkage::getId)
-                .collect(Collectors.toList());
+            .stream()
+            .filter(v -> v.getId() != null && (v.getDelFlag() == null || Objects.equals(v.getDelFlag(), true)))
+            .map(MarkerLinkage::getId)
+            .collect(Collectors.toList());
         final List<MarkerLinkage> saveList = markerLinkageList
-                .stream()
-                .filter(v -> v.getDelFlag() != null && Objects.equals(v.getDelFlag(), false))
-                .collect(Collectors.toList());
+            .stream()
+            .filter(v -> v.getDelFlag() != null && Objects.equals(v.getDelFlag(), false))
+            .collect(Collectors.toList());
         final List<MarkerLinkage> insertList = saveList
-                .stream()
-                .filter(v -> v.getId() == null)
-                .collect(Collectors.toList());
+            .stream()
+            .filter(v -> v.getId() == null)
+            .collect(Collectors.toList());
         final List<MarkerLinkage> updateList = saveList
-                .stream()
-                .filter(v -> v.getId() != null)
-                .collect(Collectors.toList());
+            .stream()
+            .filter(v -> v.getId() != null)
+            .collect(Collectors.toList());
 
-        if(CollUtil.isNotEmpty(allIdList)) {
+        if (CollUtil.isNotEmpty(allIdList)) {
             markerLinkageMapper.undeleteByIds(PgsqlUtils.unnestLongStr(allIdList));
         }
 
         boolean processSuccess = true;
-        if(CollUtil.isNotEmpty(insertList)) {
+        if (CollUtil.isNotEmpty(insertList)) {
             processSuccess = markerLinkageMBPService.saveBatch(insertList, 100);
         }
-        if(CollUtil.isNotEmpty(updateList)) {
+        if (CollUtil.isNotEmpty(updateList)) {
             processSuccess = processSuccess && markerLinkageMBPService.updateBatchById(updateList, 100);
         }
-        if(CollUtil.isNotEmpty(deleteIdList)) {
+        if (CollUtil.isNotEmpty(deleteIdList)) {
             processSuccess = processSuccess && markerLinkageMapper.deleteByIds(PgsqlUtils.unnestLongStr(deleteIdList)) >= 0;
         }
         return processSuccess;
@@ -152,15 +152,15 @@ public class MarkerLinkageDaoImpl implements MarkerLinkageDao {
     @Cacheable(value = "getAllMarkerLinkage")
     public List<MarkerLinkageVo> getAllMarkerLinkage() {
         final List<MarkerLinkage> linkageList = markerLinkageMBPService.list();
-        if(CollUtil.isEmpty(linkageList)) {
+        if (CollUtil.isEmpty(linkageList)) {
             return new ArrayList<>();
         }
 
         // 获取列表
         final List<MarkerLinkageVo> linkageVoList = linkageList.parallelStream()
-                .map(MarkerLinkageDto::new)
-                .map(MarkerLinkageDto::getVo)
-                .collect(Collectors.toList());
+            .map(MarkerLinkageDto::new)
+            .map(MarkerLinkageDto::getVo)
+            .collect(Collectors.toList());
         MarkerLinkageDataHelper.reverseLinkageIds(linkageVoList);
 
         // 关联路线点位数据
@@ -217,8 +217,11 @@ public class MarkerLinkageDaoImpl implements MarkerLinkageDao {
     @CachePut(value = MarkerLinkageCacheKeyConst.MARKER_LINKAGE_LIST_BIN, cacheManager = "neverRefreshCacheManager")
     public byte[] refreshAllMarkerLinkageListBinary() {
         try {
+            final Cache listMarkerLinkageBinaryMD5GenerateTimestamp = getListMarkerLinkageBinaryMD5GenerateTimestamp();
             final Map<String, List<MarkerLinkageVo>> linkageList = listAllMarkerLinkage();
             final byte[] result = JSON.toJSONString(linkageList, JsonUtils.defaultWriteFeatures).getBytes(StandardCharsets.UTF_8);
+            listMarkerLinkageBinaryMD5GenerateTimestamp.clear();
+            listMarkerLinkageBinaryMD5GenerateTimestamp.put("", TimeUtils.getCurrentTimestamp().getTime());
             return CompressUtils.compress(result);
         } catch (Exception e) {
             throw new GenshinApiException("创建压缩失败", e);
@@ -241,11 +244,28 @@ public class MarkerLinkageDaoImpl implements MarkerLinkageDao {
     @CachePut(value = MarkerLinkageCacheKeyConst.MARKER_LINKAGE_GRAPH_BIN, cacheManager = "neverRefreshCacheManager")
     public byte[] refreshAllMarkerLinkageGraphBinary() {
         try {
+            final Cache graphMarkerLinkageBinaryMD5GenerateTimestamp = getGraphMarkerLinkageBinaryMD5GenerateTimestamp();
             final Map<String, GraphVo> linkageGraph = graphAllMarkerLinkage();
             final byte[] result = JSON.toJSONString(linkageGraph, JsonUtils.defaultWriteFeatures).getBytes(StandardCharsets.UTF_8);
+            graphMarkerLinkageBinaryMD5GenerateTimestamp.clear();
+            graphMarkerLinkageBinaryMD5GenerateTimestamp.put("", TimeUtils.getCurrentTimestamp().getTime());
             return CompressUtils.compress(result);
         } catch (Exception e) {
             throw new GenshinApiException("创建压缩失败", e);
         }
+    }
+
+    private Cache getListMarkerLinkageBinaryMD5GenerateTimestamp() {
+        final Cache listMarkerLinkageBinaryMD5GenerateTimestamp = cacheManager.getCache(MarkerLinkageCacheKeyConst.MARKER_LINKAGE_LIST_BIN_MD5_GENERATE_TIMESTAMP);
+        if (listMarkerLinkageBinaryMD5GenerateTimestamp == null)
+            throw new GenshinApiException("缓存未初始化");
+        return listMarkerLinkageBinaryMD5GenerateTimestamp;
+    }
+
+    private Cache getGraphMarkerLinkageBinaryMD5GenerateTimestamp() {
+        final Cache graphMarkerLinkageBinaryMD5GenerateTimestamp = cacheManager.getCache(MarkerLinkageCacheKeyConst.MARKER_LINKAGE_GRAPH_BIN_MD5_GENERATE_TIMESTAMP);
+        if (graphMarkerLinkageBinaryMD5GenerateTimestamp == null)
+            throw new GenshinApiException("缓存未初始化");
+        return graphMarkerLinkageBinaryMD5GenerateTimestamp;
     }
 }

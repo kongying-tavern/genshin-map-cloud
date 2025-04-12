@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import site.yuanshen.common.web.response.R;
 import site.yuanshen.common.web.response.RUtils;
 import site.yuanshen.data.enums.HiddenFlagEnum;
+import site.yuanshen.data.vo.BinaryMD5Vo;
 import site.yuanshen.genshin.core.dao.MarkerDao;
 
 import java.util.List;
@@ -34,7 +35,7 @@ public class MarkerDocController {
 
     @Operation(summary = "返回点位分页的md5数组", description = "返回点位分页的md5数组")
     @GetMapping("/list_page_bin_md5")
-    public R<List<String>> listMarkerBinaryMD5(@Parameter(hidden = true) @RequestHeader(value = "userDataLevel",required = false) String userDataLevel) {
+    public R<List<BinaryMD5Vo>> listMarkerBinaryMD5(@Parameter(hidden = true) @RequestHeader(value = "userDataLevel",required = false) String userDataLevel) {
         return RUtils.create(
                 markerDao.listMarkerBinaryMD5(HiddenFlagEnum.getFlagListByMask(userDataLevel))
         );

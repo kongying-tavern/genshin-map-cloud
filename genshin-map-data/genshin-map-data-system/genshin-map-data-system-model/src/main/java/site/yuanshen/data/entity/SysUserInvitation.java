@@ -10,17 +10,17 @@ import java.sql.Timestamp;
 import java.util.List;
 
 /**
- * 系统用户表
+ * 系统用户邀请表;系统用户邀请
  *
- * @since 2023-04-23 01:08:53
+ * @since 2025-03-26 07:46:02
  */
 @Data
 @With
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-@TableName(value = "sys_user", autoResultMap = true)
-public class SysUser extends BaseEntity {
+@TableName(value = "sys_user_invitation", autoResultMap = true)
+public class SysUserInvitation extends BaseEntity {
 
     /**
      * 乐观锁
@@ -49,40 +49,16 @@ public class SysUser extends BaseEntity {
     private Timestamp updateTime;
 
     /**
+     * 邀请码
+     */
+    @TableField("code")
+    private String code;
+
+    /**
      * 用户名
      */
     @TableField("username")
     private String username;
-
-    /**
-     * 密码
-     */
-    @TableField("password")
-    private String password;
-
-    /**
-     * 昵称
-     */
-    @TableField("nickname")
-    private String nickname;
-
-    /**
-     * QQ
-     */
-    @TableField("qq")
-    private String qq;
-
-    /**
-     * 手机号
-     */
-    @TableField("phone")
-    private String phone;
-
-    /**
-     * 头像链接
-     */
-    @TableField("logo")
-    private String logo;
 
     /**
      * 角色ID
@@ -91,15 +67,15 @@ public class SysUser extends BaseEntity {
     private Integer roleId;
 
     /**
-     * 权限策略
-     */
-    @TableField(value = "access_policy", typeHandler = MBPJsonArrayTypeHandler.class)
-    private List<String> accessPolicy;
-
-    /**
      * 备注
      */
     @TableField("remark")
     private String remark;
+
+    /**
+     * 权限策略
+     */
+    @TableField(value = "access_policy", typeHandler = MBPJsonArrayTypeHandler.class)
+    private List<String> accessPolicy;
 
 }
