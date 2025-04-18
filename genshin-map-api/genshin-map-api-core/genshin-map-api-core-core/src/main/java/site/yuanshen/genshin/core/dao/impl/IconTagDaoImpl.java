@@ -3,6 +3,7 @@ package site.yuanshen.genshin.core.dao.impl;
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
@@ -102,7 +103,7 @@ public class IconTagDaoImpl implements IconTagDao {
     @Cacheable("listAllTagBinaryMd5")
     public BinaryMD5Vo listAllTagBinaryMd5() {
         CaffeineCache tagBinaryCache = (CaffeineCache) cacheManager.getCache("listAllTag");
-        CaffeineCache allTagBinaryMd5GenerateTimestampCache = (CaffeineCache) cacheManager.getCache("listAllTagBinaryMd5GenerateTimestamp");
+        CaffeineCache tagBinaryMd5GenerateTimestampCache = (CaffeineCache) cacheManager.getCache("listAllTagBinaryMd5GenerateTimestamp");
         byte[] allTagBinary;
         if (tagBinaryCache != null) {
             if (!tagBinaryCache.getNativeCache().asMap().isEmpty()) {
@@ -118,7 +119,15 @@ public class IconTagDaoImpl implements IconTagDao {
         } else {
             allTagBinary = listAllTagBinary();
         }
-        long time = (long) allTagBinaryMd5GenerateTimestampCache.getNativeCache().getIfPresent("");
+
+        Long time = null;
+        if (
+            tagBinaryMd5GenerateTimestampCache.getNativeCache() != null &&
+                tagBinaryMd5GenerateTimestampCache.getNativeCache().getIfPresent("") != null
+        ) {
+            time = (long) tagBinaryMd5GenerateTimestampCache.getNativeCache().getIfPresent("");
+        }
+
         BinaryMD5Vo binaryMD5Vo = new BinaryMD5Vo();
         binaryMD5Vo.setTime(time);
         binaryMD5Vo.setMd5(DigestUtils.md5DigestAsHex(allTagBinary));

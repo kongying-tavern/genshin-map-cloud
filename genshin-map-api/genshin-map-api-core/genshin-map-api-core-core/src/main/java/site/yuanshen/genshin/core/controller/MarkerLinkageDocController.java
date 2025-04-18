@@ -47,7 +47,7 @@ public class MarkerLinkageDocController {
 
     @Operation(summary = "返回所有点位关联有向图数据的md5", description = "返回所有点位关联有向图数据的md5")
     @GetMapping("/all_graph_bin_md5")
-    public R<String> graphAllMarkerLinkageBinaryMD5() {
+    public R<BinaryMD5Vo> graphAllMarkerLinkageBinaryMD5() {
         return RUtils.create(markerLinkageDocService.graphMarkerLinkageBinaryMD5());
     }
 }

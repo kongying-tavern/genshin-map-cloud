@@ -162,7 +162,17 @@ public class ItemDaoImpl implements ItemDao {
     public List<BinaryMD5Vo> listItemBinaryMD5(List<Integer> flagList) {
         final Map<ItemListCacheKey, String> binaryMd5Map = getItemMd5ByFlags(flagList);
         CaffeineCache binaryMd5CacheGenerateTimestamp = (CaffeineCache) neverRefreshCacheManager.getCache(ItemCacheKeyConst.ITEM_LIST_BIN_MD5_GENERATE_TIMESTAMP);
-        long time = (long) binaryMd5CacheGenerateTimestamp.getNativeCache().getIfPresent("");
+
+        Long time;
+        if (
+            binaryMd5CacheGenerateTimestamp.getNativeCache() != null &&
+                binaryMd5CacheGenerateTimestamp.getNativeCache().getIfPresent("") != null
+        ) {
+            time = (long) binaryMd5CacheGenerateTimestamp.getNativeCache().getIfPresent("");
+        } else {
+            time = null;
+        }
+
         final LinkedHashMap<ItemListCacheKey, String> binaryMd5MapSorted = sortItemMd5Map(binaryMd5Map);
         return binaryMd5MapSorted.values()
             .stream()

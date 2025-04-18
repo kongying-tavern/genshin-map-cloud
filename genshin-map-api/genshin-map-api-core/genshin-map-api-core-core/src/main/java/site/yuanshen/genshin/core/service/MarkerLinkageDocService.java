@@ -9,6 +9,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.caffeine.CaffeineCache;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
+import site.yuanshen.common.core.exception.GenshinApiException;
 import site.yuanshen.common.core.utils.TimeUtils;
 import site.yuanshen.data.vo.BinaryMD5Vo;
 import site.yuanshen.data.vo.adapter.cache.MarkerLinkageCacheKeyConst;
@@ -29,15 +30,10 @@ public class MarkerLinkageDocService {
 
     /**
      * 生成点位关联列表的压缩字节数组
-     *
-     * @return 字节数组的md5
      */
     @Cacheable(value = MarkerLinkageCacheKeyConst.MARKER_LINKAGE_LIST_BIN_MD5, cacheManager = "neverRefreshCacheManager")
     public BinaryMD5Vo listMarkerLinkageBinaryMD5() {
-        BinaryMD5Vo binaryMD5Vo = new BinaryMD5Vo();
-        binaryMD5Vo.setMd5("缓存未生成或生成失败");
-        binaryMD5Vo.setTime(TimeUtils.getCurrentTimestamp().getTime());
-        return binaryMD5Vo;
+        throw new GenshinApiException("缓存未生成或生成失败");
     }
 
     /**
@@ -50,7 +46,15 @@ public class MarkerLinkageDocService {
         final long startTime = System.currentTimeMillis();
         final String result = DigestUtils.md5DigestAsHex(markerLinkageDao.refreshAllMarkerLinkageListBinary());
         CaffeineCache binaryMd5CacheGenerateTimestamp = (CaffeineCache) neverRefreshCacheManager.getCache(MarkerLinkageCacheKeyConst.MARKER_LINKAGE_LIST_BIN_MD5_GENERATE_TIMESTAMP);
-        long time = (long) binaryMd5CacheGenerateTimestamp.getNativeCache().getIfPresent("");
+
+        Long time = null;
+        if (
+            binaryMd5CacheGenerateTimestamp.getNativeCache() != null &&
+                binaryMd5CacheGenerateTimestamp.getNativeCache().getIfPresent("") != null
+        ) {
+            time = (long) binaryMd5CacheGenerateTimestamp.getNativeCache().getIfPresent("");
+        }
+
         log.info("点位关联列表MD5生成, cost:{}, result: {}", System.currentTimeMillis() - startTime, JSON.toJSONString(result));
         BinaryMD5Vo binaryMD5Vo = new BinaryMD5Vo();
         binaryMD5Vo.setMd5(result);
@@ -60,12 +64,10 @@ public class MarkerLinkageDocService {
 
     /**
      * 生成点位关联有向图的压缩字节数组
-     *
-     * @return 字节数组的md5
      */
     @Cacheable(value = MarkerLinkageCacheKeyConst.MARKER_LINKAGE_GRAPH_BIN_MD5, cacheManager = "neverRefreshCacheManager")
-    public String graphMarkerLinkageBinaryMD5() {
-        return "缓存未生成或生成失败";
+    public BinaryMD5Vo graphMarkerLinkageBinaryMD5() {
+        throw new GenshinApiException("缓存未生成或生成失败");
     }
 
     /**
@@ -74,10 +76,23 @@ public class MarkerLinkageDocService {
      * @return 字节数组的md5
      */
     @CachePut(value = MarkerLinkageCacheKeyConst.MARKER_LINKAGE_GRAPH_BIN_MD5, cacheManager = "neverRefreshCacheManager")
-    public String refreshMarkerLinkageGraphBinaryMD5() {
+    public BinaryMD5Vo refreshMarkerLinkageGraphBinaryMD5() {
         final long startTime = System.currentTimeMillis();
         final String result = DigestUtils.md5DigestAsHex(markerLinkageDao.refreshAllMarkerLinkageGraphBinary());
+        CaffeineCache binaryMd5CacheGenerateTimestamp = (CaffeineCache) neverRefreshCacheManager.getCache(MarkerLinkageCacheKeyConst.MARKER_LINKAGE_GRAPH_BIN_MD5_GENERATE_TIMESTAMP);
+
+        Long time = null;
+        if (
+            binaryMd5CacheGenerateTimestamp.getNativeCache() != null &&
+                binaryMd5CacheGenerateTimestamp.getNativeCache().getIfPresent("") != null
+        ) {
+            time = (long) binaryMd5CacheGenerateTimestamp.getNativeCache().getIfPresent("");
+        }
+
         log.info("点位关联有向图MD5生成, cost:{}, result: {}", System.currentTimeMillis() - startTime, JSON.toJSONString(result));
-        return result;
+        BinaryMD5Vo binaryMD5Vo = new BinaryMD5Vo();
+        binaryMD5Vo.setMd5(result);
+        binaryMD5Vo.setTime(time);
+        return binaryMD5Vo;
     }
 }
