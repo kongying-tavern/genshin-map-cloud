@@ -3,11 +3,13 @@ package site.yuanshen.genshin.core.dao.impl;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.date.TimeInterval;
+import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.ObjUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.Cache;
@@ -163,15 +165,9 @@ public class ItemDaoImpl implements ItemDao {
         final Map<ItemListCacheKey, String> binaryMd5Map = getItemMd5ByFlags(flagList);
         CaffeineCache binaryMd5CacheGenerateTimestamp = (CaffeineCache) neverRefreshCacheManager.getCache(ItemCacheKeyConst.ITEM_LIST_BIN_MD5_GENERATE_TIMESTAMP);
 
-        Long time;
-        if (
-            binaryMd5CacheGenerateTimestamp.getNativeCache() != null &&
-                binaryMd5CacheGenerateTimestamp.getNativeCache().getIfPresent("") != null
-        ) {
-            time = (long) binaryMd5CacheGenerateTimestamp.getNativeCache().getIfPresent("");
-        } else {
-            time = null;
-        }
+        Long time = Optional.ofNullable(binaryMd5CacheGenerateTimestamp.getNativeCache().getIfPresent(""))
+            .map(v -> NumberUtils.createLong(v.toString()))
+            .orElse(null);
 
         final LinkedHashMap<ItemListCacheKey, String> binaryMd5MapSorted = sortItemMd5Map(binaryMd5Map);
         return binaryMd5MapSorted.values()

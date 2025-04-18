@@ -9,6 +9,7 @@ import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.Cache;
@@ -257,15 +258,9 @@ public class MarkerDaoImpl implements MarkerDao {
         final LinkedHashMap<MarkerListCacheKey, String> binaryMd5MapSorted = sortMarkerMd5Map(binaryMd5Map);
         CaffeineCache binaryMd5CacheGenerateTimestamp = (CaffeineCache) neverRefreshCacheManager.getCache(MarkerCacheKeyConst.MARKER_LIST_BIN_MD5_GENERATE_TIMESTAMP);
 
-        Long time;
-        if (
-            binaryMd5CacheGenerateTimestamp.getNativeCache() != null &&
-                binaryMd5CacheGenerateTimestamp.getNativeCache().getIfPresent("") != null
-        ) {
-            time = (long) binaryMd5CacheGenerateTimestamp.getNativeCache().getIfPresent("");
-        } else {
-            time = null;
-        }
+        Long time = Optional.ofNullable(binaryMd5CacheGenerateTimestamp.getNativeCache().getIfPresent(""))
+            .map(v -> NumberUtils.createLong(v.toString()))
+            .orElse(null);
 
         return binaryMd5MapSorted.values()
             .stream()

@@ -3,6 +3,7 @@ package site.yuanshen.genshin.core.service;
 import com.alibaba.fastjson2.JSON;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -14,6 +15,8 @@ import site.yuanshen.common.core.utils.TimeUtils;
 import site.yuanshen.data.vo.BinaryMD5Vo;
 import site.yuanshen.data.vo.adapter.cache.MarkerLinkageCacheKeyConst;
 import site.yuanshen.genshin.core.dao.MarkerLinkageDao;
+
+import java.util.Optional;
 
 
 /**
@@ -47,13 +50,9 @@ public class MarkerLinkageDocService {
         final String result = DigestUtils.md5DigestAsHex(markerLinkageDao.refreshAllMarkerLinkageListBinary());
         CaffeineCache binaryMd5CacheGenerateTimestamp = (CaffeineCache) neverRefreshCacheManager.getCache(MarkerLinkageCacheKeyConst.MARKER_LINKAGE_LIST_BIN_MD5_GENERATE_TIMESTAMP);
 
-        Long time = null;
-        if (
-            binaryMd5CacheGenerateTimestamp.getNativeCache() != null &&
-                binaryMd5CacheGenerateTimestamp.getNativeCache().getIfPresent("") != null
-        ) {
-            time = (long) binaryMd5CacheGenerateTimestamp.getNativeCache().getIfPresent("");
-        }
+        Long time = Optional.ofNullable(binaryMd5CacheGenerateTimestamp.getNativeCache().getIfPresent(""))
+            .map(v -> NumberUtils.createLong(v.toString()))
+            .orElse(null);
 
         log.info("点位关联列表MD5生成, cost:{}, result: {}", System.currentTimeMillis() - startTime, JSON.toJSONString(result));
         BinaryMD5Vo binaryMD5Vo = new BinaryMD5Vo();
@@ -81,13 +80,9 @@ public class MarkerLinkageDocService {
         final String result = DigestUtils.md5DigestAsHex(markerLinkageDao.refreshAllMarkerLinkageGraphBinary());
         CaffeineCache binaryMd5CacheGenerateTimestamp = (CaffeineCache) neverRefreshCacheManager.getCache(MarkerLinkageCacheKeyConst.MARKER_LINKAGE_GRAPH_BIN_MD5_GENERATE_TIMESTAMP);
 
-        Long time = null;
-        if (
-            binaryMd5CacheGenerateTimestamp.getNativeCache() != null &&
-                binaryMd5CacheGenerateTimestamp.getNativeCache().getIfPresent("") != null
-        ) {
-            time = (long) binaryMd5CacheGenerateTimestamp.getNativeCache().getIfPresent("");
-        }
+        Long time = Optional.ofNullable(binaryMd5CacheGenerateTimestamp.getNativeCache().getIfPresent(""))
+            .map(v -> NumberUtils.createLong(v.toString()))
+            .orElse(null);
 
         log.info("点位关联有向图MD5生成, cost:{}, result: {}", System.currentTimeMillis() - startTime, JSON.toJSONString(result));
         BinaryMD5Vo binaryMD5Vo = new BinaryMD5Vo();
