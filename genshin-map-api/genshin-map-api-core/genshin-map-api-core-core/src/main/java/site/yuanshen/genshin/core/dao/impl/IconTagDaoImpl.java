@@ -25,10 +25,7 @@ import site.yuanshen.data.vo.TagVo;
 import site.yuanshen.genshin.core.dao.IconTagDao;
 
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -103,7 +100,7 @@ public class IconTagDaoImpl implements IconTagDao {
     @Cacheable("listAllTagBinaryMd5")
     public BinaryMD5Vo listAllTagBinaryMd5() {
         CaffeineCache tagBinaryCache = (CaffeineCache) cacheManager.getCache("listAllTag");
-        CaffeineCache tagBinaryMd5GenerateTimestampCache = (CaffeineCache) cacheManager.getCache("listAllTagBinaryMd5GenerateTimestamp");
+        CaffeineCache binaryMd5GenerateTimestampCache = (CaffeineCache) cacheManager.getCache("listAllTagBinaryMd5GenerateTimestamp");
         byte[] allTagBinary;
         if (tagBinaryCache != null) {
             if (!tagBinaryCache.getNativeCache().asMap().isEmpty()) {
@@ -120,13 +117,9 @@ public class IconTagDaoImpl implements IconTagDao {
             allTagBinary = listAllTagBinary();
         }
 
-        Long time = null;
-        if (
-            tagBinaryMd5GenerateTimestampCache.getNativeCache() != null &&
-                tagBinaryMd5GenerateTimestampCache.getNativeCache().getIfPresent("") != null
-        ) {
-            time = (long) tagBinaryMd5GenerateTimestampCache.getNativeCache().getIfPresent("");
-        }
+        Long time = Optional.ofNullable(binaryMd5GenerateTimestampCache.getNativeCache().getIfPresent(""))
+            .map(v -> NumberUtils.createLong(v.toString()))
+            .orElse(null);
 
         BinaryMD5Vo binaryMD5Vo = new BinaryMD5Vo();
         binaryMD5Vo.setTime(time);
