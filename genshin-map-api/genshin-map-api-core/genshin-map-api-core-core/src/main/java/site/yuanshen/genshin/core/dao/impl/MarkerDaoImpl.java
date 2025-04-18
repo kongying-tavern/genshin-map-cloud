@@ -256,7 +256,17 @@ public class MarkerDaoImpl implements MarkerDao {
         final Map<MarkerListCacheKey, String> binaryMd5Map = getMarkerMd5ByFlags(flagList);
         final LinkedHashMap<MarkerListCacheKey, String> binaryMd5MapSorted = sortMarkerMd5Map(binaryMd5Map);
         CaffeineCache binaryMd5CacheGenerateTimestamp = (CaffeineCache) neverRefreshCacheManager.getCache(MarkerCacheKeyConst.MARKER_LIST_BIN_MD5_GENERATE_TIMESTAMP);
-        long time = (long) binaryMd5CacheGenerateTimestamp.getNativeCache().getIfPresent("");
+
+        Long time;
+        if (
+            binaryMd5CacheGenerateTimestamp.getNativeCache() != null &&
+                binaryMd5CacheGenerateTimestamp.getNativeCache().getIfPresent("") != null
+        ) {
+            time = (long) binaryMd5CacheGenerateTimestamp.getNativeCache().getIfPresent("");
+        } else {
+            time = null;
+        }
+
         return binaryMd5MapSorted.values()
             .stream()
             .map(x -> {
