@@ -13,7 +13,8 @@ import org.springframework.util.StringUtils;
 import site.yuanshen.common.core.utils.DebounceExecutor;
 import site.yuanshen.common.web.response.WUtils;
 import site.yuanshen.genshin.core.dao.IconTagDao;
-import site.yuanshen.genshin.core.websocket.WebSocketEntrypoint;
+import site.yuanshen.genshin.core.socketIO.SocketIOEntrypoint;
+
 
 import java.util.Objects;
 import java.util.concurrent.*;
@@ -33,7 +34,7 @@ public class CacheService {
     private final ItemDocService itemDocService;
     private final IconTagDao iconTagDao;
     private final CacheManager cacheManager;
-    private final WebSocketEntrypoint webSocket;
+    private final SocketIOEntrypoint socketIOEntrypoint;
 
     ThreadPoolExecutor executor = new ThreadPoolExecutor(10, 20, 200, TimeUnit.MILLISECONDS,
             new ArrayBlockingQueue<>(5));
@@ -69,7 +70,7 @@ public class CacheService {
                 runAfterTransactionDebounceByKey(
                         () -> {
                             this.refreshIconTagBinary();
-                            webSocket.broadcast(WUtils.create("IconTagBinaryPurged", null));
+                            socketIOEntrypoint.broadcast(WUtils.create("IconTagBinaryPurged", null));
                         },
                         FunctionKeyEnum.refreshIconTagBinary, Integer.parseInt(debounceDelay)
                 );
@@ -102,7 +103,7 @@ public class CacheService {
         runAfterTransactionDebounceByKey(
                 () -> {
                     itemDocService.refreshItemBinaryMD5();
-                    webSocket.broadcast(WUtils.create("ItemBinaryPurged", null));
+                    socketIOEntrypoint.broadcast(WUtils.create("ItemBinaryPurged", null));
                 },
                 FunctionKeyEnum.refreshItemBinary, Integer.parseInt(debounceDelay)
         );
@@ -128,7 +129,7 @@ public class CacheService {
         runAfterTransactionDebounceByKey(
                 () -> {
                     markerDocService.refreshMarkerBinaryMD5();
-                    webSocket.broadcast(WUtils.create("MarkerBinaryPurged", null));
+                    socketIOEntrypoint.broadcast(WUtils.create("MarkerBinaryPurged", null));
                 },
                 FunctionKeyEnum.refreshMarkerBinary, Integer.parseInt(debounceDelay)
         );
@@ -155,7 +156,7 @@ public class CacheService {
                 () -> {
                     markerLinkageDocService.refreshMarkerLinkageListBinaryMD5();
                     markerLinkageDocService.refreshMarkerLinkageGraphBinaryMD5();
-                    webSocket.broadcast(WUtils.create("MarkerLinkageBinaryPurged", null));
+                    socketIOEntrypoint.broadcast(WUtils.create("MarkerLinkageBinaryPurged", null));
                 },
                 FunctionKeyEnum.refreshMarkerLinkageBinary, Integer.parseInt(debounceDelay)
         );
