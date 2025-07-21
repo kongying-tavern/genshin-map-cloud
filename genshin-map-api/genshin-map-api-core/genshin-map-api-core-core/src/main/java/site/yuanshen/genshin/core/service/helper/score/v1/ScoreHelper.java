@@ -1,4 +1,4 @@
-package site.yuanshen.genshin.core.service.helper.score;
+package site.yuanshen.genshin.core.service.helper.score.v1;
 
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -8,7 +8,7 @@ import lombok.experimental.Accessors;
 import org.springframework.stereotype.Component;
 import site.yuanshen.common.core.utils.TimeUtils;
 import site.yuanshen.data.base.BaseEntity;
-import site.yuanshen.data.dto.adapter.score.ScoreSpanConfigDto;
+import site.yuanshen.data.dto.adapter.score.v1.ScoreSpanConfigDto;
 import site.yuanshen.data.entity.ScoreStat;
 import site.yuanshen.data.mapper.ScoreStatMapper;
 

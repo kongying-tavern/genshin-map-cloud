@@ -1,4 +1,4 @@
-package site.yuanshen.data.dto.adapter.score;
+package site.yuanshen.data.dto.adapter.score.v1;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
@@ -6,7 +6,7 @@ import lombok.experimental.Accessors;
 import site.yuanshen.common.core.exception.GenshinApiException;
 import site.yuanshen.common.core.utils.TimeUtils;
 import site.yuanshen.common.core.utils.TimeWrapper;
-import site.yuanshen.data.enums.ScoreSpanEnum;
+import site.yuanshen.data.enums.score.v1.ScoreSpanEnum;
 
 import java.sql.Timestamp;
 

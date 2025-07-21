@@ -1,16 +1,16 @@
-package site.yuanshen.genshin.core.service;
+package site.yuanshen.genshin.core.service.v1;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import site.yuanshen.data.dto.adapter.score.ScoreSpanConfigDto;
+import site.yuanshen.data.dto.adapter.score.v1.ScoreSpanConfigDto;
 import site.yuanshen.data.entity.History;
 import site.yuanshen.data.entity.Marker;
 import site.yuanshen.data.entity.ScoreStat;
-import site.yuanshen.data.enums.ScoreScopeEnum;
-import site.yuanshen.data.vo.adapter.score.ScoreDataPunctuateVo;
-import site.yuanshen.data.vo.adapter.score.ScoreParamsVo;
-import site.yuanshen.genshin.core.service.helper.score.ScoreGeneratePunctuateHelper;
-import site.yuanshen.genshin.core.service.helper.score.ScoreHelper;
+import site.yuanshen.data.enums.score.v1.ScoreScopeEnum;
+import site.yuanshen.data.vo.adapter.score.v1.ScoreDataPunctuateVo;
+import site.yuanshen.data.vo.adapter.score.v1.ScoreParamsVo;
+import site.yuanshen.genshin.core.service.helper.score.v1.ScoreGeneratePunctuateHelper;
+import site.yuanshen.genshin.core.service.helper.score.v1.ScoreHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +23,7 @@ import java.util.Map;
  */
 @Service
 @RequiredArgsConstructor
-public class ScoreGenerateService {
+public class ScoreGenerateV1Service {
     private final ScoreHelper commonHelper;
     private final ScoreGeneratePunctuateHelper punctuateHelper;
 
