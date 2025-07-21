@@ -88,9 +88,9 @@ public class ScoreStatVo {
     private Long userId;
 
     /**
-     * 修改的字段JSON
+     * 统计内容JSON
      */
-    @Schema(title = "修改的字段JSON")
+    @Schema(title = "统计内容JSON")
     private Map<String, Object> content;
 
 }

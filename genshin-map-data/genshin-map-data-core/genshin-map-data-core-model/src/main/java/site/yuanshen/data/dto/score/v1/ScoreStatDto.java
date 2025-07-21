@@ -72,7 +72,7 @@ public class ScoreStatDto {
     private Long userId;
 
     /**
-     * 修改的字段JSON
+     * 统计内容JSON
      */
     private Map<String, Object> content;
 

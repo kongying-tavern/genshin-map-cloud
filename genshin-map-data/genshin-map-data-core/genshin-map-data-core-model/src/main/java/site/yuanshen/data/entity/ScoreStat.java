@@ -80,7 +80,7 @@ public class ScoreStat extends BaseEntity {
     private Long userId;
 
     /**
-     * 修改的字段JSON
+     * 统计内容JSON
      */
     @TableField(value = "content", typeHandler = MBPJsonObjectTypeHandler.class)
     private Map<String, Object> content;
