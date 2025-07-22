@@ -1,4 +1,4 @@
-package site.yuanshen.genshin.core.service.v1;
+package site.yuanshen.genshin.core.service.score.v1;
 
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;

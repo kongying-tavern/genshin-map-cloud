@@ -1,4 +1,4 @@
-package site.yuanshen.genshin.core.service.v1;
+package site.yuanshen.genshin.core.service.score.v1;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

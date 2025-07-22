@@ -9,8 +9,8 @@ import site.yuanshen.common.web.response.R;
 import site.yuanshen.common.web.response.RUtils;
 import site.yuanshen.data.vo.adapter.score.v1.ScoreDataPackVo;
 import site.yuanshen.data.vo.adapter.score.v1.ScoreParamsVo;
-import site.yuanshen.genshin.core.service.v1.ScoreDataV1Service;
-import site.yuanshen.genshin.core.service.v1.ScoreGenerateV1Service;
+import site.yuanshen.genshin.core.service.score.v1.ScoreDataV1Service;
+import site.yuanshen.genshin.core.service.score.v1.ScoreGenerateV1Service;
 
 import java.util.List;
 
