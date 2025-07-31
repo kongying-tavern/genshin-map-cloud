@@ -73,6 +73,21 @@ public class NoticeService {
                         return Boolean.compare(aIsValid, bIsValid);
                     })
                 )
+                .addEntry(PgsqlUtils.SortConfigItem.<Notice>create().withProp("validType")
+                    .withComparator((a, b) -> {
+                        final long nowTimestamp = TimeUtils.getCurrentTimestamp().getTime();
+
+                        final Timestamp aTimeEnd = a.getValidTimeEnd();
+                        final long aTsEnd = aTimeEnd == null ? Long.MAX_VALUE : aTimeEnd.getTime();
+                        final boolean aIsValid = nowTimestamp <= aTsEnd;
+
+                        final Timestamp bTimeEnd = b.getValidTimeEnd();
+                        final long bTsEnd = bTimeEnd == null ? Long.MAX_VALUE : bTimeEnd.getTime();
+                        final boolean bIsValid = nowTimestamp <= bTsEnd;
+
+                        return Boolean.compare(aIsValid, bIsValid);
+                    })
+                )
                 .addEntry(PgsqlUtils.SortConfigItem.<Notice>create().withProp("updateTime")
                     .withComparator((a, b) -> {
                         final Timestamp aTime = a.getUpdateTime();
@@ -94,16 +109,16 @@ public class NoticeService {
                 .map(NoticeDto::getVo)
                 .map(notice -> {
                     String content = notice.getContent();
-                    if(content == null) {
+                    if (content == null) {
                         return notice;
                     }
                     final String transformerName = noticeSearchDto.getTransformer();
                     final NoticeTransformerEnum transformerEnum = NoticeTransformerEnum.find(transformerName);
-                    if(transformerEnum == null) {
+                    if (transformerEnum == null) {
                         return notice;
                     }
                     final Function<String, String> contentTransformer = transformerEnum.getContentTransformer();
-                    if(contentTransformer == null) {
+                    if (contentTransformer == null) {
                         return notice;
                     }
                     content = contentTransformer.apply(content);
@@ -125,7 +140,7 @@ public class NoticeService {
         }
     )
     public Long createNotice(NoticeDto noticeDto) {
-        if(CollUtil.isEmpty(noticeDto.getChannel())) {
+        if (CollUtil.isEmpty(noticeDto.getChannel())) {
             throw new GenshinApiException("公告频道不能为空");
         }
 
@@ -141,7 +156,7 @@ public class NoticeService {
         }
     )
     public Boolean updateNotice(NoticeDto noticeDto) {
-        if(CollUtil.isEmpty(noticeDto.getChannel())) {
+        if (CollUtil.isEmpty(noticeDto.getChannel())) {
             throw new GenshinApiException("公告频道不能为空");
         }
 
@@ -150,9 +165,9 @@ public class NoticeService {
         notice.setValidTimeEnd(null);
 
         return 1 == noticeMapper.update(notice, Wrappers.<Notice>lambdaUpdate()
-                .eq(Notice::getId, noticeDto.getId())
-                .set(Notice::getValidTimeStart, noticeDto.getValidTimeStart())
-                .set(Notice::getValidTimeEnd, noticeDto.getValidTimeEnd())
+            .eq(Notice::getId, noticeDto.getId())
+            .set(Notice::getValidTimeStart, noticeDto.getValidTimeStart())
+            .set(Notice::getValidTimeEnd, noticeDto.getValidTimeEnd())
         );
     }
 
