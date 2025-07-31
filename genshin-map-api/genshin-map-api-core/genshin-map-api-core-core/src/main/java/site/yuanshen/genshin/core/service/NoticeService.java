@@ -64,12 +64,27 @@ public class NoticeService {
                         final long aTsStart = aTimeStart == null ? Long.MIN_VALUE : aTimeStart.getTime();
                         final Timestamp aTimeEnd = a.getValidTimeEnd();
                         final long aTsEnd = aTimeEnd == null ? Long.MAX_VALUE : aTimeEnd.getTime();
-                        final boolean aIsValid = ts <= aTsEnd;
+                        final boolean aIsValid = aTsStart <= ts && ts <= aTsEnd;
                         final Timestamp bTimeStart = b.getValidTimeStart();
                         final long bTsStart = bTimeStart == null ? Long.MIN_VALUE : bTimeStart.getTime();
                         final Timestamp bTimeEnd = b.getValidTimeEnd();
                         final long bTsEnd = bTimeEnd == null ? Long.MAX_VALUE : bTimeEnd.getTime();
-                        final boolean bIsValid = ts <= bTsEnd;
+                        final boolean bIsValid = bTsStart <= ts && ts <= bTsEnd;
+                        return Boolean.compare(aIsValid, bIsValid);
+                    })
+                )
+                .addEntry(PgsqlUtils.SortConfigItem.<Notice>create().withProp("validType")
+                    .withComparator((a, b) -> {
+                        final long nowTimestamp = TimeUtils.getCurrentTimestamp().getTime();
+
+                        final Timestamp aTimeEnd = a.getValidTimeEnd();
+                        final long aTsEnd = aTimeEnd == null ? Long.MAX_VALUE : aTimeEnd.getTime();
+                        final boolean aIsValid = nowTimestamp <= aTsEnd;
+
+                        final Timestamp bTimeEnd = b.getValidTimeEnd();
+                        final long bTsEnd = bTimeEnd == null ? Long.MAX_VALUE : bTimeEnd.getTime();
+                        final boolean bIsValid = nowTimestamp <= bTsEnd;
+
                         return Boolean.compare(aIsValid, bIsValid);
                     })
                 )
