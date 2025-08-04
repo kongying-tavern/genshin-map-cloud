@@ -5,12 +5,14 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.yuanshen.common.core.exception.GenshinApiException;
 import site.yuanshen.common.core.utils.PgsqlUtils;
 import site.yuanshen.data.dto.ItemDto;
+import site.yuanshen.data.dto.ItemInfoDto;
 import site.yuanshen.data.dto.ItemSearchDto;
 import site.yuanshen.data.entity.*;
 import site.yuanshen.data.enums.HistoryEditType;
@@ -56,24 +58,24 @@ public class ItemService {
         //收集分类信息
         Map<Long, List<Long>> typeMap = new ConcurrentHashMap<>();
         itemTypeLinkMapper.selectList(Wrappers.<ItemTypeLink>lambdaQuery()
-                        .in(ItemTypeLink::getItemId, itemIdList))
-                .parallelStream()
-                .forEach(typeLink ->
-                        typeMap.compute(typeLink.getItemId(), (itemId, typeList) -> {
-                            if (typeList == null) return new ArrayList<>(Collections.singletonList(typeLink.getTypeId()));
-                            typeList.add(typeLink.getTypeId());
-                            return typeList;
-                        }));
+                .in(ItemTypeLink::getItemId, itemIdList))
+            .parallelStream()
+            .forEach(typeLink ->
+                typeMap.compute(typeLink.getItemId(), (itemId, typeList) -> {
+                    if (typeList == null) return new ArrayList<>(Collections.singletonList(typeLink.getTypeId()));
+                    typeList.add(typeLink.getTypeId());
+                    return typeList;
+                }));
         //取得实体类并转化为DTO，过程之中写入分类信息
         List<ItemDto> result = itemMapper.selectList(Wrappers.<Item>lambdaQuery()
-                        .in(!hiddenFlagList.isEmpty(), Item::getHiddenFlag, hiddenFlagList)
-                        .in(Item::getId, itemIdList))
-                .parallelStream()
-                .map(item ->
-                        new ItemDto(item)
-                                .withTypeIdList(typeMap.getOrDefault(item.getId(), new ArrayList<>())))
-                .sorted(Comparator.comparing(ItemDto::getSortIndex).reversed())
-                .collect(Collectors.toList());
+                .in(!hiddenFlagList.isEmpty(), Item::getHiddenFlag, hiddenFlagList)
+                .in(Item::getId, itemIdList))
+            .parallelStream()
+            .map(item ->
+                new ItemDto(item)
+                    .withTypeIdList(typeMap.getOrDefault(item.getId(), new ArrayList<>())))
+            .sorted(Comparator.comparing(ItemDto::getSortIndex).reversed())
+            .collect(Collectors.toList());
         return result;
     }
 
@@ -99,9 +101,9 @@ public class ItemService {
             return new PageListVo<ItemVo>().setRecord(new ArrayList<>()).setSize(itemPage.getSize()).setTotal(0L);
         //获取分类数据
         List<ItemTypeLink> typeLinkList = itemTypeLinkMapper.selectList(Wrappers.<ItemTypeLink>lambdaQuery()
-                .in(ItemTypeLink::getItemId,
-                        itemPage.getRecords().stream()
-                                .map(Item::getId).collect(Collectors.toList())));
+            .in(ItemTypeLink::getItemId,
+                itemPage.getRecords().stream()
+                    .map(Item::getId).collect(Collectors.toList())));
         Map<Long, List<Long>> itemToTypeMap = new HashMap<>();
         for (ItemTypeLink typeLink : typeLinkList) {
             Long itemId = typeLink.getItemId();
@@ -116,36 +118,74 @@ public class ItemService {
 
         //获取点位数据
         List<MarkerItemLink> markerItemLinkList = markerItemLinkMapper.selectList(Wrappers.<MarkerItemLink>lambdaQuery()
-                .in(MarkerItemLink::getItemId,
-                        itemPage.getRecords().stream()
-                                .map(Item::getId).collect(Collectors.toList())));
+            .in(MarkerItemLink::getItemId,
+                itemPage.getRecords().stream()
+                    .map(Item::getId).collect(Collectors.toList())));
 
         //获取其中的正常点位 hidden_flag=0 若为内鬼用户,则增加hidden_flag=2
         List<Long> normalMarkerList;
 
         if (!markerItemLinkList.isEmpty()) {
             normalMarkerList = markerMapper.selectList(Wrappers.<Marker>lambdaQuery()
-                            .in(!itemSearchDto.getHiddenFlagList().isEmpty(),Marker::getHiddenFlag,itemSearchDto.getHiddenFlagList())
-                            .in(Marker::getId, markerItemLinkList.stream().map(MarkerItemLink::getMarkerId).collect(Collectors.toList())))
-                    .stream().map(Marker::getId).collect(Collectors.toList());
+                    .in(!itemSearchDto.getHiddenFlagList().isEmpty(), Marker::getHiddenFlag, itemSearchDto.getHiddenFlagList())
+                    .in(Marker::getId, markerItemLinkList.stream().map(MarkerItemLink::getMarkerId).collect(Collectors.toList())))
+                .stream().map(Marker::getId).collect(Collectors.toList());
             markerItemLinkList.stream().filter(markerItemLink -> normalMarkerList.contains(markerItemLink.getMarkerId()))
-                    .collect(Collectors.groupingBy(MarkerItemLink::getItemId)).forEach(
-                            (itemId, list) -> markerItemLinkCount.put(itemId, list.stream().mapToInt(MarkerItemLink::getCount).sum())
-                    );
+                .collect(Collectors.groupingBy(MarkerItemLink::getItemId)).forEach(
+                    (itemId, list) -> markerItemLinkCount.put(itemId, list.stream().mapToInt(MarkerItemLink::getCount).sum())
+                );
         }
 
         List<ItemVo> result = itemPage.getRecords().stream()
-                .map(ItemDto::new)
-                .map(dto -> dto
-                    .withCount(markerItemLinkCount.getOrDefault(dto.getId(), 0))
-                    .withTypeIdList((itemToTypeMap.get(dto.getId())))
-                )
-                .map(ItemDto::getVo)
-                .collect(Collectors.toList());
+            .map(ItemDto::new)
+            .map(dto -> dto
+                .withCount(markerItemLinkCount.getOrDefault(dto.getId(), 0))
+                .withTypeIdList((itemToTypeMap.get(dto.getId())))
+            )
+            .map(ItemDto::getVo)
+            .collect(Collectors.toList());
         return new PageListVo<ItemVo>()
-                .setRecord(result)
-                .setTotal(itemPage.getTotal())
-                .setSize(itemPage.getSize());
+            .setRecord(result)
+            .setTotal(itemPage.getTotal())
+            .setSize(itemPage.getSize());
+    }
+
+    @Cacheable("listItem")
+    public PageListVo<ItemVo> listItemV2(ItemSearchDto itemSearchDto) {
+
+        String requestName = itemSearchDto.getName();
+        List<Long> requestAreaIdList = itemSearchDto.getAreaIdList();
+        List<Long> requestTypeIdList = itemSearchDto.getTypeIdList();
+        List<Integer> requestHiddenFlagList = itemSearchDto.getHiddenFlagList();
+        Long requestSpecialFlag = itemSearchDto.getSpecialFlag();
+        Page<Item> requestPageEntity = itemSearchDto.getPageEntity();
+
+        Page<ItemInfoDto> itemInfoDtoPage = itemMapper.selectPageItemByCondition(requestPageEntity, requestName, requestAreaIdList, requestTypeIdList, requestHiddenFlagList, requestSpecialFlag);
+
+        List<ItemVo> itemVoList = itemInfoDtoPage.getRecords()
+            .stream()
+            .map(x -> {
+                ItemVo itemVo = new ItemVo();
+                BeanUtils.copyProperties(x, itemVo);
+                String typeIdListStr = x.getTypeIdList();
+                if (typeIdListStr != null && !typeIdListStr.isBlank()) {
+                    List<Long> typeIdList = Arrays.stream(typeIdListStr.split(",")).map(Long::parseLong).collect(Collectors.toList());
+                    itemVo.setTypeIdList(typeIdList);
+                }
+                return itemVo;
+            })
+            .collect(Collectors.toList());
+
+        Page<ItemVo> itemVoPage = new Page<>();
+        itemVoPage.setRecords(itemVoList);
+        itemVoPage.setSize(itemInfoDtoPage.getSize());
+        itemVoPage.setTotal(itemInfoDtoPage.getTotal());
+        itemVoPage.setCurrent(itemInfoDtoPage.getCurrent());
+
+        return new PageListVo<ItemVo>()
+            .setRecord(itemVoPage.getRecords())
+            .setTotal(itemVoPage.getTotal())
+            .setSize(itemVoPage.getSize());
     }
 
     /**
@@ -164,7 +204,7 @@ public class ItemService {
             List<Item> sameItems = new ArrayList<>();
             if (editSame.equals(1)) {
                 sameItems = itemMapper.selectList(Wrappers.<Item>lambdaQuery()
-                        .eq(Item::getName, itemDto.getName()));
+                    .eq(Item::getName, itemDto.getName()));
             }
             //物品ID
             List<Long> itemIds = new ArrayList<>(Collections.singletonList(itemDto.getId()));
@@ -175,23 +215,23 @@ public class ItemService {
 
             //对比类型信息是否更改
             HashSet<Long> oldTypeIds = itemTypeLinkMapper.selectList(Wrappers.<ItemTypeLink>lambdaQuery()
-                            .eq(ItemTypeLink::getItemId, itemDto.getId()))
-                    .stream()
-                    .map(ItemTypeLink::getTypeId).collect(Collectors.toCollection(HashSet::new));
+                    .eq(ItemTypeLink::getItemId, itemDto.getId()))
+                .stream()
+                .map(ItemTypeLink::getTypeId).collect(Collectors.toCollection(HashSet::new));
             HashSet<Long> newTypeIds = new HashSet<>(typeIdList);
             //如果更改了就进行分类的刷新
             if (!oldTypeIds.equals(newTypeIds)) {
                 //删除旧分类连接
                 itemTypeLinkMapper.delete(Wrappers.<ItemTypeLink>lambdaQuery()
-                        .in(ItemTypeLink::getItemId, itemIds));
+                    .in(ItemTypeLink::getItemId, itemIds));
                 //非同名
                 if (!editSame.equals(1)) {
                     itemTypeLinkMBPService.saveBatch(
-                            newTypeIds.stream()
-                                    .map(id -> new ItemTypeLink()
-                                            .withItemId(itemDto.getId())
-                                            .withTypeId(id))
-                                    .collect(Collectors.toList())
+                        newTypeIds.stream()
+                            .map(id -> new ItemTypeLink()
+                                .withItemId(itemDto.getId())
+                                .withTypeId(id))
+                            .collect(Collectors.toList())
                     );
                 }
                 //同名
@@ -199,29 +239,29 @@ public class ItemService {
                     List<ItemTypeLink> newLink = new ArrayList<>();
                     itemIds.parallelStream().forEach(itemId -> {
                         newLink.addAll(newTypeIds.stream()
-                                .map(id -> new ItemTypeLink()
-                                        .withItemId(itemId)
-                                        .withTypeId(id))
-                                .collect(Collectors.toList()));
+                            .map(id -> new ItemTypeLink()
+                                .withItemId(itemId)
+                                .withTypeId(id))
+                            .collect(Collectors.toList()));
                     });
                     itemTypeLinkMBPService.saveBatch(newLink);
                 }
             }
             itemMapper.update(null,
-                    Wrappers.<Item>lambdaUpdate().in(Item::getId, itemIds)
-                            .set(itemDto.getName() != null, Item::getName, itemDto.getName())
-                            .set(itemDto.getDefaultContent() != null, Item::getDefaultContent, itemDto.getDefaultContent())
-                            .set(itemDto.getIconTag() != null, Item::getIconTag, itemDto.getIconTag())
-                            .set(itemDto.getIconStyleType() != null, Item::getIconStyleType, itemDto.getIconStyleType())
-                            .set(itemDto.getHiddenFlag() != null, Item::getHiddenFlag, itemDto.getHiddenFlag())
-                            .set(itemDto.getDefaultRefreshTime() != null, Item::getDefaultRefreshTime, itemDto.getDefaultRefreshTime())
-                            .set(itemDto.getSortIndex() != null, Item::getSortIndex, itemDto.getSortIndex())
-                            .set(itemDto.getSpecialFlag() != null, Item::getSpecialFlag, itemDto.getSpecialFlag())
+                Wrappers.<Item>lambdaUpdate().in(Item::getId, itemIds)
+                    .set(itemDto.getName() != null, Item::getName, itemDto.getName())
+                    .set(itemDto.getDefaultContent() != null, Item::getDefaultContent, itemDto.getDefaultContent())
+                    .set(itemDto.getIconTag() != null, Item::getIconTag, itemDto.getIconTag())
+                    .set(itemDto.getIconStyleType() != null, Item::getIconStyleType, itemDto.getIconStyleType())
+                    .set(itemDto.getHiddenFlag() != null, Item::getHiddenFlag, itemDto.getHiddenFlag())
+                    .set(itemDto.getDefaultRefreshTime() != null, Item::getDefaultRefreshTime, itemDto.getDefaultRefreshTime())
+                    .set(itemDto.getSortIndex() != null, Item::getSortIndex, itemDto.getSortIndex())
+                    .set(itemDto.getSpecialFlag() != null, Item::getSpecialFlag, itemDto.getSpecialFlag())
             );
-            if(itemDto.getAreaId() != null) {
+            if (itemDto.getAreaId() != null) {
                 itemMapper.update(null,
-                        Wrappers.<Item>lambdaUpdate().eq(Item::getId, itemDto.getId())
-                                .set(itemDto.getAreaId() != null, Item::getAreaId, itemDto.getAreaId())
+                    Wrappers.<Item>lambdaUpdate().eq(Item::getId, itemDto.getId())
+                        .set(itemDto.getAreaId() != null, Item::getAreaId, itemDto.getAreaId())
                 );
             }
         }
@@ -243,11 +283,11 @@ public class ItemService {
         if (!itemMapper.selectCount(Wrappers.<Item>lambdaQuery().in(Item::getId, itemIdList)).equals((long) itemIdList.size()))
             throw new GenshinApiException("物品ID存在错误");
         boolean res = itemTypeLinkMBPService.saveBatch(
-                itemIdList.stream()
-                        .map(id -> new ItemTypeLink()
-                                .withItemId(id)
-                                .withTypeId(typeId))
-                        .collect(Collectors.toList())
+            itemIdList.stream()
+                .map(id -> new ItemTypeLink()
+                    .withItemId(id)
+                    .withTypeId(typeId))
+                .collect(Collectors.toList())
         );
         return res;
     }
@@ -270,9 +310,9 @@ public class ItemService {
                 throw new GenshinApiException("类型ID错误");
             //批量保存
             itemTypeLinkMBPService.saveBatch(
-                    typeIdList.stream()
-                            .map(id -> new ItemTypeLink().withItemId(item.getId()).withTypeId(id))
-                            .collect(Collectors.toList())
+                typeIdList.stream()
+                    .map(id -> new ItemTypeLink().withItemId(item.getId()).withTypeId(id))
+                    .collect(Collectors.toList())
             );
         }
         return item.getId();
@@ -289,7 +329,7 @@ public class ItemService {
     public List<Long> copyItemToArea(List<Long> itemIdList, Long areaId) {
         //TODO 判断是否是末端地区，检查所有涉及地区的代码
         List<Item> items = itemMapper.selectList(Wrappers.<Item>lambdaQuery()
-                .in(Item::getId, itemIdList));
+            .in(Item::getId, itemIdList));
         for (Item item : items) {
             //先根据id找到typeLink中的数据
             List<ItemTypeLink> itemTypeLinks = itemTypeLinkMapper.selectList(Wrappers.<ItemTypeLink>lambdaQuery().eq(ItemTypeLink::getItemId, item.getId()));
@@ -301,7 +341,7 @@ public class ItemService {
             itemMBPService.save(item);
             //根据新id给typeLink赋值并重新插入一份
             itemTypeLinks = itemTypeLinks.stream().map(itemTypeLink ->
-                    itemTypeLink.withItemId(item.getId()).withId(null)
+                itemTypeLink.withItemId(item.getId()).withId(null)
             ).collect(Collectors.toList());
             itemTypeLinkMBPService.saveBatch(itemTypeLinks);
         }
@@ -319,8 +359,8 @@ public class ItemService {
     public Boolean deleteItem(Long itemId) {
         //增加公共物品拦截逻辑
         ItemAreaPublic itemAreaPublic = itemAreaPublicMapper.selectOne(Wrappers.<ItemAreaPublic>lambdaQuery()
-                .eq(ItemAreaPublic::getItemId, itemId));
-        if (ObjUtil.isNotNull(itemAreaPublic)){
+            .eq(ItemAreaPublic::getItemId, itemId));
+        if (ObjUtil.isNotNull(itemAreaPublic)) {
             throw new GenshinApiException("不允许删除公共物品");
         }
 
@@ -328,45 +368,46 @@ public class ItemService {
         saveHistoryItem(List.of(itemId), List.of(), HistoryEditType.DELETE);
 
         itemTypeLinkMapper.delete(Wrappers.<ItemTypeLink>lambdaQuery()
-                .eq(ItemTypeLink::getItemId, itemId));
+            .eq(ItemTypeLink::getItemId, itemId));
         markerItemLinkMapper.delete(Wrappers.<MarkerItemLink>lambdaQuery()
-                .eq(MarkerItemLink::getItemId, itemId));
+            .eq(MarkerItemLink::getItemId, itemId));
         return itemMapper.delete(Wrappers.<Item>lambdaQuery()
-                .eq(Item::getId, itemId)) == 1;
+            .eq(Item::getId, itemId)) == 1;
     }
 
     //---------------存储历史信息-------------------
 
     /**
      * 将当前点位信息存入历史记录表
-     * @param itemIds 物品Id列表
+     *
+     * @param itemIds   物品Id列表
      * @param sameItems 同名物品List(若无需同名则默认为空)
-     * @param editType 编辑类型
+     * @param editType  编辑类型
      */
     private void saveHistoryItem(List<Long> itemIds, List<Item> sameItems, HistoryEditType editType) {
         //根据itemId查询(按目前逻辑只有一个Id),加上同名物品
         List<Item> items = itemMapper.selectList(Wrappers.<Item>lambdaQuery()
-                .in(Item::getId, itemIds));
+            .in(Item::getId, itemIds));
         items.addAll(sameItems);
 
         //根据每一个物品查询出对应的link记录,并转为DTO
         List<ItemDto> itemDtoList = items.stream().map(
-                item -> {
-                    List<Long> typeLink = itemTypeLinkMapper.selectList(Wrappers.<ItemTypeLink>lambdaQuery()
-                                    .eq(ItemTypeLink::getItemId, item.getId()))
-                            .stream().map(ItemTypeLink::getTypeId).collect(Collectors.toList());
+            item -> {
+                List<Long> typeLink = itemTypeLinkMapper.selectList(Wrappers.<ItemTypeLink>lambdaQuery()
+                        .eq(ItemTypeLink::getItemId, item.getId()))
+                    .stream().map(ItemTypeLink::getTypeId).collect(Collectors.toList());
 
-                    return new ItemDto(item).withTypeIdList(typeLink);
-                }
+                return new ItemDto(item).withTypeIdList(typeLink);
+            }
         ).collect(Collectors.toList());
 
         //将DTO转为history
         itemDtoList.forEach(
-                dto -> {
-                    History history = HistoryConvert.convert(dto, editType);
-                    //存储入库
-                    historyMapper.insert(history);
-                }
+            dto -> {
+                History history = HistoryConvert.convert(dto, editType);
+                //存储入库
+                historyMapper.insert(history);
+            }
         );
     }
 

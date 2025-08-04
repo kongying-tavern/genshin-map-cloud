@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import site.yuanshen.data.dto.ItemInfoDto;
 import site.yuanshen.data.dto.ItemSearchDto;
 import site.yuanshen.data.entity.Item;
 
@@ -32,5 +33,12 @@ public interface ItemMapper extends BaseMapper<Item> {
      * @return
      */
     List<Item> selectWithLargeCustomIn(@Param("column")String column, @Param("unnest")String unnest, @Param(Constants.WRAPPER)LambdaQueryWrapper<Item> wrapper);
+
+    Page<ItemInfoDto> selectPageItemByCondition(IPage<?> page,
+                                                @Param("name")String name,
+                                                @Param("areaIdList")List<Long> areaIdList,
+                                                @Param("typeIdList")List<Long> typeIdList,
+                                                @Param("hiddenFlagList")List<Integer> hiddenFlagList,
+                                                @Param("specialFlag")Long specialFlag);
 
 }
