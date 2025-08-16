@@ -8,3 +8,9 @@ spring:
   datasource:
     driver-class-name: org.postgresql.Driver
     type: com.alibaba.druid.pool.DruidDataSource
+socketio:
+  worker-threads: 100
+  allow-custom-requests: true
+  upgrade-timeout: 1000000
+  max-frame-payload-length: 1048576
+  max-http-content-length: 1048576

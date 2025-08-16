@@ -10,31 +10,31 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class SocketIOConfiguration {
 
-    @Value("${socketio.host:127.0.0.1}")
+    @Value("${socketio.host}")
     private String host;
 
-    @Value("${socketio.port:3000}")
+    @Value("${socketio.port}")
     private Integer port;
 
-    @Value("${socketio.workerThreads:100}")
+    @Value("${socketio.worker-threads}")
     private int workerThreads;
 
-    @Value("${socketio.allowCustomRequests:true}")
+    @Value("${socketio.allow-custom-requests}")
     private boolean allowCustomRequests;
 
-    @Value("${socketio.upgradeTimeout:1000000}")
+    @Value("${socketio.upgrade-timeout}")
     private int upgradeTimeout;
 
-    @Value("${socketio.pingTimeout:6000000}")
+    @Value("${socketio.ping-timeout}")
     private int pingTimeout;
 
-    @Value("${socketio.pingInterval:25000}")
+    @Value("${socketio.ping-interval}")
     private int pingInterval;
 
-    @Value("${socketio.maxFramePayloadLength:1048576}")
+    @Value("${socketio.max-frame-payload-length}")
     private int maxFramePayloadLength;
 
-    @Value("${socketio.maxHttpContentLength:1048576}")
+    @Value("${socketio.max-http-content-length}")
     private int maxHttpContentLength;
 
     @Bean
@@ -67,7 +67,7 @@ public class SocketIOConfiguration {
 
     @Bean
     public SpringAnnotationScanner springAnnotationScanner(SocketIOServer socketIOServer) {
-        return new SpringAnnotationScanner(socketIOServer);
+        return new SpringAnnotationScanner(socketIOServer());
     }
 
 }
