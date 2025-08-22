@@ -5,6 +5,7 @@ import com.corundumstudio.socketio.annotation.SpringAnnotationScanner;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import site.yuanshen.common.core.exception.GenshinApiException;
 
 
 @Configuration
@@ -19,9 +20,14 @@ public class SocketIOConfiguration {
         config.setHostname(properties.getHost());
         config.setPort(properties.getPort());
         config.setContext("/ws");
+        // 配置域名和端口和握手路径
+        config.setHostname(host);
+        config.setPort(port);
+        config.setContext(context);
         // 开启socket端口复用
         com.corundumstudio.socketio.SocketConfig socketConfig = new com.corundumstudio.socketio.SocketConfig();
         socketConfig.setReuseAddress(Boolean.TRUE);
+
         config.setSocketConfig(socketConfig);
         // 连接数大小
         config.setWorkerThreads(properties.getWorkerThreads());
@@ -38,7 +44,18 @@ public class SocketIOConfiguration {
         // 设置最大每帧处理数据的长度，防止他人利用大数据来攻击服务器
         config.setMaxHttpContentLength(properties.getMaxHttpContentLength());
 
-        return new SocketIOServer(config);
+
+        SocketIOServer socketIOServer = new SocketIOServer(config);
+        socketIOServer.addConnectListener(socketIOClient -> {
+            String userId = socketIOClient.getHandshakeData().getSingleUrlParam("userId");
+            if (userId == null) {
+                // 主动断开连接（服务端会发送错误事件）
+                socketIOClient.disconnect();
+                throw new GenshinApiException("userId parameter is missing");
+            }
+        });
+
+        return socketIOServer;
     }
 
     @Bean

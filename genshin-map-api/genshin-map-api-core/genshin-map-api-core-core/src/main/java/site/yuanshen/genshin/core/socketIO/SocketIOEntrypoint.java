@@ -31,6 +31,9 @@ public class SocketIOEntrypoint {
         if (uuidList == null) {
             uuidList = new ArrayList<>();
         }
+        if (uuidList.contains(sessionId)) {
+            return;
+        }
         uuidList.add(sessionId);
         userIdToSocketClientUUID.put(userId, uuidList);
         log.info("[websocket] new connection, userID:{}, socketClientUUID:{}, connection size:{} ", userId, sessionId, socketIOServer.getAllClients().size());
