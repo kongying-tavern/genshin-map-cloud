@@ -1,5 +1,10 @@
 server:
   port: 8101
+
+socketio:
+  host: 127.0.0.1
+  port: 8030
+
 #logging:
 #  level:
 #    org:
@@ -123,10 +128,6 @@ spring:
             - Path=/oauth/check_token
           filters:
             - PreserveHostHeader
-        - id: websocket
-          uri: lb://api-core
-          predicates:
-            - Path=/ws/**
         - id: openapi
           uri: lb://api-core
           predicates:
@@ -143,3 +144,9 @@ spring:
           uri: lb://api-core
           predicates:
             - Path=/api/**
+        - id: websocket
+          uri: ws://${socketio.host}:${socketio.port}
+          predicates:
+            - Path=/ws,/ws/**
+          filters:
+            - PreserveHostHeader
