@@ -16,3 +16,6 @@ socketio:
   upgrade-timeout: 1000000
   max-frame-payload-length: 1048576
   max-http-content-length: 1048576
+  ping-timeout: 6000000
+  ping-interval: 25000
+  context: /ws
