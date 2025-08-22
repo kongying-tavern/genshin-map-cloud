@@ -16,3 +16,4 @@ socketio:
   upgrade-timeout: 1000000
   max-frame-payload-length: 1048576
   max-http-content-length: 1048576
+  context: /ws

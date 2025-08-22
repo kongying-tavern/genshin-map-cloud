@@ -14,6 +14,9 @@ public class SocketIOProperties {
     @Value("${socketio.port}")
     private Integer port;
 
+    @Value("${socketio.context}")
+    private String context;
+
     @Value("${socketio.worker-threads}")
     private int workerThreads;
 
