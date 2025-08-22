@@ -16,14 +16,10 @@ public class SocketIOConfiguration {
     @Bean
     public SocketIOServer socketIOServer() {
         com.corundumstudio.socketio.Configuration config = new com.corundumstudio.socketio.Configuration();
-        // 配置域名和端口
+        // 配置域名和端口和握手路径
         config.setHostname(properties.getHost());
         config.setPort(properties.getPort());
-        config.setContext("/ws");
-        // 配置域名和端口和握手路径
-        config.setHostname(host);
-        config.setPort(port);
-        config.setContext(context);
+        config.setContext(properties.getContext());
         // 开启socket端口复用
         com.corundumstudio.socketio.SocketConfig socketConfig = new com.corundumstudio.socketio.SocketConfig();
         socketConfig.setReuseAddress(Boolean.TRUE);
