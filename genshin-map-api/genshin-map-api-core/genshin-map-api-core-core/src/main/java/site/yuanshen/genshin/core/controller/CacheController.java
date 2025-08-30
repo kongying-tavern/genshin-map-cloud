@@ -2,7 +2,6 @@ package site.yuanshen.genshin.core.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,13 +27,13 @@ public class CacheController {
 
     private final CacheService cacheService;
 
-    @Operation(summary = "删除标签缓存",description = "list为空则删除所有标签缓存")
-    @DeleteMapping("/iconTag")
-    public R<Boolean> cleanIconTagCache(@RequestBody List<String> nameList){
-        if (nameList.isEmpty()){
-            cacheService.cleanIconTagCache();
-        }else{
-            nameList.forEach(cacheService::cleanIconTagCache);
+    @Operation(summary = "删除图标缓存",description = "list为空则删除所有图标缓存")
+    @DeleteMapping("/icon")
+    public R<Boolean> cleanIconCache(@RequestBody List<Long> idList){
+        if (idList.isEmpty()){
+            cacheService.cleanIconCache();
+        } else {
+            idList.forEach(cacheService::cleanIconCache);
         }
         return RUtils.create(true);
     }
