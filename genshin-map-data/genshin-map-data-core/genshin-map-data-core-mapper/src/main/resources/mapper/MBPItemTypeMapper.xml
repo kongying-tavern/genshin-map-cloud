@@ -13,7 +13,7 @@
         <result column="id" property="id"/>
         <result column="updater_id" property="updaterId"/>
         <result column="update_time" property="updateTime"/>
-        <result column="icon_tag" property="iconTag"/>
+        <result column="icon_id" property="iconId"/>
         <result column="name" property="name"/>
         <result column="content" property="content"/>
         <result column="is_final" property="isFinal"/>
@@ -29,7 +29,7 @@
         item_type.id,
         item_type.updater_id,
         item_type.update_time,
-        item_type.icon_tag,
+        item_type.icon_id,
         item_type.name,
         item_type.content,
         item_type.parent_id,

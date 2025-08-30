@@ -78,10 +78,10 @@ public class AreaVo {
     private String content;
 
     /**
-     * 图标标签
+     * 图标ID
      */
-    @Schema(title = "图标标签")
-    private String iconTag;
+    @Schema(title = "图标ID")
+    private Long iconId;
 
     /**
      * 父级地区ID（无父级则为-1）

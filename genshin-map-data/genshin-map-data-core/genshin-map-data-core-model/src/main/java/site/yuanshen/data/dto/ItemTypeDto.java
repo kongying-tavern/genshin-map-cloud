@@ -59,9 +59,9 @@ public class ItemTypeDto {
     private Timestamp updateTime;
 
     /**
-     * 图标标签
+     * 图标ID
      */
-    private String iconTag;
+    private Long iconId;
 
     /**
      * 类型名
