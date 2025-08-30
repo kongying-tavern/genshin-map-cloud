@@ -44,11 +44,14 @@ database/**/.back_*
 
 .flattened-pom.xml
 application-datasource-dev.yml
-application-datasource-prod.yml
 application-datasource-uat.yml
+application-datasource-prod.yml
 application-image-dev.yml
-application-image-prod.yml
 application-image-uat.yml
+application-image-prod.yml
+application-websocket-dev.yml
+application-websocket-uat.yml
+application-websocket-prod.yml
 
 ### Docker ###
 docker/.env
