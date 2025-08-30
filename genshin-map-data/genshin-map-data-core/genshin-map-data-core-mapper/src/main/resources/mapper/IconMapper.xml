@@ -6,8 +6,8 @@
             resultType="site.yuanshen.data.entity.Icon"
             parameterType="site.yuanshen.data.dto.IconSearchDto">
         <bind
-            name="searchName"
-            value="searchDto.name != null and searchDto.name != '' ? '%' + searchDto.name + '%' : ''" />
+            name="searchTag"
+            value="searchDto.tag != null and searchDto.tag != '' ? '%' + searchDto.tag + '%' : ''" />
         select i.*
         from icon i
         <if test="searchDto.typeIdList != null and searchDto.typeIdList.size > 0">
@@ -33,8 +33,8 @@
             <if test="searchDto.creator != null">
                 and i.creator = #{searchDto.creator}
             </if>
-            <if test="searchName != null and searchName != ''">
-                and i.name LIKE #{searchName}
+            <if test="searchTag != null and searchTag != ''">
+                and i.name LIKE #{searchTag}
             </if>
         </where>
     </select>
