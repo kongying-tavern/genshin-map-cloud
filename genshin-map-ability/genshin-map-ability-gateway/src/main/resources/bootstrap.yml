@@ -1,10 +1,6 @@
 server:
   port: 8101
 
-socketio:
-  host: 127.0.0.1
-  port: 8030
-
 #logging:
 #  level:
 #    org:
@@ -16,6 +12,7 @@ socketio:
 
 genshin:
   pass-filter:
+    - /ws
     - /ws/**
     - /oauth/**
     - /v3/**
@@ -83,9 +80,9 @@ ribbon:
 
 spring:
   profiles:
+    active: "@runtime-profile@"
     include:
       - "nacos-@runtime-profile@"
-      - "env-@runtime-profile@"
 
   application:
     name: oauth2-gateway
@@ -145,7 +142,7 @@ spring:
           predicates:
             - Path=/api/**
         - id: websocket
-          uri: ws://${socketio.host}:${socketio.port}
+          uri: lb:ws://api-ws
           predicates:
             - Path=/ws,/ws/**
           filters:

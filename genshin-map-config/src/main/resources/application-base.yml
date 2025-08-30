@@ -9,7 +9,7 @@ spring:
     driver-class-name: org.postgresql.Driver
     type: com.alibaba.druid.pool.DruidDataSource
 socketio:
-  host: 127.0.0.1
+  host: 0.0.0.0
   port: 8030
   worker-threads: 100
   allow-custom-requests: true
