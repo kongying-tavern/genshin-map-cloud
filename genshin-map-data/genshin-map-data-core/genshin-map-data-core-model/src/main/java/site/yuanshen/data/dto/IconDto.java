@@ -59,14 +59,19 @@ public class IconDto {
     private Timestamp updateTime;
 
     /**
-     * 图标名称
+     * 图标标签
      */
-    private String name;
+    private String tag;
 
     /**
      * 图标url
      */
     private String url;
+
+    /**
+     * 图标描述
+     */
+    private String description;
 
     public IconDto(Icon icon) {
         BeanUtils.copy(icon, this);

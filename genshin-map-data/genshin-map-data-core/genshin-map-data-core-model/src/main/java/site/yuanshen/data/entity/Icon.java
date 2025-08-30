@@ -47,15 +47,21 @@ public class Icon extends BaseEntity {
     private Timestamp updateTime;
 
     /**
-     * 图标名称
+     * 图标标签
      */
-    @TableField("name")
-    private String name;
+    @TableField("tag")
+    private String tag;
 
     /**
      * 图标url
      */
     @TableField("url")
     private String url;
+
+    /**
+     * 图标描述
+     */
+    @TableField("description")
+    private String description;
 
 }

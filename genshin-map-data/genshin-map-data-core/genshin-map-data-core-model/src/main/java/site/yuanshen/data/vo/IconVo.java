@@ -61,10 +61,10 @@ public class IconVo {
     private Timestamp updateTime;
 
     /**
-     * 图标名称
+     * 图标标签
      */
-    @Schema(title = "图标名称")
-    private String name;
+    @Schema(title = "图标标签")
+    private String tag;
 
     /**
      * 图标类型ID列表
@@ -78,4 +78,9 @@ public class IconVo {
     @Schema(title = "图标url")
     private String url;
 
+    /**
+     * 图标描述
+     */
+    @Schema(title = "图标描述")
+    private String description;
 }
