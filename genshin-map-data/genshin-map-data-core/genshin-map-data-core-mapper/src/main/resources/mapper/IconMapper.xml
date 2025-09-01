@@ -2,6 +2,21 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="site.yuanshen.data.mapper.IconMapper">
 
+    <select id="getIcon" resultMap="BaseResultMap">
+        SELECT i.*
+        FROM icon i
+        WHERE i.tag = #{tagName}
+        <if test="!withDeleted">
+            and i.del_flag = false
+        </if>
+    </select>
+
+    <update id="undeleteIcon">
+        UPDATE icon
+        SET del_flag = false
+        WHERE id = #{iconId}
+    </update>
+
     <select id="selectPageIcon"
             resultType="site.yuanshen.data.entity.Icon"
             parameterType="site.yuanshen.data.dto.IconSearchDto">
