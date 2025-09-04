@@ -125,7 +125,7 @@ public class ItemService {
 
         if (!markerItemLinkList.isEmpty()) {
             normalMarkerList = markerMapper.selectList(Wrappers.<Marker>lambdaQuery()
-                    .in(!itemSearchDto.getHiddenFlagList().isEmpty(), Marker::getHiddenFlag, itemSearchDto.getHiddenFlagList())
+                    .in(!itemSearchDto.getHiddenFlagList().isEmpty(),Marker::getHiddenFlag,itemSearchDto.getHiddenFlagList())
                     .in(Marker::getId, markerItemLinkList.stream().map(MarkerItemLink::getMarkerId).collect(Collectors.toList())))
                 .stream().map(Marker::getId).collect(Collectors.toList());
             markerItemLinkList.stream().filter(markerItemLink -> normalMarkerList.contains(markerItemLink.getMarkerId()))
@@ -218,7 +218,7 @@ public class ItemService {
                     .set(itemDto.getSortIndex() != null, Item::getSortIndex, itemDto.getSortIndex())
                     .set(itemDto.getSpecialFlag() != null, Item::getSpecialFlag, itemDto.getSpecialFlag())
             );
-            if (itemDto.getAreaId() != null) {
+            if(itemDto.getAreaId() != null) {
                 itemMapper.update(null,
                     Wrappers.<Item>lambdaUpdate().eq(Item::getId, itemDto.getId())
                         .set(itemDto.getAreaId() != null, Item::getAreaId, itemDto.getAreaId())
@@ -320,7 +320,7 @@ public class ItemService {
         //增加公共物品拦截逻辑
         ItemAreaPublic itemAreaPublic = itemAreaPublicMapper.selectOne(Wrappers.<ItemAreaPublic>lambdaQuery()
             .eq(ItemAreaPublic::getItemId, itemId));
-        if (ObjUtil.isNotNull(itemAreaPublic)) {
+        if (ObjUtil.isNotNull(itemAreaPublic)){
             throw new GenshinApiException("不允许删除公共物品");
         }
 
@@ -339,10 +339,9 @@ public class ItemService {
 
     /**
      * 将当前点位信息存入历史记录表
-     *
-     * @param itemIds   物品Id列表
+     * @param itemIds 物品Id列表
      * @param sameItems 同名物品List(若无需同名则默认为空)
-     * @param editType  编辑类型
+     * @param editType 编辑类型
      */
     private void saveHistoryItem(List<Long> itemIds, List<Item> sameItems, HistoryEditType editType) {
         //根据itemId查询(按目前逻辑只有一个Id),加上同名物品
