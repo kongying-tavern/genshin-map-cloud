@@ -47,6 +47,12 @@ public class ItemSearchDto {
     private String name;
 
     /**
+     * 特殊物品标记
+     */
+    @Schema(title = "特殊标记")
+    private Long specialFlag;
+
+    /**
      * 当前页，从1开始
      */
     @Schema(title = "当前页，从1开始")
