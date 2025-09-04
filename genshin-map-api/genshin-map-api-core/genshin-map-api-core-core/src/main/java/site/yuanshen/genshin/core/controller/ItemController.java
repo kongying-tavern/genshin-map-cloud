@@ -54,7 +54,7 @@ public class ItemController {
     @PostMapping("/get/list")
     public R<PageListVo<ItemVo>> listItemIdByType(@Parameter(hidden = true) @RequestHeader(value = "userDataLevel",required = false) String userDataLevel, @RequestBody ItemSearchVo itemSearchVo) {
         R<PageListVo<ItemVo>> result = RUtils.create(
-                itemService.listItemV2(new ItemSearchDto(itemSearchVo).setHiddenFlagList(HiddenFlagEnum.getFlagListByMask(userDataLevel)))
+                itemService.listItem(new ItemSearchDto(itemSearchVo).setHiddenFlagList(HiddenFlagEnum.getFlagListByMask(userDataLevel)))
         );
         UserAppenderService.appendUser(result, result.getData().getRecord(), true, ItemVo::getCreatorId);
         UserAppenderService.appendUser(result, result.getData().getRecord(), true, ItemVo::getUpdaterId);

@@ -5,14 +5,12 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.BeanUtils;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.yuanshen.common.core.exception.GenshinApiException;
 import site.yuanshen.common.core.utils.PgsqlUtils;
 import site.yuanshen.data.dto.ItemDto;
-import site.yuanshen.data.dto.ItemInfoDto;
 import site.yuanshen.data.dto.ItemSearchDto;
 import site.yuanshen.data.entity.*;
 import site.yuanshen.data.enums.HistoryEditType;
@@ -148,44 +146,6 @@ public class ItemService {
             .setRecord(result)
             .setTotal(itemPage.getTotal())
             .setSize(itemPage.getSize());
-    }
-
-    @Cacheable("listItem")
-    public PageListVo<ItemVo> listItemV2(ItemSearchDto itemSearchDto) {
-
-        String requestName = itemSearchDto.getName();
-        List<Long> requestAreaIdList = itemSearchDto.getAreaIdList();
-        List<Long> requestTypeIdList = itemSearchDto.getTypeIdList();
-        List<Integer> requestHiddenFlagList = itemSearchDto.getHiddenFlagList();
-        Long requestSpecialFlag = itemSearchDto.getSpecialFlag();
-        Page<Item> requestPageEntity = itemSearchDto.getPageEntity();
-
-        Page<ItemInfoDto> itemInfoDtoPage = itemMapper.selectPageItemByCondition(requestPageEntity, requestName, requestAreaIdList, requestTypeIdList, requestHiddenFlagList, requestSpecialFlag);
-
-        List<ItemVo> itemVoList = itemInfoDtoPage.getRecords()
-            .stream()
-            .map(x -> {
-                ItemVo itemVo = new ItemVo();
-                BeanUtils.copyProperties(x, itemVo);
-                String typeIdListStr = x.getTypeIdList();
-                if (typeIdListStr != null && !typeIdListStr.isBlank()) {
-                    List<Long> typeIdList = Arrays.stream(typeIdListStr.split(",")).map(Long::parseLong).collect(Collectors.toList());
-                    itemVo.setTypeIdList(typeIdList);
-                }
-                return itemVo;
-            })
-            .collect(Collectors.toList());
-
-        Page<ItemVo> itemVoPage = new Page<>();
-        itemVoPage.setRecords(itemVoList);
-        itemVoPage.setSize(itemInfoDtoPage.getSize());
-        itemVoPage.setTotal(itemInfoDtoPage.getTotal());
-        itemVoPage.setCurrent(itemInfoDtoPage.getCurrent());
-
-        return new PageListVo<ItemVo>()
-            .setRecord(itemVoPage.getRecords())
-            .setTotal(itemVoPage.getTotal())
-            .setSize(itemVoPage.getSize());
     }
 
     /**

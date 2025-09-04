@@ -2,27 +2,6 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="site.yuanshen.data.mapper.ItemMapper">
 
-    <resultMap id="ItemInfoDtoResultMap" type="site.yuanshen.data.dto.ItemInfoDto">
-        <id property="id" column="id"/>
-        <result property="version" column="version"/>
-        <result property="creatorId" column="creator_id"/>
-        <result property="createTime" column="create_time"/>
-        <result property="updaterId" column="updater_id"/>
-        <result property="updateTime" column="update_time"/>
-        <result property="name" column="name"/>
-        <result property="areaId" column="area_id"/>
-        <result property="defaultRefreshTime" column="default_refresh_time"/>
-        <result property="defaultContent" column="default_content"/>
-        <result property="defaultCount" column="default_count"/>
-        <result property="iconTag" column="icon_tag"/>
-        <result property="iconStyleType" column="icon_style_type"/>
-        <result property="hiddenFlag" column="hidden_flag"/>
-        <result property="sortIndex" column="sort_index"/>
-        <result property="specialFlag" column="special_flag"/>
-        <result property="typeIdList" column="type_id_list"/>
-        <result property="count" column="amount"/>
-    </resultMap>
-
     <select id="selectPageItem"
             resultType="site.yuanshen.data.entity.Item"
             parameterType="site.yuanshen.data.dto.ItemSearchDto">
@@ -58,6 +37,16 @@
                     #{hiddenFlag}
                 </foreach>
             </if>
+            <if test="itemSearchDto.specialFlag != null">
+                <choose>
+                    <when test="itemSearchDto.specialFlag == 0">
+                        and i.special_flag = 0
+                    </when>
+                    <otherwise>
+                        and (i.special_flag &amp; #{itemSearchDto.specialFlag}) != 0
+                    </otherwise>
+                </choose>
+            </if>
             <if test="itemSearchName != null and itemSearchName != ''">
                 and i.name LIKE #{itemSearchName}
             </if>
@@ -72,78 +61,6 @@
             </otherwise>
         </choose>
     </select>
-
-    <select id="selectPageItemByCondition" resultMap="ItemInfoDtoResultMap">
-        with data_source as
-        (
-        select i.version, i.id, i.creator_id, i.updater_id, i.create_time, i.update_time, i.del_flag, i.name,
-        i.area_id, i.default_refresh_time, i.default_content, i.default_count, i.icon_tag, i.icon_style_type,
-        i.hidden_flag, i.sort_index, coalesce(i.special_flag, 0) as special_flag,
-        string_agg(distinct itl.type_id::text, ',') as type_id_list
-        from item i left join item_type_link itl on i.id = itl.item_id
-        where i.del_flag = false
-        and itl.del_flag = false
-        <include refid="data_source_dynamic_query_condition"/>
-        group by i.id
-        ),
-        mark_meta_data as
-        (
-        select item_id, sum("count") as amount
-        from
-            (
-            select id
-            from marker
-            where del_flag = false and id in (select id from data_source)
-            <include refid="mark_meta_data_dynamic_query_condition"/>
-        ) marker_data_source
-        left join marker_item_link mil on marker_data_source.id = mil.id
-        group by mil.item_id
-        )
-        select ds.version, ds.id, ds.creator_id, ds.updater_id, ds.create_time, ds.update_time, ds.del_flag, ds.name,
-        ds.area_id, ds.default_refresh_time, ds.default_content, ds.default_count, ds.icon_tag, ds.icon_style_type,
-        ds.hidden_flag, ds.sort_index, coalesce(ds.special_flag,0) as special_flag, ds.type_id_list,
-        coalesce(mmd.amount,0) as amount
-        from data_source ds
-        left join mark_meta_data mmd on ds.id = mmd.item_id
-        order by ds.sort_index desc, ds.id asc
-    </select>
-
-    <sql id="data_source_dynamic_query_condition">
-        <if test="name != null and name != ''">
-            and i.name = #{name}
-        </if>
-        <if test="areaIdList != null and areaIdList.size() > 0">
-            and i.area_id in
-            <foreach collection="areaIdList" item="areaId" open="(" separator="," close=")">
-                #{areaId}
-            </foreach>
-        </if>
-        <if test="typeIdList != null and typeIdList.size() > 0">
-            and itl.type_id in
-            <foreach collection="typeIdList" item="typeId" open="(" separator="," close=")">
-                #{typeId}
-            </foreach>
-        </if>
-        <if test="specialFlag != null">
-            <choose>
-                <when test="specialFlag == 0">
-                    and i.special_flag = 0
-                </when>
-                <otherwise>
-                    and (i.special_flag &amp; #{specialFlag}) != 0
-                </otherwise>
-            </choose>
-        </if>
-    </sql>
-
-    <sql id="mark_meta_data_dynamic_query_condition">
-        <if test="hiddenFlagList != null and hiddenFlagList.size() > 0">
-            and hidden_flag in
-            <foreach collection="hiddenFlagList" item="hiddenFlag" open="(" separator="," close=")">
-                #{hiddenFlag}
-            </foreach>
-        </if>
-    </sql>
 
     <select id="selectListWithLargeIn" resultType="site.yuanshen.data.entity.Item">
         with id_list as ( select unnest(${unnest}::bigint[]) "id2")
