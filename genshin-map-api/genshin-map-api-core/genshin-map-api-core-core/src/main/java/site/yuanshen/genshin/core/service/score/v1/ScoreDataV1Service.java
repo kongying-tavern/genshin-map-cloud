@@ -43,7 +43,7 @@ public class ScoreDataV1Service {
         final List<ScoreStat> score = commonHelper.getData(scope, span);
         final Map<Long, ScoreDataPackVo<ScoreDataPunctuateVo>> scoreDataMap = new HashMap<>();
         score.forEach(scoreRow -> {
-            final Long userId = scoreRow.getUserId();
+            final Long userId = 0L;
             scoreDataMap.putIfAbsent(userId, (new ScoreDataPackVo<ScoreDataPunctuateVo>())
                     .setScope(scope)
                     .setSpan(span.getSpan().name())

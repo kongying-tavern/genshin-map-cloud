@@ -396,7 +396,6 @@ public class ScoreGeneratePunctuateHelper {
                 final ScoreStat scoreStat = (new ScoreStat())
                         .withScope(ScoreScopeEnum.PUNCTUATE.name())
                         .withSpan(spanName)
-                        .withUserId(scoreKey.getUserId())
                         .withSpanStartTime(scoreKey.getSpanStartTime())
                         .withSpanEndTime(scoreKey.getSpanEndTime())
                         .withContent(JSONObject.from(scoreVal).toJavaObject(Map.class));
