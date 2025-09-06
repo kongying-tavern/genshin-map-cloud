@@ -82,12 +82,6 @@ public class ScoreStatVo {
     private LocalDateTime spanEndTime;
 
     /**
-     * 用户ID
-     */
-    @Schema(title = "用户ID")
-    private Long userId;
-
-    /**
      * 统计内容JSON
      */
     @Schema(title = "统计内容JSON")

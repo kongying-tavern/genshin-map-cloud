@@ -67,11 +67,6 @@ public class ScoreStatDto {
     private LocalDateTime spanEndTime;
 
     /**
-     * 用户ID
-     */
-    private Long userId;
-
-    /**
      * 统计内容JSON
      */
     private Map<String, Object> content;

@@ -74,12 +74,6 @@ public class ScoreStat extends BaseEntity {
     private LocalDateTime spanEndTime;
 
     /**
-     * 用户ID
-     */
-    @TableField("user_id")
-    private Long userId;
-
-    /**
      * 统计内容JSON
      */
     @TableField(value = "content", typeHandler = MBPJsonObjectTypeHandler.class)

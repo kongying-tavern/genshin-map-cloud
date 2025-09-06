@@ -9,7 +9,6 @@
         <id column="span" property="span"/>
         <id column="span_start_time" property="spanStartTime"/>
         <id column="span_end_time" property="spanEndTime"/>
-        <id column="user_id" property="userId"/>
         <result column="creator_id" property="creatorId"/>
         <result column="create_time" property="createTime"/>
         <result column="del_flag" property="delFlag"/>
@@ -32,7 +31,6 @@
         score_stat.span,
         score_stat.span_start_time,
         score_stat.span_end_time,
-        score_stat.user_id,
         score_stat.content
     </sql>
 
