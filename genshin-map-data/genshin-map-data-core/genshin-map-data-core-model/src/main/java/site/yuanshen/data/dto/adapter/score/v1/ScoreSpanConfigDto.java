@@ -82,8 +82,8 @@ public class ScoreSpanConfigDto {
             timeEnd.offsetSecond(-TimeUtils.ONE_DAY_SECOND);
 
         if(ScoreSpanEnum.DAY.equals(this.span)) {
-            timeStart.toFirstSecond();
-            timeEnd.toLastSecond();
+            timeStart.toFirstSecondOfDay();
+            timeEnd.toLastSecondOfDay();
         }
 
         this.spanStartTime = timeStart.getTime();

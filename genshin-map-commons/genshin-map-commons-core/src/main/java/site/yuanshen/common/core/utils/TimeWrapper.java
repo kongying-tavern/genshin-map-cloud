@@ -36,6 +36,11 @@ public class TimeWrapper {
         return this;
     }
 
+    public TimeWrapper setTime(Timestamp ts) {
+        this.time = ts;
+        return this;
+    }
+
     public TimeWrapper setHour(int hour) {
         this.time = TimeUtils.toMillisecond(this.time, hour, null, null, null);
         return this;
@@ -56,22 +61,22 @@ public class TimeWrapper {
         return this;
     }
 
-    public TimeWrapper toFirstSecond() {
+    public TimeWrapper toFirstSecondOfDay() {
         this.time = TimeUtils.toFirstSecondOfDay(this.time);
         return this;
     }
 
-    public TimeWrapper toFirstMs() {
-        this.time = TimeUtils.toFirstSecondOfDay(this.time);
-        return this;
-    }
-
-    public TimeWrapper toLastSecond() {
+    public TimeWrapper toLastSecondOfDay() {
         this.time = TimeUtils.toLastSecondOfDay(this.time);
         return this;
     }
 
-    public TimeWrapper toLastMs() {
+    public TimeWrapper toFirstMsOfDay() {
+        this.time = TimeUtils.toFirstSecondOfDay(this.time);
+        return this;
+    }
+
+    public TimeWrapper toLastMsOfDay() {
         this.time = TimeUtils.toLastSecondOfDay(this.time);
         return this;
     }
