@@ -119,10 +119,8 @@ public class IconService {
             throw new GenshinApiException("图标标签不能为空");
         }
         final Icon validateIcon = iconMapper.getIcon(tagName, false);
-        if (validateIcon == null) {
-            throw new GenshinApiException("无效的图标数据，无法修改");
-        } else if (!Objects.equals(validateIcon.getId(), iconVo.getId())) {
-            throw new GenshinApiException("图标标签 [" + tagName + "]已存在");
+        if (validateIcon != null && !Objects.equals(validateIcon.getId(), iconVo.getId())) {
+            throw new GenshinApiException("图标标签 [" + tagName + "] 已存在");
         }
 
         IconDto iconDto = new IconDto(iconVo);
