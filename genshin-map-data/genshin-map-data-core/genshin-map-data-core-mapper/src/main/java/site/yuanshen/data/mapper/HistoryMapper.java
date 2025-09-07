@@ -7,6 +7,8 @@ import site.yuanshen.data.entity.History;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.sql.Timestamp;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -26,4 +28,6 @@ public interface HistoryMapper extends BaseMapper<History> {
      * @return
      */
     List<History> selectWithLargeCustomIn(@Param("column")String column, @Param("unnest")String unnest, @Param(Constants.WRAPPER)LambdaQueryWrapper<History> wrapper);
+
+    List<History> selectDiffListInRange(@Param("type")int type, @Param("timeStart")Timestamp timeStart, @Param("timeEnd")Timestamp timeEnd);
 }

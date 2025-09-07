@@ -32,5 +32,35 @@
         ${ew.customSqlSegment} and del_flag = false and history.${column} = id_list."${column}2"
     </select>
 
-
+    <select id="selectDiffListInRange" resultType="site.yuanshen.data.entity.History">
+        WITH "in_range" AS (
+          SELECT
+            h.*,
+            99 AS rn
+          FROM "history" h
+          WHERE
+            h."create_time" BETWEEN #{timeStart} AND #{timeEnd} AND
+            h."type" = #{type}
+        ),
+        "after_range" AS (
+          SELECT br.*
+          FROM (
+            SELECT
+              h.*,
+              ROW_NUMBER() OVER (PARTITION BY "t_id" ORDER BY "create_time" ASC) AS rn
+            FROM "history" h
+            WHERE
+              h.create_time > #{timeStart} AND
+              h.type = #{type}
+          ) "br"
+          WHERE br.rn = 1
+        )
+        SELECT
+          <include refid="Base_Column_List"/>
+        FROM "in_range" AS "history"
+        UNION
+        SELECT
+          <include refid="Base_Column_List"/>
+        FROM "after_range" AS "history";
+    </select>
 </mapper>
