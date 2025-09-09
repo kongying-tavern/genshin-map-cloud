@@ -19,13 +19,19 @@ public class ResourceController {
 
     private final ResourceService resourceService;
 
+    @GetMapping("/get/{filePath:.*}")
+    @Operation(summary = "获取资源配置", description = "获取资源配置")
+    public R<ResourceUploadVo> getResource(@PathVariable("filePath") String filePath) {
+        return RUtils.create(resourceService.getResource(filePath));
+    }
+
     @PutMapping("/upload/image")
     @Operation(summary = "上传图片", description = "上传图片至图床并返回访问地址")
     public R<ResourceUploadVo> uploadImage(@RequestParam(value = "file", required = false) MultipartFile file, @ModelAttribute ResourceUploadVo uploadVo) {
         R<ResourceUploadVo> result = RUtils.create(
-                resourceService.uploadImage(
-                        (new ResourceUploadDto(uploadVo)).withFile(file)
-                )
+            resourceService.uploadImage(
+                (new ResourceUploadDto(uploadVo)).withFile(file)
+            )
         );
         return result;
     }

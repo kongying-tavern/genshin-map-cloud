@@ -34,6 +34,50 @@ public class ResourceService {
 
     private final MinioSao minioSao;
 
+    public ResourceUploadVo getResource(String filePath) {
+        final ResourceUploadVo fileInfo = new ResourceUploadVo();
+
+        try {
+            MinioClient minioClient = minioSao.createClient(minioEndpoint, minioKey, minioSecret);
+            boolean bucketFound = minioSao.bucketExist(minioClient, minioBucket);
+            if (!bucketFound) {
+                throw new BucketNotFoundException();
+            }
+
+            boolean objectFound = minioSao.objectExists(minioClient, minioBucket, filePath);
+            if (objectFound) {
+                // 处理返回数据
+                final String outputEndpointParam = StrUtil.removeSuffix(minioEndpoint, "/");
+                final String outputPathParam = StrUtil.removePrefix(filePath, "/");
+                final String outputPathFullParam = minioBucket + "/" + outputPathParam;
+                String outputUrl = "";
+                Map<String, Object> outputParams = new HashMap<>(){{
+                    put("entrypoint", outputEndpointParam);
+                    put("bucket", minioBucket);
+                    put("path", outputPathParam);
+                    put("fullPath", outputPathFullParam);
+                }};
+                String outputUrlTpl = "";
+                if(StrUtil.isBlank(minioUrlTemplate)) {
+                    outputUrlTpl = "[[entrypoint]]/[[bucket]]/[[path]]";
+                } else {
+                    outputUrlTpl = minioUrlTemplate;
+                }
+                outputUrlTpl = outputUrlTpl.replace("[[", "${").replace("]]", "}");
+                outputUrl = TemplateUtils.execTemplate(outputUrlTpl, outputParams);
+
+                fileInfo.setFilePath(outputPathParam);
+                fileInfo.setFileUrl(outputUrl);
+            }
+        } catch (BucketNotFoundException e) {
+            throw new GenshinApiException("存储空间不存在，无法读取文件");
+        } catch(RuntimeException e) {
+            throw new GenshinApiException(e.getMessage());
+        }
+
+        return fileInfo;
+    }
+
     public ResourceUploadVo uploadImage(ResourceUploadDto uploadDto) {
         final ResourceUploadVo fileInfo = new ResourceUploadVo();
 
