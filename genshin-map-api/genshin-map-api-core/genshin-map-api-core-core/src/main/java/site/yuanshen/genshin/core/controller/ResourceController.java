@@ -19,9 +19,9 @@ public class ResourceController {
 
     private final ResourceService resourceService;
 
-    @GetMapping("/get/{filePath:.*}")
+    @GetMapping("/get")
     @Operation(summary = "获取资源配置", description = "获取资源配置")
-    public R<ResourceUploadVo> getResource(@PathVariable("filePath") String filePath) {
+    public R<ResourceUploadVo> getResource(String filePath) {
         return RUtils.create(resourceService.getResource(filePath));
     }
 
