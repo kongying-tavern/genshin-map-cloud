@@ -46,10 +46,10 @@
                 </foreach>
             </if>
             <if test="searchDto.creator != null">
-                and i.creator = #{searchDto.creator}
+                and i.creator_id = #{searchDto.creator}
             </if>
             <if test="searchTag != null and searchTag != ''">
-                and i.name LIKE #{searchTag}
+                and i.tag LIKE #{searchTag}
             </if>
         </where>
     </select>
