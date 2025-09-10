@@ -18,7 +18,7 @@
     </update>
 
     <select id="selectPageIcon"
-            resultType="site.yuanshen.data.entity.Icon"
+            resultMap="BaseResultMap"
             parameterType="site.yuanshen.data.dto.IconSearchDto">
         <bind
             name="searchTag"

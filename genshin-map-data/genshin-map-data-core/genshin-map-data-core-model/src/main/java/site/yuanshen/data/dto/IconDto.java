@@ -12,6 +12,7 @@ import site.yuanshen.data.entity.Icon;
 import site.yuanshen.data.vo.IconVo;
 
 import java.sql.Timestamp;
+import java.util.Map;
 
 
 /**
@@ -72,6 +73,11 @@ public class IconDto {
      * 图标描述
      */
     private String description;
+
+    /**
+     * 图标变体url
+     */
+    private Map<String, String> urlVariants;
 
     public IconDto(Icon icon) {
         BeanUtils.copy(icon, this);

@@ -9,12 +9,13 @@ import lombok.With;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Map;
 
 /**
-* 图标主表前端封装
-*
-* @since 2023-04-22 06:47:07
-*/
+ * 图标主表前端封装
+ *
+ * @since 2023-04-22 06:47:07
+ */
 @Data
 @With
 @NoArgsConstructor
@@ -77,6 +78,12 @@ public class IconVo {
      */
     @Schema(title = "图标url")
     private String url;
+
+    /**
+     * 图标变体url
+     */
+    @Schema(title = "图标变体url")
+    private Map<String, String> urlVariants;
 
     /**
      * 图标描述

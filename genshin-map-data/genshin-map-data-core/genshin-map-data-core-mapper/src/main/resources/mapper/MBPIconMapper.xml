@@ -13,6 +13,7 @@
         <result column="update_time" property="updateTime"/>
         <result column="tag" property="tag"/>
         <result column="url" property="url"/>
+        <result column="url_variants" property="urlVariants" typeHandler="site.yuanshen.handler.MBPJsonObjectTypeHandler"/>
         <result column="description" property="description"/>
     </resultMap>
 
@@ -27,6 +28,7 @@
         icon.update_time,
         icon.tag,
         icon.url,
+        icon.url_variants,
         icon.description
     </sql>
 
