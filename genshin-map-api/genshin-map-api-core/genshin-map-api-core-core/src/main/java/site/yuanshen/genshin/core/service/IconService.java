@@ -11,6 +11,7 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.yuanshen.common.core.exception.GenshinApiException;
+import site.yuanshen.common.core.utils.JsonUtils;
 import site.yuanshen.data.dto.IconDto;
 import site.yuanshen.data.dto.IconSearchDto;
 import site.yuanshen.data.entity.Icon;
@@ -123,7 +124,15 @@ public class IconService {
             throw new GenshinApiException("图标标签 [" + tagName + "] 已存在");
         }
 
+        IconDto iconRecord = new IconDto(iconMapper.selectOne(Wrappers.<Icon>lambdaQuery()
+            .eq(Icon::getId, iconVo.getId())
+        ));
         IconDto iconDto = new IconDto(iconVo);
+
+        // 合并 URL 变体设置
+        Map<String, String> mergedUrlVariants = JsonUtils.merge(iconRecord.getUrlVariants(), iconDto.getUrlVariants());
+        iconDto.setUrlVariants(mergedUrlVariants);
+
         //取类型ID
         HashSet<Long> newTypeIds = new HashSet<>(iconVo.getTypeIdList());
         //对比类型信息是否更改
@@ -143,6 +152,7 @@ public class IconService {
                     .collect(Collectors.toList())
             );
         }
+
         //更新实体信息
         return iconMapper.update(iconDto.getEntity(),
             Wrappers.<Icon>lambdaUpdate()
