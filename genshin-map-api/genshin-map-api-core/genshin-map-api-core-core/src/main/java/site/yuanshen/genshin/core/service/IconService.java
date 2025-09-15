@@ -180,6 +180,11 @@ public class IconService {
         }
 
         IconDto iconDto = new IconDto(iconVo);
+
+        // 合并 URL 变体设置
+        Map<String, String> mergedUrlVariants = JsonUtils.merge(new HashMap<>(), iconDto.getUrlVariants());
+        iconDto.setUrlVariants(mergedUrlVariants);
+
         //取类型信息
         List<Long> typeIdList = iconVo.getTypeIdList();
         Icon icon = iconDto.getEntity();
