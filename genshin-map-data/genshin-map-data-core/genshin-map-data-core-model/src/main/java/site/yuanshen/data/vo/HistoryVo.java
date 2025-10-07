@@ -79,9 +79,9 @@ public class HistoryVo {
     private Long tId;
 
     /**
-     * 操作数据类型;1地区; 2图标; 3物品; 4点位; 5标签
+     * 操作数据类型;1地区; 2图标; 3物品; 4点位;
      */
-    @Schema(title = "操作数据类型;1地区; 2图标; 3物品; 4点位; 5标签")
+    @Schema(title = "操作数据类型;1地区; 2图标; 3物品; 4点位;")
     private Integer type;
 
     /**

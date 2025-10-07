@@ -2,12 +2,27 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="site.yuanshen.data.mapper.IconMapper">
 
+    <select id="getIcon" resultMap="BaseResultMap">
+        SELECT i.*
+        FROM icon i
+        WHERE i.tag = #{tagName}
+        <if test="!withDeleted">
+            and i.del_flag = false
+        </if>
+    </select>
+
+    <update id="undeleteIcon">
+        UPDATE icon
+        SET del_flag = false
+        WHERE id = #{iconId}
+    </update>
+
     <select id="selectPageIcon"
-            resultType="site.yuanshen.data.entity.Icon"
+            resultMap="BaseResultMap"
             parameterType="site.yuanshen.data.dto.IconSearchDto">
         <bind
-            name="searchName"
-            value="searchDto.name != null and searchDto.name != '' ? '%' + searchDto.name + '%' : ''" />
+            name="searchTag"
+            value="searchDto.tag != null and searchDto.tag != '' ? '%' + searchDto.tag + '%' : ''" />
         select i.*
         from icon i
         <if test="searchDto.typeIdList != null and searchDto.typeIdList.size > 0">
@@ -31,10 +46,10 @@
                 </foreach>
             </if>
             <if test="searchDto.creator != null">
-                and i.creator = #{searchDto.creator}
+                and i.creator_id = #{searchDto.creator}
             </if>
-            <if test="searchName != null and searchName != ''">
-                and i.name LIKE #{searchName}
+            <if test="searchTag != null and searchTag != ''">
+                and i.tag LIKE #{searchTag}
             </if>
         </where>
     </select>

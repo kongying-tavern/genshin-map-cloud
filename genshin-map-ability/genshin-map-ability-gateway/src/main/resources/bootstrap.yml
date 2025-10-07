@@ -20,11 +20,9 @@ genshin:
     - /system/invitation/consume
   authorities-filter:
     VISITOR:
-      - /api/tag/get/**
-      - /api/tag_type/get/**
-      - /api/tag_doc/**
       - /api/icon/get/**
       - /api/icon_type/get/**
+      - /api/icon_doc/**
       - /api/area/get/**
       - /api/item/get/**
       - /api/item_type/get/**
@@ -49,8 +47,6 @@ genshin:
       - /api/res/**
     MAP_MANAGER:
       - /api/punctuate_audit/**
-      - /api/tag/**
-      - /api/tag_type/**
       - /api/icon/**
       - /api/icon_type/**
       - /api/item/**
