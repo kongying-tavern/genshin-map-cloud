@@ -71,7 +71,7 @@ public class CacheService {
                 runAfterTransactionDebounceByKey(
                         () -> {
                             this.refreshIconBinary();
-                            webSocket.broadcast(WUtils.create("IconBinaryPurged", null));
+                            socketIOEntrypoint.broadcast(WUtils.create("IconBinaryPurged", null));
                         },
                         FunctionKeyEnum.refreshIconBinary, Integer.parseInt(debounceDelay)
                 );
