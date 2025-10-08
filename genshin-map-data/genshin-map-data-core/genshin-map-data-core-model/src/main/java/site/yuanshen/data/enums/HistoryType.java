@@ -12,7 +12,6 @@ public enum HistoryType {
     ICON(2),
     ITEM(3),
     MARKER(4),
-    TAG(5)
     ;
 
     @Getter

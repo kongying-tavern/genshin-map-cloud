@@ -2,17 +2,17 @@
 FROM maven:3-eclipse-temurin-11 AS builder
 
 WORKDIR /data
-ADD genshin-map-commons genshin-map-commons
-ADD genshin-map-config genshin-map-config
-ADD genshin-map-dependencies genshin-map-dependencies
-ADD genshin-map-data genshin-map-data
-ADD genshin-map-generator genshin-map-generator
-ADD genshin-map-ability genshin-map-ability
-ADD genshin-map-api genshin-map-api
-ADD pom.xml pom.xml
-ADD docker/config/apt/debian-bookworm.list /etc/apt/sources.list
-ADD docker/config/maven docker/config
-ADD docker/cache docker/cache
+COPY genshin-map-commons genshin-map-commons
+COPY genshin-map-config genshin-map-config
+COPY genshin-map-dependencies genshin-map-dependencies
+COPY genshin-map-data genshin-map-data
+COPY genshin-map-generator genshin-map-generator
+COPY genshin-map-ability genshin-map-ability
+COPY genshin-map-api genshin-map-api
+COPY pom.xml pom.xml
+COPY docker/config/apt/debian-bookworm.list /etc/apt/sources.list
+COPY docker/config/maven docker/config
+COPY docker/cache docker/cache
 
 RUN --mount=type=cache,target=/root/.m2,rw \
     cp -f ./docker/cache/application-datasource.yml ./genshin-map-config/src/main/resources-dev/application-datasource-dev.yml && \
@@ -30,10 +30,10 @@ FROM openjdk:11 AS api
 
 WORKDIR /data
 COPY --from=builder /data/dist .
-ADD docker/config/apt/debian-bookworm.list /etc/apt/sources.list
-ADD docker/config/api/startup.sh startup.sh
-ADD docker/config/api/api-gateway.service /etc/systemd/system/genshin-map-ability-gateway.service
-ADD docker/config/api/api-core.service /etc/systemd/system/genshin-map-api-core.service
+COPY docker/config/apt/debian-bookworm.list /etc/apt/sources.list
+COPY docker/config/api/startup.sh startup.sh
+COPY docker/config/api/api-gateway.service /etc/systemd/system/genshin-map-ability-gateway.service
+COPY docker/config/api/api-core.service /etc/systemd/system/genshin-map-api-core.service
 
 RUN ln -s /usr/local/openjdk-11/bin/java /bin/java && \
     chmod +x /data/startup.sh && \

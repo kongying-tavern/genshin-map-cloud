@@ -13,80 +13,76 @@ import org.springframework.util.DigestUtils;
 import site.yuanshen.common.core.exception.GenshinApiException;
 import site.yuanshen.common.core.utils.CompressUtils;
 import site.yuanshen.common.core.utils.TimeUtils;
-import site.yuanshen.data.dto.TagDto;
+import site.yuanshen.data.dto.IconDto;
 import site.yuanshen.data.entity.Icon;
-import site.yuanshen.data.entity.Tag;
-import site.yuanshen.data.entity.TagTypeLink;
+import site.yuanshen.data.entity.IconTypeLink;
 import site.yuanshen.data.mapper.IconMapper;
-import site.yuanshen.data.mapper.TagMapper;
-import site.yuanshen.data.mapper.TagTypeLinkMapper;
+import site.yuanshen.data.mapper.IconTypeLinkMapper;
 import site.yuanshen.data.vo.BinaryMD5Vo;
-import site.yuanshen.data.vo.TagVo;
-import site.yuanshen.genshin.core.dao.IconTagDao;
+import site.yuanshen.data.vo.IconVo;
+import site.yuanshen.genshin.core.dao.IconDao;
 
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * 图标标签的数据查询层实现
+ * 图标的数据查询层实现
  *
  * @author Moment
  */
 @Service
 @RequiredArgsConstructor
-public class IconTagDaoImpl implements IconTagDao {
+public class IconDaoImpl implements IconDao {
 
     private final CacheManager cacheManager;
-    private final TagMapper tagMapper;
-    private final TagTypeLinkMapper tagTypeLinkMapper;
     private final IconMapper iconMapper;
+    private final IconTypeLinkMapper iconTypeLinkMapper;
 
     /**
-     * @return 所有的标签信息
+     * @return 所有的图标信息
      */
     @Override
-    @Cacheable(value = "listAllTag")
-    public List<TagVo> listAllTag() {
+    @Cacheable(value = "listAllIcon")
+    public List<IconVo> listAllIcon() {
         Cache listAllTagBinaryMd5GenerateTimestamp = getListAllTagBinaryMd5GenerateTimestamp();
-        //按照条件进行筛选
-        List<Tag> tagPage = tagMapper.selectList(Wrappers.query());
-        List<TagDto> tagDtoList = tagPage
-            .stream().map(TagDto::new).collect(Collectors.toList());
-        List<String> tagNameList = tagDtoList.stream()
-            .map(TagDto::getTag).collect(Collectors.toList());
 
-        //收集分类信息
-        Map<String, List<Long>> typeMap = new HashMap<>();
-        tagTypeLinkMapper.selectList(Wrappers.<TagTypeLink>lambdaQuery()
-                .in(TagTypeLink::getTagName, tagNameList))
+        // 按照条件进行筛选
+        List<Icon> iconPage = iconMapper.selectList(Wrappers.query());
+        List<IconDto> iconDtoList = iconPage
+            .stream().map(IconDto::new).collect(Collectors.toList());
+        List<Long> iconIdList = iconDtoList.stream()
+            .map(IconDto::getId).collect(Collectors.toList());
+
+        // 收集分类信息
+        Map<Long, List<Long>> typeMap = new HashMap<>();
+        iconTypeLinkMapper.selectList(Wrappers.<IconTypeLink>lambdaQuery()
+                .in(IconTypeLink::getIconId, iconIdList))
             .forEach(typeLink -> {
-                List<Long> tempList = typeMap.getOrDefault(typeLink.getTagName(), new ArrayList<>());
+                List<Long> tempList = typeMap.getOrDefault(typeLink.getIconId(), new ArrayList<>());
                 tempList.add(typeLink.getTypeId());
-                typeMap.put(typeLink.getTagName(), tempList);
+                typeMap.put(typeLink.getIconId(), tempList);
             });
-        //收集图标信息
-        List<Long> iconIdList = tagDtoList.stream().map(TagDto::getIconId).distinct().collect(Collectors.toList());
-        Map<Long, String> urlMap = iconMapper.selectList(Wrappers.<Icon>lambdaQuery().in(Icon::getId, iconIdList))
-            .stream().collect(Collectors.toMap(Icon::getId, Icon::getUrl));
+
         listAllTagBinaryMd5GenerateTimestamp.clear();
         listAllTagBinaryMd5GenerateTimestamp.put("", TimeUtils.getCurrentTimestamp().getTime());
-        return tagDtoList.stream().map(dto ->
+
+        return iconDtoList.stream().map(dto ->
                 dto.getVo()
-                    .withTypeIdList(typeMap.getOrDefault(dto.getTag(), new ArrayList<>()))
-                    .withUrl(urlMap.getOrDefault(dto.getIconId(), "")))
+                    .withTypeIdList(typeMap.getOrDefault(dto.getId(), new ArrayList<>()))
+            )
             .collect(Collectors.toList());
     }
 
     /**
-     * @return 所有的标签信息的压缩
+     * @return 所有的图标信息的压缩
      */
     @Override
-    @Cacheable("listAllTagBinary")
-    public byte[] listAllTagBinary() {
+    @Cacheable("listAllIconBinary")
+    public byte[] listAllIconBinary() {
         try {
             return CompressUtils.compress(JSON.toJSONString(
-                    listAllTag())
+                    listAllIcon())
                 .getBytes(StandardCharsets.UTF_8));
         } catch (Exception e) {
             throw new GenshinApiException("创建压缩失败" + e);
@@ -94,27 +90,27 @@ public class IconTagDaoImpl implements IconTagDao {
     }
 
     /**
-     * @return 所有的标签信息的压缩的md5
+     * @return 所有的图标信息的压缩的md5
      */
     @Override
-    @Cacheable("listAllTagBinaryMd5")
-    public BinaryMD5Vo listAllTagBinaryMd5() {
-        CaffeineCache tagBinaryCache = (CaffeineCache) cacheManager.getCache("listAllTag");
+    @Cacheable("listAllIconBinaryMd5")
+    public BinaryMD5Vo listAllIconBinaryMd5() {
+        CaffeineCache iconBinaryCache = (CaffeineCache) cacheManager.getCache("listAllIcon");
         CaffeineCache binaryMd5GenerateTimestampCache = (CaffeineCache) cacheManager.getCache("listAllTagBinaryMd5GenerateTimestamp");
         byte[] allTagBinary;
-        if (tagBinaryCache != null) {
-            if (!tagBinaryCache.getNativeCache().asMap().isEmpty()) {
-                allTagBinary = (byte[]) tagBinaryCache.getNativeCache().getIfPresent("allTagBinary");
+        if (iconBinaryCache != null) {
+            if (!iconBinaryCache.getNativeCache().asMap().isEmpty()) {
+                allTagBinary = (byte[]) iconBinaryCache.getNativeCache().getIfPresent("allTagBinary");
                 if (allTagBinary == null) {
-                    tagBinaryCache.evict("allTagBinary");
-                    allTagBinary = listAllTagBinary();
+                    iconBinaryCache.evict("allTagBinary");
+                    allTagBinary = listAllIconBinary();
                 }
             } else {
-                tagBinaryCache.evict("allTagBinary");
-                allTagBinary = listAllTagBinary();
+                iconBinaryCache.evict("allTagBinary");
+                allTagBinary = listAllIconBinary();
             }
         } else {
-            allTagBinary = listAllTagBinary();
+            allTagBinary = listAllIconBinary();
         }
 
         Long time = Optional.ofNullable(binaryMd5GenerateTimestampCache.getNativeCache().getIfPresent(""))

@@ -1,8 +1,8 @@
 FROM php:7.4-apache-bullseye
 
 WORKDIR /var/www/html
-ADD docker/config/apt/debian-bullseye.list /etc/apt/sources.list
-ADD docker/config/img-local-uploader .
+COPY docker/config/apt/debian-bullseye.list /etc/apt/sources.list
+COPY docker/config/img-local-uploader .
 
 RUN mkdir -p ./cache && \
     mkdir -p ./saved_img && \

@@ -77,10 +77,10 @@ public class Item extends BaseEntity {
     private Integer defaultCount;
 
     /**
-     * 图标标签
+     * 图标ID
      */
-    @TableField("icon_tag")
-    private String iconTag;
+    @TableField("icon_id")
+    private Long iconId;
 
     /**
      * 图标样式类型

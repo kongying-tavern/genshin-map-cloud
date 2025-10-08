@@ -40,6 +40,8 @@ target/
 *backup*.chnr.json
 sql
 
+!.gitkeep
+
 database/**/.back_*
 
 .flattened-pom.xml
@@ -58,3 +60,8 @@ docker/.env
 docker/.env.*
 !docker/.env.example
 docker/**/.data
+
+### Env files ###
+.env
+.env.*
+!.env.example

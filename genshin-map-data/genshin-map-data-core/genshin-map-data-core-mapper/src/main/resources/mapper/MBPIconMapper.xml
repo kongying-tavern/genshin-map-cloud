@@ -4,15 +4,17 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="site.yuanshen.data.entity.Icon">
-        <id column="name" property="name"/>
+        <id column="id" property="id"/>
         <result column="creator_id" property="creatorId"/>
         <result column="create_time" property="createTime"/>
         <result column="del_flag" property="delFlag"/>
         <result column="version" property="version"/>
-        <result column="id" property="id"/>
         <result column="updater_id" property="updaterId"/>
         <result column="update_time" property="updateTime"/>
+        <result column="tag" property="tag"/>
         <result column="url" property="url"/>
+        <result column="url_variants" property="urlVariants" typeHandler="site.yuanshen.handler.MBPJsonObjectTypeHandler"/>
+        <result column="description" property="description"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
@@ -24,8 +26,10 @@
         icon.id,
         icon.updater_id,
         icon.update_time,
-        icon.name,
-        icon.url
+        icon.tag,
+        icon.url,
+        icon.url_variants,
+        icon.description
     </sql>
 
 </mapper>
