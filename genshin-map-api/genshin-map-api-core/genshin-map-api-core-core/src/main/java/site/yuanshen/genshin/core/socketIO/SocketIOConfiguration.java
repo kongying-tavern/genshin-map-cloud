@@ -18,8 +18,6 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 @Slf4j
 public class SocketIOConfiguration {
-    private final static int DELAY_MILLISECOND = 300;
-
     private final SocketIOProperties properties;
 
     @Bean
@@ -65,12 +63,13 @@ public class SocketIOConfiguration {
             DebounceExecutor.debounce(debounceKey, () -> {
                 try {
                     JSONObject dataJsonStr = JSONObject.parseObject(data);
-                    dataJsonStr.put("timestamp", TimeUtils.getCurrentTimestamp().getTime());
+                    dataJsonStr.put("receiveTimestamp", TimeUtils.getCurrentTimestamp().getTime() - properties.getRttDebounceGap());
+                    dataJsonStr.put("sendTimestamp", TimeUtils.getCurrentTimestamp().getTime());
                     client.sendEvent("rttcheck", dataJsonStr.toJSONString());
                 } catch (Exception e) {
                     log.error("rtt check error", e);
                 }
-            }, DELAY_MILLISECOND, TimeUnit.MILLISECONDS);
+            }, properties.getRttDebounceGap(), TimeUnit.MILLISECONDS);
         });
         return socketIOServer;
     }
