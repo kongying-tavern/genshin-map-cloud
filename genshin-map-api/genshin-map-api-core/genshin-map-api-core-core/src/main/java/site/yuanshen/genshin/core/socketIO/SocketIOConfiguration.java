@@ -65,7 +65,7 @@ public class SocketIOConfiguration {
             DebounceExecutor.debounce(debounceKey, () -> {
                 try {
                     JSONObject dataJsonStr = JSONObject.parseObject(data);
-                    dataJsonStr.put("timestamp", TimeUtils.getCurrentTimestamp().getTime() - DELAY_MILLISECOND);
+                    dataJsonStr.put("timestamp", TimeUtils.getCurrentTimestamp().getTime());
                     client.sendEvent("rttcheck", dataJsonStr.toJSONString());
                 } catch (Exception e) {
                     log.error("rtt check error", e);
