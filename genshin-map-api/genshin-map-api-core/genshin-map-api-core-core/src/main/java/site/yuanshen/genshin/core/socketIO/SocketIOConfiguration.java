@@ -1,16 +1,25 @@
 package site.yuanshen.genshin.core.socketIO;
 
+import com.alibaba.fastjson2.JSONObject;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.annotation.SpringAnnotationScanner;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import site.yuanshen.common.core.exception.GenshinApiException;
+import site.yuanshen.common.core.utils.DebounceExecutor;
+import site.yuanshen.common.core.utils.TimeUtils;
+
+import java.util.concurrent.TimeUnit;
 
 
 @Configuration
 @RequiredArgsConstructor
+@Slf4j
 public class SocketIOConfiguration {
+    private final static int DELAY_MILLISECOND = 300;
+
     private final SocketIOProperties properties;
 
     @Bean
@@ -51,6 +60,18 @@ public class SocketIOConfiguration {
             }
         });
 
+        socketIOServer.addEventListener("rttcheck", String.class, (client, data, ackSender) -> {
+            String debounceKey = "rttcheck_" + client.getSessionId().toString();
+            DebounceExecutor.debounce(debounceKey, () -> {
+                try {
+                    JSONObject dataJsonStr = JSONObject.parseObject(data);
+                    dataJsonStr.put("timestamp", TimeUtils.getCurrentTimestamp().getTime() - DELAY_MILLISECOND);
+                    client.sendEvent("rttcheck", dataJsonStr.toJSONString());
+                } catch (Exception e) {
+                    log.error("rtt check error", e);
+                }
+            }, DELAY_MILLISECOND, TimeUnit.MILLISECONDS);
+        });
         return socketIOServer;
     }
 
