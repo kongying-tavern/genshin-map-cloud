@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import site.yuanshen.common.core.exception.GenshinApiException;
 import site.yuanshen.common.core.utils.DebounceExecutor;
 import site.yuanshen.common.core.utils.TimeUtils;
+import site.yuanshen.data.vo.RttCheckVo;
 
 import java.util.concurrent.TimeUnit;
 
@@ -63,9 +64,11 @@ public class SocketIOConfiguration {
             DebounceExecutor.debounce(debounceKey, () -> {
                 try {
                     JSONObject dataJsonStr = JSONObject.parseObject(data);
-                    dataJsonStr.put("receiveTimestamp", TimeUtils.getCurrentTimestamp().getTime() - properties.getRttDebounceGap());
-                    dataJsonStr.put("sendTimestamp", TimeUtils.getCurrentTimestamp().getTime());
-                    client.sendEvent("rttcheck", dataJsonStr.toJSONString());
+                    RttCheckVo rttCheckVo = new RttCheckVo();
+                    rttCheckVo.setId(dataJsonStr.getString("id"));
+                    rttCheckVo.setReceiveTimestamp(TimeUtils.getCurrentTimestamp().getTime() - properties.getRttDebounceGap());
+                    rttCheckVo.setSendTimestamp(TimeUtils.getCurrentTimestamp().getTime());
+                    client.sendEvent("rttcheck", rttCheckVo);
                 } catch (Exception e) {
                     log.error("rtt check error", e);
                 }
