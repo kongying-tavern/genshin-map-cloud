@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = false)
 @Schema(title = "rttCheck前端封装", description = "延迟检测前端封装")
 public class RttCheckVo {
-    private String id;
+    private String id = "";
     private Long receiveTimestamp;
     private Long sendTimestamp;
 }

@@ -12,6 +12,7 @@ import site.yuanshen.common.core.utils.DebounceExecutor;
 import site.yuanshen.common.core.utils.TimeUtils;
 import site.yuanshen.data.vo.RttCheckVo;
 
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 
@@ -19,6 +20,8 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 @Slf4j
 public class SocketIOConfiguration {
+    private final static String RTT_CHECK_EVENT_NAME = "rttcheck";
+
     private final SocketIOProperties properties;
 
     @Bean
@@ -59,19 +62,19 @@ public class SocketIOConfiguration {
             }
         });
 
-        socketIOServer.addEventListener("rttcheck", String.class, (client, data, ackSender) -> {
-            String debounceKey = "rttcheck_" + client.getSessionId().toString();
+        socketIOServer.addEventListener(RTT_CHECK_EVENT_NAME, String.class, (client, data, ackSender) -> {
+            String debounceKey = RTT_CHECK_EVENT_NAME + "-" + client.getSessionId().toString();
             DebounceExecutor.debounce(debounceKey, () -> {
+                RttCheckVo rttCheckVo = new RttCheckVo();
+                rttCheckVo.setReceiveTimestamp(TimeUtils.getCurrentTimestamp().getTime() - properties.getRttDebounceGap());
                 try {
                     JSONObject dataJsonStr = JSONObject.parseObject(data);
-                    RttCheckVo rttCheckVo = new RttCheckVo();
-                    rttCheckVo.setId(dataJsonStr.getString("id"));
-                    rttCheckVo.setReceiveTimestamp(TimeUtils.getCurrentTimestamp().getTime() - properties.getRttDebounceGap());
-                    rttCheckVo.setSendTimestamp(TimeUtils.getCurrentTimestamp().getTime());
-                    client.sendEvent("rttcheck", rttCheckVo);
+                    rttCheckVo.setId(Optional.ofNullable(dataJsonStr.getString("id")).orElse(""));
                 } catch (Exception e) {
-                    log.error("rtt check error", e);
+                    log.error("rtt check request data error", e);
                 }
+                rttCheckVo.setSendTimestamp(TimeUtils.getCurrentTimestamp().getTime());
+                client.sendEvent(RTT_CHECK_EVENT_NAME, rttCheckVo);
             }, properties.getRttDebounceGap(), TimeUnit.MILLISECONDS);
         });
         return socketIOServer;
