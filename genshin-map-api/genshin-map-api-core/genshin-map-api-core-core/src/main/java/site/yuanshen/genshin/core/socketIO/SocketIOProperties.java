@@ -37,4 +37,7 @@ public class SocketIOProperties {
 
     @Value("${socketio.max-http-content-length}")
     private int maxHttpContentLength;
+
+    @Value("${socketio.rtt-debounce-gap}")
+    private int rttDebounceGap;
 }
