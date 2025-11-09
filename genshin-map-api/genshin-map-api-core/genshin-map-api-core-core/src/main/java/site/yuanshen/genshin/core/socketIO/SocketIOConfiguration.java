@@ -1,6 +1,6 @@
 package site.yuanshen.genshin.core.socketIO;
 
-import com.alibaba.fastjson2.JSONObject;
+import cn.hutool.core.util.StrUtil;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.annotation.SpringAnnotationScanner;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +12,6 @@ import site.yuanshen.common.core.utils.DebounceExecutor;
 import site.yuanshen.common.core.utils.TimeUtils;
 import site.yuanshen.data.vo.RttCheckVo;
 
-import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 
@@ -62,17 +61,12 @@ public class SocketIOConfiguration {
             }
         });
 
-        socketIOServer.addEventListener(RTT_CHECK_EVENT_NAME, String.class, (client, data, ackSender) -> {
+        socketIOServer.addEventListener(RTT_CHECK_EVENT_NAME, RttCheckVo.class, (client, data, ackSender) -> {
             String debounceKey = RTT_CHECK_EVENT_NAME + "-" + client.getSessionId().toString();
             DebounceExecutor.debounce(debounceKey, () -> {
                 RttCheckVo rttCheckVo = new RttCheckVo();
                 rttCheckVo.setReceiveTimestamp(TimeUtils.getCurrentTimestamp().getTime() - properties.getRttDebounceGap());
-                try {
-                    JSONObject dataJsonStr = JSONObject.parseObject(data);
-                    rttCheckVo.setId(Optional.ofNullable(dataJsonStr.getString("id")).orElse(""));
-                } catch (Exception e) {
-                    log.error("rtt check request data error", e);
-                }
+                rttCheckVo.setId(StrUtil.blankToDefault(data.getId(), ""));
                 rttCheckVo.setSendTimestamp(TimeUtils.getCurrentTimestamp().getTime());
                 client.sendEvent(RTT_CHECK_EVENT_NAME, rttCheckVo);
             }, properties.getRttDebounceGap(), TimeUnit.MILLISECONDS);
