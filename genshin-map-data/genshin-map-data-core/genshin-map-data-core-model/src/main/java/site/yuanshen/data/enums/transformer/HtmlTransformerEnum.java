@@ -1,27 +1,27 @@
-package site.yuanshen.data.enums.notice;
+package site.yuanshen.data.enums.transformer;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import site.yuanshen.data.helper.unity.UnityRichTextHelper;
+import site.yuanshen.data.helper.transformer.unity.H2UnityTransformer;
 
 import java.util.Objects;
 import java.util.function.Function;
 
 @RequiredArgsConstructor
 @Getter
-public enum NoticeTransformerEnum {
+public enum HtmlTransformerEnum {
     UNITY(
-            "Unity",
-            UnityRichTextHelper::toTextMeshPro
+        "Unity",
+        H2UnityTransformer::transform
     );
 
     private final String transformName;
     private final Function<String, String> contentTransformer;
 
-    public static NoticeTransformerEnum find(String name) {
-        for(NoticeTransformerEnum transformer : NoticeTransformerEnum.values()) {
+    public static HtmlTransformerEnum find(String name) {
+        for (HtmlTransformerEnum transformer : HtmlTransformerEnum.values()) {
             final String transName = transformer.transformName;
-            if(Objects.equals(transName, name)) {
+            if (Objects.equals(transName, name)) {
                 return transformer;
             }
         }
