@@ -23,7 +23,9 @@ public final class SizeExtension implements ExtensionInterface {
                 if (StrUtil.isNotBlank(size)) {
                     sizeValue = H2UnityUtils.sizeToNumber(size);
                 }
-                if (StrUtil.isNotBlank(sizeValue)) {
+                if (StrUtil.isBlank(sizeValue)) {
+                    el.unwrap();
+                } else {
                     el.attr("collval", sizeValue);
                 }
                 return el;

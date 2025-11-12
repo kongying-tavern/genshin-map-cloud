@@ -23,7 +23,9 @@ public final class ColorExtension implements ExtensionInterface {
                 if (StrUtil.isNotBlank(color)) {
                     colorValue = H2UnityUtils.colorToHex(color);
                 }
-                if (StrUtil.isNotBlank(colorValue)) {
+                if (StrUtil.isBlank(colorValue)) {
+                    el.unwrap();
+                } else {
                     el.attr("collval", colorValue);
                 }
                 return el;
