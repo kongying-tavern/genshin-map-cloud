@@ -1,4 +1,4 @@
-package site.yuanshen.data.helper.transformer.unity;
+package site.yuanshen.data.helper.transformer.base.utils;
 
 import cn.hutool.core.img.ColorUtil;
 import cn.hutool.core.util.HexUtil;
@@ -16,7 +16,7 @@ import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public final class H2UnityUtils {
+public final class HtmlParseUtils {
     public static Map<String, String> getStyleAttrs(Attribute styleAttr) {
         Map<String, String> styleAttrs = new HashMap<>();
         if (styleAttr == null) {
