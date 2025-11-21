@@ -1,5 +1,6 @@
 server:
   port: 8101
+
 #logging:
 #  level:
 #    org:
@@ -11,6 +12,7 @@ server:
 
 genshin:
   pass-filter:
+    - /ws
     - /ws/**
     - /oauth/**
     - /v3/**
@@ -74,9 +76,9 @@ ribbon:
 
 spring:
   profiles:
+    active: "@runtime-profile@"
     include:
       - "nacos-@runtime-profile@"
-      - "env-@runtime-profile@"
 
   application:
     name: oauth2-gateway
@@ -119,10 +121,6 @@ spring:
             - Path=/oauth/check_token
           filters:
             - PreserveHostHeader
-        - id: websocket
-          uri: lb://api-core
-          predicates:
-            - Path=/ws/**
         - id: openapi
           uri: lb://api-core
           predicates:
@@ -139,3 +137,9 @@ spring:
           uri: lb://api-core
           predicates:
             - Path=/api/**
+        - id: websocket
+          uri: lb:ws://api-ws
+          predicates:
+            - Path=/ws,/ws/**
+          filters:
+            - PreserveHostHeader
