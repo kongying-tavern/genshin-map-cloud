@@ -31,18 +31,23 @@ public class H2UnityTransformer extends HtmlBaseTransformer {
             .addTag("size", "style")
             .addTag("color", "style")
             .addTag("a", "href")
-            .addTag("link", "href");
+            .addTag("link", "href")
+            .addTag("ruby")
+            .addTag("r")
+            .addTag("rt");
         this.configureNormalize()
             .addTagMapping("b", "strong")
             .addTagMapping("i", "em")
-            .addTagMapping("link", "a");
+            .addTagMapping("link", "a")
+            .addTagMapping("r", "ruby");
         this.configureTransform()
             .registerExtension("color", new ColorExtension())
             .registerExtension("size", new SizeExtension())
+            .registerExtension("r", new RubyExtension())
             .registerExtension("a", new AExtension())
             .registerExtension("p", new PExtension())
             .registerExtension("br", new BrExtension())
-            .setOrders("color", "size", "a", "p", "br");
+            .setOrders("r", "color", "size", "a", "p", "br");
         this.configureFinalize()
             .registerAfterFinalizeHook((html) -> {
                 // Transform `color` and `size` values

@@ -8,6 +8,11 @@ import java.util.*;
 public final class NormalizeConfig {
     private Map<String, Set<String>> normalizeTags = new HashMap<>();
 
+    /**
+     * 添加标签映射
+     * @param replaceTagName 替换标签名
+     * @param findTagName 匹配标签名
+     */
     public NormalizeConfig addTagMapping(String replaceTagName, String... findTagName) {
         if (StrUtil.isBlank(replaceTagName)) {
             return this;
