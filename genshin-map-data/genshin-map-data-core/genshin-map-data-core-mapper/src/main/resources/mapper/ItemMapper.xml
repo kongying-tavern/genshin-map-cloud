@@ -37,6 +37,16 @@
                     #{hiddenFlag}
                 </foreach>
             </if>
+            <if test="itemSearchDto.specialFlag != null">
+                <choose>
+                    <when test="itemSearchDto.specialFlag == 0">
+                        and i.special_flag = 0
+                    </when>
+                    <otherwise>
+                        and (i.special_flag &amp; #{itemSearchDto.specialFlag}) != 0
+                    </otherwise>
+                </choose>
+            </if>
             <if test="itemSearchName != null and itemSearchName != ''">
                 and i.name LIKE #{itemSearchName}
             </if>

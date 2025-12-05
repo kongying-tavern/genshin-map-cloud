@@ -7,4 +7,5 @@ spring:
       - doc-dev
       - database-dev
       - datasource-dev
+      - websocket-dev
       - image-dev

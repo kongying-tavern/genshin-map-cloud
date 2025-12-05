@@ -19,7 +19,7 @@ import site.yuanshen.data.vo.helper.PageSearchVo;
 import site.yuanshen.genshin.core.service.CacheService;
 import site.yuanshen.genshin.core.service.MarkerService;
 import site.yuanshen.genshin.core.service.UserAppenderService;
-import site.yuanshen.genshin.core.websocket.WebSocketEntrypoint;
+import site.yuanshen.genshin.core.socketIO.SocketIOEntrypoint;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -38,7 +38,7 @@ public class MarkerController {
 
     private final MarkerService markerService;
     private final CacheService cacheService;
-    private final WebSocketEntrypoint webSocket;
+    private final SocketIOEntrypoint socketIOEntrypoint;
 
     //////////////START:点位自身的API//////////////
 
@@ -93,7 +93,7 @@ public class MarkerController {
         cacheService.cleanMarkerCache();
         // For new marker, no need to clean marker linkage related path cache
         // since new marker will not be linked in path list.
-        webSocket.broadcast(WUtils.create("MarkerAdded", newId));
+        socketIOEntrypoint.broadcast(WUtils.create("MarkerAdded", newId));
         return RUtils.create(newId);
     }
 
@@ -104,7 +104,7 @@ public class MarkerController {
         cacheService.cleanItemCache();
         cacheService.cleanMarkerCache();
         cacheService.cleanMarkerLinkageCache();
-        webSocket.broadcast(WUtils.create("MarkerUpdated", markerVo.getId()));
+        socketIOEntrypoint.broadcast(WUtils.create("MarkerUpdated", markerVo.getId()));
         return RUtils.create(result);
     }
 
@@ -115,7 +115,7 @@ public class MarkerController {
         cacheService.cleanItemCache();
         cacheService.cleanMarkerCache();
         cacheService.cleanMarkerLinkageCache();
-        webSocket.broadcast(WUtils.create("MarkerDeleted", markerId));
+        socketIOEntrypoint.broadcast(WUtils.create("MarkerDeleted", markerId));
         return RUtils.create(result);
     }
 
@@ -130,7 +130,7 @@ public class MarkerController {
         cacheService.cleanItemCache();
         cacheService.cleanMarkerCache();
         cacheService.cleanMarkerLinkageCache();
-        webSocket.broadcast(WUtils.create("MarkerTweaked", result.parallelStream().map(MarkerVo::getId).collect(Collectors.toList())));
+        socketIOEntrypoint.broadcast(WUtils.create("MarkerTweaked", result.parallelStream().map(MarkerVo::getId).collect(Collectors.toList())));
         return RUtils.create(result);
     }
     //////////////END:点位调整的API//////////////

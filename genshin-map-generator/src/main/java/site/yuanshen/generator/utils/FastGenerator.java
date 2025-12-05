@@ -79,7 +79,7 @@ public class FastGenerator {
             final String outputBase = System.getProperty("user.dir") + outputDir;
             if(this.type == null || StringUtils.isBlank(this.packageName) || StringUtils.isBlank(this.modulePath))
                 return "";
-            return outputBase + this.modulePath + "/" + this.type.getPath() + "/" +
+            return outputBase + "/" + this.modulePath + "/" + this.type.getPath() + "/" +
                 (withPackageName ? this.packageName.replace(".", "/") : "");
         }
     }

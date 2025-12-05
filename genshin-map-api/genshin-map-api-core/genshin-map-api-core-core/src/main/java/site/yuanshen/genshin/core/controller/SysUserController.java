@@ -15,8 +15,8 @@ import site.yuanshen.data.enums.RoleEnum;
 import site.yuanshen.data.vo.*;
 import site.yuanshen.data.vo.helper.PageListVo;
 import site.yuanshen.genshin.core.service.SysUserService;
+import site.yuanshen.genshin.core.socketIO.SocketIOEntrypoint;
 import site.yuanshen.genshin.core.utils.UserUtils;
-import site.yuanshen.genshin.core.websocket.WebSocketEntrypoint;
 
 import static site.yuanshen.genshin.core.utils.UserUtils.*;
 
@@ -33,7 +33,7 @@ import static site.yuanshen.genshin.core.utils.UserUtils.*;
 public class SysUserController {
 
     private final SysUserService userService;
-    private final WebSocketEntrypoint webSocket;
+    private final SocketIOEntrypoint socketIOEntrypoint;
 
     @Operation(summary = "用户注册(管理员权限)", description = "用户注册(管理员权限)，可以注册任意用户名密码的用户")
     @PostMapping("/register")
@@ -110,7 +110,7 @@ public class SysUserController {
     @Operation(summary = "用户踢出", description = "用户踢出")
     @DeleteMapping("/kick_out/{workId}")
     public R<Boolean> kickOutUser(@PathVariable("workId") Long workId) {
-        webSocket.sendToUsers(new String[]{workId.toString()}, WUtils.create("UserKickedOut", null));
+        socketIOEntrypoint.sendToUsers(new String[]{workId.toString()}, WUtils.create("UserKickedOut", null));
         return RUtils.create(true);
     }
 }

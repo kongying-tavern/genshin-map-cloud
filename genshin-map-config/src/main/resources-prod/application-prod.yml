@@ -7,4 +7,5 @@ spring:
       - doc-prod
       - database-prod
       - datasource-prod
+      - websocket-prod
       - image-prod

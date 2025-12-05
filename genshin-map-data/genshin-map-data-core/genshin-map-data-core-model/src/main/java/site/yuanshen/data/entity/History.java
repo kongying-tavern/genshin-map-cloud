@@ -67,7 +67,7 @@ public class History extends BaseEntity {
     private Long tId;
 
     /**
-     * 操作数据类型;1地区; 2图标; 3物品; 4点位; 5标签
+     * 操作数据类型;1地区; 2图标; 3物品; 4点位;
      */
     @TableField("type")
     private Integer type;

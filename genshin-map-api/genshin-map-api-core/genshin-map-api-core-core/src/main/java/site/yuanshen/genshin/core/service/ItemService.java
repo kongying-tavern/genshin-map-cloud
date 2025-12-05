@@ -211,7 +211,7 @@ public class ItemService {
                     Wrappers.<Item>lambdaUpdate().in(Item::getId, itemIds)
                             .set(itemDto.getName() != null, Item::getName, itemDto.getName())
                             .set(itemDto.getDefaultContent() != null, Item::getDefaultContent, itemDto.getDefaultContent())
-                            .set(itemDto.getIconTag() != null, Item::getIconTag, itemDto.getIconTag())
+                            .set(itemDto.getId() != null, Item::getIconId, itemDto.getIconId())
                             .set(itemDto.getIconStyleType() != null, Item::getIconStyleType, itemDto.getIconStyleType())
                             .set(itemDto.getHiddenFlag() != null, Item::getHiddenFlag, itemDto.getHiddenFlag())
                             .set(itemDto.getDefaultRefreshTime() != null, Item::getDefaultRefreshTime, itemDto.getDefaultRefreshTime())

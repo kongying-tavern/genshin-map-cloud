@@ -182,8 +182,8 @@ public class MarkerDaoImpl implements MarkerDao {
         // 汇总 marker_id → item_link 映射项
         markerItemLinkMap.forEach((markerId, linkVoList) ->
             linkVoList.forEach(link -> {
-                final String iconTag = StrUtil.blankToDefault(itemMap.getOrDefault(link.getItemId(), new Item()).getIconTag(), "");
-                link.setIconTag(iconTag);
+                final Long iconId = ObjUtil.defaultIfNull(itemMap.getOrDefault(link.getItemId(), new Item()).getIconId(), 0L);
+                link.setIconId(iconId);
             })
         );
     }

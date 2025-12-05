@@ -47,10 +47,10 @@ public class ItemType extends BaseEntity {
     private Timestamp updateTime;
 
     /**
-     * 图标标签
+     * 图标ID
      */
-    @TableField("icon_tag")
-    private String iconTag;
+    @TableField("icon_id")
+    private Long iconId;
 
     /**
      * 类型名

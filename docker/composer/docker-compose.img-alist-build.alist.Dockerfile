@@ -1,7 +1,7 @@
 FROM xhofe/alist:v3.30.0
 
 WORKDIR /alist
-ADD docker/config/img-alist-builder/alist .
+COPY docker/config/img-alist-builder/alist .
 
 RUN chmod -R +x /alist/*.sh
 

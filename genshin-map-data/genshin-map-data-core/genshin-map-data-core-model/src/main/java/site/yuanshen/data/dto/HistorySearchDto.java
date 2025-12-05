@@ -27,7 +27,7 @@ public class HistorySearchDto extends PageSearchDto {
     /**
      * 记录类型,不传时默认查询全部类型
      */
-    @Schema(title = "操作数据类型;1地区; 2图标; 3物品; 4点位; 5标签")
+    @Schema(title = "操作数据类型;1地区; 2图标; 3物品; 4点位;")
     private Integer type;
 
     /**

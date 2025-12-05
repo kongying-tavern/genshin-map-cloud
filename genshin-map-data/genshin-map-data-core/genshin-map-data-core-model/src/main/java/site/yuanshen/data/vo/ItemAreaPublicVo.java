@@ -97,10 +97,10 @@ public class ItemAreaPublicVo {
     private Integer defaultCount;
 
     /**
-     * 图标标签
+     * 图标ID
      */
-    @Schema(title = "图标标签")
-    private String iconTag;
+    @Schema(title = "图标ID")
+    private Long iconId;
 
     /**
      * 图标样式类型

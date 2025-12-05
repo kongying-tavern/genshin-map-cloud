@@ -1,5 +1,6 @@
 server:
   port: 8101
+
 #logging:
 #  level:
 #    org:
@@ -11,6 +12,7 @@ server:
 
 genshin:
   pass-filter:
+    - /ws
     - /ws/**
     - /oauth/**
     - /v3/**
@@ -20,11 +22,9 @@ genshin:
     - /system/invitation/consume
   authorities-filter:
     VISITOR:
-      - /api/tag/get/**
-      - /api/tag_type/get/**
-      - /api/tag_doc/**
       - /api/icon/get/**
       - /api/icon_type/get/**
+      - /api/icon_doc/**
       - /api/area/get/**
       - /api/item/get/**
       - /api/item_type/get/**
@@ -49,8 +49,6 @@ genshin:
       - /api/res/**
     MAP_MANAGER:
       - /api/punctuate_audit/**
-      - /api/tag/**
-      - /api/tag_type/**
       - /api/icon/**
       - /api/icon_type/**
       - /api/item/**
@@ -78,9 +76,9 @@ ribbon:
 
 spring:
   profiles:
+    active: "@runtime-profile@"
     include:
       - "nacos-@runtime-profile@"
-      - "env-@runtime-profile@"
 
   application:
     name: oauth2-gateway
@@ -123,10 +121,6 @@ spring:
             - Path=/oauth/check_token
           filters:
             - PreserveHostHeader
-        - id: websocket
-          uri: lb://api-core
-          predicates:
-            - Path=/ws/**
         - id: openapi
           uri: lb://api-core
           predicates:
@@ -143,3 +137,9 @@ spring:
           uri: lb://api-core
           predicates:
             - Path=/api/**
+        - id: websocket
+          uri: lb:ws://api-ws
+          predicates:
+            - Path=/ws,/ws/**
+          filters:
+            - PreserveHostHeader

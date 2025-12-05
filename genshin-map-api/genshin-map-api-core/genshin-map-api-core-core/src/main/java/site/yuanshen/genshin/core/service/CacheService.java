@@ -1,5 +1,6 @@
 package site.yuanshen.genshin.core.service;
 
+import cn.hutool.core.util.ObjUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,11 +10,11 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionSynchronizationAdapter;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
-import org.springframework.util.StringUtils;
 import site.yuanshen.common.core.utils.DebounceExecutor;
 import site.yuanshen.common.web.response.WUtils;
-import site.yuanshen.genshin.core.dao.IconTagDao;
-import site.yuanshen.genshin.core.websocket.WebSocketEntrypoint;
+import site.yuanshen.genshin.core.dao.IconDao;
+import site.yuanshen.genshin.core.socketIO.SocketIOEntrypoint;
+
 
 import java.util.Objects;
 import java.util.concurrent.*;
@@ -31,9 +32,9 @@ public class CacheService {
     private final MarkerDocService markerDocService;
     private final MarkerLinkageDocService markerLinkageDocService;
     private final ItemDocService itemDocService;
-    private final IconTagDao iconTagDao;
+    private final IconDao iconDao;
     private final CacheManager cacheManager;
-    private final WebSocketEntrypoint webSocket;
+    private final SocketIOEntrypoint socketIOEntrypoint;
 
     ThreadPoolExecutor executor = new ThreadPoolExecutor(10, 20, 200, TimeUnit.MILLISECONDS,
             new ArrayBlockingQueue<>(5));
@@ -42,25 +43,26 @@ public class CacheService {
     private String debounceDelay = "30";
 
     /**
-     * 删除所有标签缓存
+     * 删除所有图标缓存
      */
-    public void cleanIconTagCache() {
-        cleanIconTagCache("");
+    public void cleanIconCache() {
+        cleanIconCache(0L);
     }
 
     /**
-     * @param tagName 标签名，为空时清除iconTag的所有缓存
+     * @param iconId 图标ID，为空或0时清除icon的所有缓存
      */
     @Caching(
             evict = {
-                    @CacheEvict(value = "iconTag", key = "#tagName", condition = "#tagName != null && #tagName != ''", beforeInvocation = true),
-                    @CacheEvict(value = "listIconTag", allEntries = true, beforeInvocation = true),
-                    @CacheEvict(value = "listAllTag", allEntries = true, beforeInvocation = true),
+                    @CacheEvict(value = "icon", key = "#iconId", condition = "#iconId != null && #iconId > 0", beforeInvocation = true),
+                    @CacheEvict(value = "listIcon", allEntries = true, beforeInvocation = true),
+                    @CacheEvict(value = "listAllIcon", allEntries = true, beforeInvocation = true),
             }
     )
-    public void cleanIconTagCache(String tagName) {
+    public void cleanIconCache(Long iconId) {
         FutureTask<Status> futureTask = new FutureTask<>(() -> {
-            if (StringUtils.isEmpty(tagName)) Objects.requireNonNull(cacheManager.getCache("iconTag")).clear();
+            if (ObjUtil.isNull(iconId) || iconId <= 0L)
+                Objects.requireNonNull(cacheManager.getCache("icon")).clear();
             return Status.OK;
         });
         runAfterTransactionByFuture(futureTask);
@@ -68,15 +70,15 @@ public class CacheService {
             if (futureTask.get() == Status.OK)
                 runAfterTransactionDebounceByKey(
                         () -> {
-                            this.refreshIconTagBinary();
-                            webSocket.broadcast(WUtils.create("IconTagBinaryPurged", null));
+                            this.refreshIconBinary();
+                            socketIOEntrypoint.broadcast(WUtils.create("IconBinaryPurged", null));
                         },
-                        FunctionKeyEnum.refreshIconTagBinary, Integer.parseInt(debounceDelay)
+                        FunctionKeyEnum.refreshIconBinary, Integer.parseInt(debounceDelay)
                 );
             else
-                log.error("cleanIconTagCache执行失败,未知原因");
+                log.error("cleanIconCache执行失败,未知原因");
         } catch (Exception e) {
-            log.error("cleanIconTagCache执行失败", e);
+            log.error("cleanIconCache执行失败", e);
         }
     }
 
@@ -102,7 +104,7 @@ public class CacheService {
         runAfterTransactionDebounceByKey(
                 () -> {
                     itemDocService.refreshItemBinaryMD5();
-                    webSocket.broadcast(WUtils.create("ItemBinaryPurged", null));
+                    socketIOEntrypoint.broadcast(WUtils.create("ItemBinaryPurged", null));
                 },
                 FunctionKeyEnum.refreshItemBinary, Integer.parseInt(debounceDelay)
         );
@@ -128,7 +130,7 @@ public class CacheService {
         runAfterTransactionDebounceByKey(
                 () -> {
                     markerDocService.refreshMarkerBinaryMD5();
-                    webSocket.broadcast(WUtils.create("MarkerBinaryPurged", null));
+                    socketIOEntrypoint.broadcast(WUtils.create("MarkerBinaryPurged", null));
                 },
                 FunctionKeyEnum.refreshMarkerBinary, Integer.parseInt(debounceDelay)
         );
@@ -155,7 +157,7 @@ public class CacheService {
                 () -> {
                     markerLinkageDocService.refreshMarkerLinkageListBinaryMD5();
                     markerLinkageDocService.refreshMarkerLinkageGraphBinaryMD5();
-                    webSocket.broadcast(WUtils.create("MarkerLinkageBinaryPurged", null));
+                    socketIOEntrypoint.broadcast(WUtils.create("MarkerLinkageBinaryPurged", null));
                 },
                 FunctionKeyEnum.refreshMarkerLinkageBinary, Integer.parseInt(debounceDelay)
         );
@@ -172,17 +174,17 @@ public class CacheService {
 
     @Caching(
             evict = {
-                    @CacheEvict(value = "listAllTagBinary", allEntries = true, beforeInvocation = true),
-                    @CacheEvict(value = "listAllTagBinaryMd5", allEntries = true, beforeInvocation = true)
+                    @CacheEvict(value = "listAllIconBinary", allEntries = true, beforeInvocation = true),
+                    @CacheEvict(value = "listAllIconBinaryMd5", allEntries = true, beforeInvocation = true)
             }
     )
-    public void refreshIconTagBinary() {
-        log.info("refreshIconTag");
-        iconTagDao.listAllTagBinaryMd5();
+    public void refreshIconBinary() {
+        log.info("refreshIcon");
+        iconDao.listAllIconBinaryMd5();
     }
 
     enum FunctionKeyEnum {
-        refreshIconTagBinary,
+        refreshIconBinary,
         refreshItemBinary,
         refreshMarkerBinary,
         refreshMarkerLinkageBinary,

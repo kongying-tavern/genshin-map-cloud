@@ -31,6 +31,7 @@ import site.yuanshen.genshin.core.service.mbp.MarkerItemLinkMBPService;
 import site.yuanshen.genshin.core.service.mbp.MarkerMBPService;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -282,22 +283,21 @@ public class MarkerService {
     private List<MarkerDto> buildMarkerDto(List<Long> markerId) {
         final String markerIdListStr = PgsqlUtils.unnestLongStr(markerId);
         final List<Marker> markerList = markerMapper.selectListWithLargeIn(markerIdListStr, Wrappers.<Marker>lambdaQuery());
-        final List<MarkerItemLink> markerItemLinkList = markerItemLinkMapper.selectWithLargeCustomIn("marker_id", markerIdListStr, Wrappers.<MarkerItemLink>lambdaQuery());
+        final List<Long> markerIdList = markerList.stream().map(Marker::getId).collect(Collectors.toList());
 
-        final Map<Long, List<MarkerItemLinkDto>> markerItemLinkGroup = markerItemLinkList.parallelStream()
-                .map(MarkerItemLinkDto::new)
-                .collect(Collectors.groupingBy(MarkerItemLinkDto::getMarkerId));
+        Map<Long, Item> itemMap = new HashMap<>();
+        ConcurrentHashMap<Long, List<MarkerItemLinkVo>> markerItemLinkMap = new ConcurrentHashMap<>();
+        markerDao.generateMarkerItemInfo(markerIdList, itemMap, markerItemLinkMap);
 
-        return markerList.stream()
-                .map(MarkerDto::new)
-                .map(marker -> marker.withItemList(
-                        markerItemLinkGroup
-                                .getOrDefault(marker.getId(), List.of())
-                                .stream()
-                                .map(MarkerItemLinkDto::getVo)
-                                .collect(Collectors.toList())
-                ))
-                .collect(Collectors.toList());
+        ConcurrentHashMap<Long, String> markerLinkageMap = new ConcurrentHashMap<>();
+        markerDao.generateMarkerLinkageInfo(markerIdList, markerLinkageMap);
+
+        return markerList.parallelStream()
+            .map(marker -> new MarkerDto(marker)
+                .withItemList(markerItemLinkMap.getOrDefault(marker.getId(), List.of()))
+                .withLinkageId(markerLinkageMap.getOrDefault(marker.getId(), ""))
+            )
+            .collect(Collectors.toList());
     }
 
     //--------------------点位相关辅助方法----------------------
