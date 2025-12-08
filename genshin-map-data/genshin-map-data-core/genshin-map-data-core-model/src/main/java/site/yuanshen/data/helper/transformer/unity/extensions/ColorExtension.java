@@ -13,7 +13,7 @@ public final class ColorExtension implements ExtensionInterface {
     public void transform(Document doc) {
         doc
             .select("color")
-            .replaceAll(el -> {
+            .forEach(el -> {
                 final Attribute style = el.attribute("style");
                 final Map<String, String> styleAttrs = HtmlParseUtils.getStyleAttrs(style);
                 final String color = styleAttrs.getOrDefault("--color", "");
@@ -28,7 +28,6 @@ public final class ColorExtension implements ExtensionInterface {
                 } else {
                     el.attr("collval", colorValue);
                 }
-                return el;
             });
     }
 }

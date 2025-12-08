@@ -14,7 +14,7 @@ public final class RubyExtension implements ExtensionInterface {
     public void transform(Document doc) {
         doc
             .select("r")
-            .replaceAll(el -> {
+            .forEach(el -> {
                 final Element elClone = el.clone();
 
                 // Get definition
@@ -37,7 +37,8 @@ public final class RubyExtension implements ExtensionInterface {
                     final String combinedContent = StrUtil.format("{}<rt>{}</rt>", mainContent, defContent);
                     newEl.html(combinedContent);
                 }
-                return newEl;
+
+                el.replaceWith(newEl);
             });
     }
 }
