@@ -9,9 +9,8 @@ public final class AExtension implements ExtensionInterface {
     @Override
     public void transform(Document doc) {
         doc
-            .select("a, link")
-            .tagName("link")
-            .replaceAll(el -> {
+            .select("link")
+            .forEach(el -> {
                 final Attribute hrefAttr = el.attribute("href");
                 final String href = hrefAttr.getValue();
                 el.clearAttributes();
@@ -20,7 +19,6 @@ public final class AExtension implements ExtensionInterface {
                 } else {
                     el.attr("collval", href);
                 }
-                return el;
             });
     }
 }
