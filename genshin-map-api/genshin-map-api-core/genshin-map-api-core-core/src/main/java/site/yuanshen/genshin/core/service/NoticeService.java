@@ -13,7 +13,7 @@ import site.yuanshen.common.core.utils.TimeUtils;
 import site.yuanshen.data.dto.NoticeDto;
 import site.yuanshen.data.dto.NoticeSearchDto;
 import site.yuanshen.data.entity.Notice;
-import site.yuanshen.data.enums.notice.NoticeTransformerEnum;
+import site.yuanshen.data.enums.transformer.HtmlTransformerEnum;
 import site.yuanshen.data.mapper.NoticeMapper;
 import site.yuanshen.data.vo.NoticeVo;
 import site.yuanshen.data.vo.helper.PageListVo;
@@ -113,7 +113,7 @@ public class NoticeService {
                         return notice;
                     }
                     final String transformerName = noticeSearchDto.getTransformer();
-                    final NoticeTransformerEnum transformerEnum = NoticeTransformerEnum.find(transformerName);
+                    final HtmlTransformerEnum transformerEnum = HtmlTransformerEnum.find(transformerName);
                     if (transformerEnum == null) {
                         return notice;
                     }
