@@ -13,7 +13,7 @@ public final class SizeExtension implements ExtensionInterface {
     public void transform(Document doc) {
         doc
             .select("size")
-            .replaceAll(el -> {
+            .forEach(el -> {
                 final Attribute style = el.attribute("style");
                 final Map<String, String> styleAttrs = HtmlParseUtils.getStyleAttrs(style);
                 final String size = styleAttrs.getOrDefault("--size", "");
@@ -28,7 +28,6 @@ public final class SizeExtension implements ExtensionInterface {
                 } else {
                     el.attr("collval", sizeValue);
                 }
-                return el;
             });
     }
 }
