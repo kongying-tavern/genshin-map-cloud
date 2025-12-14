@@ -20,22 +20,20 @@ public class SocketIOEntrypoint {
     @Resource
     private SocketIOServer socketIOServer;
 
-    private static ConcurrentHashMap<String, List<UUID>> userIdToSocketClientUUID = new ConcurrentHashMap<>();
-
+    private static ConcurrentHashMap<String, Set<UUID>> userIdToSocketClientUUID = new ConcurrentHashMap<>();
 
     @OnConnect
     public void onConnect(SocketIOClient socketIOClient) {
         String userId = socketIOClient.getHandshakeData().getSingleUrlParam("userId");
         UUID sessionId = socketIOClient.getSessionId();
-        List<UUID> uuidList = userIdToSocketClientUUID.get(userId);
-        if (uuidList == null) {
-            uuidList = new ArrayList<>();
-        }
-        if (uuidList.contains(sessionId)) {
-            return;
-        }
-        uuidList.add(sessionId);
-        userIdToSocketClientUUID.put(userId, uuidList);
+
+        userIdToSocketClientUUID.compute(userId, (uId, uuidList) -> {
+            if (uuidList == null) {
+                uuidList = new HashSet<>();
+            }
+            uuidList.add(sessionId);
+            return uuidList;
+        });
         log.info("[websocket] new connection, userID:{}, socketClientUUID:{}, connection size:{} ", userId, sessionId, socketIOServer.getAllClients().size());
     }
 
@@ -44,14 +42,13 @@ public class SocketIOEntrypoint {
         String userId = client.getHandshakeData().getSingleUrlParam("userId");
         UUID sessionId = client.getSessionId();
 
-        List<UUID> uuidList = userIdToSocketClientUUID.get(userId);
-        if (uuidList == null) {
-            return;
-        }
-        uuidList.remove(sessionId);
-        if (uuidList.isEmpty()) {
-            userIdToSocketClientUUID.remove(userId);
-        }
+        userIdToSocketClientUUID.compute(userId, (uId, uuidList) -> {
+            if (uuidList == null) {
+                uuidList = new HashSet<>();
+            }
+            uuidList.remove(sessionId);
+            return uuidList;
+        });
         log.info("[websocket] connection disconnected, userID:{}, socketClientUUID:{}, connection size:{} ", userId, sessionId, socketIOServer.getAllClients().size());
     }
 
@@ -61,11 +58,10 @@ public class SocketIOEntrypoint {
         socketIOServer.getBroadcastOperations().sendEvent(SocketIOEventEnum.MESSAGE.getEvent(), messageText);
     }
 
-
     public <T> void sendToUsers(String[] userIds, W<T> message) {
         final String messageText = JSON.toJSONString(message);
         for (String userId : userIds) {
-            List<UUID> uuidList = userIdToSocketClientUUID.get(userId);
+            Set<UUID> uuidList = userIdToSocketClientUUID.get(userId);
             if (uuidList == null) {
                 continue;
             }
@@ -75,7 +71,6 @@ public class SocketIOEntrypoint {
             });
         }
     }
-
 
     public <T> void sendExceptUsers(String[] userIds, W<T> message) {
         final String messageText = JSON.toJSONString(message);
