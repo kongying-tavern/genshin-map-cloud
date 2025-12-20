@@ -460,6 +460,7 @@ public class MarkerDaoImpl implements MarkerDao {
                     .withLinkageId(markerLinkageMap.getOrDefault(markerId, ""))
                     .getVo();
             })
+            .filter(marker -> CollUtil.isNotEmpty(marker.getItemList()))
             .sorted(Comparator.comparingLong(MarkerVo::getId))
             .collect(Collectors.groupingBy(marker -> {
                 Integer flag = marker.getHiddenFlag();
