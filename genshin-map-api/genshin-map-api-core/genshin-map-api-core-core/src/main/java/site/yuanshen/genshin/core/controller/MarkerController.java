@@ -11,6 +11,7 @@ import site.yuanshen.common.web.response.WUtils;
 import site.yuanshen.data.dto.MarkerDto;
 import site.yuanshen.data.dto.helper.PageSearchDto;
 import site.yuanshen.data.enums.HiddenFlagEnum;
+import site.yuanshen.data.vo.MarkerRenderModelVo;
 import site.yuanshen.data.vo.MarkerSearchVo;
 import site.yuanshen.data.vo.MarkerVo;
 import site.yuanshen.data.vo.adapter.marker.tweak.TweakVo;
@@ -80,6 +81,18 @@ public class MarkerController {
         );
         UserAppenderService.appendUser(result, result.getData(), true, MarkerVo::getCreatorId);
         UserAppenderService.appendUser(result, result.getData(), true, MarkerVo::getUpdaterId);
+        return result;
+    }
+
+    @Operation(summary = "通过ID列表查询点位渲染信息", description = "通过ID列表来进行查询点位渲染信息")
+    @PostMapping("/get/list_render_byid")
+    public R<List<MarkerRenderModelVo>> listRenderMarkerById(
+        @Parameter(hidden = true) @RequestHeader(value = "userDataLevel", required = false) String userDataLevel,
+        @RequestBody MarkerSearchVo markerSearchVo
+    ) {
+        R<List<MarkerRenderModelVo>> result = RUtils.create(
+                markerService.listRenderMarkerById(markerSearchVo, HiddenFlagEnum.getFlagListByMask(userDataLevel))
+        );
         return result;
     }
 
