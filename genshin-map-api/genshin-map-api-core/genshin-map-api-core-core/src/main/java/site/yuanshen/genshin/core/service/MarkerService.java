@@ -117,20 +117,23 @@ public class MarkerService {
     public List<MarkerVo> searchMarker(MarkerSearchVo markerSearchVo, List<Integer> hiddenFlagList) {
         final MarkerService markerService = (MarkerService) SpringContextUtils.getBean("markerService");
         List<Long> markerIdList = markerService.searchMarkerId(markerSearchVo, hiddenFlagList);
-        List<MarkerVo> result = markerService.listMarkerById(markerIdList, hiddenFlagList);
+        final MarkerSearchVo newSearchVo = new MarkerSearchVo();
+        newSearchVo.setMarkerIdList(markerIdList);
+        List<MarkerVo> result = markerService.listMarkerById(newSearchVo, hiddenFlagList);
         return result;
     }
-
 
     /**
      * 通过ID列表查询点位信息
      *
-     * @param markerIdList 点位ID列表
+     * @param markerSearchVo 点位查询前端封装
      * @return 点位完整信息的数据封装列表
      */
-    public List<MarkerVo> listMarkerById(List<Long> markerIdList, List<Integer> hiddenFlagList) {
+    public List<MarkerVo> listMarkerById(MarkerSearchVo markerSearchVo, List<Integer> hiddenFlagList) {
+        final List<Long> markerIdList = markerSearchVo.getMarkerIdList();
         //为空直接返回
-        if (markerIdList.isEmpty()) return new ArrayList<>();
+        if (CollUtil.isEmpty(markerIdList))
+            return new ArrayList<>();
         List<MarkerVo> result = markerDao.listMarkerById(markerIdList, hiddenFlagList);
         return result;
     }
