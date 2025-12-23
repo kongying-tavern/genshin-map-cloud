@@ -246,6 +246,94 @@ public class MarkerDaoImpl implements MarkerDao {
         }
     }
 
+    public Map<Integer, List<MarkerVo>> getMarkerVoGroups(
+        Map<Long, Item> itemMap,
+        ConcurrentMap<Long, List<MarkerItemLinkVo>> markerItemLinkMap,
+        ConcurrentMap<Long, String> markerLinkageMap
+    ) {
+        TimeInterval timer = DateUtil.timer();
+
+        // 获取覆盖标记映射
+        timer.restart();
+        final Map<Integer, Set<Integer>> overrideFlagMap = Arrays.stream(HiddenFlagEnum.values()).collect(Collectors.toMap(
+            HiddenFlagEnum::getCode,
+            v -> HiddenFlagEnum.getOverrideFlagList(v.getCode()),
+            (o, n) -> n
+        ));
+        log.info("[binary][marker] marker flag override map generation, cost: {}", timer.intervalPretty());
+
+        // 获取点位和点位相关映射数据
+        timer.restart();
+        final List<Marker> markerList = markerMapper.selectList(Wrappers.<Marker>lambdaQuery().eq(Marker::getDelFlag, false));
+        final List<Long> markerIdList = markerList.stream().map(Marker::getId).distinct().collect(Collectors.toList());
+        generateMarkerItemInfo(markerIdList, itemMap, markerItemLinkMap);
+        generateMarkerLinkageInfo(markerIdList, markerLinkageMap);
+        // 获取点位合并所需数据
+        final List<Area> areaList = areaMapper.selectList(Wrappers.<Area>lambdaQuery().eq(Area::getDelFlag, false).select(Area::getId, Area::getParentId, Area::getHiddenFlag, Area::getIsFinal));
+        final Map<Long, Long> areaParentMap = areaList.stream().collect(Collectors.toMap(Area::getId, Area::getParentId, (o, n) -> n));
+        final Map<Boolean, List<Area>> areaPartition = areaList.stream().collect(Collectors.partitioningBy(Area::getIsFinal));
+        final Map<Long, Integer> areaFinalFlagMap = areaPartition.getOrDefault(true, List.of())
+            .stream()
+            .collect(Collectors.toMap(Area::getId, Area::getHiddenFlag, (o, n) -> n));
+        final Map<Long, Integer> areaNonFinalFlagMap = areaPartition.getOrDefault(false, List.of())
+            .stream()
+            .collect(Collectors.toMap(Area::getId, Area::getHiddenFlag, (o, n) -> n));
+        log.info("[binary][marker] marker and related data prepare, cost: {}", timer.intervalPretty());
+
+        // 组合数据
+        timer.restart();
+        Map<Integer, List<MarkerVo>> markerGroup = markerList
+            .stream()
+            .map(marker -> {
+                final Long markerId = marker.getId();
+                return new MarkerDto(marker)
+                    .withItemList(
+                        markerItemLinkMap.getOrDefault(markerId, List.of())
+                            .stream()
+                            .sorted(Comparator.comparingLong(MarkerItemLinkVo::getItemId))
+                            .collect(Collectors.toList())
+                    )
+                    .withLinkageId(markerLinkageMap.getOrDefault(markerId, ""))
+                    .getVo();
+            })
+            .filter(marker -> CollUtil.isNotEmpty(marker.getItemList()))
+            .sorted(Comparator.comparingLong(MarkerVo::getId))
+            .collect(Collectors.groupingBy(marker -> {
+                Integer flag = marker.getHiddenFlag();
+                final Long markerId = marker.getId();
+                final List<MarkerItemLinkVo> markerItemLinkList = CollUtil.emptyIfNull(marker.getItemList());
+                for (MarkerItemLinkVo itemLink : markerItemLinkList) {
+                    // 覆盖物品标记
+                    final Item linkedItem = itemMap.getOrDefault(itemLink.getItemId(), new Item());
+                    final Integer linkedItemFlag = ObjUtil.defaultIfNull(linkedItem.getHiddenFlag(), -1);
+                    final Set<Integer> linkedItemCanOverrideFlag = overrideFlagMap.getOrDefault(linkedItemFlag, new HashSet<>());
+                    if (linkedItemCanOverrideFlag.contains(flag))
+                        flag = linkedItemFlag;
+                    // 覆盖地区标记
+                    Long linkedAreaId = 0L;
+                    Integer linkedAreaFlag = -1;
+                    Set<Integer> linkedAreaCanOverrideFlag = new HashSet<>();
+                    // 覆盖二级地区标记
+                    linkedAreaId = linkedItem.getAreaId();
+                    linkedAreaFlag = areaFinalFlagMap.getOrDefault(linkedAreaId, -1);
+                    linkedAreaCanOverrideFlag = overrideFlagMap.getOrDefault(linkedAreaFlag, new HashSet<>());
+                    if (linkedAreaCanOverrideFlag.contains(flag))
+                        flag = linkedAreaFlag;
+                    // 覆盖一级地区标记
+                    linkedAreaId = areaParentMap.getOrDefault(linkedAreaId, 0L);
+                    linkedAreaFlag = areaNonFinalFlagMap.getOrDefault(linkedAreaId, -1);
+                    linkedAreaCanOverrideFlag = overrideFlagMap.getOrDefault(linkedAreaFlag, new HashSet<>());
+                    if (linkedAreaCanOverrideFlag.contains(flag))
+                        flag = linkedAreaFlag;
+                }
+
+                return flag;
+            }));
+        log.info("[binary][marker] marker composed, cost: {}", timer.intervalPretty());
+
+        return markerGroup;
+    }
+
     /**
      * 返回MD5列表
      *
@@ -408,93 +496,5 @@ public class MarkerDaoImpl implements MarkerDao {
             md5MapSorted.put(entry.getKey(), entry.getValue());
         });
         return md5MapSorted;
-    }
-
-    private Map<Integer, List<MarkerVo>> getMarkerVoGroups(
-        Map<Long, Item> itemMap,
-        ConcurrentMap<Long, List<MarkerItemLinkVo>> markerItemLinkMap,
-        ConcurrentMap<Long, String> markerLinkageMap
-    ) {
-        TimeInterval timer = DateUtil.timer();
-
-        // 获取覆盖标记映射
-        timer.restart();
-        final Map<Integer, Set<Integer>> overrideFlagMap = Arrays.stream(HiddenFlagEnum.values()).collect(Collectors.toMap(
-            HiddenFlagEnum::getCode,
-            v -> HiddenFlagEnum.getOverrideFlagList(v.getCode()),
-            (o, n) -> n
-        ));
-        log.info("[binary][marker] marker flag override map generation, cost: {}", timer.intervalPretty());
-
-        // 获取点位和点位相关映射数据
-        timer.restart();
-        final List<Marker> markerList = markerMapper.selectList(Wrappers.<Marker>lambdaQuery().eq(Marker::getDelFlag, false));
-        final List<Long> markerIdList = markerList.stream().map(Marker::getId).distinct().collect(Collectors.toList());
-        generateMarkerItemInfo(markerIdList, itemMap, markerItemLinkMap);
-        generateMarkerLinkageInfo(markerIdList, markerLinkageMap);
-        // 获取点位合并所需数据
-        final List<Area> areaList = areaMapper.selectList(Wrappers.<Area>lambdaQuery().eq(Area::getDelFlag, false).select(Area::getId, Area::getParentId, Area::getHiddenFlag, Area::getIsFinal));
-        final Map<Long, Long> areaParentMap = areaList.stream().collect(Collectors.toMap(Area::getId, Area::getParentId, (o, n) -> n));
-        final Map<Boolean, List<Area>> areaPartition = areaList.stream().collect(Collectors.partitioningBy(Area::getIsFinal));
-        final Map<Long, Integer> areaFinalFlagMap = areaPartition.getOrDefault(true, List.of())
-            .stream()
-            .collect(Collectors.toMap(Area::getId, Area::getHiddenFlag, (o, n) -> n));
-        final Map<Long, Integer> areaNonFinalFlagMap = areaPartition.getOrDefault(false, List.of())
-            .stream()
-            .collect(Collectors.toMap(Area::getId, Area::getHiddenFlag, (o, n) -> n));
-        log.info("[binary][marker] marker and related data prepare, cost: {}", timer.intervalPretty());
-
-        // 组合数据
-        timer.restart();
-        Map<Integer, List<MarkerVo>> markerGroup = markerList
-            .stream()
-            .map(marker -> {
-                final Long markerId = marker.getId();
-                return new MarkerDto(marker)
-                    .withItemList(
-                        markerItemLinkMap.getOrDefault(markerId, List.of())
-                            .stream()
-                            .sorted(Comparator.comparingLong(MarkerItemLinkVo::getItemId))
-                            .collect(Collectors.toList())
-                    )
-                    .withLinkageId(markerLinkageMap.getOrDefault(markerId, ""))
-                    .getVo();
-            })
-            .filter(marker -> CollUtil.isNotEmpty(marker.getItemList()))
-            .sorted(Comparator.comparingLong(MarkerVo::getId))
-            .collect(Collectors.groupingBy(marker -> {
-                Integer flag = marker.getHiddenFlag();
-                final Long markerId = marker.getId();
-                final List<MarkerItemLinkVo> markerItemLinkList = CollUtil.emptyIfNull(marker.getItemList());
-                for (MarkerItemLinkVo itemLink : markerItemLinkList) {
-                    // 覆盖物品标记
-                    final Item linkedItem = itemMap.getOrDefault(itemLink.getItemId(), new Item());
-                    final Integer linkedItemFlag = ObjUtil.defaultIfNull(linkedItem.getHiddenFlag(), -1);
-                    final Set<Integer> linkedItemCanOverrideFlag = overrideFlagMap.getOrDefault(linkedItemFlag, new HashSet<>());
-                    if (linkedItemCanOverrideFlag.contains(flag))
-                        flag = linkedItemFlag;
-                    // 覆盖地区标记
-                    Long linkedAreaId = 0L;
-                    Integer linkedAreaFlag = -1;
-                    Set<Integer> linkedAreaCanOverrideFlag = new HashSet<>();
-                    // 覆盖二级地区标记
-                    linkedAreaId = linkedItem.getAreaId();
-                    linkedAreaFlag = areaFinalFlagMap.getOrDefault(linkedAreaId, -1);
-                    linkedAreaCanOverrideFlag = overrideFlagMap.getOrDefault(linkedAreaFlag, new HashSet<>());
-                    if (linkedAreaCanOverrideFlag.contains(flag))
-                        flag = linkedAreaFlag;
-                    // 覆盖一级地区标记
-                    linkedAreaId = areaParentMap.getOrDefault(linkedAreaId, 0L);
-                    linkedAreaFlag = areaNonFinalFlagMap.getOrDefault(linkedAreaId, -1);
-                    linkedAreaCanOverrideFlag = overrideFlagMap.getOrDefault(linkedAreaFlag, new HashSet<>());
-                    if (linkedAreaCanOverrideFlag.contains(flag))
-                        flag = linkedAreaFlag;
-                }
-
-                return flag;
-            }));
-        log.info("[binary][marker] marker composed, cost: {}", timer.intervalPretty());
-
-        return markerGroup;
     }
 }

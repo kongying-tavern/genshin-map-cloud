@@ -10,6 +10,8 @@ import site.yuanshen.common.web.response.RUtils;
 import site.yuanshen.data.enums.HiddenFlagEnum;
 import site.yuanshen.data.vo.BinaryMD5Vo;
 import site.yuanshen.genshin.core.dao.MarkerDao;
+import site.yuanshen.genshin.core.service.MarkerDocService;
+import site.yuanshen.genshin.core.service.MarkerService;
 
 import java.util.List;
 
@@ -26,6 +28,7 @@ import java.util.List;
 public class MarkerDocController {
 
     private final MarkerDao markerDao;
+    private final MarkerDocService markerDocService;
 
     @Operation(summary = "返回点位分页", description = "查询分页点位信息，返回压缩格式的byte数组")
     @GetMapping("/list_page_bin/{md5}")
@@ -39,5 +42,11 @@ public class MarkerDocController {
         return RUtils.create(
                 markerDao.listMarkerBinaryMD5(HiddenFlagEnum.getFlagListByMask(userDataLevel))
         );
+    }
+
+    @Operation(summary = "返回点位差异比对快照", description = "点位差异比对二进制快照")
+    @GetMapping("/list_diff_snapshot")
+    public byte[] listMarkerDiffSnapshotByBinary(@Parameter(hidden = true) @RequestHeader(value = "userDataLevel",required = false) String userDataLevel) {
+        return markerDocService.getMarkerDiffSnapshot(HiddenFlagEnum.getFlagListByMask(userDataLevel));
     }
 }
