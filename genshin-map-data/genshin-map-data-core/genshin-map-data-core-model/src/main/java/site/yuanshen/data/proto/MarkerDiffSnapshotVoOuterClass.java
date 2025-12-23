@@ -19,13 +19,13 @@ public final class MarkerDiffSnapshotVoOuterClass {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>uint64 version = 9999;</code>
+     * <code>uint64 version = 1;</code>
      * @return The version.
      */
     long getVersion();
 
     /**
-     * <code>uint64 id = 10000;</code>
+     * <code>uint64 id = 2;</code>
      * @return The id.
      */
     long getId();
@@ -75,12 +75,12 @@ public final class MarkerDiffSnapshotVoOuterClass {
             case 0:
               done = true;
               break;
-            case 79992: {
+            case 8: {
 
               version_ = input.readUInt64();
               break;
             }
-            case 80000: {
+            case 16: {
 
               id_ = input.readUInt64();
               break;
@@ -117,20 +117,20 @@ public final class MarkerDiffSnapshotVoOuterClass {
               site.yuanshen.data.proto.MarkerDiffSnapshotVoOuterClass.MarkerDiffSnapshotVo.class, site.yuanshen.data.proto.MarkerDiffSnapshotVoOuterClass.MarkerDiffSnapshotVo.Builder.class);
     }
 
-    public static final int VERSION_FIELD_NUMBER = 9999;
+    public static final int VERSION_FIELD_NUMBER = 1;
     private long version_;
     /**
-     * <code>uint64 version = 9999;</code>
+     * <code>uint64 version = 1;</code>
      * @return The version.
      */
     public long getVersion() {
       return version_;
     }
 
-    public static final int ID_FIELD_NUMBER = 10000;
+    public static final int ID_FIELD_NUMBER = 2;
     private long id_;
     /**
-     * <code>uint64 id = 10000;</code>
+     * <code>uint64 id = 2;</code>
      * @return The id.
      */
     public long getId() {
@@ -152,10 +152,10 @@ public final class MarkerDiffSnapshotVoOuterClass {
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       if (version_ != 0L) {
-        output.writeUInt64(9999, version_);
+        output.writeUInt64(1, version_);
       }
       if (id_ != 0L) {
-        output.writeUInt64(10000, id_);
+        output.writeUInt64(2, id_);
       }
       unknownFields.writeTo(output);
     }
@@ -168,11 +168,11 @@ public final class MarkerDiffSnapshotVoOuterClass {
       size = 0;
       if (version_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-          .computeUInt64Size(9999, version_);
+          .computeUInt64Size(1, version_);
       }
       if (id_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-          .computeUInt64Size(10000, id_);
+          .computeUInt64Size(2, id_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -460,14 +460,14 @@ public final class MarkerDiffSnapshotVoOuterClass {
 
       private long version_ ;
       /**
-       * <code>uint64 version = 9999;</code>
+       * <code>uint64 version = 1;</code>
        * @return The version.
        */
       public long getVersion() {
         return version_;
       }
       /**
-       * <code>uint64 version = 9999;</code>
+       * <code>uint64 version = 1;</code>
        * @param value The version to set.
        * @return This builder for chaining.
        */
@@ -478,7 +478,7 @@ public final class MarkerDiffSnapshotVoOuterClass {
         return this;
       }
       /**
-       * <code>uint64 version = 9999;</code>
+       * <code>uint64 version = 1;</code>
        * @return This builder for chaining.
        */
       public Builder clearVersion() {
@@ -490,14 +490,14 @@ public final class MarkerDiffSnapshotVoOuterClass {
 
       private long id_ ;
       /**
-       * <code>uint64 id = 10000;</code>
+       * <code>uint64 id = 2;</code>
        * @return The id.
        */
       public long getId() {
         return id_;
       }
       /**
-       * <code>uint64 id = 10000;</code>
+       * <code>uint64 id = 2;</code>
        * @param value The id to set.
        * @return This builder for chaining.
        */
@@ -508,7 +508,7 @@ public final class MarkerDiffSnapshotVoOuterClass {
         return this;
       }
       /**
-       * <code>uint64 id = 10000;</code>
+       * <code>uint64 id = 2;</code>
        * @return This builder for chaining.
        */
       public Builder clearId() {
@@ -1378,11 +1378,11 @@ public final class MarkerDiffSnapshotVoOuterClass {
   static {
     java.lang.String[] descriptorData = {
       "\n\032MarkerDiffSnapshotVo.proto\022\030site.yuans" +
-      "hen.data.proto\"5\n\024MarkerDiffSnapshotVo\022\020" +
-      "\n\007version\030\217N \001(\004\022\013\n\002id\030\220N \001(\004\"]\n\030MarkerD" +
-      "iffSnapshotVoList\022A\n\tsnapshots\030\001 \003(\0132..s" +
-      "ite.yuanshen.data.proto.MarkerDiffSnapsh" +
-      "otVob\006proto3"
+      "hen.data.proto\"3\n\024MarkerDiffSnapshotVo\022\017" +
+      "\n\007version\030\001 \001(\004\022\n\n\002id\030\002 \001(\004\"]\n\030MarkerDif" +
+      "fSnapshotVoList\022A\n\tsnapshots\030\001 \003(\0132..sit" +
+      "e.yuanshen.data.proto.MarkerDiffSnapshot" +
+      "Vob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
