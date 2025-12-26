@@ -6,21 +6,17 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import site.yuanshen.common.core.utils.SpringContextUtils;
-import site.yuanshen.common.web.utils.ApplicationUtils;
 import site.yuanshen.data.entity.Area;
-import site.yuanshen.data.entity.Item;
 import site.yuanshen.data.mapper.AreaMapper;
 import site.yuanshen.data.proto.MarkerDiffSnapshotVoOuterClass;
-import site.yuanshen.data.vo.MarkerItemLinkVo;
 import site.yuanshen.data.vo.MarkerSearchVo;
 import site.yuanshen.data.vo.MarkerVo;
 import site.yuanshen.genshin.core.dao.MarkerDao;
+import site.yuanshen.genshin.core.dao.MarkerDataDao;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
@@ -34,6 +30,7 @@ import java.util.stream.Collectors;
 public class MarkerDocService {
 
     private final MarkerDao markerDao;
+    private final MarkerDataDao markerDataDao;
     private final AreaMapper areaMapper;
 
     public List<String> listMarkerBinaryMD5() {
@@ -58,16 +55,7 @@ public class MarkerDocService {
             .collect(Collectors.toList());
         markerSearchVo.setAreaIdList(areaIds);
         final List<MarkerVo> markerList = markerService.searchMarker(markerSearchVo, hiddenFlagList);
-
-        final MarkerDiffSnapshotVoOuterClass.MarkerDiffSnapshotVoList.Builder builder = MarkerDiffSnapshotVoOuterClass.MarkerDiffSnapshotVoList.newBuilder();
-        markerList.forEach(markerVo -> {
-            final MarkerDiffSnapshotVoOuterClass.MarkerDiffSnapshotVo snapshot = MarkerDiffSnapshotVoOuterClass.MarkerDiffSnapshotVo.newBuilder()
-                .setVersion(markerVo.getVersion())
-                .setId(markerVo.getId())
-                .build();
-            builder.addSnapshots(snapshot);
-        });
-        final MarkerDiffSnapshotVoOuterClass.MarkerDiffSnapshotVoList snapshotList = builder.build();
+        final MarkerDiffSnapshotVoOuterClass.MarkerDiffSnapshotVoList snapshotList = markerDataDao.getMarkerDiffSnapshotVoList(markerList);
 
         return snapshotList.toByteArray();
     }
