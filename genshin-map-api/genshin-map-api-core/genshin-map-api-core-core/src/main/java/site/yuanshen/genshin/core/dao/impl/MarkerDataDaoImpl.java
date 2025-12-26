@@ -13,17 +13,30 @@ import java.util.List;
 @Service
 public class MarkerDataDaoImpl implements MarkerDataDao {
     @Override
-    public MarkerDiffSnapshotVoOuterClass.MarkerDiffSnapshotVoList getMarkerDiffSnapshotVoList(List<MarkerVo> markerList) {
-        if (CollUtil.isEmpty(markerList)) {
-            markerList = List.of();
+    public MarkerDiffSnapshotVoOuterClass.MarkerDiffSnapshotVo buildMarkerDiffSnapshotProto(MarkerVo markerVo) {
+        if (markerVo == null) {
+            return null;
+        }
+
+        final MarkerDiffSnapshotVoOuterClass.MarkerDiffSnapshotVo snapshot = MarkerDiffSnapshotVoOuterClass.MarkerDiffSnapshotVo.newBuilder()
+            .setVersion(markerVo.getVersion())
+            .setId(markerVo.getId())
+            .build();
+        return snapshot;
+    }
+
+    @Override
+    public MarkerDiffSnapshotVoOuterClass.MarkerDiffSnapshotVoList buildMarkerDiffSnapshotListProto(List<MarkerVo> markerVoList) {
+        if (CollUtil.isEmpty(markerVoList)) {
+            markerVoList = List.of();
         }
 
         final MarkerDiffSnapshotVoOuterClass.MarkerDiffSnapshotVoList.Builder builder = MarkerDiffSnapshotVoOuterClass.MarkerDiffSnapshotVoList.newBuilder();
-        markerList.forEach(markerVo -> {
-            final MarkerDiffSnapshotVoOuterClass.MarkerDiffSnapshotVo snapshot = MarkerDiffSnapshotVoOuterClass.MarkerDiffSnapshotVo.newBuilder()
-                .setVersion(markerVo.getVersion())
-                .setId(markerVo.getId())
-                .build();
+        markerVoList.forEach(markerVo -> {
+            MarkerDiffSnapshotVoOuterClass.MarkerDiffSnapshotVo snapshot = this.buildMarkerDiffSnapshotProto(markerVo);
+            if (snapshot == null) {
+                return;
+            }
             builder.addSnapshots(snapshot);
         });
         final MarkerDiffSnapshotVoOuterClass.MarkerDiffSnapshotVoList snapshotList = builder.build();

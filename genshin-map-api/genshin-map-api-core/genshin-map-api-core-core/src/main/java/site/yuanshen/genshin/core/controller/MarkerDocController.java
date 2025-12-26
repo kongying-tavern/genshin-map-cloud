@@ -11,7 +11,6 @@ import site.yuanshen.data.enums.HiddenFlagEnum;
 import site.yuanshen.data.vo.BinaryMD5Vo;
 import site.yuanshen.genshin.core.dao.MarkerDao;
 import site.yuanshen.genshin.core.service.MarkerDocService;
-import site.yuanshen.genshin.core.service.MarkerService;
 
 import java.util.List;
 
@@ -32,21 +31,21 @@ public class MarkerDocController {
 
     @Operation(summary = "返回点位分页", description = "查询分页点位信息，返回压缩格式的byte数组")
     @GetMapping("/list_page_bin/{md5}")
-    public byte[] listPageMarkerByBinary(@Parameter(hidden = true) @RequestHeader(value = "userDataLevel",required = false) String userDataLevel, @PathVariable("md5") String md5) {
+    public byte[] listPageMarkerByBinary(@Parameter(hidden = true) @RequestHeader(value = "userDataLevel", required = false) String userDataLevel, @PathVariable("md5") String md5) {
         return markerDao.getMarkerBinary(HiddenFlagEnum.getFlagListByMask(userDataLevel), md5);
     }
 
     @Operation(summary = "返回点位分页的md5数组", description = "返回点位分页的md5数组")
     @GetMapping("/list_page_bin_md5")
-    public R<List<BinaryMD5Vo>> listMarkerBinaryMD5(@Parameter(hidden = true) @RequestHeader(value = "userDataLevel",required = false) String userDataLevel) {
+    public R<List<BinaryMD5Vo>> listMarkerBinaryMD5(@Parameter(hidden = true) @RequestHeader(value = "userDataLevel", required = false) String userDataLevel) {
         return RUtils.create(
-                markerDao.listMarkerBinaryMD5(HiddenFlagEnum.getFlagListByMask(userDataLevel))
+            markerDao.listMarkerBinaryMD5(HiddenFlagEnum.getFlagListByMask(userDataLevel))
         );
     }
 
     @Operation(summary = "返回点位差异比对快照", description = "点位差异比对二进制快照")
     @GetMapping("/list_diff_snapshot")
-    public byte[] listMarkerDiffSnapshotByBinary(@Parameter(hidden = true) @RequestHeader(value = "userDataLevel",required = false) String userDataLevel) {
+    public byte[] listMarkerDiffSnapshotByBinary(@Parameter(hidden = true) @RequestHeader(value = "userDataLevel", required = false) String userDataLevel) {
         return markerDocService.getMarkerDiffSnapshot(HiddenFlagEnum.getFlagListByMask(userDataLevel));
     }
 }

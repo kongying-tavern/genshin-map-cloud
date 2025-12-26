@@ -6,5 +6,7 @@ import site.yuanshen.data.vo.MarkerVo;
 import java.util.List;
 
 public interface MarkerDataDao {
-    MarkerDiffSnapshotVoOuterClass.MarkerDiffSnapshotVoList getMarkerDiffSnapshotVoList(List<MarkerVo> markerList);
+    MarkerDiffSnapshotVoOuterClass.MarkerDiffSnapshotVo buildMarkerDiffSnapshotProto(MarkerVo markerVo);
+
+    MarkerDiffSnapshotVoOuterClass.MarkerDiffSnapshotVoList buildMarkerDiffSnapshotListProto(List<MarkerVo> markerVoList);
 }

@@ -55,8 +55,8 @@ public class MarkerDocService {
             .collect(Collectors.toList());
         markerSearchVo.setAreaIdList(areaIds);
         final List<MarkerVo> markerList = markerService.searchMarker(markerSearchVo, hiddenFlagList);
-        final MarkerDiffSnapshotVoOuterClass.MarkerDiffSnapshotVoList snapshotList = markerDataDao.getMarkerDiffSnapshotVoList(markerList);
+        final MarkerDiffSnapshotVoOuterClass.MarkerDiffSnapshotVoList snapshotListProto = markerDataDao.buildMarkerDiffSnapshotListProto(markerList);
 
-        return snapshotList.toByteArray();
+        return snapshotListProto.toByteArray();
     }
 }
