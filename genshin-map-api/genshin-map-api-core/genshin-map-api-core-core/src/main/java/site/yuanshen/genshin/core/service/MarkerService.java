@@ -23,6 +23,7 @@ import site.yuanshen.data.vo.MarkerItemLinkVo;
 import site.yuanshen.data.vo.MarkerRenderModelVo;
 import site.yuanshen.data.vo.MarkerSearchVo;
 import site.yuanshen.data.vo.MarkerVo;
+import site.yuanshen.data.vo.adapter.marker.marker.MarkerExtraVo;
 import site.yuanshen.data.vo.adapter.marker.tweak.TweakVo;
 import site.yuanshen.data.vo.helper.PageListVo;
 import site.yuanshen.genshin.core.convert.HistoryConvert;
@@ -207,7 +208,7 @@ public class MarkerService {
         //将当前记录保存为历史记录
         this.saveHistory(markerRecord, HistoryEditType.UPDATE);
 
-        Map<String, Object> mergeResult = JsonUtils.merge(markerRecord.getExtra(), markerDto.getExtra());
+        MarkerExtraVo mergeResult = JsonUtils.merge(markerRecord.getExtra(), markerDto.getExtra(), MarkerExtraVo.class);
         markerDto.setExtra(mergeResult);
 
         Boolean updated = this.saveMarker(markerDto);

@@ -4,10 +4,10 @@ import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import site.yuanshen.data.base.BaseEntity;
-import site.yuanshen.handler.MBPJsonObjectTypeHandler;
+import site.yuanshen.data.helper.marker.marker.MarkerExtraTypeHandler;
+import site.yuanshen.data.vo.adapter.marker.marker.MarkerExtraVo;
 
 import java.sql.Timestamp;
-import java.util.Map;
 
 /**
  * 点位主表
@@ -111,7 +111,7 @@ public class Marker extends BaseEntity {
     /**
      * 额外特殊字段
      */
-    @TableField(value = "extra", typeHandler = MBPJsonObjectTypeHandler.class)
-    private Map<String, Object> extra;
+    @TableField(value = "extra", typeHandler = MarkerExtraTypeHandler.class)
+    private MarkerExtraVo extra;
 
 }
