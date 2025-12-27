@@ -75,6 +75,12 @@ public class WebLogAspect {
                 (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         assert attributes != null;
         HttpServletRequest request = attributes.getRequest();
+        String args;
+        try {
+            args = JSON.toJSONString(sanitizeArgs(joinPoint.getArgs()), defaultWriteFeatures);
+        } catch (OutOfMemoryError e) {
+            args = "[Too long arguments]";
+        }
         log.info(
                 LINE_SEPARATOR
                         + "URL          : "
@@ -92,7 +98,7 @@ public class WebLogAspect {
                         + request.getRemoteAddr()
                         + LINE_SEPARATOR
                         + "请求入参     : "
-                        + JSON.toJSONString(sanitizeArgs(joinPoint.getArgs()), defaultWriteFeatures)
+                        + args
                         + LINE_SEPARATOR);
     }
 
@@ -129,7 +135,12 @@ public class WebLogAspect {
             throw e;
         } finally {
             STOP_WATCH_THREAD_LOCAL.get().stop();
-            String s = JSON.toJSONString(result, defaultWriteFeatures);
+            String s;
+            try {
+                s = JSON.toJSONString(result, defaultWriteFeatures);
+            } catch (OutOfMemoryError e) {
+                s = "[Too large data]";
+            }
             log.info(
                     LINE_SEPARATOR
                             + "URL          : "
