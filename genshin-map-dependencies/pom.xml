@@ -16,7 +16,6 @@
         <fastjson2.version>2.0.24</fastjson2.version>
         <jackson.version>2.12.4</jackson.version>
         <protobuf.version>4.33.2</protobuf.version>
-        <protoc-plugin.version>3.11.4</protoc-plugin.version>
         <springdoc.version>1.6.11</springdoc.version>
         <swagger.version>2.2.2</swagger.version>
         <nimbus-jose-jwt.version>9.21</nimbus-jose-jwt.version>
@@ -252,11 +251,6 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>com.github.os72</groupId>
-                <artifactId>protoc-jar-maven-plugin</artifactId>
-                <version>${protoc-plugin.version}</version>
             </plugin>
         </plugins>
     </build>
