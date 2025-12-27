@@ -17,7 +17,7 @@ import java.util.List;
 public class MarkerExtraVo {
     @Data
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    static class Underground {
+    public static class Underground {
         @Schema(title = "是否是分层层级")
         @JSONField(name = "is_underground")
         @JsonProperty("is_underground")
@@ -36,7 +36,7 @@ public class MarkerExtraVo {
 
     @Data
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    static class IconOverride {
+    public static class IconOverride {
         @Schema(title = "图标ID")
         @JSONField(name = "id")
         @JsonProperty("id")
@@ -57,7 +57,7 @@ public class MarkerExtraVo {
 
     @Data
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    static class V2_8_Island {
+    public static class V2_8_Island {
         @Schema(title = "海岛名")
         @JSONField(name = "island_name")
         @JsonProperty("island_name")

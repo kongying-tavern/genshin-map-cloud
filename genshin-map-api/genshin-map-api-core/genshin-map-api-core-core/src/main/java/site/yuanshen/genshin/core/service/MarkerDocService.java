@@ -9,6 +9,7 @@ import site.yuanshen.common.core.utils.SpringContextUtils;
 import site.yuanshen.data.entity.Area;
 import site.yuanshen.data.mapper.AreaMapper;
 import site.yuanshen.data.proto.MarkerDiffSnapshotVoOuterClass;
+import site.yuanshen.data.proto.MarkerVoListOuterClass;
 import site.yuanshen.data.vo.MarkerSearchVo;
 import site.yuanshen.data.vo.MarkerVo;
 import site.yuanshen.genshin.core.dao.MarkerDao;
@@ -58,5 +59,20 @@ public class MarkerDocService {
         final MarkerDiffSnapshotVoOuterClass.MarkerDiffSnapshotVoList snapshotListProto = markerDataDao.buildMarkerDiffSnapshotListProto(markerList);
 
         return snapshotListProto.toByteArray();
+    }
+
+    public byte[] getMarkerList(List<Integer> hiddenFlagList) {
+        final MarkerService markerService = (MarkerService) SpringContextUtils.getBean("markerService");
+        final MarkerSearchVo markerSearchVo = new MarkerSearchVo();
+        final List<Long> areaIds = areaMapper
+            .selectList(Wrappers.lambdaQuery())
+            .stream()
+            .map(Area::getId)
+            .collect(Collectors.toList());
+        markerSearchVo.setAreaIdList(areaIds);
+        final List<MarkerVo> markerList = markerService.searchMarker(markerSearchVo, hiddenFlagList);
+        final MarkerVoListOuterClass.MarkerVoList markerListProto = markerDataDao.buildMarkerListProto(markerList);
+
+        return markerListProto.toByteArray();
     }
 }

@@ -48,4 +48,10 @@ public class MarkerDocController {
     public byte[] listMarkerDiffSnapshotByBinary(@Parameter(hidden = true) @RequestHeader(value = "userDataLevel", required = false) String userDataLevel) {
         return markerDocService.getMarkerDiffSnapshot(HiddenFlagEnum.getFlagListByMask(userDataLevel));
     }
+
+    @Operation(summary = "返回所有点位", description = "点位列表二进制")
+    @GetMapping("/list_markers")
+    public byte[] listMarkersByBinary(@Parameter(hidden = true) @RequestHeader(value = "userDataLevel", required = false) String userDataLevel) {
+        return markerDocService.getMarkerList(HiddenFlagEnum.getFlagListByMask(userDataLevel));
+    }
 }
