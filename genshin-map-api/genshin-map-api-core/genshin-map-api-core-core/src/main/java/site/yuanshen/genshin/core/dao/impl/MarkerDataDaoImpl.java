@@ -1,6 +1,7 @@
 package site.yuanshen.genshin.core.dao.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -35,10 +36,13 @@ public class MarkerDataDaoImpl implements MarkerDataDao {
             return null;
         }
 
-        final MarkerDiffSnapshotVoOuterClass.MarkerDiffSnapshotVo snapshotProto = MarkerDiffSnapshotVoOuterClass.MarkerDiffSnapshotVo.newBuilder()
-            .setVersion(markerVo.getVersion())
-            .setId(markerVo.getId())
-            .build();
+        final MarkerDiffSnapshotVoOuterClass.MarkerDiffSnapshotVo.Builder snapshotBuilder = MarkerDiffSnapshotVoOuterClass.MarkerDiffSnapshotVo.newBuilder();
+
+        snapshotBuilder.setVersion(markerVo.getVersion() == null ? 0L : markerVo.getVersion());
+        snapshotBuilder.setId(markerVo.getId() == null ? 0L : markerVo.getId());
+
+        final MarkerDiffSnapshotVoOuterClass.MarkerDiffSnapshotVo snapshotProto = snapshotBuilder.build();
+
         return snapshotProto;
     }
 
@@ -49,13 +53,13 @@ public class MarkerDataDaoImpl implements MarkerDataDao {
         }
 
         final MarkerDiffSnapshotVoOuterClass.MarkerDiffSnapshotVoList.Builder builder = MarkerDiffSnapshotVoOuterClass.MarkerDiffSnapshotVoList.newBuilder();
-        markerVoList.forEach(markerVo -> {
-            MarkerDiffSnapshotVoOuterClass.MarkerDiffSnapshotVo snapshot = this.buildMarkerDiffSnapshotProto(markerVo);
-            if (snapshot == null) {
-                return;
-            }
-            builder.addSnapshots(snapshot);
-        });
+        builder.addAllSnapshots(
+            markerVoList.stream()
+                .map(this::buildMarkerDiffSnapshotProto)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList())
+        );
+
         final MarkerDiffSnapshotVoOuterClass.MarkerDiffSnapshotVoList snapshotListProto = builder.build();
 
         return snapshotListProto;
@@ -67,11 +71,14 @@ public class MarkerDataDaoImpl implements MarkerDataDao {
             return null;
         }
 
-        final MarkerVoOuterClass.MarkerItemLinkVo itemLinkProto = MarkerVoOuterClass.MarkerItemLinkVo.newBuilder()
-            .setItemId(markerItemLinkVo.getItemId())
-            .setIconId(markerItemLinkVo.getIconId())
-            .setCount(markerItemLinkVo.getCount())
-            .build();
+        final MarkerVoOuterClass.MarkerItemLinkVo.Builder itemLinkBuilder = MarkerVoOuterClass.MarkerItemLinkVo.newBuilder();
+
+        itemLinkBuilder.setItemId(markerItemLinkVo.getItemId() == null ? 0L : markerItemLinkVo.getItemId());
+        itemLinkBuilder.setIconId(markerItemLinkVo.getIconId() == null ? 0L : markerItemLinkVo.getIconId());
+        itemLinkBuilder.setCount(markerItemLinkVo.getCount() == null ? 1 : markerItemLinkVo.getCount());
+
+        final MarkerVoOuterClass.MarkerItemLinkVo itemLinkProto = itemLinkBuilder.build();
+
         return itemLinkProto;
     }
 
@@ -82,25 +89,48 @@ public class MarkerDataDaoImpl implements MarkerDataDao {
         }
 
         final MarkerVoOuterClass.MarkerExtra.Builder builder = MarkerVoOuterClass.MarkerExtra.newBuilder();
+
         // Underground
         if (markerExtraVo.getUnderground() != null) {
-            final MarkerVoOuterClass.MarkerExtraUnderground.Builder undergroundProtoBuilder = MarkerVoOuterClass.MarkerExtraUnderground.newBuilder();
-            undergroundProtoBuilder
-                .setIsUnderground(markerExtraVo.getUnderground().getIsUnderground())
-                .setIsGlobal(markerExtraVo.getUnderground().getIsGlobal())
-                .addAllRegionLevels(CollUtil.emptyIfNull(markerExtraVo.getUnderground().getRegionLevels()));
-            final MarkerVoOuterClass.MarkerExtraUnderground undergroundProto = undergroundProtoBuilder.build();
+            final MarkerVoOuterClass.MarkerExtraUnderground.Builder undergroundBuilder = MarkerVoOuterClass.MarkerExtraUnderground.newBuilder();
+            undergroundBuilder.setIsUnderground(
+                markerExtraVo.getUnderground().getIsUnderground() != null &&
+                    markerExtraVo.getUnderground().getIsUnderground()
+            );
+            if (markerExtraVo.getUnderground().getIsGlobal() != null) {
+                undergroundBuilder.setIsGlobal(markerExtraVo.getUnderground().getIsGlobal());
+            }
+            undergroundBuilder.addAllRegionLevels(
+                CollUtil.emptyIfNull(markerExtraVo.getUnderground().getRegionLevels())
+            );
+
+            final MarkerVoOuterClass.MarkerExtraUnderground undergroundProto = undergroundBuilder.build();
+
             builder.setUnderground(undergroundProto);
         }
 
         // IconOverride
         if (markerExtraVo.getIconOverride() != null) {
             final MarkerVoOuterClass.MarkerExtraIconOverride.Builder iconOverrideProtoBuilder = MarkerVoOuterClass.MarkerExtraIconOverride.newBuilder();
-            iconOverrideProtoBuilder
-                .setId(markerExtraVo.getIconOverride().getId())
-                .setMinZoom(markerExtraVo.getIconOverride().getMinZoom().floatValue())
-                .setMaxZoom(markerExtraVo.getIconOverride().getMaxZoom().floatValue());
+
+            iconOverrideProtoBuilder.setId(
+                markerExtraVo.getIconOverride().getId() == null ?
+                    0L :
+                    markerExtraVo.getIconOverride().getId()
+            );
+            iconOverrideProtoBuilder.setMinZoom(
+                markerExtraVo.getIconOverride().getMinZoom() == null ?
+                    0.0f :
+                    markerExtraVo.getIconOverride().getMinZoom().floatValue()
+            );
+            iconOverrideProtoBuilder.setMaxZoom(
+                markerExtraVo.getIconOverride().getMaxZoom() == null ?
+                    0.0f :
+                    markerExtraVo.getIconOverride().getMaxZoom().floatValue()
+            );
+
             final MarkerVoOuterClass.MarkerExtraIconOverride iconOverrideProto = iconOverrideProtoBuilder.build();
+
             builder.setIconOverride(iconOverrideProto);
         }
 
@@ -112,14 +142,19 @@ public class MarkerDataDaoImpl implements MarkerDataDao {
         // V2_8_Island
         if (markerExtraVo.getV2_8_Island() != null) {
             final MarkerVoOuterClass.MarkerExtra2_8_Island.Builder v28IslandProtoBuilder = MarkerVoOuterClass.MarkerExtra2_8_Island.newBuilder();
-            v28IslandProtoBuilder
-                .setIslandName(markerExtraVo.getV2_8_Island().getIslandName())
-                .addAllIslandState(CollUtil.emptyIfNull(markerExtraVo.getV2_8_Island().getIslandState()));
+
+            v28IslandProtoBuilder.setIslandName(StrUtil.nullToEmpty(markerExtraVo.getV2_8_Island().getIslandName()));
+            v28IslandProtoBuilder.addAllIslandState(
+                CollUtil.emptyIfNull(markerExtraVo.getV2_8_Island().getIslandState())
+            );
+
             final MarkerVoOuterClass.MarkerExtra2_8_Island v28IslandProto = v28IslandProtoBuilder.build();
+
             builder.setV28Island(v28IslandProto);
         }
 
         final MarkerVoOuterClass.MarkerExtra markerExtraProto = builder.build();
+
         return markerExtraProto;
     }
 
@@ -130,32 +165,40 @@ public class MarkerDataDaoImpl implements MarkerDataDao {
         }
 
         final MarkerVoOuterClass.MarkerVo.Builder builder = MarkerVoOuterClass.MarkerVo.newBuilder();
-        builder
-            .setVersion(markerVo.getVersion())
-            .setId(markerVo.getId())
-            .setCreatorId(markerVo.getCreatorId())
-            .setCreateTime(TimeUtils.toProtoTimestamp(markerVo.getCreateTime()))
-            .setUpdaterId(markerVo.getUpdaterId())
-            .setUpdateTime(TimeUtils.toProtoTimestamp(markerVo.getUpdateTime()))
-            .setMarkerTitle(markerVo.getMarkerTitle())
-            .setPosition(markerVo.getPosition())
-            .setContent(markerVo.getContent())
-            .setPicture(markerVo.getPicture())
-            .setVideoPath(markerVo.getVideoPath())
-            .setRefreshTime(markerVo.getRefreshTime())
-            .setHiddenFlag(markerVo.getHiddenFlag())
-            .addAllItemList(
-                CollUtil.emptyIfNull(markerVo.getItemList())
-                    .stream()
-                    .map(this::buildMarkerItemLinkProto)
-                    .filter(Objects::nonNull)
-                    .collect(Collectors.toList())
-            )
-            .setMarkerCreatorId(markerVo.getMarkerCreatorId())
-            .setPictureCreatorId(markerVo.getPictureCreatorId())
-            .setMarkerStamp(markerVo.getMarkerStamp())
-            .setExtra(this.buildMarkerExtraProto(markerVo.getExtra()))
-            .setLinkageId(markerVo.getLinkageId());
+        builder.setVersion(markerVo.getVersion() == null ? 0L : markerVo.getVersion());
+        builder.setId(markerVo.getId() == null ? 0L : markerVo.getId());
+        builder.setCreatorId(markerVo.getCreatorId() == null ? 0L : markerVo.getCreatorId());
+        if (markerVo.getCreateTime() != null) {
+            builder.setCreateTime(TimeUtils.toProtoTimestamp(markerVo.getCreateTime()));
+        }
+        builder.setUpdaterId(markerVo.getUpdaterId() == null ? 0L : markerVo.getUpdaterId());
+        if (markerVo.getUpdateTime() != null) {
+            builder.setUpdateTime(TimeUtils.toProtoTimestamp(markerVo.getUpdateTime()));
+        }
+        builder.setMarkerTitle(StrUtil.nullToEmpty(markerVo.getMarkerTitle()));
+        builder.setPosition(StrUtil.blankToDefault(markerVo.getPosition(), "0,0"));
+        builder.setContent(StrUtil.nullToEmpty(markerVo.getContent()));
+        builder.setPicture(StrUtil.nullToEmpty(markerVo.getPicture()));
+        builder.setVideoPath(StrUtil.nullToEmpty(markerVo.getVideoPath()));
+        builder.setRefreshTime(markerVo.getRefreshTime() == null ? 0L : markerVo.getRefreshTime());
+        builder.setHiddenFlag(markerVo.getHiddenFlag() == null ? 0 : markerVo.getHiddenFlag());
+        builder.addAllItemList(
+            CollUtil.emptyIfNull(markerVo.getItemList())
+                .stream()
+                .map(this::buildMarkerItemLinkProto)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList())
+        );
+        if (markerVo.getMarkerCreatorId() != null) {
+            builder.setMarkerCreatorId(markerVo.getMarkerCreatorId());
+        }
+        if (markerVo.getPictureCreatorId() != null) {
+            builder.setPictureCreatorId(markerVo.getPictureCreatorId());
+        }
+        builder.setMarkerStamp(StrUtil.nullToEmpty(markerVo.getMarkerStamp()));
+        builder.setExtra(this.buildMarkerExtraProto(markerVo.getExtra()));
+        builder.setLinkageId(StrUtil.nullToEmpty(markerVo.getLinkageId()));
+
         final MarkerVoOuterClass.MarkerVo markerVoProto = builder.build();
 
         return markerVoProto;
@@ -199,12 +242,13 @@ public class MarkerDataDaoImpl implements MarkerDataDao {
             }
             SysUserSmallVoOuterClass.SysUserSmallVo userSmallProto = this.sysUserDataDao.buildSysUserSmallProto(user);
             if (userSmallProto == null) {
-                return null;
+                continue;
             }
             builder.putUsers(userId, userSmallProto);
         }
 
         final MarkerVoListOuterClass.MarkerVoList markerVoListProto = builder.build();
+
         return markerVoListProto;
     }
 }

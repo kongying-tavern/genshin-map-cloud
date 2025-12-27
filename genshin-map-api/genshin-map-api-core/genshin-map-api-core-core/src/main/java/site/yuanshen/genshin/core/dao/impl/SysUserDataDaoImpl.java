@@ -1,5 +1,6 @@
 package site.yuanshen.genshin.core.dao.impl;
 
+import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import site.yuanshen.data.proto.SysUserSmallVoOuterClass;
@@ -16,13 +17,19 @@ public class SysUserDataDaoImpl implements SysUserDataDao {
         }
 
         final SysUserSmallVoOuterClass.SysUserSmallVo.Builder builder = SysUserSmallVoOuterClass.SysUserSmallVo.newBuilder();
-        builder
-            .setUsername(sysUserSmallVo.getUsername())
-            .setNickname(sysUserSmallVo.getNickname())
-            .setQq(sysUserSmallVo.getQq())
-            .setPhone(sysUserSmallVo.getPhone())
-            .setLogo(sysUserSmallVo.getLogo())
-            .setRemark(sysUserSmallVo.getRemark());
+        builder.setUsername(StrUtil.nullToEmpty(sysUserSmallVo.getUsername()));
+        builder.setNickname(StrUtil.nullToEmpty(sysUserSmallVo.getNickname()));
+        builder.setQq(StrUtil.nullToEmpty(sysUserSmallVo.getQq()));
+        if (sysUserSmallVo.getPhone() != null) {
+            builder.setPhone(sysUserSmallVo.getPhone());
+        }
+        if (sysUserSmallVo.getLogo() != null) {
+            builder.setLogo(sysUserSmallVo.getLogo());
+        }
+        if (sysUserSmallVo.getRemark() != null) {
+            builder.setRemark(sysUserSmallVo.getRemark());
+        }
+
         final SysUserSmallVoOuterClass.SysUserSmallVo sysUserSmallVoProto = builder.build();
 
         return sysUserSmallVoProto;
