@@ -5,6 +5,8 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import site.yuanshen.common.core.exception.GenshinApiException;
+import site.yuanshen.common.core.utils.CompressUtils;
 import site.yuanshen.common.web.response.R;
 import site.yuanshen.common.web.response.RUtils;
 import site.yuanshen.data.enums.HiddenFlagEnum;
@@ -12,6 +14,7 @@ import site.yuanshen.data.vo.BinaryMD5Vo;
 import site.yuanshen.genshin.core.dao.MarkerDao;
 import site.yuanshen.genshin.core.service.MarkerDocService;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -43,15 +46,21 @@ public class MarkerDocController {
         );
     }
 
-    @Operation(summary = "返回点位差异比对快照", description = "点位差异比对二进制快照")
+    @Operation(summary = "返回点位差异比对快照", description = "点位差异比对二进制快照，快照为protobuf数据")
     @GetMapping("/list_diff_snapshot")
     public byte[] listMarkerDiffSnapshotByBinary(@Parameter(hidden = true) @RequestHeader(value = "userDataLevel", required = false) String userDataLevel) {
         return markerDocService.getMarkerDiffSnapshot(HiddenFlagEnum.getFlagListByMask(userDataLevel));
     }
 
-    @Operation(summary = "返回所有点位", description = "点位列表二进制")
+    @Operation(summary = "返回所有点位", description = "点位列表二进制，二进制位protobuf数据+压缩")
     @GetMapping("/list_markers")
     public byte[] listMarkersByBinary(@Parameter(hidden = true) @RequestHeader(value = "userDataLevel", required = false) String userDataLevel) {
-        return markerDocService.getMarkerList(HiddenFlagEnum.getFlagListByMask(userDataLevel));
+        try {
+            return CompressUtils.compress(
+                markerDocService.getMarkerList(HiddenFlagEnum.getFlagListByMask(userDataLevel))
+            );
+        } catch (IOException e) {
+            throw new GenshinApiException("生成数据错误");
+        }
     }
 }
