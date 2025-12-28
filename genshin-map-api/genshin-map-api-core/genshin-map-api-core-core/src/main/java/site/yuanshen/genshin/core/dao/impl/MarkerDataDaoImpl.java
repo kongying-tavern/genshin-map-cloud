@@ -5,7 +5,6 @@ import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import site.yuanshen.common.core.utils.TimeUtils;
 import site.yuanshen.data.proto.MarkerDiffSnapshotVoOuterClass;
 import site.yuanshen.data.proto.MarkerVoListOuterClass;
 import site.yuanshen.data.proto.MarkerVoOuterClass;
@@ -169,11 +168,11 @@ public class MarkerDataDaoImpl implements MarkerDataDao {
         builder.setId(markerVo.getId() == null ? 0L : markerVo.getId());
         builder.setCreatorId(markerVo.getCreatorId() == null ? 0L : markerVo.getCreatorId());
         if (markerVo.getCreateTime() != null) {
-            builder.setCreateTime(TimeUtils.toProtoTimestamp(markerVo.getCreateTime()));
+            builder.setCreateTime(markerVo.getCreateTime().getTime());
         }
         builder.setUpdaterId(markerVo.getUpdaterId() == null ? 0L : markerVo.getUpdaterId());
         if (markerVo.getUpdateTime() != null) {
-            builder.setUpdateTime(TimeUtils.toProtoTimestamp(markerVo.getUpdateTime()));
+            builder.setUpdateTime(markerVo.getUpdateTime().getTime());
         }
         builder.setMarkerTitle(StrUtil.nullToEmpty(markerVo.getMarkerTitle()));
         builder.setPosition(StrUtil.blankToDefault(markerVo.getPosition(), "0,0"));

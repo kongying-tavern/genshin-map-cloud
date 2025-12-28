@@ -49,19 +49,15 @@ public final class MarkerVoOuterClass extends com.google.protobuf.GeneratedFile 
     long getCreatorId();
 
     /**
-     * <code>optional .google.protobuf.Timestamp create_time = 4;</code>
+     * <code>optional uint64 create_time = 4;</code>
      * @return Whether the createTime field is set.
      */
     boolean hasCreateTime();
     /**
-     * <code>optional .google.protobuf.Timestamp create_time = 4;</code>
+     * <code>optional uint64 create_time = 4;</code>
      * @return The createTime.
      */
-    com.google.protobuf.Timestamp getCreateTime();
-    /**
-     * <code>optional .google.protobuf.Timestamp create_time = 4;</code>
-     */
-    com.google.protobuf.TimestampOrBuilder getCreateTimeOrBuilder();
+    long getCreateTime();
 
     /**
      * <code>uint64 updater_id = 5;</code>
@@ -70,19 +66,15 @@ public final class MarkerVoOuterClass extends com.google.protobuf.GeneratedFile 
     long getUpdaterId();
 
     /**
-     * <code>optional .google.protobuf.Timestamp update_time = 6;</code>
+     * <code>optional uint64 update_time = 6;</code>
      * @return Whether the updateTime field is set.
      */
     boolean hasUpdateTime();
     /**
-     * <code>optional .google.protobuf.Timestamp update_time = 6;</code>
+     * <code>optional uint64 update_time = 6;</code>
      * @return The updateTime.
      */
-    com.google.protobuf.Timestamp getUpdateTime();
-    /**
-     * <code>optional .google.protobuf.Timestamp update_time = 6;</code>
-     */
-    com.google.protobuf.TimestampOrBuilder getUpdateTimeOrBuilder();
+    long getUpdateTime();
 
     /**
      * <code>string marker_title = 8;</code>
@@ -321,9 +313,9 @@ public final class MarkerVoOuterClass extends com.google.protobuf.GeneratedFile 
     }
 
     public static final int CREATE_TIME_FIELD_NUMBER = 4;
-    private com.google.protobuf.Timestamp createTime_;
+    private long createTime_ = 0L;
     /**
-     * <code>optional .google.protobuf.Timestamp create_time = 4;</code>
+     * <code>optional uint64 create_time = 4;</code>
      * @return Whether the createTime field is set.
      */
     @java.lang.Override
@@ -331,19 +323,12 @@ public final class MarkerVoOuterClass extends com.google.protobuf.GeneratedFile 
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
-     * <code>optional .google.protobuf.Timestamp create_time = 4;</code>
+     * <code>optional uint64 create_time = 4;</code>
      * @return The createTime.
      */
     @java.lang.Override
-    public com.google.protobuf.Timestamp getCreateTime() {
-      return createTime_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : createTime_;
-    }
-    /**
-     * <code>optional .google.protobuf.Timestamp create_time = 4;</code>
-     */
-    @java.lang.Override
-    public com.google.protobuf.TimestampOrBuilder getCreateTimeOrBuilder() {
-      return createTime_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : createTime_;
+    public long getCreateTime() {
+      return createTime_;
     }
 
     public static final int UPDATER_ID_FIELD_NUMBER = 5;
@@ -358,9 +343,9 @@ public final class MarkerVoOuterClass extends com.google.protobuf.GeneratedFile 
     }
 
     public static final int UPDATE_TIME_FIELD_NUMBER = 6;
-    private com.google.protobuf.Timestamp updateTime_;
+    private long updateTime_ = 0L;
     /**
-     * <code>optional .google.protobuf.Timestamp update_time = 6;</code>
+     * <code>optional uint64 update_time = 6;</code>
      * @return Whether the updateTime field is set.
      */
     @java.lang.Override
@@ -368,19 +353,12 @@ public final class MarkerVoOuterClass extends com.google.protobuf.GeneratedFile 
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
-     * <code>optional .google.protobuf.Timestamp update_time = 6;</code>
+     * <code>optional uint64 update_time = 6;</code>
      * @return The updateTime.
      */
     @java.lang.Override
-    public com.google.protobuf.Timestamp getUpdateTime() {
-      return updateTime_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : updateTime_;
-    }
-    /**
-     * <code>optional .google.protobuf.Timestamp update_time = 6;</code>
-     */
-    @java.lang.Override
-    public com.google.protobuf.TimestampOrBuilder getUpdateTimeOrBuilder() {
-      return updateTime_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : updateTime_;
+    public long getUpdateTime() {
+      return updateTime_;
     }
 
     public static final int MARKER_TITLE_FIELD_NUMBER = 8;
@@ -807,13 +785,13 @@ public final class MarkerVoOuterClass extends com.google.protobuf.GeneratedFile 
         output.writeUInt64(3, creatorId_);
       }
       if (((bitField0_ & 0x00000001) != 0)) {
-        output.writeMessage(4, getCreateTime());
+        output.writeUInt64(4, createTime_);
       }
       if (updaterId_ != 0L) {
         output.writeUInt64(5, updaterId_);
       }
       if (((bitField0_ & 0x00000002) != 0)) {
-        output.writeMessage(6, getUpdateTime());
+        output.writeUInt64(6, updateTime_);
       }
       if (!com.google.protobuf.GeneratedMessage.isStringEmpty(markerTitle_)) {
         com.google.protobuf.GeneratedMessage.writeString(output, 8, markerTitle_);
@@ -877,7 +855,7 @@ public final class MarkerVoOuterClass extends com.google.protobuf.GeneratedFile 
       }
       if (((bitField0_ & 0x00000001) != 0)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(4, getCreateTime());
+          .computeUInt64Size(4, createTime_);
       }
       if (updaterId_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
@@ -885,7 +863,7 @@ public final class MarkerVoOuterClass extends com.google.protobuf.GeneratedFile 
       }
       if (((bitField0_ & 0x00000002) != 0)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(6, getUpdateTime());
+          .computeUInt64Size(6, updateTime_);
       }
       if (!com.google.protobuf.GeneratedMessage.isStringEmpty(markerTitle_)) {
         size += com.google.protobuf.GeneratedMessage.computeStringSize(8, markerTitle_);
@@ -955,15 +933,15 @@ public final class MarkerVoOuterClass extends com.google.protobuf.GeneratedFile 
           != other.getCreatorId()) return false;
       if (hasCreateTime() != other.hasCreateTime()) return false;
       if (hasCreateTime()) {
-        if (!getCreateTime()
-            .equals(other.getCreateTime())) return false;
+        if (getCreateTime()
+            != other.getCreateTime()) return false;
       }
       if (getUpdaterId()
           != other.getUpdaterId()) return false;
       if (hasUpdateTime() != other.hasUpdateTime()) return false;
       if (hasUpdateTime()) {
-        if (!getUpdateTime()
-            .equals(other.getUpdateTime())) return false;
+        if (getUpdateTime()
+            != other.getUpdateTime()) return false;
       }
       if (!getMarkerTitle()
           .equals(other.getMarkerTitle())) return false;
@@ -1022,14 +1000,16 @@ public final class MarkerVoOuterClass extends com.google.protobuf.GeneratedFile 
           getCreatorId());
       if (hasCreateTime()) {
         hash = (37 * hash) + CREATE_TIME_FIELD_NUMBER;
-        hash = (53 * hash) + getCreateTime().hashCode();
+        hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+            getCreateTime());
       }
       hash = (37 * hash) + UPDATER_ID_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           getUpdaterId());
       if (hasUpdateTime()) {
         hash = (37 * hash) + UPDATE_TIME_FIELD_NUMBER;
-        hash = (53 * hash) + getUpdateTime().hashCode();
+        hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+            getUpdateTime());
       }
       hash = (37 * hash) + MARKER_TITLE_FIELD_NUMBER;
       hash = (53 * hash) + getMarkerTitle().hashCode();
@@ -1198,8 +1178,6 @@ public final class MarkerVoOuterClass extends com.google.protobuf.GeneratedFile 
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessage
                 .alwaysUseFieldBuilders) {
-          internalGetCreateTimeFieldBuilder();
-          internalGetUpdateTimeFieldBuilder();
           internalGetItemListFieldBuilder();
           internalGetExtraFieldBuilder();
         }
@@ -1211,17 +1189,9 @@ public final class MarkerVoOuterClass extends com.google.protobuf.GeneratedFile 
         version_ = 0L;
         id_ = 0L;
         creatorId_ = 0L;
-        createTime_ = null;
-        if (createTimeBuilder_ != null) {
-          createTimeBuilder_.dispose();
-          createTimeBuilder_ = null;
-        }
+        createTime_ = 0L;
         updaterId_ = 0L;
-        updateTime_ = null;
-        if (updateTimeBuilder_ != null) {
-          updateTimeBuilder_.dispose();
-          updateTimeBuilder_ = null;
-        }
+        updateTime_ = 0L;
         markerTitle_ = "";
         position_ = "";
         content_ = "";
@@ -1302,18 +1272,14 @@ public final class MarkerVoOuterClass extends com.google.protobuf.GeneratedFile 
         }
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000008) != 0)) {
-          result.createTime_ = createTimeBuilder_ == null
-              ? createTime_
-              : createTimeBuilder_.build();
+          result.createTime_ = createTime_;
           to_bitField0_ |= 0x00000001;
         }
         if (((from_bitField0_ & 0x00000010) != 0)) {
           result.updaterId_ = updaterId_;
         }
         if (((from_bitField0_ & 0x00000020) != 0)) {
-          result.updateTime_ = updateTimeBuilder_ == null
-              ? updateTime_
-              : updateTimeBuilder_.build();
+          result.updateTime_ = updateTime_;
           to_bitField0_ |= 0x00000002;
         }
         if (((from_bitField0_ & 0x00000040) != 0)) {
@@ -1382,13 +1348,13 @@ public final class MarkerVoOuterClass extends com.google.protobuf.GeneratedFile 
           setCreatorId(other.getCreatorId());
         }
         if (other.hasCreateTime()) {
-          mergeCreateTime(other.getCreateTime());
+          setCreateTime(other.getCreateTime());
         }
         if (other.getUpdaterId() != 0L) {
           setUpdaterId(other.getUpdaterId());
         }
         if (other.hasUpdateTime()) {
-          mergeUpdateTime(other.getUpdateTime());
+          setUpdateTime(other.getUpdateTime());
         }
         if (!other.getMarkerTitle().isEmpty()) {
           markerTitle_ = other.markerTitle_;
@@ -1507,25 +1473,21 @@ public final class MarkerVoOuterClass extends com.google.protobuf.GeneratedFile 
                 bitField0_ |= 0x00000004;
                 break;
               } // case 24
-              case 34: {
-                input.readMessage(
-                    internalGetCreateTimeFieldBuilder().getBuilder(),
-                    extensionRegistry);
+              case 32: {
+                createTime_ = input.readUInt64();
                 bitField0_ |= 0x00000008;
                 break;
-              } // case 34
+              } // case 32
               case 40: {
                 updaterId_ = input.readUInt64();
                 bitField0_ |= 0x00000010;
                 break;
               } // case 40
-              case 50: {
-                input.readMessage(
-                    internalGetUpdateTimeFieldBuilder().getBuilder(),
-                    extensionRegistry);
+              case 48: {
+                updateTime_ = input.readUInt64();
                 bitField0_ |= 0x00000020;
                 break;
-              } // case 50
+              } // case 48
               case 66: {
                 markerTitle_ = input.readStringRequireUtf8();
                 bitField0_ |= 0x00000040;
@@ -1714,125 +1676,44 @@ public final class MarkerVoOuterClass extends com.google.protobuf.GeneratedFile 
         return this;
       }
 
-      private com.google.protobuf.Timestamp createTime_;
-      private com.google.protobuf.SingleFieldBuilder<
-          com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> createTimeBuilder_;
+      private long createTime_ ;
       /**
-       * <code>optional .google.protobuf.Timestamp create_time = 4;</code>
+       * <code>optional uint64 create_time = 4;</code>
        * @return Whether the createTime field is set.
        */
+      @java.lang.Override
       public boolean hasCreateTime() {
         return ((bitField0_ & 0x00000008) != 0);
       }
       /**
-       * <code>optional .google.protobuf.Timestamp create_time = 4;</code>
+       * <code>optional uint64 create_time = 4;</code>
        * @return The createTime.
        */
-      public com.google.protobuf.Timestamp getCreateTime() {
-        if (createTimeBuilder_ == null) {
-          return createTime_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : createTime_;
-        } else {
-          return createTimeBuilder_.getMessage();
-        }
+      @java.lang.Override
+      public long getCreateTime() {
+        return createTime_;
       }
       /**
-       * <code>optional .google.protobuf.Timestamp create_time = 4;</code>
+       * <code>optional uint64 create_time = 4;</code>
+       * @param value The createTime to set.
+       * @return This builder for chaining.
        */
-      public Builder setCreateTime(com.google.protobuf.Timestamp value) {
-        if (createTimeBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          createTime_ = value;
-        } else {
-          createTimeBuilder_.setMessage(value);
-        }
+      public Builder setCreateTime(long value) {
+
+        createTime_ = value;
         bitField0_ |= 0x00000008;
         onChanged();
         return this;
       }
       /**
-       * <code>optional .google.protobuf.Timestamp create_time = 4;</code>
-       */
-      public Builder setCreateTime(
-          com.google.protobuf.Timestamp.Builder builderForValue) {
-        if (createTimeBuilder_ == null) {
-          createTime_ = builderForValue.build();
-        } else {
-          createTimeBuilder_.setMessage(builderForValue.build());
-        }
-        bitField0_ |= 0x00000008;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp create_time = 4;</code>
-       */
-      public Builder mergeCreateTime(com.google.protobuf.Timestamp value) {
-        if (createTimeBuilder_ == null) {
-          if (((bitField0_ & 0x00000008) != 0) &&
-            createTime_ != null &&
-            createTime_ != com.google.protobuf.Timestamp.getDefaultInstance()) {
-            getCreateTimeBuilder().mergeFrom(value);
-          } else {
-            createTime_ = value;
-          }
-        } else {
-          createTimeBuilder_.mergeFrom(value);
-        }
-        if (createTime_ != null) {
-          bitField0_ |= 0x00000008;
-          onChanged();
-        }
-        return this;
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp create_time = 4;</code>
+       * <code>optional uint64 create_time = 4;</code>
+       * @return This builder for chaining.
        */
       public Builder clearCreateTime() {
         bitField0_ = (bitField0_ & ~0x00000008);
-        createTime_ = null;
-        if (createTimeBuilder_ != null) {
-          createTimeBuilder_.dispose();
-          createTimeBuilder_ = null;
-        }
+        createTime_ = 0L;
         onChanged();
         return this;
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp create_time = 4;</code>
-       */
-      public com.google.protobuf.Timestamp.Builder getCreateTimeBuilder() {
-        bitField0_ |= 0x00000008;
-        onChanged();
-        return internalGetCreateTimeFieldBuilder().getBuilder();
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp create_time = 4;</code>
-       */
-      public com.google.protobuf.TimestampOrBuilder getCreateTimeOrBuilder() {
-        if (createTimeBuilder_ != null) {
-          return createTimeBuilder_.getMessageOrBuilder();
-        } else {
-          return createTime_ == null ?
-              com.google.protobuf.Timestamp.getDefaultInstance() : createTime_;
-        }
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp create_time = 4;</code>
-       */
-      private com.google.protobuf.SingleFieldBuilder<
-          com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> 
-          internalGetCreateTimeFieldBuilder() {
-        if (createTimeBuilder_ == null) {
-          createTimeBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder>(
-                  getCreateTime(),
-                  getParentForChildren(),
-                  isClean());
-          createTime_ = null;
-        }
-        return createTimeBuilder_;
       }
 
       private long updaterId_ ;
@@ -1867,125 +1748,44 @@ public final class MarkerVoOuterClass extends com.google.protobuf.GeneratedFile 
         return this;
       }
 
-      private com.google.protobuf.Timestamp updateTime_;
-      private com.google.protobuf.SingleFieldBuilder<
-          com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> updateTimeBuilder_;
+      private long updateTime_ ;
       /**
-       * <code>optional .google.protobuf.Timestamp update_time = 6;</code>
+       * <code>optional uint64 update_time = 6;</code>
        * @return Whether the updateTime field is set.
        */
+      @java.lang.Override
       public boolean hasUpdateTime() {
         return ((bitField0_ & 0x00000020) != 0);
       }
       /**
-       * <code>optional .google.protobuf.Timestamp update_time = 6;</code>
+       * <code>optional uint64 update_time = 6;</code>
        * @return The updateTime.
        */
-      public com.google.protobuf.Timestamp getUpdateTime() {
-        if (updateTimeBuilder_ == null) {
-          return updateTime_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : updateTime_;
-        } else {
-          return updateTimeBuilder_.getMessage();
-        }
+      @java.lang.Override
+      public long getUpdateTime() {
+        return updateTime_;
       }
       /**
-       * <code>optional .google.protobuf.Timestamp update_time = 6;</code>
+       * <code>optional uint64 update_time = 6;</code>
+       * @param value The updateTime to set.
+       * @return This builder for chaining.
        */
-      public Builder setUpdateTime(com.google.protobuf.Timestamp value) {
-        if (updateTimeBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          updateTime_ = value;
-        } else {
-          updateTimeBuilder_.setMessage(value);
-        }
+      public Builder setUpdateTime(long value) {
+
+        updateTime_ = value;
         bitField0_ |= 0x00000020;
         onChanged();
         return this;
       }
       /**
-       * <code>optional .google.protobuf.Timestamp update_time = 6;</code>
-       */
-      public Builder setUpdateTime(
-          com.google.protobuf.Timestamp.Builder builderForValue) {
-        if (updateTimeBuilder_ == null) {
-          updateTime_ = builderForValue.build();
-        } else {
-          updateTimeBuilder_.setMessage(builderForValue.build());
-        }
-        bitField0_ |= 0x00000020;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp update_time = 6;</code>
-       */
-      public Builder mergeUpdateTime(com.google.protobuf.Timestamp value) {
-        if (updateTimeBuilder_ == null) {
-          if (((bitField0_ & 0x00000020) != 0) &&
-            updateTime_ != null &&
-            updateTime_ != com.google.protobuf.Timestamp.getDefaultInstance()) {
-            getUpdateTimeBuilder().mergeFrom(value);
-          } else {
-            updateTime_ = value;
-          }
-        } else {
-          updateTimeBuilder_.mergeFrom(value);
-        }
-        if (updateTime_ != null) {
-          bitField0_ |= 0x00000020;
-          onChanged();
-        }
-        return this;
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp update_time = 6;</code>
+       * <code>optional uint64 update_time = 6;</code>
+       * @return This builder for chaining.
        */
       public Builder clearUpdateTime() {
         bitField0_ = (bitField0_ & ~0x00000020);
-        updateTime_ = null;
-        if (updateTimeBuilder_ != null) {
-          updateTimeBuilder_.dispose();
-          updateTimeBuilder_ = null;
-        }
+        updateTime_ = 0L;
         onChanged();
         return this;
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp update_time = 6;</code>
-       */
-      public com.google.protobuf.Timestamp.Builder getUpdateTimeBuilder() {
-        bitField0_ |= 0x00000020;
-        onChanged();
-        return internalGetUpdateTimeFieldBuilder().getBuilder();
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp update_time = 6;</code>
-       */
-      public com.google.protobuf.TimestampOrBuilder getUpdateTimeOrBuilder() {
-        if (updateTimeBuilder_ != null) {
-          return updateTimeBuilder_.getMessageOrBuilder();
-        } else {
-          return updateTime_ == null ?
-              com.google.protobuf.Timestamp.getDefaultInstance() : updateTime_;
-        }
-      }
-      /**
-       * <code>optional .google.protobuf.Timestamp update_time = 6;</code>
-       */
-      private com.google.protobuf.SingleFieldBuilder<
-          com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> 
-          internalGetUpdateTimeFieldBuilder() {
-        if (updateTimeBuilder_ == null) {
-          updateTimeBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder>(
-                  getUpdateTime(),
-                  getParentForChildren(),
-                  isClean());
-          updateTime_ = null;
-        }
-        return updateTimeBuilder_;
       }
 
       private java.lang.Object markerTitle_ = "";
@@ -6919,44 +6719,41 @@ public final class MarkerVoOuterClass extends com.google.protobuf.GeneratedFile 
   static {
     java.lang.String[] descriptorData = {
       "\n\016MarkerVo.proto\022\030site.yuanshen.data.pro" +
-      "to\032\037google/protobuf/timestamp.proto\"\364\004\n\010" +
-      "MarkerVo\022\017\n\007version\030\001 \001(\004\022\n\n\002id\030\002 \001(\004\022\022\n" +
-      "\ncreator_id\030\003 \001(\004\0224\n\013create_time\030\004 \001(\0132\032" +
-      ".google.protobuf.TimestampH\000\210\001\001\022\022\n\nupdat" +
-      "er_id\030\005 \001(\004\0224\n\013update_time\030\006 \001(\0132\032.googl" +
-      "e.protobuf.TimestampH\001\210\001\001\022\024\n\014marker_titl" +
-      "e\030\010 \001(\t\022\020\n\010position\030\t \001(\t\022\017\n\007content\030\n \001" +
-      "(\t\022\017\n\007picture\030\013 \001(\t\022\022\n\nvideo_path\030\014 \001(\t\022" +
-      "\024\n\014refresh_time\030\r \001(\003\022\023\n\013hidden_flag\030\016 \001" +
-      "(\r\022=\n\titem_list\030\017 \003(\0132*.site.yuanshen.da" +
-      "ta.proto.MarkerItemLinkVo\022\036\n\021marker_crea" +
-      "tor_id\030d \001(\004H\002\210\001\001\022\037\n\022picture_creator_id\030" +
-      "e \001(\004H\003\210\001\001\022\025\n\014marker_stamp\030\310\001 \001(\t\0225\n\005ext" +
-      "ra\030\220\003 \001(\0132%.site.yuanshen.data.proto.Mar" +
-      "kerExtra\022\023\n\nlinkage_id\030\364\003 \001(\tB\016\n\014_create" +
-      "_timeB\016\n\014_update_timeB\024\n\022_marker_creator" +
-      "_idB\025\n\023_picture_creator_id\"C\n\020MarkerItem" +
-      "LinkVo\022\017\n\007item_id\030\001 \001(\004\022\017\n\007icon_id\030\002 \001(\004" +
-      "\022\r\n\005count\030\n \001(\r\"\275\002\n\013MarkerExtra\022J\n\013under" +
-      "ground\030\001 \001(\01320.site.yuanshen.data.proto." +
-      "MarkerExtraUndergroundH\000\210\001\001\022M\n\ricon_over" +
-      "ride\030\002 \001(\01321.site.yuanshen.data.proto.Ma" +
-      "rkerExtraIconOverrideH\001\210\001\001\022\024\n\014v_1_6_isla" +
-      "nd\030d \003(\t\022J\n\014v_2_8_island\030e \001(\0132/.site.yu" +
-      "anshen.data.proto.MarkerExtra2_8_IslandH" +
-      "\002\210\001\001B\016\n\014_undergroundB\020\n\016_icon_overrideB\017" +
-      "\n\r_v_2_8_island\"m\n\026MarkerExtraUndergroun" +
-      "d\022\026\n\016is_underground\030\001 \001(\010\022\026\n\tis_global\030\002" +
-      " \001(\010H\000\210\001\001\022\025\n\rregion_levels\030\t \003(\tB\014\n\n_is_" +
-      "global\"I\n\027MarkerExtraIconOverride\022\n\n\002id\030" +
-      "\001 \001(\004\022\020\n\010min_zoom\030\002 \001(\002\022\020\n\010max_zoom\030\003 \001(" +
-      "\002\"B\n\025MarkerExtra2_8_Island\022\023\n\013island_nam" +
-      "e\030\001 \001(\t\022\024\n\014island_state\030\002 \003(\tb\006proto3"
+      "to\"\274\004\n\010MarkerVo\022\017\n\007version\030\001 \001(\004\022\n\n\002id\030\002" +
+      " \001(\004\022\022\n\ncreator_id\030\003 \001(\004\022\030\n\013create_time\030" +
+      "\004 \001(\004H\000\210\001\001\022\022\n\nupdater_id\030\005 \001(\004\022\030\n\013update" +
+      "_time\030\006 \001(\004H\001\210\001\001\022\024\n\014marker_title\030\010 \001(\t\022\020" +
+      "\n\010position\030\t \001(\t\022\017\n\007content\030\n \001(\t\022\017\n\007pic" +
+      "ture\030\013 \001(\t\022\022\n\nvideo_path\030\014 \001(\t\022\024\n\014refres" +
+      "h_time\030\r \001(\003\022\023\n\013hidden_flag\030\016 \001(\r\022=\n\tite" +
+      "m_list\030\017 \003(\0132*.site.yuanshen.data.proto." +
+      "MarkerItemLinkVo\022\036\n\021marker_creator_id\030d " +
+      "\001(\004H\002\210\001\001\022\037\n\022picture_creator_id\030e \001(\004H\003\210\001" +
+      "\001\022\025\n\014marker_stamp\030\310\001 \001(\t\0225\n\005extra\030\220\003 \001(\013" +
+      "2%.site.yuanshen.data.proto.MarkerExtra\022" +
+      "\023\n\nlinkage_id\030\364\003 \001(\tB\016\n\014_create_timeB\016\n\014" +
+      "_update_timeB\024\n\022_marker_creator_idB\025\n\023_p" +
+      "icture_creator_id\"C\n\020MarkerItemLinkVo\022\017\n" +
+      "\007item_id\030\001 \001(\004\022\017\n\007icon_id\030\002 \001(\004\022\r\n\005count" +
+      "\030\n \001(\r\"\275\002\n\013MarkerExtra\022J\n\013underground\030\001 " +
+      "\001(\01320.site.yuanshen.data.proto.MarkerExt" +
+      "raUndergroundH\000\210\001\001\022M\n\ricon_override\030\002 \001(" +
+      "\01321.site.yuanshen.data.proto.MarkerExtra" +
+      "IconOverrideH\001\210\001\001\022\024\n\014v_1_6_island\030d \003(\t\022" +
+      "J\n\014v_2_8_island\030e \001(\0132/.site.yuanshen.da" +
+      "ta.proto.MarkerExtra2_8_IslandH\002\210\001\001B\016\n\014_" +
+      "undergroundB\020\n\016_icon_overrideB\017\n\r_v_2_8_" +
+      "island\"m\n\026MarkerExtraUnderground\022\026\n\016is_u" +
+      "nderground\030\001 \001(\010\022\026\n\tis_global\030\002 \001(\010H\000\210\001\001" +
+      "\022\025\n\rregion_levels\030\t \003(\tB\014\n\n_is_global\"I\n" +
+      "\027MarkerExtraIconOverride\022\n\n\002id\030\001 \001(\004\022\020\n\010" +
+      "min_zoom\030\002 \001(\002\022\020\n\010max_zoom\030\003 \001(\002\"B\n\025Mark" +
+      "erExtra2_8_Island\022\023\n\013island_name\030\001 \001(\t\022\024" +
+      "\n\014island_state\030\002 \003(\tb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
-          com.google.protobuf.TimestampProto.getDescriptor(),
         });
     internal_static_site_yuanshen_data_proto_MarkerVo_descriptor =
       getDescriptor().getMessageType(0);
@@ -6995,7 +6792,6 @@ public final class MarkerVoOuterClass extends com.google.protobuf.GeneratedFile 
         internal_static_site_yuanshen_data_proto_MarkerExtra2_8_Island_descriptor,
         new java.lang.String[] { "IslandName", "IslandState", });
     descriptor.resolveAllFeaturesImmutable();
-    com.google.protobuf.TimestampProto.getDescriptor();
   }
 
   // @@protoc_insertion_point(outer_class_scope)

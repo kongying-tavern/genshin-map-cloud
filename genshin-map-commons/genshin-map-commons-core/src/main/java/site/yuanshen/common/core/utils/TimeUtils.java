@@ -89,16 +89,6 @@ public class TimeUtils {
         return ts;
     }
 
-    public static com.google.protobuf.Timestamp toProtoTimestamp(java.sql.Timestamp sqlTimestamp) {
-        if (sqlTimestamp == null) {
-            return null;
-        }
-        return com.google.protobuf.Timestamp.newBuilder()
-            .setSeconds(sqlTimestamp.getTime() / 1000)  // 秒数
-            .setNanos((int) ((sqlTimestamp.getTime() % 1000) * 1_000_000))  // 纳秒数
-            .build();
-    }
-
     /**
      * 转换为时间戳
      *
