@@ -5,6 +5,7 @@ import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONReader;
 import com.alibaba.fastjson2.JSONWriter;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,6 +36,12 @@ public class JsonUtils {
         Map<K, V> oldJsonObj = jsonToMap(oldJsonStr);
         Map<K, V> newJsonObj = jsonToMap(newJsonStr);
         return JSON.toJSONString(merge(oldJsonObj, newJsonObj), defaultWriteFeatures);
+    }
+
+    public static <T> T merge(T oldJsonObject, T newJsonObject, Class<T> clazz) {
+        String oldJsonObj = JSON.toJSONString(jsonToObject(oldJsonObject, clazz));
+        String newJsonObj = JSON.toJSONString(jsonToObject(newJsonObject, clazz));
+        return JSON.to(clazz, merge(oldJsonObj, newJsonObj));
     }
 
     public static <K, V> Map<K, V> merge(Map<K, V> oldJsonObject, Map<K, V> newJsonObject) {
@@ -78,6 +85,22 @@ public class JsonUtils {
         }
 
         return jsonObj;
+    }
+
+    public static <T> T jsonToObject(T obj, Class<T> clazz) {
+        T jsonObject = null;
+        try {
+            jsonObject = clazz.getDeclaredConstructor().newInstance();
+        } catch (Exception e) {
+            return null;
+        }
+
+        try {
+            jsonObject = (T) JSON.parseObject(JSON.toJSONString(obj), clazz, defaultReadFeatures);
+        } catch (Exception e) {
+            // do nothing
+        }
+        return jsonObject;
     }
 
     public static <T> T jsonToObject(String jsonString, Class<T> clazz) {

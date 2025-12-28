@@ -11,6 +11,7 @@ import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.entity.Marker;
 import site.yuanshen.data.vo.MarkerItemLinkVo;
 import site.yuanshen.data.vo.MarkerVo;
+import site.yuanshen.data.vo.adapter.marker.marker.MarkerExtraVo;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -120,7 +121,7 @@ public class MarkerDto {
     /**
      * 额外特殊字段
      */
-    private Map<String, Object> extra;
+    private MarkerExtraVo extra;
 
     /**
      * 点位关联组ID

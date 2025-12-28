@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package site.yuanshen.data.proto;
+
+message MarkerDiffSnapshotVo {
+    uint64 version = 1;
+    uint64 id = 2;
+}
+
+message MarkerDiffSnapshotVoList {
+    repeated MarkerDiffSnapshotVo snapshots = 1;
+}

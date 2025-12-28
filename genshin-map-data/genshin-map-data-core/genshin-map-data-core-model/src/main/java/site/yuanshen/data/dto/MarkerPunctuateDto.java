@@ -12,9 +12,9 @@ import site.yuanshen.data.entity.MarkerPunctuate;
 import site.yuanshen.data.enums.PunctuateMethodEnum;
 import site.yuanshen.data.enums.PunctuateStatusEnum;
 import site.yuanshen.data.vo.MarkerPunctuateVo;
+import site.yuanshen.data.vo.adapter.marker.marker.MarkerExtraVo;
 
 import java.sql.Timestamp;
-import java.util.Map;
 
 
 /**
@@ -94,7 +94,7 @@ public class MarkerPunctuateDto {
     /**
      * 额外特殊字段
      */
-    private Map<String, Object> extra;
+    private MarkerExtraVo extra;
 
     /**
      * 点位图片
@@ -164,8 +164,8 @@ public class MarkerPunctuateDto {
     @JSONField(serialize = false)
     public MarkerPunctuateVo getVo() {
         return BeanUtils.copy(this, MarkerPunctuateVo.class)
-                .withStatus(status.getValue())
-                .withMethodType(methodType.getTypeCode());
+            .withStatus(status.getValue())
+            .withMethodType(methodType.getTypeCode());
     }
 
 }

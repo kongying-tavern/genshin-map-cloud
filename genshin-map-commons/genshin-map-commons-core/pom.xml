@@ -51,6 +51,12 @@
             <artifactId>hutool-extra</artifactId>
         </dependency>
 
+       <!-- protobuf -->
+        <dependency>
+            <groupId>com.google.protobuf</groupId>
+            <artifactId>protobuf-java</artifactId>
+        </dependency>
+
         <!-- velocity templater -->
         <dependency>
             <groupId>org.apache.velocity</groupId>

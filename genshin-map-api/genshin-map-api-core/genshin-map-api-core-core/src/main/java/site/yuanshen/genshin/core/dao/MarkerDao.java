@@ -62,6 +62,12 @@ public interface MarkerDao {
      */
     byte[] getMarkerBinary(List<Integer> flagList, String md5);
 
+    Map<Integer, List<MarkerVo>> getMarkerVoGroups(
+        Map<Long, Item> itemMap,
+        ConcurrentMap<Long, List<MarkerItemLinkVo>> markerItemLinkMap,
+        ConcurrentMap<Long, String> markerLinkageMap
+    );
+
     /**
      * 返回MD5列表
      *

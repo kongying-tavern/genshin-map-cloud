@@ -15,6 +15,7 @@
         <druid.version>1.2.13</druid.version>
         <fastjson2.version>2.0.24</fastjson2.version>
         <jackson.version>2.12.4</jackson.version>
+        <protobuf.version>4.33.0</protobuf.version>
         <springdoc.version>1.6.11</springdoc.version>
         <swagger.version>2.2.2</swagger.version>
         <nimbus-jose-jwt.version>9.21</nimbus-jose-jwt.version>
@@ -84,6 +85,13 @@
                 <groupId>com.alibaba</groupId>
                 <artifactId>druid-spring-boot-starter</artifactId>
                 <version>${druid.version}</version>
+            </dependency>
+
+            <!-- protobuf -->
+            <dependency>
+                <groupId>com.google.protobuf</groupId>
+                <artifactId>protobuf-java</artifactId>
+                <version>${protobuf.version}</version>
             </dependency>
 
             <!--fastjson-->

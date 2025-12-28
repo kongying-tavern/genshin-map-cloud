@@ -18,6 +18,7 @@ public class TimeUtils {
 
     /**
      * 解析时间
+     *
      * @param time 时间文本
      * @return 时间
      */
@@ -27,42 +28,48 @@ public class TimeUtils {
         try {
             DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
             ldt = LocalDateTime.parse(time, df);
-        } catch (Exception e) {}
-        if(ldt != null) return new Timestamp(ldt.toEpochSecond(ZoneOffset.of(DEFAULT_ZONE_OFFSET)) * 1000L);
+        } catch (Exception e) {
+        }
+        if (ldt != null) return new Timestamp(ldt.toEpochSecond(ZoneOffset.of(DEFAULT_ZONE_OFFSET)) * 1000L);
 
         // yyyy-MM-dd HH:mm:ss
         try {
             DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             ldt = LocalDateTime.parse(time, df);
-        } catch (Exception e) {}
-        if(ldt != null) return new Timestamp(ldt.toEpochSecond(ZoneOffset.of(DEFAULT_ZONE_OFFSET)) * 1000L);
+        } catch (Exception e) {
+        }
+        if (ldt != null) return new Timestamp(ldt.toEpochSecond(ZoneOffset.of(DEFAULT_ZONE_OFFSET)) * 1000L);
 
         // yyyy-MM-dd HH:mm:ss +0800
         try {
             DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss +0800");
             ldt = LocalDateTime.parse(time, df);
-        } catch (Exception e) {}
-        if(ldt != null) return new Timestamp(ldt.toEpochSecond(ZoneOffset.of(DEFAULT_ZONE_OFFSET)) * 1000L);
+        } catch (Exception e) {
+        }
+        if (ldt != null) return new Timestamp(ldt.toEpochSecond(ZoneOffset.of(DEFAULT_ZONE_OFFSET)) * 1000L);
 
         // yyyy-MM-dd'T'HH:mm:ss.SSS
         try {
             DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS");
             ldt = LocalDateTime.parse(time, df);
-        } catch (Exception e) {}
-        if(ldt != null) return new Timestamp(ldt.toEpochSecond(ZoneOffset.of(DEFAULT_ZONE_OFFSET)) * 1000L);
+        } catch (Exception e) {
+        }
+        if (ldt != null) return new Timestamp(ldt.toEpochSecond(ZoneOffset.of(DEFAULT_ZONE_OFFSET)) * 1000L);
 
         // yyyy-MM-dd'T'HH:mm:ss
         try {
             DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
             ldt = LocalDateTime.parse(time, df);
-        } catch (Exception e) {}
-        if(ldt != null) return new Timestamp(ldt.toEpochSecond(ZoneOffset.of(DEFAULT_ZONE_OFFSET)) * 1000L);
+        } catch (Exception e) {
+        }
+        if (ldt != null) return new Timestamp(ldt.toEpochSecond(ZoneOffset.of(DEFAULT_ZONE_OFFSET)) * 1000L);
 
         return null;
     }
 
     /**
      * 获取当前时间戳
+     *
      * @return 时间戳
      */
     public static Timestamp getCurrentTimestamp() {
@@ -73,6 +80,7 @@ public class TimeUtils {
 
     /**
      * 转换为时间戳
+     *
      * @param dt 日期
      * @return 时间戳
      */
@@ -83,6 +91,7 @@ public class TimeUtils {
 
     /**
      * 转换为时间戳
+     *
      * @param dt 本地时间对象
      * @param tz 时区标识
      * @return 时间戳
@@ -95,12 +104,13 @@ public class TimeUtils {
 
     /**
      * 时间戳
-     * @param dt 本地时间对象
+     *
+     * @param dt   本地时间对象
      * @param tzId 时区标识
      * @return 时间戳
      */
     public static Timestamp toTimestamp(LocalDateTime dt, ZoneId tzId) {
-        if(dt == null) {
+        if (dt == null) {
             return null;
         }
         final long tsVal = dt.atZone(tzId).toInstant().toEpochMilli();
@@ -110,7 +120,8 @@ public class TimeUtils {
 
     /**
      * 格式化时间
-     * @param ts 时间戳
+     *
+     * @param ts     时间戳
      * @param format 格式
      * @return 格式化的时间
      */
@@ -130,7 +141,8 @@ public class TimeUtils {
 
     /**
      * 格式化时间
-     * @param dt 日期
+     *
+     * @param dt     日期
      * @param format 格式
      * @return 格式化的时间
      */
@@ -141,10 +153,11 @@ public class TimeUtils {
 
     /**
      * 调整到对应的毫秒位置
-     * @param ts 时间戳
-     * @param hour 小时数，为 null 则不修改
-     * @param minute 分钟数，为 null 则不修改
-     * @param second 秒数，为 null 则不修改
+     *
+     * @param ts          时间戳
+     * @param hour        小时数，为 null 则不修改
+     * @param minute      分钟数，为 null 则不修改
+     * @param second      秒数，为 null 则不修改
      * @param millisecond 毫秒数，为 null 则不修改
      * @return 调整后的时间戳
      */
@@ -156,16 +169,16 @@ public class TimeUtils {
         final Date dt = new Date(ts.getTime());
         final Calendar c = Calendar.getInstance();
         c.setTime(dt);
-        if(hour != null) {
+        if (hour != null) {
             c.set(Calendar.HOUR_OF_DAY, hour);
         }
-        if(minute != null) {
+        if (minute != null) {
             c.set(Calendar.MINUTE, minute);
         }
-        if(second != null) {
+        if (second != null) {
             c.set(Calendar.SECOND, second);
         }
-        if(millisecond != null) {
+        if (millisecond != null) {
             c.set(Calendar.MILLISECOND, millisecond);
         }
         final Date dtParsed = c.getTime();
@@ -176,6 +189,7 @@ public class TimeUtils {
 
     /**
      * 获取当天最后一毫秒
+     *
      * @param ts 时间戳
      * @return 当天最后一毫秒的时间戳
      */
@@ -185,6 +199,7 @@ public class TimeUtils {
 
     /**
      * 获取当天第一秒
+     *
      * @param ts 时间戳
      * @return 当天第一秒的时间戳
      */
@@ -194,6 +209,7 @@ public class TimeUtils {
 
     /**
      * 获取当天最后一秒
+     *
      * @param ts 时间戳
      * @return 当天第一毫秒的时间戳
      */
@@ -203,9 +219,10 @@ public class TimeUtils {
 
     /**
      * 进行时间偏移量计算
-     * @param ts 时间戳
+     *
+     * @param ts     时间戳
      * @param offset 偏移量
-     * @param radix 与毫秒的缩放比率
+     * @param radix  与毫秒的缩放比率
      * @return 偏移后的时间戳
      */
     private static Timestamp toTimeOffset(Timestamp ts, Long offset, int radix) {
@@ -222,7 +239,8 @@ public class TimeUtils {
 
     /**
      * 进行时间毫秒偏移量计算
-     * @param ts 时间戳
+     *
+     * @param ts     时间戳
      * @param offset 偏移量（毫秒）
      * @return 偏移后的时间
      */
@@ -232,6 +250,7 @@ public class TimeUtils {
 
     /**
      * 进行时间秒级偏移量计算
+     *
      * @param ts
      * @param offset
      * @return
@@ -242,10 +261,11 @@ public class TimeUtils {
 
     /**
      * 判断时间区间是否存在重合
-     * @param firstRangeStart 时间区域1起始时间
-     * @param firstRangeEnd 时间区域1终止时间
+     *
+     * @param firstRangeStart  时间区域1起始时间
+     * @param firstRangeEnd    时间区域1终止时间
      * @param secondRangeStart 时间区域2起始时间
-     * @param secondRangeEnd 时间区域2终止时间
+     * @param secondRangeEnd   时间区域2终止时间
      * @return 判断结果
      */
     public static boolean timeRangeIntersected(Timestamp firstRangeStart, Timestamp firstRangeEnd, Timestamp secondRangeStart, Timestamp secondRangeEnd) {

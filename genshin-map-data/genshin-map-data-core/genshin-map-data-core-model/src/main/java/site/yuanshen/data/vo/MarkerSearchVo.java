@@ -20,6 +20,11 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = false)
 @Schema(title = "点位查询前端封装", description = "点位查询前端封装")
 public class MarkerSearchVo {
+    /**
+     * 点位ID列表
+     */
+    @Schema(title = "点位ID列表")
+    private List<Long> markerIdList;
 
     /**
      * 地区ID列表

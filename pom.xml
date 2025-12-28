@@ -28,6 +28,10 @@
         <maven-plugin.version>3.8.1</maven-plugin.version>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
+
+        <protobuf.version>4.33.0</protobuf.version>
+        <protoc-plugin.version>3.10.2</protoc-plugin.version>
+
         <jdk.version>11</jdk.version>
         <gsapi.version>1.0</gsapi.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -88,6 +92,12 @@
                 <groupId>com.lmax</groupId>
                 <artifactId>disruptor</artifactId>
                 <version>3.4.4</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.google.protobuf</groupId>
+                <artifactId>protobuf-java</artifactId>
+                <version>${protobuf.version}</version>
             </dependency>
 
             <dependency>
@@ -215,6 +225,32 @@
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-maven-plugin</artifactId>
                     <version>${springboot.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>io.github.ascopes</groupId>
+                    <artifactId>protobuf-maven-plugin</artifactId>
+                    <version>${protoc-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>generate</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <protoc>${protobuf.version}</protoc>
+                        <sourceDirectories>
+                            <sourceDirectory>src/main/resources/proto</sourceDirectory>
+                        </sourceDirectories>
+                        <outputDirectory>src/main/java</outputDirectory>
+                    </configuration>
+                    <dependencies>
+                        <dependency>
+                            <groupId>com.google.protobuf</groupId>
+                            <artifactId>protobuf-java</artifactId>
+                            <version>${protobuf.version}</version>
+                        </dependency>
+                    </dependencies>
                 </plugin>
             </plugins>
         </pluginManagement>

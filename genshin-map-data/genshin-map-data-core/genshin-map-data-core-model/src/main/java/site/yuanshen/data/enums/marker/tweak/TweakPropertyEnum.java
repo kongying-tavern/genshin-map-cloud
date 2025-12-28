@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import site.yuanshen.data.dto.MarkerDto;
 import site.yuanshen.data.vo.MarkerItemLinkVo;
+import site.yuanshen.data.vo.adapter.marker.marker.MarkerExtraVo;
 
 import java.util.List;
 import java.util.Map;
@@ -48,7 +49,7 @@ public enum TweakPropertyEnum {
     EXTRA(
             "extra",
             MarkerDto::getExtra,
-            (marker, data) -> marker.setExtra((Map<String, Object>) data)
+            (marker, data) -> marker.setExtra((MarkerExtraVo) data)
     ),
     ITEM_LIST(
             "itemList",

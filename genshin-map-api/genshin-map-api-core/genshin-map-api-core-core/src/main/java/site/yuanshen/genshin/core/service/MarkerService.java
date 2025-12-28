@@ -8,6 +8,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.yuanshen.common.core.exception.GenshinApiException;
+import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.common.core.utils.JsonUtils;
 import site.yuanshen.common.core.utils.PgsqlUtils;
 import site.yuanshen.common.core.utils.SpringContextUtils;
@@ -19,8 +20,10 @@ import site.yuanshen.data.enums.HistoryEditType;
 import site.yuanshen.data.helper.marker.tweak.MarkerTweakDataHelper;
 import site.yuanshen.data.mapper.*;
 import site.yuanshen.data.vo.MarkerItemLinkVo;
+import site.yuanshen.data.vo.MarkerRenderModelVo;
 import site.yuanshen.data.vo.MarkerSearchVo;
 import site.yuanshen.data.vo.MarkerVo;
+import site.yuanshen.data.vo.adapter.marker.marker.MarkerExtraVo;
 import site.yuanshen.data.vo.adapter.marker.tweak.TweakVo;
 import site.yuanshen.data.vo.helper.PageListVo;
 import site.yuanshen.genshin.core.convert.HistoryConvert;
@@ -117,24 +120,48 @@ public class MarkerService {
     public List<MarkerVo> searchMarker(MarkerSearchVo markerSearchVo, List<Integer> hiddenFlagList) {
         final MarkerService markerService = (MarkerService) SpringContextUtils.getBean("markerService");
         List<Long> markerIdList = markerService.searchMarkerId(markerSearchVo, hiddenFlagList);
-        List<MarkerVo> result = markerService.listMarkerById(markerIdList, hiddenFlagList);
+        final MarkerSearchVo newSearchVo = new MarkerSearchVo();
+        newSearchVo.setMarkerIdList(markerIdList);
+        List<MarkerVo> result = markerService.listMarkerById(newSearchVo, hiddenFlagList);
         return result;
     }
-
 
     /**
      * 通过ID列表查询点位信息
      *
-     * @param markerIdList 点位ID列表
+     * @param markerSearchVo 点位查询前端封装
      * @return 点位完整信息的数据封装列表
      */
-    public List<MarkerVo> listMarkerById(List<Long> markerIdList, List<Integer> hiddenFlagList) {
-        //为空直接返回
-        if (markerIdList.isEmpty()) return new ArrayList<>();
+    public List<MarkerVo> listMarkerById(MarkerSearchVo markerSearchVo, List<Integer> hiddenFlagList) {
+        final List<Long> markerIdList = markerSearchVo.getMarkerIdList();
+        // 为空直接返回
+        if (CollUtil.isEmpty(markerIdList))
+            return new ArrayList<>();
         List<MarkerVo> result = markerDao.listMarkerById(markerIdList, hiddenFlagList);
         return result;
     }
 
+    /**
+     * 通过ID列表查询点位渲染信息
+     *
+     * @param markerSearchVo 点位查询前端封装
+     * @return 点位渲染信息的数据封装列表
+     */
+    public List<MarkerRenderModelVo> listRenderMarkerById(MarkerSearchVo markerSearchVo, List<Integer> hiddenFlagList) {
+        final List<Long> markerIdList = markerSearchVo.getMarkerIdList();
+        List<MarkerRenderModelVo> result = new ArrayList<>();
+        // 为空直接返回
+        if (CollUtil.isEmpty(markerIdList))
+            return new ArrayList<>();
+        result = markerDao
+            .listMarkerById(markerIdList, hiddenFlagList)
+            .stream()
+            .map(marker -> {
+                return BeanUtils.copy(marker, MarkerRenderModelVo.class);
+            })
+            .collect(Collectors.toList());
+        return result;
+    }
 
     /**
      * 分页查询所有点位信息
@@ -181,7 +208,7 @@ public class MarkerService {
         //将当前记录保存为历史记录
         this.saveHistory(markerRecord, HistoryEditType.UPDATE);
 
-        Map<String, Object> mergeResult = JsonUtils.merge(markerRecord.getExtra(), markerDto.getExtra());
+        MarkerExtraVo mergeResult = JsonUtils.merge(markerRecord.getExtra(), markerDto.getExtra(), MarkerExtraVo.class);
         markerDto.setExtra(mergeResult);
 
         Boolean updated = this.saveMarker(markerDto);
