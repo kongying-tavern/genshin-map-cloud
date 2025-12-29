@@ -39,6 +39,9 @@ public class MarkerDataDaoImpl implements MarkerDataDao {
 
         snapshotBuilder.setVersion(markerVo.getVersion() == null ? 0L : markerVo.getVersion());
         snapshotBuilder.setId(markerVo.getId() == null ? 0L : markerVo.getId());
+        if (StrUtil.isNotBlank(markerVo.getLinkageId())) {
+            snapshotBuilder.setLinkageId(StrUtil.nullToEmpty(markerVo.getLinkageId()));
+        }
 
         final MarkerDiffSnapshotVoOuterClass.MarkerDiffSnapshotVo snapshotProto = snapshotBuilder.build();
 
