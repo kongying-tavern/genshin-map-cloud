@@ -1,10 +1,12 @@
 package site.yuanshen.common.core.utils;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONReader;
 import com.alibaba.fastjson2.JSONWriter;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,9 +41,15 @@ public class JsonUtils {
     }
 
     public static <T> T merge(T oldJsonObject, T newJsonObject, Class<T> clazz) {
-        String oldJsonObj = JSON.toJSONString(jsonToObject(oldJsonObject, clazz));
-        String newJsonObj = JSON.toJSONString(jsonToObject(newJsonObject, clazz));
-        return JSON.to(clazz, merge(oldJsonObj, newJsonObj));
+        final Field[] fields = clazz.getDeclaredFields();
+
+        for (Field field : fields) {
+            final String key = field.getName();
+            final Object val = BeanUtil.getFieldValue(newJsonObject, key);
+            BeanUtil.setFieldValue(oldJsonObject, key, val);
+        }
+
+        return oldJsonObject;
     }
 
     public static <K, V> Map<K, V> merge(Map<K, V> oldJsonObject, Map<K, V> newJsonObject) {
