@@ -63,8 +63,8 @@ public class ItemController {
 
     @Operation(summary = "修改物品", description = "提供修改同名物品功能，默认关闭")
     @PostMapping("/update/{editSame}")
-    public R<Boolean> updateItem(@RequestBody List<ItemVo> itemVoList, @PathVariable("editSame") Integer editSame) {
-        Boolean result = itemService.updateItem(itemVoList, editSame);
+    public R<List<Long>> updateItem(@RequestBody List<ItemVo> itemVoList, @PathVariable("editSame") Integer editSame) {
+        List<Long> result = itemService.updateItem(itemVoList, editSame);
         cacheService.cleanItemCache();
         return RUtils.create(result);
     }

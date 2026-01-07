@@ -20,7 +20,6 @@ import site.yuanshen.data.enums.HistoryEditType;
 import site.yuanshen.data.helper.marker.tweak.MarkerTweakDataHelper;
 import site.yuanshen.data.mapper.*;
 import site.yuanshen.data.vo.MarkerItemLinkVo;
-import site.yuanshen.data.vo.MarkerRenderModelVo;
 import site.yuanshen.data.vo.MarkerSearchVo;
 import site.yuanshen.data.vo.MarkerVo;
 import site.yuanshen.data.vo.adapter.marker.marker.MarkerExtraVo;
@@ -138,28 +137,6 @@ public class MarkerService {
         if (CollUtil.isEmpty(markerIdList))
             return new ArrayList<>();
         List<MarkerVo> result = markerDao.listMarkerById(markerIdList, hiddenFlagList);
-        return result;
-    }
-
-    /**
-     * 通过ID列表查询点位渲染信息
-     *
-     * @param markerSearchVo 点位查询前端封装
-     * @return 点位渲染信息的数据封装列表
-     */
-    public List<MarkerRenderModelVo> listRenderMarkerById(MarkerSearchVo markerSearchVo, List<Integer> hiddenFlagList) {
-        final List<Long> markerIdList = markerSearchVo.getMarkerIdList();
-        List<MarkerRenderModelVo> result = new ArrayList<>();
-        // 为空直接返回
-        if (CollUtil.isEmpty(markerIdList))
-            return new ArrayList<>();
-        result = markerDao
-            .listMarkerById(markerIdList, hiddenFlagList)
-            .stream()
-            .map(marker -> {
-                return BeanUtils.copy(marker, MarkerRenderModelVo.class);
-            })
-            .collect(Collectors.toList());
         return result;
     }
 

@@ -156,7 +156,9 @@ public class ItemService {
      * @return 是否成功
      */
     @Transactional
-    public Boolean updateItem(List<ItemVo> itemVoList, Integer editSame) {
+    public List<Long> updateItem(List<ItemVo> itemVoList, Integer editSame) {
+        List<Long> allItemIds = new ArrayList<>();
+
         for (ItemVo itemVo : itemVoList) {
             ItemDto itemDto = new ItemDto(itemVo);
             List<Long> typeIdList = itemVo.getTypeIdList();
@@ -169,6 +171,7 @@ public class ItemService {
             //物品ID
             List<Long> itemIds = new ArrayList<>(Collections.singletonList(itemDto.getId()));
             itemIds.addAll(sameItems.parallelStream().map(Item::getId).collect(Collectors.toList()));
+            allItemIds.addAll(itemIds);
 
             //在更新逻辑之前做历史信息记录
             saveHistoryItem(itemIds, sameItems, HistoryEditType.UPDATE);
@@ -207,25 +210,29 @@ public class ItemService {
                     itemTypeLinkMBPService.saveBatch(newLink);
                 }
             }
-            itemMapper.update(null,
-                    Wrappers.<Item>lambdaUpdate().in(Item::getId, itemIds)
-                            .set(itemDto.getName() != null, Item::getName, itemDto.getName())
-                            .set(itemDto.getDefaultContent() != null, Item::getDefaultContent, itemDto.getDefaultContent())
-                            .set(itemDto.getId() != null, Item::getIconId, itemDto.getIconId())
-                            .set(itemDto.getIconStyleType() != null, Item::getIconStyleType, itemDto.getIconStyleType())
-                            .set(itemDto.getHiddenFlag() != null, Item::getHiddenFlag, itemDto.getHiddenFlag())
-                            .set(itemDto.getDefaultRefreshTime() != null, Item::getDefaultRefreshTime, itemDto.getDefaultRefreshTime())
-                            .set(itemDto.getSortIndex() != null, Item::getSortIndex, itemDto.getSortIndex())
-                            .set(itemDto.getSpecialFlag() != null, Item::getSpecialFlag, itemDto.getSpecialFlag())
-            );
-            if(itemDto.getAreaId() != null) {
-                itemMapper.update(null,
-                        Wrappers.<Item>lambdaUpdate().eq(Item::getId, itemDto.getId())
-                                .set(itemDto.getAreaId() != null, Item::getAreaId, itemDto.getAreaId())
+
+            // 更新数据
+            List<Item> updateItems = itemMapper.selectList(Wrappers.<Item>lambdaQuery().in(Item::getId, itemIds));
+            for (Item updateItem : updateItems) {
+                final Long updateItemId = updateItem.getId() == null ? 0L : updateItem.getId();
+                final Item updateEntity = new Item();
+                updateEntity.setId(updateItemId);
+                updateEntity.setVersion(updateItem.getVersion());
+                itemMapper.update(updateEntity,
+                    Wrappers.<Item>lambdaUpdate().in(Item::getId, updateItemId)
+                        .set(itemDto.getName() != null, Item::getName, itemDto.getName())
+                        .set(itemDto.getAreaId() != null, Item::getAreaId, itemDto.getAreaId())
+                        .set(itemDto.getDefaultContent() != null, Item::getDefaultContent, itemDto.getDefaultContent())
+                        .set(itemDto.getIconId() != null, Item::getIconId, itemDto.getIconId())
+                        .set(itemDto.getIconStyleType() != null, Item::getIconStyleType, itemDto.getIconStyleType())
+                        .set(itemDto.getHiddenFlag() != null, Item::getHiddenFlag, itemDto.getHiddenFlag())
+                        .set(itemDto.getDefaultRefreshTime() != null, Item::getDefaultRefreshTime, itemDto.getDefaultRefreshTime())
+                        .set(itemDto.getSortIndex() != null, Item::getSortIndex, itemDto.getSortIndex())
+                        .set(itemDto.getSpecialFlag() != null, Item::getSpecialFlag, itemDto.getSpecialFlag())
                 );
             }
         }
-        return true;
+        return allItemIds;
     }
 
 
