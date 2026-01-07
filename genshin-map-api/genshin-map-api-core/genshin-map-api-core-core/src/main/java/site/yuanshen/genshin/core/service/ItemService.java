@@ -214,8 +214,12 @@ public class ItemService {
             // 更新数据
             List<Item> updateItems = itemMapper.selectList(Wrappers.<Item>lambdaQuery().in(Item::getId, itemIds));
             for (Item updateItem : updateItems) {
-                itemMapper.update(updateItem,
-                    Wrappers.<Item>lambdaUpdate().in(Item::getId, itemIds)
+                final Long updateItemId = updateItem.getId() == null ? 0L : updateItem.getId();
+                final Item updateEntity = new Item();
+                updateEntity.setId(updateItemId);
+                updateEntity.setVersion(updateItem.getVersion());
+                itemMapper.update(updateEntity,
+                    Wrappers.<Item>lambdaUpdate().in(Item::getId, updateItemId)
                         .set(itemDto.getName() != null, Item::getName, itemDto.getName())
                         .set(itemDto.getAreaId() != null, Item::getAreaId, itemDto.getAreaId())
                         .set(itemDto.getDefaultContent() != null, Item::getDefaultContent, itemDto.getDefaultContent())
