@@ -1,6 +1,0 @@
-services:
-  img-local:
-    image: gsapi/img-local
-    build:
-      context: ${PROJECT_BASE:-../../}
-      dockerfile: docker/composer/docker-compose.img-local-build.Dockerfile

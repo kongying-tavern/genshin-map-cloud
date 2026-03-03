@@ -13,18 +13,18 @@ check_env
 ENV_FILE = get_env ENV_FILE
 PROJECT_NAME = get_env PROJECT_NAME
 
-docker_down "${ENV_FILE}" "${PROJECT_NAME}" "./composer/docker-compose.dataenv.yml"
-docker_up "${ENV_FILE}" "${PROJECT_NAME}" "./composer/docker-compose.dataenv.yml"
+docker_down "${ENV_FILE}" "${PROJECT_NAME}" "./composer/dataenv.yml"
+docker_up "${ENV_FILE}" "${PROJECT_NAME}" "./composer/dataenv.yml"
 '''
 
-# dev: development environment
-[tasks.dev] # !! build & daemon dev api
+# api: service api
+[tasks.api] # !! build & daemon api
 dependencies = [
-    { name = "dev-build" },
-    { name = "dev-api" }
+    { name = "api-build" },
+    { name = "api-run" }
 ]
 
-[tasks.dev-build] # >!! build dev api
+[tasks.api-build] # >!! build api
 script = '''
 #!@duckscript
 !include_files ./makefile/util.env.ds ./makefile/util.docker.ds
@@ -35,13 +35,14 @@ ENV_FILE = get_env ENV_FILE
 PROJECT_NAME = get_env PROJECT_NAME
 
 replace_env_values_in_file ${ENV_FILE} ./config/api/application-datasource-tpl.yml ./cache/application-datasource.yml
-replace_env_values_in_file ${ENV_FILE} ./config/api/application-nacos-tpl.yml ./cache/application-nacos.yml
 replace_env_values_in_file ${ENV_FILE} ./config/api/application-image-tpl.yml ./cache/application-image.yml
+replace_env_values_in_file ${ENV_FILE} ./config/api/application-websocket-tpl.yml ./cache/application-websocket.yml
+replace_env_values_in_file ${ENV_FILE} ./config/api/application-nacos-tpl.yml ./cache/application-nacos.yml
 
-docker_build "${ENV_FILE}" "${PROJECT_NAME}" "./composer/docker-compose.dev-build.yml"
+docker_build "${ENV_FILE}" "${PROJECT_NAME}" "./composer/api.yml"
 '''
 
-[tasks.dev-api] # >!! start dev api
+[tasks.api-run] # >!! start api
 script = '''
 #!@duckscript
 !include_files ./makefile/util.env.ds ./makefile/util.docker.ds
@@ -51,8 +52,8 @@ check_env
 ENV_FILE = get_env ENV_FILE
 PROJECT_NAME = get_env PROJECT_NAME
 
-docker_down "${ENV_FILE}" "${PROJECT_NAME}" "./composer/docker-compose.dev-api.yml"
-docker_up "${ENV_FILE}" "${PROJECT_NAME}" "./composer/docker-compose.dev-api.yml"
+docker_down "${ENV_FILE}" "${PROJECT_NAME}" "./composer/api.yml"
+docker_up "${ENV_FILE}" "${PROJECT_NAME}" "./composer/api.yml"
 '''
 
 # img-local: image local host
@@ -72,7 +73,7 @@ check_env
 ENV_FILE = get_env ENV_FILE
 PROJECT_NAME = get_env PROJECT_NAME
 
-docker_build "${ENV_FILE}" "${PROJECT_NAME}" "./composer/docker-compose.img-local-build.yml"
+docker_build "${ENV_FILE}" "${PROJECT_NAME}" "./composer/img-local.yml"
 '''
 
 [tasks.img-local-run] # >!! run image local host
@@ -85,8 +86,8 @@ check_env
 ENV_FILE = get_env ENV_FILE
 PROJECT_NAME = get_env PROJECT_NAME
 
-docker_down "${ENV_FILE}" "${PROJECT_NAME}" "./composer/docker-compose.img-local-run.yml"
-docker_up "${ENV_FILE}" "${PROJECT_NAME}" "./composer/docker-compose.img-local-run.yml"
+docker_down "${ENV_FILE}" "${PROJECT_NAME}" "./composer/img-local.yml"
+docker_up "${ENV_FILE}" "${PROJECT_NAME}" "./composer/img-local.yml"
 '''
 
 # img-alist: image alist host
@@ -113,7 +114,7 @@ check_env
 ENV_FILE = get_env ENV_FILE
 PROJECT_NAME = get_env PROJECT_NAME
 
-docker_build "${ENV_FILE}" "${PROJECT_NAME}" "./composer/docker-compose.img-alist-minio-build.yml"
+docker_build "${ENV_FILE}" "${PROJECT_NAME}" "./composer/img-alist-minio.yml"
 '''
 
 [tasks.img-alist-minio-run] # >!! run image alist host (minio)
@@ -126,8 +127,8 @@ check_env
 ENV_FILE = get_env ENV_FILE
 PROJECT_NAME = get_env PROJECT_NAME
 
-docker_down "${ENV_FILE}" "${PROJECT_NAME}" "./composer/docker-compose.img-alist-minio-run.yml"
-docker_up "${ENV_FILE}" "${PROJECT_NAME}" "./composer/docker-compose.img-alist-minio-run.yml"
+docker_down "${ENV_FILE}" "${PROJECT_NAME}" "./composer/img-alist-minio.yml"
+docker_up "${ENV_FILE}" "${PROJECT_NAME}" "./composer/img-alist-minio.yml"
 '''
 
 [tasks.img-alist-dash-build] # >!! build image alist host (minio + alist)
@@ -140,7 +141,7 @@ check_env
 ENV_FILE = get_env ENV_FILE
 PROJECT_NAME = get_env PROJECT_NAME
 
-docker_build "${ENV_FILE}" "${PROJECT_NAME}" "./composer/docker-compose.img-alist-dash-build.yml"
+docker_build "${ENV_FILE}" "${PROJECT_NAME}" "./composer/img-alist-dash.yml"
 '''
 
 [tasks.img-alist-dash-run] # >!! run image alist host (minio + alist)
@@ -153,8 +154,8 @@ check_env
 ENV_FILE = get_env ENV_FILE
 PROJECT_NAME = get_env PROJECT_NAME
 
-docker_down "${ENV_FILE}" "${PROJECT_NAME}" "./composer/docker-compose.img-alist-dash-run.yml"
-docker_up "${ENV_FILE}" "${PROJECT_NAME}" "./composer/docker-compose.img-alist-dash-run.yml"
+docker_down "${ENV_FILE}" "${PROJECT_NAME}" "./composer/img-alist-dash.yml"
+docker_up "${ENV_FILE}" "${PROJECT_NAME}" "./composer/img-alist-dash.yml"
 '''
 
 # help

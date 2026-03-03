@@ -1,11 +1,14 @@
 include:
-  - docker-compose.network.yml
+  - _network.yml
 
 services:
   img-local:
     container_name: gsapi-img-local
     hostname: gsapi-img-local
     image: gsapi/img-local
+    build:
+      context: ${PROJECT_BASE:-../../}
+      dockerfile: docker/composer/img-local.Dockerfile
     networks:
       gsapi-img-local:
         aliases:

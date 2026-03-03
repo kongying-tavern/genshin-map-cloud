@@ -1,6 +1,6 @@
 include:
-  - docker-compose.network.yml
-  - docker-compose.img-alist-minio-run.yml
+  - _network.yml
+  - img-alist-minio.yml
 
 services:
   # Main services
@@ -8,6 +8,9 @@ services:
     container_name: gsapi-minio-proxy
     hostname: gsapi-minio-proxy
     image: gsapi/minio-proxy
+    build:
+      context: ${PROJECT_BASE:-../../}
+      dockerfile: docker/composer/img-alist.minio-proxy.Dockerfile
     depends_on:
       minio-init:
         condition: service_completed_successfully
@@ -25,6 +28,9 @@ services:
     container_name: gsapi-alist
     hostname: gsapi-alist
     image: gsapi/alist
+    build:
+      context: ${PROJECT_BASE:-../../}
+      dockerfile: docker/composer/img-alist.alist.Dockerfile
     networks:
       gsapi-img-alist:
         aliases:
@@ -51,6 +57,9 @@ services:
     container_name: gsapi-alist-init
     hostname: gsapi-alist-init
     image: gsapi/alist-init
+    build:
+      context: ${PROJECT_BASE:-../../}
+      dockerfile: docker/composer/img-alist.alist-init.Dockerfile
     depends_on:
       alist:
         condition: service_healthy
