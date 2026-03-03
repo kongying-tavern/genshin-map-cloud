@@ -1,5 +1,5 @@
 include:
-  - docker-compose.network.yml
+  - _network.yml
 
 services:
   # Main services
@@ -29,7 +29,7 @@ services:
     image: gsapi/minio
     build:
       context: ${PROJECT_BASE:-../../}
-      dockerfile: docker/composer/docker-compose.img-alist.minio.Dockerfile
+      dockerfile: docker/composer/img-alist.minio.Dockerfile
     networks:
       gsapi-img-alist:
         aliases:
@@ -57,7 +57,7 @@ services:
     image: gsapi/minio-img2webp
     build:
       context: ${PROJECT_BASE:-../../}
-      dockerfile: docker/composer/docker-compose.img-alist.minio-img2webp.Dockerfile
+      dockerfile: docker/composer/img-alist.minio-img2webp.Dockerfile
     depends_on:
       minio-init:
         condition: service_completed_successfully
@@ -85,7 +85,7 @@ services:
     image: gsapi/minio-init
     build:
       context: ${PROJECT_BASE:-../../}
-      dockerfile: docker/composer/docker-compose.img-alist.minio-init.Dockerfile
+      dockerfile: docker/composer/img-alist.minio-init.Dockerfile
     depends_on:
       redis:
         condition: service_healthy

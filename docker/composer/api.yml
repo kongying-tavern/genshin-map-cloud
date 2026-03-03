@@ -1,6 +1,6 @@
 include:
-  - docker-compose.network.yml
-  - docker-compose.dataenv.yml
+  - _network.yml
+  - dataenv.yml
 
 services:
   api-builder:
@@ -9,14 +9,14 @@ services:
     image: gsapi/api-builder
     build:
       context: ${PROJECT_BASE:-../../}
-      dockerfile: docker/composer/docker-compose.api.api-builder.Dockerfile
+      dockerfile: docker/composer/api.api-builder.Dockerfile
   api-gateway:
     container_name: gsapi-api-gateway
     hostname: gsapi-api-gateway
     image: gsapi/api-gateway
     build:
       context: ${PROJECT_BASE:-../../}
-      dockerfile: docker/composer/docker-compose.api.api-gateway.Dockerfile
+      dockerfile: docker/composer/api.api-gateway.Dockerfile
       additional_contexts:
         builder: service:api-builder
     depends_on:
@@ -37,7 +37,7 @@ services:
     image: gsapi/api-core
     build:
       context: ${PROJECT_BASE:-../../}
-      dockerfile: docker/composer/docker-compose.api.api-core.Dockerfile
+      dockerfile: docker/composer/api.api-core.Dockerfile
       additional_contexts:
         builder: service:api-builder
     depends_on:
