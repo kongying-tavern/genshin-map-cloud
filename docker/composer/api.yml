@@ -29,7 +29,7 @@ services:
         aliases:
           - api-gateway.local
     volumes:
-      - ${DATA_DIR}/api/gateway-logs:/data/logs
+      - ${DATA_DIR}/api/logs/gateway:/data/logs
     ports:
       - ${GATEWAY_PORT:-8101}:8101
     restart: always
@@ -55,7 +55,7 @@ services:
         aliases:
           - img-alist.local
     volumes:
-      - ${DATA_DIR}/api/core-logs:/data/logs
+      - ${DATA_DIR}/api/logs/core:/data/logs
     ports:
       - ${API_PORT:-8092}:8092
     restart: always
