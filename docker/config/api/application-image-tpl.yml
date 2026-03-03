@@ -4,4 +4,4 @@ image:
     key: {{MINIO_KEY}}
     secret: {{MINIO_SECRET}}
     bucket: {{MINIO_BUCKET_IMAGE}}
-    static-url-template: http://localhost:{{MINIO_PORT_PROXY}}/[[fullPath]]
+    static-url-template: {{MINIO_URL_TEMPLATE}}
