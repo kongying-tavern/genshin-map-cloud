@@ -4,7 +4,7 @@ FROM golang:1.21-bookworm AS builder
 WORKDIR /data
 COPY docker/config/img-alist-builder/minio-image-to-webp .
 
-RUN go env -w GOPROXY=https://goproxy.io,direct && \
+RUN go env -w GOPROXY=https://goproxy.cn,direct && \
     CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build -ldflags "-s -w"
 
 # Runner

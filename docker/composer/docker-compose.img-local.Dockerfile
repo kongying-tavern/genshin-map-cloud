@@ -8,9 +8,7 @@ RUN mkdir -p ./cache && \
     mkdir -p ./saved_img && \
     chown -R www-data:www-data . && \
     mkdir -p /data && \
-    mv -f ./startup.sh /data/startup.sh && \
     chown -R www-data:www-data /data && \
-    chmod +x /data/startup.sh && \
     apt-get update && \
     apt-get install -y \
         libwebp-dev \
@@ -28,5 +26,3 @@ RUN mkdir -p ./cache && \
 
 VOLUME ["/var/www/html/cache", "/var/www/html/saved_img"]
 EXPOSE 80
-
-ENTRYPOINT ["bash", "/data/startup.sh"]

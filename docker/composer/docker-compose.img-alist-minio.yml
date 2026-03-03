@@ -27,6 +27,9 @@ services:
     container_name: gsapi-minio
     hostname: gsapi-minio
     image: gsapi/minio
+    build:
+      context: ${PROJECT_BASE:-../../}
+      dockerfile: docker/composer/docker-compose.img-alist.minio.Dockerfile
     networks:
       gsapi-img-alist:
         aliases:
@@ -52,6 +55,9 @@ services:
     container_name: gsapi-minio-img2webp
     hostname: gsapi-minio-img2webp
     image: gsapi/minio-img2webp
+    build:
+      context: ${PROJECT_BASE:-../../}
+      dockerfile: docker/composer/docker-compose.img-alist.minio-img2webp.Dockerfile
     depends_on:
       minio-init:
         condition: service_completed_successfully
@@ -77,6 +83,9 @@ services:
     container_name: gsapi-minio-init
     hostname: gsapi-minio-init
     image: gsapi/minio-init
+    build:
+      context: ${PROJECT_BASE:-../../}
+      dockerfile: docker/composer/docker-compose.img-alist.minio-init.Dockerfile
     depends_on:
       redis:
         condition: service_healthy

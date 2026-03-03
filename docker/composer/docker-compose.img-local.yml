@@ -6,6 +6,9 @@ services:
     container_name: gsapi-img-local
     hostname: gsapi-img-local
     image: gsapi/img-local
+    build:
+      context: ${PROJECT_BASE:-../../}
+      dockerfile: docker/composer/docker-compose.img-local.Dockerfile
     networks:
       gsapi-img-local:
         aliases:
