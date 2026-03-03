@@ -1,4 +1,4 @@
-FROM xhofe/alist:v3.30.0
+FROM xhofe/alist:v3.40.0
 
 WORKDIR /alist
 COPY docker/config/img-alist-builder/alist .
