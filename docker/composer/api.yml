@@ -10,6 +10,8 @@ services:
     build:
       context: ${PROJECT_BASE:-../../}
       dockerfile: docker/composer/api.api-builder.Dockerfile
+      args:
+        - BUILD_PROFILE=${BUILD_PROFILE:-dev}
   api-gateway:
     container_name: gsapi-api-gateway
     hostname: gsapi-api-gateway

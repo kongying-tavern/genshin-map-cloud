@@ -1,0 +1,4 @@
+socketio:
+  ping-timeout: 30000
+  ping-interval: 30000
+  rtt-debounce-gap: 500

@@ -35,8 +35,9 @@ ENV_FILE = get_env ENV_FILE
 PROJECT_NAME = get_env PROJECT_NAME
 
 replace_env_values_in_file ${ENV_FILE} ./config/api/application-datasource-tpl.yml ./cache/application-datasource.yml
-replace_env_values_in_file ${ENV_FILE} ./config/api/application-nacos-tpl.yml ./cache/application-nacos.yml
 replace_env_values_in_file ${ENV_FILE} ./config/api/application-image-tpl.yml ./cache/application-image.yml
+replace_env_values_in_file ${ENV_FILE} ./config/api/application-websocket-tpl.yml ./cache/application-websocket.yml
+replace_env_values_in_file ${ENV_FILE} ./config/api/application-nacos-tpl.yml ./cache/application-nacos.yml
 
 docker_build "${ENV_FILE}" "${PROJECT_NAME}" "./composer/api.yml"
 '''
