@@ -27,7 +27,7 @@ services:
   nacos:
     container_name: gsapi-nacos
     hostname: gsapi-nacos
-    image: nacos/nacos-server:v2.0.4
+    image: nacos/nacos-server:v2.3.0
     networks:
       gsapi-api:
         aliases:
