@@ -22,6 +22,8 @@ services:
       additional_contexts:
         builder: service:api-builder
     depends_on:
+      builder:
+        condition: service_started
       nacos:
         condition: service_healthy
     networks:
@@ -43,6 +45,8 @@ services:
       additional_contexts:
         builder: service:api-builder
     depends_on:
+      builder:
+        condition: service_started
       postgresql:
         condition: service_healthy
       nacos:
