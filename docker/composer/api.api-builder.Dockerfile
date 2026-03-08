@@ -20,6 +20,7 @@ RUN --mount=type=cache,target=/root/.m2,rw \
     cp -f ./docker/cache/application-datasource.yml ./genshin-map-config/src/main/resources-${BUILD_PROFILE}/application-datasource-${BUILD_PROFILE}.yml && \
     cp -f ./docker/cache/application-image.yml ./genshin-map-config/src/main/resources-${BUILD_PROFILE}/application-image-${BUILD_PROFILE}.yml && \
     cp -f ./docker/cache/application-websocket.yml ./genshin-map-config/src/main/resources-${BUILD_PROFILE}/application-websocket-${BUILD_PROFILE}.yml && \
+    cp -f ./docker/cache/application-oauth.yml ./genshin-map-config/src/main/resources-${BUILD_PROFILE}/application-oauth-${BUILD_PROFILE}.yml && \
     cp -f ./docker/cache/application-nacos.yml ./genshin-map-config/src/main/resources-${BUILD_PROFILE}/bootstrap-nacos-${BUILD_PROFILE}.yml && \
     cp -f ./docker/cache/application-nacos.yml ./genshin-map-ability/genshin-map-ability-gateway/src/main/resources-${BUILD_PROFILE}/bootstrap-nacos-${BUILD_PROFILE}.yml && \
     cp -f ./docker/cache/application-nacos.yml ./genshin-map-api/genshin-map-api-core/genshin-map-api-core-core/src/main/resources-${BUILD_PROFILE}/bootstrap-nacos-${BUILD_PROFILE}.yml && \
