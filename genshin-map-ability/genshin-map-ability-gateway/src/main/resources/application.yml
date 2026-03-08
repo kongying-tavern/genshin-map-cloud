@@ -2,3 +2,4 @@ spring:
   profiles:
     include:
       - "env-@runtime-profile@"
+      - "oauth-@runtime-profile@"
