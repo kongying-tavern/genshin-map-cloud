@@ -5,7 +5,7 @@ WORKDIR /data
 
 ARG JAR_FILE=genshin-map-ability-gateway-1.0.jar
 
-COPY --from=builder /data/dist/${JAR_FILE} ./api-gateway.jar
+COPY --from=api-builder /data/dist/${JAR_FILE} ./api-gateway.jar
 
 RUN ln -s /usr/local/openjdk-11/bin/java /bin/java
 

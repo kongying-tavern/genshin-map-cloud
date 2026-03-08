@@ -5,7 +5,7 @@ WORKDIR /data
 
 ARG JAR_FILE=genshin-map-api-core-core-1.0.jar
 
-COPY --from=builder /data/dist/${JAR_FILE} ./api-core.jar
+COPY --from=api-builder /data/dist/${JAR_FILE} ./api-core.jar
 
 RUN ln -s /usr/local/openjdk-11/bin/java /bin/java
 

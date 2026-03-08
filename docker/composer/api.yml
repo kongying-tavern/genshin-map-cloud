@@ -20,7 +20,7 @@ services:
       context: ${PROJECT_BASE:-../../}
       dockerfile: docker/composer/api.api-gateway.Dockerfile
       additional_contexts:
-        builder: service:api-builder
+        api-builder: service:api-builder
     depends_on:
       api-builder:
         condition: service_started
@@ -43,7 +43,7 @@ services:
       context: ${PROJECT_BASE:-../../}
       dockerfile: docker/composer/api.api-core.Dockerfile
       additional_contexts:
-        builder: service:api-builder
+        api-builder: service:api-builder
     depends_on:
       api-builder:
         condition: service_started
