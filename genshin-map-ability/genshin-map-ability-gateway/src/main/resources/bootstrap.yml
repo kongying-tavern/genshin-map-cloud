@@ -83,13 +83,6 @@ spring:
   application:
     name: oauth2-gateway
 
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          # jwk URL 获取公钥，填写auth模块的端口
-          jwk-set-uri: http://localhost:8092/.well-known/jwks.json
-
   cloud:
     gateway:
       discovery:
