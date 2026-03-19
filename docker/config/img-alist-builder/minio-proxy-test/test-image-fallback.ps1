@@ -63,6 +63,105 @@ function Get-ImageFormat
     return "UNKNOWN"
 }
 
+# 函数：从文件名解析各部分信息
+function Parse-ImagePath
+{
+    param(
+        [string]$ImagePath
+    )
+
+    # 格式：ORIG_TYPE~FALLBACK_TYPE~WEBP_SUPPORT.EXT
+    $imagePathBase = [System.IO.Path]::GetFileNameWithoutExtension($ImagePath)
+    $pathParts = $imagePathBase.Split('~')
+
+    # 提取 Original_Ext（ORIG_TYPE 部分，即第一个~前的内容）
+    $originalExt = if ($pathParts.Count -ge 1)
+    {
+        $pathParts[0].ToUpper()
+    }
+    else
+    {
+        ""
+    }
+
+    # 提取 Fallback_Ext（FALLBACK_TYPE 部分，即第二个部分）
+    $fallbackExt = ""
+    if ($pathParts.Count -ge 2)
+    {
+        $fbPart = $pathParts[1]
+
+        # 如果是 no_fb，表示没有 fallback，为空
+        # 如果是 X_fb 格式，提取 X
+        if ($fbPart -ne 'no_fb')
+        {
+            if ($fbPart -match '^(.*)_fb$')
+            {
+                $fallbackExt = $matches[1].ToUpper()
+            }
+            else
+            {
+                # 其他情况直接使用原值
+                $fallbackExt = $fbPart.ToUpper()
+            }
+        }
+    }
+
+    # 提取 Has_WebP_File（WEBP_SUPPORT 部分，即第三个部分）
+    $hasWebPFile = ""
+    if ($pathParts.Count -ge 3)
+    {
+        $webpPart = $pathParts[2]
+        if ($webpPart -eq 'with_webp')
+        {
+            $hasWebPFile = "✅ 有"
+        }
+        elseif ($webpPart -eq 'no_webp')
+        {
+            $hasWebPFile = "❌ 无"
+        }
+    }
+
+    return @{
+        OriginalExt = $originalExt
+        FallbackExt = $fallbackExt
+        HasWebPFile = $hasWebPFile
+    }
+}
+
+# 函数：格式化状态显示
+function Format-Status
+{
+    param(
+        [bool]$Success
+    )
+
+    if ($Success)
+    {
+        return "✅ PASS"
+    }
+    else
+    {
+        return "❌ FAIL"
+    }
+}
+
+# 函数：格式化 WebP Header 显示
+function Format-WebPHeader
+{
+    param(
+        [string]$UseWebpHeader
+    )
+
+    if ($UseWebpHeader -eq "1")
+    {
+        return "✅ 是"
+    }
+    else
+    {
+        return "❌ 否"
+    }
+}
+
 # 颜色定义
 $Green = "`e[32m"
 $Red = "`e[31m"
@@ -296,52 +395,23 @@ $tableResults = $results | ForEach-Object {
     # 提取 URL 扩展名
     $urlExtension = [System.IO.Path]::GetExtension($_.URL).TrimStart('.').ToUpper()
 
-    # 从 image_path 提取原始文件扩展名和 WebP 文件信息
-    # 格式：Test/X_(with_webp|no_webp).Y
-    # 其中 X = 原始文件扩展名，Y = 访问的扩展名
-    $imagePathBase = [System.IO.Path]::GetFileNameWithoutExtension($_.ImagePath)
+    # 从 image_path 解析各部分信息
+    $parsedInfo = Parse-ImagePath -ImagePath $_.ImagePath
 
-    # 提取 Original_Ext（X 部分，即第一个下划线前的内容）
-    $originalExtension = $imagePathBase.Split('_')[0].ToUpper()
+    # 格式化状态显示
+    $status = Format-Status -Success $_.Success
 
-    # 判断是否支持 WebP（从 use_webp_header 判断）
-    $supportWebP = if ($_.UseWebpHeader -eq "1")
-    {
-        "✅ 是"
-    }
-    else
-    {
-        "❌ 否"
-    }
-
-    # 判断 MinIO 是否有 WebP 文件（从文件名中的 with_webp/no_webp 判断）
-    $hasMinioWebP = if ($imagePathBase -match 'with_webp')
-    {
-        "✅ 有"
-    }
-    elseif ($imagePathBase -match 'no_webp')
-    {
-        "❌ 无"
-    }
-    else
-    {
-        ""
-    }
+    # 格式化 WebP Header 显示
+    $testWithWebP = Format-WebPHeader -UseWebpHeader $_.UseWebpHeader
 
     [PSCustomObject]@{
-        Status = if ($_.Success)
-        {
-            "✅ PASS"
-        }
-        else
-        {
-            "❌ FAIL"
-        }
+        Status = $status
         URL = $_.URL
         URL_Ext = $urlExtension
-        Original_Ext = $originalExtension
-        Support_WebP = $supportWebP
-        Has_WebP_File = $hasMinioWebP
+        Original_Ext = $parsedInfo.OriginalExt
+        Fallback_Ext = $parsedInfo.FallbackExt
+        Has_WebP_File = $parsedInfo.HasWebPFile
+        Test_With_WebP_Header = $testWithWebP
         ExpectedStatus = $_.ExpectedStatus
         ExpectedType = $_.ExpectedType
         ActualStatus = $normalizedActualStatus
