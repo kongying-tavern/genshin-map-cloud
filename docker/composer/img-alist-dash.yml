@@ -19,7 +19,6 @@ services:
         aliases:
           - minio-proxy.local
     volumes:
-      - ${DATA_DIR}/minio-proxy/cache:/data/cache
       - ${DATA_DIR}/minio-proxy/log:/data/log
     ports:
       - ${MINIO_PORT_PROXY:-9010}:80
