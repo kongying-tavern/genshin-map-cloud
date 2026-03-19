@@ -1,12 +1,13 @@
-FROM nginx:1.25-alpine
+FROM openresty/openresty:alpine-fat
 
 WORKDIR /data
-COPY docker/config/img-alist-builder/minio-proxy /etc/nginx
 
-RUN mkdir -p ./log && \
-    mkdir -p ./cache/proxy_temp_dir && \
-    mkdir -p ./cache/proxy_cache_dir && \
-    chown -R nginx:nginx .
+COPY docker/config/img-alist-builder/minio-proxy/modules-enabled/ /etc/nginx/modules-enabled/
+COPY docker/config/img-alist-builder/minio-proxy/conf.d/ /etc/nginx/conf.d/
 
-VOLUME ["/data/cache", "/data/log"]
+RUN opm get agentzh/lua-resty-http openresty/lua-resty-dns && \
+    mkdir -p ./log && \
+    rm -f /etc/nginx/conf.d/default.conf
+
+VOLUME ["/data/log"]
 EXPOSE 80

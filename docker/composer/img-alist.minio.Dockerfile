@@ -1,4 +1,4 @@
-FROM minio/minio:RELEASE.2024-01-05T22-17-24Z
+FROM minio/minio:RELEASE.2025-04-22T22-12-26Z
 
 WORKDIR /minio
 COPY docker/config/img-alist-builder/minio .
