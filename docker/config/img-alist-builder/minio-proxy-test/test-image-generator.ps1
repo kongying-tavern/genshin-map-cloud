@@ -9,6 +9,18 @@ param(
     [int]$Height = 20
 )
 
+# 加载配置文件
+$configPath = Join-Path $PSScriptRoot "test-image-config.ps1"
+if (Test-Path $configPath)
+{
+    . $configPath
+}
+else
+{
+    Write-Host "❌ 找不到配置文件：$configPath" -ForegroundColor Red
+    exit 1
+}
+
 # 验证长宽是否为偶数
 if ($Width % 2 -ne 0)
 {
@@ -33,55 +45,13 @@ Write-Host "`n正在生成测试图片..." -ForegroundColor Cyan
 Write-Host "输出目录：$outputDir"
 Write-Host "图片尺寸：${Width}x${Height}`n"
 
-# 颜色定义
-$colors = @{
-    WithWebPColor = [System.Drawing.Color]::FromArgb(138, 43, 226)  # BlueViolet - WebP 存在标识
-    NoWebPColor = [System.Drawing.Color]::FromArgb(64, 64, 64)      # 深灰色 - WebP 不存在标识
-    JFIFColor = [System.Drawing.Color]::FromArgb(255, 0, 0)         # 红色 - JFIF 格式
-    JPEGColor = [System.Drawing.Color]::FromArgb(0, 255, 0)         # 绿色 - JPEG 格式
-    JPGColor = [System.Drawing.Color]::FromArgb(0, 0, 255)          # 蓝色 - JPG 格式
-    PNGColor = [System.Drawing.Color]::FromArgb(255, 255, 0)        # 黄色 - PNG 格式
-}
+# 使用配置文件中的颜色定义（已在 config 中定义，此处不需要重复）
 
-# 列表 1: 测试用例扩展名 (ORIG_TYPE~FALLBACK_TYPE~WEBP_SUPPORT.EXT 中的 ORIG_TYPE，表示访问请求的扩展名)
-$testcaseExtensions = @(
-    @{
-        Ext = 'png'
-        EdgeColor = $colors.PNGColor
-        FallbackChain = @('png')  # PNG 没有 fallback
-        ImageFormat = [System.Drawing.Imaging.ImageFormat]::Png
-    },
-    @{
-        Ext = 'jpg'
-        EdgeColor = $colors.JPGColor
-        FallbackChain = @('png', 'jpg')  # JPG fallback 到 PNG
-        ImageFormat = [System.Drawing.Imaging.ImageFormat]::Jpeg
-    },
-    @{
-        Ext = 'jpeg'
-        EdgeColor = $colors.JPEGColor
-        FallbackChain = @('png', 'jpeg')  # JPEG fallback 到 PNG
-        ImageFormat = [System.Drawing.Imaging.ImageFormat]::Jpeg
-    },
-    @{
-        Ext = 'jfif'
-        EdgeColor = $colors.JFIFColor
-        FallbackChain = @('png', 'jfif')  # JFIF fallback 到 PNG
-        ImageFormat = [System.Drawing.Imaging.ImageFormat]::Jpeg
-    }
-)
+# 列表 1: 测试用例扩展名 (从配置文件加载)
+$testcaseExtensions = $ImageFormatConfigs
 
-# 列表 2: WebP 存在性
-$webpExistence = @(
-    @{
-        Suffix = 'with_webp'
-        CornerColor = $colors.WithWebPColor
-    },
-    @{
-        Suffix = 'no_webp'
-        CornerColor = $colors.NoWebPColor
-    }
-)
+# 列表 2: WebP 存在性 (从配置文件加载)
+$webpExistence = $WebPExistence
 
 # 列表 3: Fallback 类型 (基于回退链生成)
 $fallbackTypes = @(
@@ -147,16 +117,7 @@ foreach ($testcaseExt in $testcaseExtensions)
     }
 }
 
-# 加载 System.Drawing
-try
-{
-    Add-Type -AssemblyName System.Drawing
-}
-catch
-{
-    Write-Host "❌ 无法加载 System.Drawing，请确保安装了 .NET Framework" -ForegroundColor Red
-    exit 1
-}
+# 使用配置文件中的颜色定义和程序集（已在 config 中定义，此处不需要重复）
 
 foreach ($config in $fileConfigs)
 {
