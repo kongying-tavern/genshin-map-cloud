@@ -53,39 +53,27 @@ $testcaseExtensions = $ImageFormatConfigs
 # 列表 2: WebP 存在性 (从配置文件加载)
 $webpExistence = $WebPExistence
 
-# 列表 3: Fallback 类型 (基于回退链生成)
-$fallbackTypes = @(
-    @{
-        Type = 'no_fb'
-        Description = 'No Fallback'
-    }
-# 动态添加 fallback 类型，稍后在循环中处理
-)
+# 过滤需要生成图片的格式
+$imageFormats = $ImageFormatConfigs | Where-Object { $_.GenerateImage }
 
 # 生成所有文件配置
 $fileConfigs = @()
-foreach ($testcaseExt in $testcaseExtensions)
+foreach ($formatConfig in $imageFormats)
 {
-    foreach ($webp in $webpExistence)
+    foreach ($webp in $WebPExistence)
     {
         # 1. 生成 no_fb 类型 (只生成当前类型)
-        $imageFormat = ($testcaseExtensions | Where-Object { $_.Ext -eq $testcaseExt.Ext }).ImageFormat
-
         $fileConfigs += @{
-            Name = "$( $testcaseExt.Ext )~no_fb~$( $webp.Suffix ).$( $testcaseExt.Ext )"
-            Ext = $testcaseExt.Ext
+            Name = "$( $formatConfig.Ext )~no_fb~$( $webp.Suffix ).$( $formatConfig.Ext )"
+            Ext = $formatConfig.Ext
             CornerColor = $webp.CornerColor
-            EdgeColor = $testcaseExt.EdgeColor
-            ImageFormat = $imageFormat
+            EdgeColor = $formatConfig.EdgeColor
+            ImageFormat = $formatConfig.ImageFormat
         }
 
         # 2. 生成 fallback 类型 (回退链中排除当前类型 X 后的每个类型)
-        # 例如：jpg 的回退链是 ('png', 'jpg'),排除 jpg 后剩下 png，则生成 png_fb
+        $fallbackExts = $formatConfig.FallbackChain | Where-Object { $_ -ne $formatConfig.Ext }
 
-        # 获取排除自身后的 fallback 类型列表
-        $fallbackExts = $testcaseExt.FallbackChain | Where-Object { $_ -ne $testcaseExt.Ext }
-
-        # 如果排除自身后为空，则不生成 fallback 类型
         if ($fallbackExts.Count -eq 0)
         {
             continue
@@ -93,25 +81,24 @@ foreach ($testcaseExt in $testcaseExtensions)
 
         foreach ($fallbackExt in $fallbackExts)
         {
-            # 生成两个文件：一个当前类型，一个 fallback 类型
-            $fbImageFormat = ($testcaseExtensions | Where-Object { $_.Ext -eq $fallbackExt }).ImageFormat
+            $fbConfig = $ImageFormatConfigs | Where-Object { $_.Ext -eq $fallbackExt }
 
             # 当前类型的文件
             $fileConfigs += @{
-                Name = "$( $testcaseExt.Ext )~$( $fallbackExt )_fb~$( $webp.Suffix ).$( $testcaseExt.Ext )"
-                Ext = $testcaseExt.Ext
+                Name = "$( $formatConfig.Ext )~$( $fallbackExt )_fb~$( $webp.Suffix ).$( $formatConfig.Ext )"
+                Ext = $formatConfig.Ext
                 CornerColor = $webp.CornerColor
-                EdgeColor = $testcaseExt.EdgeColor
-                ImageFormat = $imageFormat
+                EdgeColor = $formatConfig.EdgeColor
+                ImageFormat = $formatConfig.ImageFormat
             }
 
             # fallback 类型的文件
             $fileConfigs += @{
-                Name = "$( $testcaseExt.Ext )~$( $fallbackExt )_fb~$( $webp.Suffix ).$( $fallbackExt )"
+                Name = "$( $formatConfig.Ext )~$( $fallbackExt )_fb~$( $webp.Suffix ).$( $fallbackExt )"
                 Ext = $fallbackExt
                 CornerColor = $webp.CornerColor
-                EdgeColor = $testcaseExt.EdgeColor
-                ImageFormat = $fbImageFormat
+                EdgeColor = $formatConfig.EdgeColor
+                ImageFormat = $fbConfig.ImageFormat
             }
         }
     }

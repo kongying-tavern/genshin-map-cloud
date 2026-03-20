@@ -27,28 +27,54 @@ $ImageBlockColors = @{
 # 图片格式配置 - 定义各种图片格式的属性（扩展名、回退链、图像格式等）
 $ImageFormatConfigs = @(
     @{
+        Ext = 'webp'
+        EdgeColor = $ImageBlockColors.WithWebPColor
+        FallbackChain = @('webp')
+        ImageFormat = [System.Drawing.Imaging.ImageFormat]::Webp
+        GenerateImage = $false
+        GenerateTestCases = $false
+        ResponseBinaryFormat = 'WEBP'
+        IsTestRequestExt = $true
+    },
+    @{
         Ext = 'png'
         EdgeColor = $ImageBlockColors.PNGColor
-        FallbackChain = @('png')                        # PNG 没有 fallback
+        FallbackChain = @('png')
         ImageFormat = [System.Drawing.Imaging.ImageFormat]::Png
+        GenerateImage = $true
+        GenerateTestCases = $true
+        ResponseBinaryFormat = 'PNG'
+        IsTestRequestExt = $true
     },
     @{
         Ext = 'jpg'
         EdgeColor = $ImageBlockColors.JPGColor
-        FallbackChain = @('png', 'jpg')                 # JPG fallback 到 PNG
+        FallbackChain = @('png', 'jpg')
         ImageFormat = [System.Drawing.Imaging.ImageFormat]::Jpeg
+        GenerateImage = $true
+        GenerateTestCases = $true
+        ResponseBinaryFormat = 'JPG'
+        IsTestRequestExt = $true
     },
     @{
         Ext = 'jpeg'
         EdgeColor = $ImageBlockColors.JPEGColor
-        FallbackChain = @('png', 'jpeg')                # JPEG fallback 到 PNG
+        FallbackChain = @('png', 'jpeg')
         ImageFormat = [System.Drawing.Imaging.ImageFormat]::Jpeg
+        GenerateImage = $true
+        GenerateTestCases = $true
+        ResponseBinaryFormat = 'JPG'
+        IsTestRequestExt = $true
     },
     @{
         Ext = 'jfif'
         EdgeColor = $ImageBlockColors.JFIFColor
-        FallbackChain = @('png', 'jfif')                # JFIF fallback 到 PNG
+        FallbackChain = @('png', 'jfif')
         ImageFormat = [System.Drawing.Imaging.ImageFormat]::Jpeg
+        GenerateImage = $true
+        GenerateTestCases = $true
+        ResponseBinaryFormat = 'JPG'
+        IsTestRequestExt = $true
     }
 )
 
@@ -61,5 +87,17 @@ $WebPExistence = @(
     @{
         Suffix = 'no_webp'
         CornerColor = $ImageBlockColors.NoWebPColor
+    }
+)
+
+# UseWebpHeader 选项 - 定义是否使用 Accept: image/webp header
+$UseWebpHeaderOptions = @(
+    @{
+        Value = 1      # 使用 Accept: image/webp header
+        Label = 'with_header'
+    },
+    @{
+        Value = 0      # 不使用 Accept: image/webp header
+        Label = 'no_header'
     }
 )
