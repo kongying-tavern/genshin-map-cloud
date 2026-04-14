@@ -21,5 +21,7 @@ import java.util.List;
 @Schema(title = "点位关联查询前端封装", description = "点位关联查询前端封装")
 public class MarkerLinkageSearchVo {
 
+    private Boolean isTraverse;
+
     private List<String> groupIds;
 }
