@@ -62,14 +62,16 @@ public class MarkerLinkageHelperService {
      * 根据组ID获取关联列表
      */
     @Cacheable(value = "getMarkerLinkageList")
-    public List<MarkerLinkageVo> getLinkageList(List<String> groupIds) {
-        if(CollUtil.isEmpty(groupIds)) {
-            return new ArrayList<>();
-        }
-
+    public List<MarkerLinkageVo> getLinkageList(Boolean isTraverse, List<String> groupIds) {
         // 获取关联列表
-        final List<MarkerLinkageVo> linkageList = markerLinkageMBPService.list(Wrappers.<MarkerLinkage>lambdaQuery().in(MarkerLinkage::getGroupId, groupIds)).parallelStream()
-            .map(markerLinkage -> BeanUtils.copy(markerLinkage, MarkerLinkageVo.class)).collect(Collectors.toList());
+        List<MarkerLinkageVo> linkageList = new ArrayList<>();
+        if(isTraverse) {
+            linkageList = markerLinkageMBPService.list(Wrappers.<MarkerLinkage>lambdaQuery()).parallelStream()
+                .map(markerLinkage -> BeanUtils.copy(markerLinkage, MarkerLinkageVo.class)).collect(Collectors.toList());
+        } else if(!CollUtil.isEmpty(groupIds)) {
+            linkageList = markerLinkageMBPService.list(Wrappers.<MarkerLinkage>lambdaQuery().in(MarkerLinkage::getGroupId, groupIds)).parallelStream()
+                .map(markerLinkage -> BeanUtils.copy(markerLinkage, MarkerLinkageVo.class)).collect(Collectors.toList());
+        }
         MarkerLinkageDataHelper.reverseLinkageIds(linkageList);
         return linkageList;
     }
@@ -78,14 +80,10 @@ public class MarkerLinkageHelperService {
      * 根据组ID获取关联绘图数据
      */
     @Cacheable(value = "getMarkerLinkageGraph")
-    public Map<String, GraphVo> getLinkageGraph(List<String> groupIds) {
-        if(CollUtil.isEmpty(groupIds)) {
-            return new HashMap<>();
-        }
-
+    public Map<String, GraphVo> getLinkageGraph(Boolean isTraverse, List<String> groupIds) {
         final MarkerLinkageHelperService markerLinkageHelperService = (MarkerLinkageHelperService) SpringContextUtils.getBean("markerLinkageHelperService");
         // 获取关联绘图数据
-        final List<MarkerLinkageVo> linkageList = markerLinkageHelperService.getLinkageList(groupIds);
+        final List<MarkerLinkageVo> linkageList = markerLinkageHelperService.getLinkageList(isTraverse, groupIds);
         final Map<String, GraphVo> linkageGraph = MarkerLinkageDataHelper.buildLinkageGraph(linkageList);
         return linkageGraph;
     }

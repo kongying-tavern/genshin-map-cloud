@@ -1,6 +1,7 @@
 package site.yuanshen.genshin.core.service;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -45,13 +46,11 @@ public class MarkerLinkageService {
 
     @Cacheable(value = "listMarkerLinkage")
     public Map<String, List<MarkerLinkageVo>> listMarkerLinkage(MarkerLinkageSearchVo markerLinkageSearchVo) {
-        List<String> groupIds = markerLinkageSearchVo.getGroupIds();
-        if(CollUtil.isEmpty(groupIds)) {
-            return new HashMap<>();
-        }
+        final Boolean isTraverse = BooleanUtil.isTrue(markerLinkageSearchVo.getIsTraverse());
+        final List<String> groupIds = markerLinkageSearchVo.getGroupIds();
 
         // 获取关联列表
-        final List<MarkerLinkageVo> linkageList = markerLinkageHelperService.getLinkageList(groupIds);
+        final List<MarkerLinkageVo> linkageList = markerLinkageHelperService.getLinkageList(isTraverse, groupIds);
         // 关联路线点位数据
         final List<Long> pathMarkerIds = MarkerLinkageDataHelper.getPathMarkerIdsFromList(linkageList);
         final Map<Long, Point2D.Double> pathMarkerCoords = markerLinkageHelperService.getPathCoords(pathMarkerIds);
@@ -63,13 +62,11 @@ public class MarkerLinkageService {
 
     @Cacheable(value = "graphMarkerLinkage")
     public Map<String, GraphVo> graphMarkerLinkage(MarkerLinkageSearchVo markerLinkageSearchVo) {
-        List<String> groupIds = markerLinkageSearchVo.getGroupIds();
-        if(CollUtil.isEmpty(groupIds)) {
-            return new HashMap<>();
-        }
+        final Boolean isTraverse = BooleanUtil.isTrue(markerLinkageSearchVo.getIsTraverse());
+        final List<String> groupIds = markerLinkageSearchVo.getGroupIds();
 
         // 获取关联绘图数据
-        final Map<String, GraphVo> linkageGraph = markerLinkageHelperService.getLinkageGraph(groupIds);
+        final Map<String, GraphVo> linkageGraph = markerLinkageHelperService.getLinkageGraph(isTraverse, groupIds);
         // 关联路线点位数据
         final List<Long> pathMarkerIds = MarkerLinkageDataHelper.getPathMarkerIdsFromGraph(linkageGraph);
         final Map<Long, Point2D.Double> pathMarkerCoords = markerLinkageHelperService.getPathCoords(pathMarkerIds);
