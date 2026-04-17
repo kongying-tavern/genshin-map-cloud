@@ -120,7 +120,7 @@ public class ItemService {
                         itemPage.getRecords().stream()
                                 .map(Item::getId).collect(Collectors.toList())));
 
-        //获取其中的正常点位 hidden_flag=0 若为内鬼用户,则增加hidden_flag=2
+        //获取其中的正常点位 hidden_flag=0 若为测试用户,则增加hidden_flag=2
         List<Long> normalMarkerList;
 
         if (!markerItemLinkList.isEmpty()) {

@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.util.*;
-import java.util.function.BiFunction;
 
 /**
  * hidden_flag 枚举类
@@ -20,8 +19,8 @@ public enum HiddenFlagEnum {
         1, "隐藏点位",
         1|2|4
     ),
-    TEST(
-        2, "内鬼点位",
+    BETA(
+        2, "测试点位",
         1|2|4|8
     ),
     EASTER_EGG(
