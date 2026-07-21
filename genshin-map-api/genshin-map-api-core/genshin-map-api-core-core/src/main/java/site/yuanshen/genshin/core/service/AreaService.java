@@ -103,8 +103,13 @@ public class AreaService {
             }
     )
     public Long createArea(AreaDto areaDto) {
-        if (Objects.equals(areaDto.getId(), areaDto.getParentId())) {
-            throw new GenshinApiException("地区ID不允许与父ID相同，会造成自身父子");
+        Long parentId = areaDto.getParentId();
+        Long id = areaDto.getId();
+        if (parentId == null) {
+            throw new GenshinApiException("父节点不能为空");
+        }
+        if (Objects.equals(parentId, id)) {
+            throw new GenshinApiException("指定的父节点无效");
         }
 
         Area area = areaDto.getEntity()
@@ -124,7 +129,7 @@ public class AreaService {
         }
 
         //更新父级的末端标志
-        updateAreaIsFinal(areaDto.getParentId(), false);
+        updateAreaIsFinal(parentId, false);
         return area.getId();
     }
 
@@ -142,17 +147,22 @@ public class AreaService {
             }
     )
     public Boolean updateArea(AreaDto areaDto) {
-        if (Objects.equals(areaDto.getId(), areaDto.getParentId())) {
-            throw new GenshinApiException("地区ID不允许与父ID相同，会造成自身父子");
+        Long parentId = areaDto.getParentId();
+        Long id = areaDto.getId();
+        if (parentId == null) {
+            throw new GenshinApiException("父节点不能为空");
+        }
+        if (Objects.equals(parentId, id)) {
+            throw new GenshinApiException("指定的父节点无效");
         }
 
         //获取地区实体
         Area area = areaMapper.selectOne(Wrappers.<Area>lambdaQuery()
-                .eq(Area::getId, areaDto.getId()));
+                .eq(Area::getId, id));
         //更新父级的末端标志
-        if (!Objects.equals(area.getParentId(), areaDto.getParentId())) {
+        if (!Objects.equals(area.getParentId(), parentId)) {
             // 更改新父级的末端标识
-            updateAreaIsFinal(areaDto.getParentId(), false);
+            updateAreaIsFinal(parentId, false);
             //更改原父级的末端标志(如果原父级只剩这个子级的话)
             recalculateAreaIsFinal(area.getParentId(), true);
         }
