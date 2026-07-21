@@ -40,7 +40,11 @@ public class SysUserArchiveService {
      * @return 指定存档槽位的当前存档
      */
     public SysArchiveVo getLastArchive(int slotIndex, Long userId) {
-        return new SysUserArchiveSlotDto(getSlotEntity(slotIndex, userId))
+        SysUserArchive entity = getSlotEntity(slotIndex, userId);
+        if (entity == null) {
+            throw new GenshinApiException("存档不存在");
+        }
+        return new SysUserArchiveSlotDto(entity)
                 .getArchiveVo(1);
     }
 
@@ -50,7 +54,11 @@ public class SysUserArchiveService {
      * @return 指定槽位的所有历史存档
      */
     public SysArchiveSlotVo getSlot(int slotIndex, Long userId) {
-        return new SysUserArchiveSlotDto(getSlotEntity(slotIndex, userId)).getSlotVo();
+        SysUserArchive entity = getSlotEntity(slotIndex, userId);
+        if (entity == null) {
+            throw new GenshinApiException("存档不存在");
+        }
+        return new SysUserArchiveSlotDto(entity).getSlotVo();
     }
 
 

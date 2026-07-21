@@ -81,8 +81,12 @@ public class AreaService {
      */
     @Cacheable(value = "area",key = "#areaId+'*'+#hiddenFlagList")
     public AreaDto getArea(Long areaId, List<Integer> hiddenFlagList) {
-        return new AreaDto(areaMapper.selectOne(Wrappers.<Area>lambdaQuery().in(!hiddenFlagList.isEmpty(),Area::getHiddenFlag,hiddenFlagList)
-                .eq(Area::getId, areaId)));
+        Area area = areaMapper.selectOne(Wrappers.<Area>lambdaQuery().in(!hiddenFlagList.isEmpty(),Area::getHiddenFlag,hiddenFlagList)
+                .eq(Area::getId, areaId));
+        if (area == null) {
+            throw new GenshinApiException("地区不存在");
+        }
+        return new AreaDto(area);
     }
 
     /**
