@@ -94,7 +94,7 @@ public class AreaService {
     @Transactional
     @Caching(
             evict = {
-                    @CacheEvict(value = "area", key = "#result"),
+                    @CacheEvict(value = "area", allEntries = true),
                     @CacheEvict(value = "listArea", allEntries = true)
             }
     )
@@ -133,7 +133,7 @@ public class AreaService {
     @Transactional
     @Caching(
             evict = {
-                    @CacheEvict(value = "area", key = "#areaDto.id"),
+                    @CacheEvict(value = "area", allEntries = true),
                     @CacheEvict(value = "listArea", allEntries = true)
             }
     )
@@ -167,7 +167,7 @@ public class AreaService {
     @Transactional
     @Caching(
             evict = {
-                    @CacheEvict(value = "area", key = "#areaId"),
+                    @CacheEvict(value = "area", allEntries = true),
                     @CacheEvict(value = "listArea", allEntries = true)
             }
     )
