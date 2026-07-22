@@ -24,16 +24,15 @@ public class UserAppenderService {
      * @param setterTarget 向目标列表放置用户数据的 set 方法
      */
     public static <T> void appendUser(
-            List<T> list,
-            Function<T, Long> getterSrc,
-            Function<T, Long> getterTarget,
-            BiConsumer<T, SysUserSmallVo> setterTarget
+        List<T> list,
+        Function<T, Long> getterSrc,
+        Function<T, Long> getterTarget,
+        BiConsumer<T, SysUserSmallVo> setterTarget
     ) {
 
         final Map<Long, SysUserSmallVo> userVoMap = getUserMap(list, getterSrc);
 
-
-        for(T item : list) {
+        for (T item : list) {
             Long userId = 0L;
             try {
                 userId = getterTarget.apply(item);
@@ -58,15 +57,15 @@ public class UserAppenderService {
      * @param setterTarget 向目标列表放置用户数据的 set 方法
      */
     public static <T> T appendUser(
-            Class<T> clazz,
-            T item,
-            Function<T, Long> getterSrc,
-            Function<T, Long> getterTarget,
-            BiConsumer<T, SysUserSmallVo> setterTarget
+        Class<T> clazz,
+        T item,
+        Function<T, Long> getterSrc,
+        Function<T, Long> getterTarget,
+        BiConsumer<T, SysUserSmallVo> setterTarget
     ) {
         List<T> list = Arrays.asList(item);
         appendUser(list, getterSrc, getterTarget, setterTarget);
-        if(list.size() > 0) {
+        if (list.size() > 0) {
             return list.get(0);
         } else {
             try {
@@ -78,14 +77,14 @@ public class UserAppenderService {
     }
 
     public static <D, T> R appendUser(
-            R resultData,
-            D data,
-            boolean isList,
-            Function<T, Long> idGetter
+        R resultData,
+        D data,
+        boolean isList,
+        Function<T, Long> idGetter
     ) {
         List<T> list = new ArrayList<>();
         try {
-            if(isList) {
+            if (isList) {
                 list = (List<T>) data;
             } else {
                 list = Arrays.asList((T) data);
@@ -95,7 +94,8 @@ public class UserAppenderService {
         }
 
         final Map<Long, SysUserSmallVo> newUserMap = getUserMap(list, idGetter);
-        final Map<Long, SysUserSmallVo> oldUserMap = resultData.getUsers() == null ? new HashMap<>() : resultData.getUsers();
+        final Map<Long, SysUserSmallVo> oldUserMap = resultData.getUsers() == null ? new HashMap<>()
+            : resultData.getUsers();
         oldUserMap.putAll(newUserMap);
         resultData.setUsers(oldUserMap);
 
@@ -109,19 +109,19 @@ public class UserAppenderService {
      */
     public static <T> Map<Long, SysUserSmallVo> getUserMap(List<T> list, Function<T, Long> getterSrc) {
         final List<Long> userIds = list.stream()
-                .filter(Objects::nonNull)
-                .map(v -> {
-                    try {
-                        return getterSrc.apply(v);
-                    } catch (Exception e) {
-                        return null;
-                    }
-                })
-                .filter(Objects::nonNull)
-                .distinct()
-                .collect(Collectors.toList());
+            .filter(Objects::nonNull)
+            .map(v -> {
+                try {
+                    return getterSrc.apply(v);
+                } catch (Exception e) {
+                    return null;
+                }
+            })
+            .filter(Objects::nonNull)
+            .distinct()
+            .collect(Collectors.toList());
 
-        if(CollectionUtils.isEmpty(userIds)) {
+        if (CollectionUtils.isEmpty(userIds)) {
             return new HashMap<>();
         }
 
@@ -129,13 +129,15 @@ public class UserAppenderService {
 
         final List<SysUser> userList = sysUserMapper.selectUserWithDelete(userIds);
         final Map<Long, SysUserSmallVo> userVoMap = userList.stream()
-                .filter(Objects::nonNull)
-                .map(o -> new SysUserDto(o).getVo())
-                .collect(Collectors.toMap(
-                        SysUserVo::getId,
-                        v -> BeanUtils.copy(v, SysUserSmallVo.class),
-                        (o, n) -> n
-                ));
+            .filter(Objects::nonNull)
+            .map(o -> new SysUserDto(o).getVo())
+            .collect(
+                Collectors.toMap(
+                    SysUserVo::getId,
+                    v -> BeanUtils.copy(v, SysUserSmallVo.class),
+                    (o, n) -> n
+                )
+            );
 
         return userVoMap;
     }

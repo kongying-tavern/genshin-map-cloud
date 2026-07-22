@@ -38,8 +38,11 @@ import java.util.stream.Collectors;
 public class IconService {
 
     private final IconMapper iconMapper;
+
     private final IconTypeMapper iconTypeMapper;
+
     private final IconTypeLinkMapper iconTypeLinkMapper;
+
     private final IconTypeLinkMBPService iconTypeLinkMBPService;
 
     /**
@@ -58,24 +61,29 @@ public class IconService {
             .map(IconDto::new)
             .collect(Collectors.toList());
         if (iconDtoList.isEmpty()) {
-            return new PageListVo<IconVo>().setRecord(new ArrayList<>()).setSize(iconPage.getSize()).setTotal(iconPage.getTotal());
+            return new PageListVo<IconVo>().setRecord(new ArrayList<>()).setSize(iconPage.getSize())
+                .setTotal(iconPage.getTotal());
         }
         //收集分类信息
         Map<Long, List<Long>> typeMap = new ConcurrentHashMap<>();
-        iconTypeLinkMapper.selectList(Wrappers.<IconTypeLink>lambdaQuery()
-                .in(IconTypeLink::getId, iconDtoList.parallelStream()
-                    .map(IconDto::getId).collect(Collectors.toList())))
+        iconTypeLinkMapper.selectList(
+            Wrappers.<IconTypeLink>lambdaQuery()
+                .in(
+                    IconTypeLink::getId, iconDtoList.parallelStream()
+                        .map(IconDto::getId).collect(Collectors.toList())
+                )
+        )
             //TODO 验证此处并行是否会有bug
             .parallelStream()
-            .forEach(typeLink ->
-                typeMap.compute(typeLink.getId(), (iconId, typeList) -> {
-                    if (typeList == null) return new ArrayList<>(Collections.singletonList(typeLink.getTypeId()));
-                    typeList.add(typeLink.getTypeId());
-                    return typeList;
-                }));
+            .forEach(typeLink -> typeMap.compute(typeLink.getId(), (iconId, typeList) -> {
+                if (typeList == null)
+                    return new ArrayList<>(Collections.singletonList(typeLink.getTypeId()));
+                typeList.add(typeLink.getTypeId());
+                return typeList;
+            }));
         //写入分类信息
-        List<IconVo> result = iconDtoList.stream().map(dto ->
-                dto.getVo().withTypeIdList(typeMap.getOrDefault(dto.getId(), new ArrayList<>())))
+        List<IconVo> result = iconDtoList.stream()
+            .map(dto -> dto.getVo().withTypeIdList(typeMap.getOrDefault(dto.getId(), new ArrayList<>())))
             .collect(Collectors.toList());
         return new PageListVo<IconVo>()
             .setRecord(result)
@@ -92,11 +100,15 @@ public class IconService {
     @Cacheable(value = "icon", key = "#iconId")
     public IconVo getIcon(Long iconId) {
         //获取类型信息
-        List<Long> typeIdList = iconTypeLinkMapper.selectList(Wrappers.<IconTypeLink>lambdaQuery()
-                .eq(IconTypeLink::getId, iconId)).stream()
+        List<Long> typeIdList = iconTypeLinkMapper.selectList(
+            Wrappers.<IconTypeLink>lambdaQuery()
+                .eq(IconTypeLink::getId, iconId)
+        ).stream()
             .map(IconTypeLink::getTypeId).collect(Collectors.toList());
-        Icon iconEntity = iconMapper.selectOne(Wrappers.<Icon>lambdaQuery()
-            .eq(Icon::getId, iconId));
+        Icon iconEntity = iconMapper.selectOne(
+            Wrappers.<Icon>lambdaQuery()
+                .eq(Icon::getId, iconId)
+        );
         return iconEntity == null ? null : new IconDto(iconEntity).getVo().withTypeIdList(typeIdList);
     }
 
@@ -109,8 +121,8 @@ public class IconService {
     @Transactional
     @Caching(
         evict = {
-            @CacheEvict(value = "icon", key = "#iconVo.id"),
-            @CacheEvict(value = "listIcon", allEntries = true)
+                @CacheEvict(value = "icon", key = "#iconVo.id"),
+                @CacheEvict(value = "listIcon", allEntries = true)
         }
     )
     public Boolean updateIcon(IconVo iconVo) {
@@ -124,9 +136,12 @@ public class IconService {
             throw new GenshinApiException("图标标签 [" + tagName + "] 已存在");
         }
 
-        IconDto iconRecord = new IconDto(iconMapper.selectOne(Wrappers.<Icon>lambdaQuery()
-            .eq(Icon::getId, iconVo.getId())
-        ));
+        IconDto iconRecord = new IconDto(
+            iconMapper.selectOne(
+                Wrappers.<Icon>lambdaQuery()
+                    .eq(Icon::getId, iconVo.getId())
+            )
+        );
         IconDto iconDto = new IconDto(iconVo);
 
         // 合并 URL 变体设置
@@ -136,28 +151,35 @@ public class IconService {
         //取类型ID
         HashSet<Long> newTypeIds = new HashSet<>(iconVo.getTypeIdList());
         //对比类型信息是否更改
-        HashSet<Long> oldTypeIds = iconTypeLinkMapper.selectList(Wrappers.<IconTypeLink>lambdaQuery()
-                .eq(IconTypeLink::getId, iconDto.getId()))
+        HashSet<Long> oldTypeIds = iconTypeLinkMapper.selectList(
+            Wrappers.<IconTypeLink>lambdaQuery()
+                .eq(IconTypeLink::getId, iconDto.getId())
+        )
             .stream()
             .map(IconTypeLink::getTypeId).collect(Collectors.toCollection(HashSet::new));
         //如果类型ID更改了就进行分类的刷新
         if (!oldTypeIds.equals(newTypeIds)) {
-            iconTypeLinkMapper.delete(Wrappers.<IconTypeLink>lambdaQuery()
-                .eq(IconTypeLink::getId, iconDto.getId()));
+            iconTypeLinkMapper.delete(
+                Wrappers.<IconTypeLink>lambdaQuery()
+                    .eq(IconTypeLink::getId, iconDto.getId())
+            );
             iconTypeLinkMBPService.saveBatch(
                 newTypeIds.stream()
-                    .map(typeId -> new IconTypeLink()
-                        .withIconId(iconDto.getId())
-                        .withTypeId(typeId))
+                    .map(
+                        typeId -> new IconTypeLink()
+                            .withIconId(iconDto.getId())
+                            .withTypeId(typeId)
+                    )
                     .collect(Collectors.toList())
             );
         }
 
         //更新实体信息
-        return iconMapper.update(iconDto.getEntity(),
+        return iconMapper.update(
+            iconDto.getEntity(),
             Wrappers.<Icon>lambdaUpdate()
-                .eq(Icon::getId, iconVo.getId()))
-            == 1;
+                .eq(Icon::getId, iconVo.getId())
+        ) == 1;
     }
 
     /**
@@ -192,7 +214,8 @@ public class IconService {
         //处理类型信息
         if (CollectionUtil.isNotEmpty(typeIdList)) {
             //判断是否有不存在的类型ID
-            if (typeIdList.size() != iconTypeMapper.selectCount(Wrappers.<IconType>lambdaQuery().in(IconType::getId, typeIdList)))
+            if (typeIdList.size() != iconTypeMapper
+                .selectCount(Wrappers.<IconType>lambdaQuery().in(IconType::getId, typeIdList)))
                 throw new GenshinApiException("类型ID错误");
             iconTypeLinkMBPService.saveBatch(
                 typeIdList.stream()
@@ -212,15 +235,18 @@ public class IconService {
     @Transactional
     @Caching(
         evict = {
-            @CacheEvict(value = "icon", key = "#iconId"),
-            @CacheEvict(value = "listIcon", allEntries = true)
+                @CacheEvict(value = "icon", key = "#iconId"),
+                @CacheEvict(value = "listIcon", allEntries = true)
         }
     )
     public Boolean deleteIcon(Long iconId) {
-        iconTypeLinkMapper.delete(Wrappers.<IconTypeLink>lambdaQuery()
-            .eq(IconTypeLink::getId, iconId));
-        return iconMapper.delete(Wrappers.<Icon>lambdaQuery()
-            .eq(Icon::getId, iconId))
-            == 1;
+        iconTypeLinkMapper.delete(
+            Wrappers.<IconTypeLink>lambdaQuery()
+                .eq(IconTypeLink::getId, iconId)
+        );
+        return iconMapper.delete(
+            Wrappers.<Icon>lambdaQuery()
+                .eq(Icon::getId, iconId)
+        ) == 1;
     }
 }

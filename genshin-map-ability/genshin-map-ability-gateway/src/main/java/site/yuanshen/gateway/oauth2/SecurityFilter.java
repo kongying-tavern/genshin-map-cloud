@@ -46,10 +46,12 @@ public class SecurityFilter implements GlobalFilter, Ordered {
             return chain.filter(exchange);
         }
         JSONArray authorities = JSON.parseArray(authoritiesString);
-        List<RoleEnum> userRoleList = authorities.toJavaList(String.class).stream().map(RoleEnum::valueOf).collect(Collectors.toList());
+        List<RoleEnum> userRoleList = authorities.toJavaList(String.class).stream().map(RoleEnum::valueOf)
+            .collect(Collectors.toList());
         //请求url
         String path = exchange.getRequest().getHeaders().getFirst("originalPath");
-        if (path == null) throw new GenshinApiException("请求url拦截失败，请联系管理员");
+        if (path == null)
+            throw new GenshinApiException("请求url拦截失败，请联系管理员");
         //配置文件中的url身份配置
         Map<String, List<String>> authoritiesFilter = genshinGatewayProperties.getAuthoritiesFilter();
         log.debug("Try to match security url map: {}", authoritiesFilter.toString());
@@ -58,7 +60,8 @@ public class SecurityFilter implements GlobalFilter, Ordered {
             RoleEnum matchRole = RoleEnum.valueOf(roleName);
             boolean isMatch = false;
             //userData直接取最大值,和请求权限无关
-            int userDataLevel = userRoleList.stream().map(RoleEnum::getUserDataLevel).max(Comparator.comparing(x->x)).orElse(0);
+            int userDataLevel = userRoleList.stream().map(RoleEnum::getUserDataLevel).max(Comparator.comparing(x -> x))
+                .orElse(0);
             for (RoleEnum userRole : userRoleList) {
                 if (userRole.getSort() <= matchRole.getSort()) {
                     isMatch = true;
@@ -66,7 +69,8 @@ public class SecurityFilter implements GlobalFilter, Ordered {
                 }
             }
 
-            if (!isMatch) continue;
+            if (!isMatch)
+                continue;
             AntPathMatcher matcher = new AntPathMatcher();
             List<String> urlMatches = authoritiesFilter.get(roleName);
             log.debug("{}'s Url matching: {}", roleName, urlMatches);

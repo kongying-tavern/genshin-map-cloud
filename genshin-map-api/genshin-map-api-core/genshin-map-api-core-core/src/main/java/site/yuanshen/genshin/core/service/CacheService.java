@@ -15,7 +15,6 @@ import site.yuanshen.common.web.response.WUtils;
 import site.yuanshen.genshin.core.dao.IconDao;
 import site.yuanshen.genshin.core.socketIO.SocketIOEntrypoint;
 
-
 import java.util.Objects;
 import java.util.concurrent.*;
 
@@ -30,14 +29,21 @@ import java.util.concurrent.*;
 public class CacheService {
 
     private final MarkerDocService markerDocService;
+
     private final MarkerLinkageDocService markerLinkageDocService;
+
     private final ItemDocService itemDocService;
+
     private final IconDao iconDao;
+
     private final CacheManager cacheManager;
+
     private final SocketIOEntrypoint socketIOEntrypoint;
 
-    ThreadPoolExecutor executor = new ThreadPoolExecutor(10, 20, 200, TimeUnit.MILLISECONDS,
-            new ArrayBlockingQueue<>(5));
+    ThreadPoolExecutor executor = new ThreadPoolExecutor(
+        10, 20, 200, TimeUnit.MILLISECONDS,
+        new ArrayBlockingQueue<>(5)
+    );
 
     @Value("${server.cache.debounce-delay}")
     private String debounceDelay = "30";
@@ -53,11 +59,14 @@ public class CacheService {
      * @param iconId 图标ID，为空或0时清除icon的所有缓存
      */
     @Caching(
-            evict = {
-                    @CacheEvict(value = "icon", key = "#iconId", condition = "#iconId != null && #iconId > 0", beforeInvocation = true),
-                    @CacheEvict(value = "listIcon", allEntries = true, beforeInvocation = true),
-                    @CacheEvict(value = "listAllIcon", allEntries = true, beforeInvocation = true),
-            }
+        evict = {
+                @CacheEvict(
+                    value = "icon", key = "#iconId", condition = "#iconId != null && #iconId > 0",
+                    beforeInvocation = true
+                ),
+                @CacheEvict(value = "listIcon", allEntries = true, beforeInvocation = true),
+                @CacheEvict(value = "listAllIcon", allEntries = true, beforeInvocation = true),
+        }
     )
     public void cleanIconCache(Long iconId) {
         FutureTask<Status> futureTask = new FutureTask<>(() -> {
@@ -69,11 +78,11 @@ public class CacheService {
         try {
             if (futureTask.get() == Status.OK)
                 runAfterTransactionDebounceByKey(
-                        () -> {
-                            this.refreshIconBinary();
-                            socketIOEntrypoint.broadcast(WUtils.create("IconBinaryPurged", null));
-                        },
-                        FunctionKeyEnum.refreshIconBinary, Integer.parseInt(debounceDelay)
+                    () -> {
+                        this.refreshIconBinary();
+                        socketIOEntrypoint.broadcast(WUtils.create("IconBinaryPurged", null));
+                    },
+                    FunctionKeyEnum.refreshIconBinary, Integer.parseInt(debounceDelay)
                 );
             else
                 log.error("cleanIconCache执行失败,未知原因");
@@ -83,100 +92,100 @@ public class CacheService {
     }
 
     @Caching(
-            evict = {
-                    @CacheEvict(value = "area", allEntries = true, beforeInvocation = true),
-                    @CacheEvict(value = "listArea", allEntries = true, beforeInvocation = true)
-            }
+        evict = {
+                @CacheEvict(value = "area", allEntries = true, beforeInvocation = true),
+                @CacheEvict(value = "listArea", allEntries = true, beforeInvocation = true)
+        }
     )
     public void cleanAreaCache() {
         log.info("cleanAreaCache");
     }
 
     @Caching(
-            evict = {
-                    @CacheEvict(value = "listItem", allEntries = true, beforeInvocation = true),
-                    @CacheEvict(value = "listItemType", allEntries = true, beforeInvocation = true),
-                    @CacheEvict(value = "listAllItemType", allEntries = true, beforeInvocation = true),
-                    @CacheEvict(value = "listItemById", allEntries = true, beforeInvocation = true),
-            }
+        evict = {
+                @CacheEvict(value = "listItem", allEntries = true, beforeInvocation = true),
+                @CacheEvict(value = "listItemType", allEntries = true, beforeInvocation = true),
+                @CacheEvict(value = "listAllItemType", allEntries = true, beforeInvocation = true),
+                @CacheEvict(value = "listItemById", allEntries = true, beforeInvocation = true),
+        }
     )
     public void cleanItemCache() {
         runAfterTransactionDebounceByKey(
-                () -> {
-                    itemDocService.refreshItemBinaryMD5();
-                    socketIOEntrypoint.broadcast(WUtils.create("ItemBinaryPurged", null));
-                },
-                FunctionKeyEnum.refreshItemBinary, Integer.parseInt(debounceDelay)
+            () -> {
+                itemDocService.refreshItemBinaryMD5();
+                socketIOEntrypoint.broadcast(WUtils.create("ItemBinaryPurged", null));
+            },
+            FunctionKeyEnum.refreshItemBinary, Integer.parseInt(debounceDelay)
         );
     }
 
     @Caching(
-            evict = {
-                    @CacheEvict(value = "listCommonItem", allEntries = true),
-            }
+        evict = {
+                @CacheEvict(value = "listCommonItem", allEntries = true),
+        }
     )
     public void cleanCommonItemCache() {
     }
 
     @Caching(
-            evict = {
-                    @CacheEvict(value = "searchMarkerId", allEntries = true, beforeInvocation = true),
-                    @CacheEvict(value = "listMarkerById", allEntries = true, beforeInvocation = true),
-                    @CacheEvict(value = "listMarkerPage", allEntries = true, beforeInvocation = true),
-            }
+        evict = {
+                @CacheEvict(value = "searchMarkerId", allEntries = true, beforeInvocation = true),
+                @CacheEvict(value = "listMarkerById", allEntries = true, beforeInvocation = true),
+                @CacheEvict(value = "listMarkerPage", allEntries = true, beforeInvocation = true),
+        }
     )
     public void cleanMarkerCache() {
         log.info("cleanMarkerCache");
         runAfterTransactionDebounceByKey(
-                () -> {
-                    markerDocService.refreshMarkerBinaryMD5();
-                    socketIOEntrypoint.broadcast(WUtils.create("MarkerBinaryPurged", null));
-                },
-                FunctionKeyEnum.refreshMarkerBinary, Integer.parseInt(debounceDelay)
+            () -> {
+                markerDocService.refreshMarkerBinaryMD5();
+                socketIOEntrypoint.broadcast(WUtils.create("MarkerBinaryPurged", null));
+            },
+            FunctionKeyEnum.refreshMarkerBinary, Integer.parseInt(debounceDelay)
         );
     }
 
     @Caching(
-            evict = {
-                    // Evict cache from `MarkerLinkageService`
-                    @CacheEvict(value = "listMarkerLinkage", allEntries = true, beforeInvocation = true),
-                    @CacheEvict(value = "graphMarkerLinkage", allEntries = true, beforeInvocation = true),
-                    // Evict cache from `MarkerLinkageHelperService`
-                    @CacheEvict(value = "getMarkerLinkageList", allEntries = true, beforeInvocation = true),
-                    @CacheEvict(value = "getMarkerLinkageGraph", allEntries = true, beforeInvocation = true),
-                    @CacheEvict(value = "getMarkerLinkagePathCoords", allEntries = true, beforeInvocation = true),
-                    // Evict cache from `MarkerLinkageDaoImpl`
-                    @CacheEvict(value = "getAllMarkerLinkage", allEntries = true, beforeInvocation = true),
-                    @CacheEvict(value = "listAllMarkerLinkage", allEntries = true, beforeInvocation = true),
-                    @CacheEvict(value = "graphAllMarkerLinkage", allEntries = true, beforeInvocation = true)
-            }
+        evict = {
+                // Evict cache from `MarkerLinkageService`
+                @CacheEvict(value = "listMarkerLinkage", allEntries = true, beforeInvocation = true),
+                @CacheEvict(value = "graphMarkerLinkage", allEntries = true, beforeInvocation = true),
+                // Evict cache from `MarkerLinkageHelperService`
+                @CacheEvict(value = "getMarkerLinkageList", allEntries = true, beforeInvocation = true),
+                @CacheEvict(value = "getMarkerLinkageGraph", allEntries = true, beforeInvocation = true),
+                @CacheEvict(value = "getMarkerLinkagePathCoords", allEntries = true, beforeInvocation = true),
+                // Evict cache from `MarkerLinkageDaoImpl`
+                @CacheEvict(value = "getAllMarkerLinkage", allEntries = true, beforeInvocation = true),
+                @CacheEvict(value = "listAllMarkerLinkage", allEntries = true, beforeInvocation = true),
+                @CacheEvict(value = "graphAllMarkerLinkage", allEntries = true, beforeInvocation = true)
+        }
     )
     public void cleanMarkerLinkageCache() {
         log.info("cleanMarkerLinkageCache");
         runAfterTransactionDebounceByKey(
-                () -> {
-                    markerLinkageDocService.refreshMarkerLinkageListBinaryMD5();
-                    markerLinkageDocService.refreshMarkerLinkageGraphBinaryMD5();
-                    socketIOEntrypoint.broadcast(WUtils.create("MarkerLinkageBinaryPurged", null));
-                },
-                FunctionKeyEnum.refreshMarkerLinkageBinary, Integer.parseInt(debounceDelay)
+            () -> {
+                markerLinkageDocService.refreshMarkerLinkageListBinaryMD5();
+                markerLinkageDocService.refreshMarkerLinkageGraphBinaryMD5();
+                socketIOEntrypoint.broadcast(WUtils.create("MarkerLinkageBinaryPurged", null));
+            },
+            FunctionKeyEnum.refreshMarkerLinkageBinary, Integer.parseInt(debounceDelay)
         );
     }
 
     @Caching(
-            evict = {
-                    @CacheEvict(value = "listNotice", allEntries = true, beforeInvocation = true)
-            }
+        evict = {
+                @CacheEvict(value = "listNotice", allEntries = true, beforeInvocation = true)
+        }
     )
     public void cleanNoticeCache() {
         log.info("cleanNoticeCache");
     }
 
     @Caching(
-            evict = {
-                    @CacheEvict(value = "listAllIconBinary", allEntries = true, beforeInvocation = true),
-                    @CacheEvict(value = "listAllIconBinaryMd5", allEntries = true, beforeInvocation = true)
-            }
+        evict = {
+                @CacheEvict(value = "listAllIconBinary", allEntries = true, beforeInvocation = true),
+                @CacheEvict(value = "listAllIconBinaryMd5", allEntries = true, beforeInvocation = true)
+        }
     )
     public void refreshIconBinary() {
         log.info("refreshIcon");
@@ -205,11 +214,10 @@ public class CacheService {
             try {
                 executor.execute(r);
             } catch (RejectedExecutionException e) {
-                log.error("线程池拒绝：{}",keyEnum.name());
+                log.error("线程池拒绝：{}", keyEnum.name());
             }
         }, second, TimeUnit.SECONDS);
     }
-
 
     private void runAfterTransactionByFuture(FutureTask<Status> r) {
         if (TransactionSynchronizationManager.isActualTransactionActive()) {

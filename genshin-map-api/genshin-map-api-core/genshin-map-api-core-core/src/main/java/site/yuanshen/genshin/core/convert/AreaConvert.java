@@ -11,31 +11,31 @@ import static site.yuanshen.genshin.core.convert.HistoryConvert.MAPPER;
 
 //转换模块示例(暂不需要)
 public class AreaConvert extends DefaultConvert {
-	private static final JsonMapper mapper = MAPPER;
+    private static final JsonMapper mapper = MAPPER;
 
-	@Override
-	public boolean support(Object o) {
-		return o instanceof Area || (o instanceof HistoryType && getType().equals(o));
-	}
+    @Override
+    public boolean support(Object o) {
+        return o instanceof Area || (o instanceof HistoryType && getType().equals(o));
+    }
 
-	@Override
-	@SneakyThrows
-	public Object reConvert(History history) {
-		return mapper.readValue(history.getContent(), Area.class);
-	}
+    @Override
+    @SneakyThrows
+    public Object reConvert(History history) {
+        return mapper.readValue(history.getContent(), Area.class);
+    }
 
-	@Override
-	HistoryType getType() {
-		return HistoryType.AREA;
-	}
+    @Override
+    HistoryType getType() {
+        return HistoryType.AREA;
+    }
 
-	@Override
-	@SneakyThrows
+    @Override
+    @SneakyThrows
     Pair<String, Long> getContentAndId(Object o) {
-		Area area = (Area) o;
-		area.setVersion(null);
-		String content = mapper.writeValueAsString(area);
-		Long id = area.getId();
-		return Pair.of(content, id);
-	}
+        Area area = (Area) o;
+        area.setVersion(null);
+        String content = mapper.writeValueAsString(area);
+        Long id = area.getId();
+        return Pair.of(content, id);
+    }
 }

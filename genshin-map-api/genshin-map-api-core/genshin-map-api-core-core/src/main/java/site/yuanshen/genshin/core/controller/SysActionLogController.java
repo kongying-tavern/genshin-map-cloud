@@ -35,12 +35,11 @@ public class SysActionLogController {
     @PostMapping("/list")
     public R<PageListVo<SysActionLogVo>> searchActionLog(@RequestBody SysActionLogSearchVo historySearchVo) {
         R<PageListVo<SysActionLogVo>> result = RUtils.create(
-                sysActionLogService.listPage(new SysActionLogSearchDto(historySearchVo))
+            sysActionLogService.listPage(new SysActionLogSearchDto(historySearchVo))
         );
         UserAppenderService.appendUser(result, result.getData().getRecord(), true, SysActionLogVo::getCreatorId);
         UserAppenderService.appendUser(result, result.getData().getRecord(), true, SysActionLogVo::getUpdaterId);
         return result;
     }
-
 
 }

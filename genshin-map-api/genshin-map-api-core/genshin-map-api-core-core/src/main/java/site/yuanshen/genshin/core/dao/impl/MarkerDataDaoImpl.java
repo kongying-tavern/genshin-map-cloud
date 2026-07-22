@@ -35,7 +35,8 @@ public class MarkerDataDaoImpl implements MarkerDataDao {
             return null;
         }
 
-        final MarkerDiffSnapshotVoOuterClass.MarkerDiffSnapshotVo.Builder snapshotBuilder = MarkerDiffSnapshotVoOuterClass.MarkerDiffSnapshotVo.newBuilder();
+        final MarkerDiffSnapshotVoOuterClass.MarkerDiffSnapshotVo.Builder snapshotBuilder = MarkerDiffSnapshotVoOuterClass.MarkerDiffSnapshotVo
+            .newBuilder();
 
         snapshotBuilder.setVersion(markerVo.getVersion() == null ? 0L : markerVo.getVersion());
         snapshotBuilder.setId(markerVo.getId() == null ? 0L : markerVo.getId());
@@ -49,12 +50,15 @@ public class MarkerDataDaoImpl implements MarkerDataDao {
     }
 
     @Override
-    public MarkerDiffSnapshotVoOuterClass.MarkerDiffSnapshotVoList buildMarkerDiffSnapshotListProto(List<MarkerVo> markerVoList) {
+    public MarkerDiffSnapshotVoOuterClass.MarkerDiffSnapshotVoList buildMarkerDiffSnapshotListProto(
+        List<MarkerVo> markerVoList
+    ) {
         if (CollUtil.isEmpty(markerVoList)) {
             markerVoList = List.of();
         }
 
-        final MarkerDiffSnapshotVoOuterClass.MarkerDiffSnapshotVoList.Builder builder = MarkerDiffSnapshotVoOuterClass.MarkerDiffSnapshotVoList.newBuilder();
+        final MarkerDiffSnapshotVoOuterClass.MarkerDiffSnapshotVoList.Builder builder = MarkerDiffSnapshotVoOuterClass.MarkerDiffSnapshotVoList
+            .newBuilder();
         builder.addAllSnapshots(
             markerVoList.stream()
                 .map(this::buildMarkerDiffSnapshotProto)
@@ -73,7 +77,8 @@ public class MarkerDataDaoImpl implements MarkerDataDao {
             return null;
         }
 
-        final MarkerVoOuterClass.MarkerItemLinkVo.Builder itemLinkBuilder = MarkerVoOuterClass.MarkerItemLinkVo.newBuilder();
+        final MarkerVoOuterClass.MarkerItemLinkVo.Builder itemLinkBuilder = MarkerVoOuterClass.MarkerItemLinkVo
+            .newBuilder();
 
         itemLinkBuilder.setItemId(markerItemLinkVo.getItemId() == null ? 0L : markerItemLinkVo.getItemId());
         itemLinkBuilder.setIconId(markerItemLinkVo.getIconId() == null ? 0L : markerItemLinkVo.getIconId());
@@ -94,7 +99,8 @@ public class MarkerDataDaoImpl implements MarkerDataDao {
 
         // Underground
         if (markerExtraVo.getUnderground() != null) {
-            final MarkerVoOuterClass.MarkerExtraUnderground.Builder undergroundBuilder = MarkerVoOuterClass.MarkerExtraUnderground.newBuilder();
+            final MarkerVoOuterClass.MarkerExtraUnderground.Builder undergroundBuilder = MarkerVoOuterClass.MarkerExtraUnderground
+                .newBuilder();
             undergroundBuilder.setIsUnderground(
                 markerExtraVo.getUnderground().getIsUnderground() != null &&
                     markerExtraVo.getUnderground().getIsUnderground()
@@ -113,22 +119,19 @@ public class MarkerDataDaoImpl implements MarkerDataDao {
 
         // IconOverride
         if (markerExtraVo.getIconOverride() != null) {
-            final MarkerVoOuterClass.MarkerExtraIconOverride.Builder iconOverrideProtoBuilder = MarkerVoOuterClass.MarkerExtraIconOverride.newBuilder();
+            final MarkerVoOuterClass.MarkerExtraIconOverride.Builder iconOverrideProtoBuilder = MarkerVoOuterClass.MarkerExtraIconOverride
+                .newBuilder();
 
             iconOverrideProtoBuilder.setId(
-                markerExtraVo.getIconOverride().getId() == null ?
-                    0L :
-                    markerExtraVo.getIconOverride().getId()
+                markerExtraVo.getIconOverride().getId() == null ? 0L : markerExtraVo.getIconOverride().getId()
             );
             iconOverrideProtoBuilder.setMinZoom(
-                markerExtraVo.getIconOverride().getMinZoom() == null ?
-                    0.0f :
-                    markerExtraVo.getIconOverride().getMinZoom().floatValue()
+                markerExtraVo.getIconOverride().getMinZoom() == null ? 0.0f
+                    : markerExtraVo.getIconOverride().getMinZoom().floatValue()
             );
             iconOverrideProtoBuilder.setMaxZoom(
-                markerExtraVo.getIconOverride().getMaxZoom() == null ?
-                    0.0f :
-                    markerExtraVo.getIconOverride().getMaxZoom().floatValue()
+                markerExtraVo.getIconOverride().getMaxZoom() == null ? 0.0f
+                    : markerExtraVo.getIconOverride().getMaxZoom().floatValue()
             );
 
             final MarkerVoOuterClass.MarkerExtraIconOverride iconOverrideProto = iconOverrideProtoBuilder.build();
@@ -143,7 +146,8 @@ public class MarkerDataDaoImpl implements MarkerDataDao {
 
         // V2_8_Island
         if (markerExtraVo.getV2_8_Island() != null) {
-            final MarkerVoOuterClass.MarkerExtra2_8_Island.Builder v28IslandProtoBuilder = MarkerVoOuterClass.MarkerExtra2_8_Island.newBuilder();
+            final MarkerVoOuterClass.MarkerExtra2_8_Island.Builder v28IslandProtoBuilder = MarkerVoOuterClass.MarkerExtra2_8_Island
+                .newBuilder();
 
             v28IslandProtoBuilder.setIslandName(StrUtil.nullToEmpty(markerExtraVo.getV2_8_Island().getIslandName()));
             v28IslandProtoBuilder.addAllIslandState(
@@ -224,18 +228,22 @@ public class MarkerDataDaoImpl implements MarkerDataDao {
         );
 
         // Users
-        Map<Long, SysUserSmallVo> userMapFromCreator = UserAppenderService.getUserMap(markerVoList, MarkerVo::getCreatorId);
-        Map<Long, SysUserSmallVo> userMapFromUpdater = UserAppenderService.getUserMap(markerVoList, MarkerVo::getUpdaterId);
+        Map<Long, SysUserSmallVo> userMapFromCreator = UserAppenderService
+            .getUserMap(markerVoList, MarkerVo::getCreatorId);
+        Map<Long, SysUserSmallVo> userMapFromUpdater = UserAppenderService
+            .getUserMap(markerVoList, MarkerVo::getUpdaterId);
         Map<Long, SysUserSmallVo> userMap = Stream
             .concat(
                 userMapFromCreator.entrySet().stream(),
                 userMapFromUpdater.entrySet().stream()
             )
-            .collect(Collectors.toMap(
-                Map.Entry::getKey,
-                Map.Entry::getValue,
-                (o, n) -> n
-            ));
+            .collect(
+                Collectors.toMap(
+                    Map.Entry::getKey,
+                    Map.Entry::getValue,
+                    (o, n) -> n
+                )
+            );
         for (Map.Entry<Long, SysUserSmallVo> entry : userMap.entrySet()) {
             final Long userId = entry.getKey();
             final SysUserSmallVo user = entry.getValue();

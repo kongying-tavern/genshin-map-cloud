@@ -14,7 +14,6 @@ import site.yuanshen.data.vo.RttCheckVo;
 
 import java.util.concurrent.TimeUnit;
 
-
 @Configuration
 @RequiredArgsConstructor
 @Slf4j
@@ -50,7 +49,6 @@ public class SocketIOConfiguration {
         // 设置最大每帧处理数据的长度，防止他人利用大数据来攻击服务器
         config.setMaxHttpContentLength(properties.getMaxHttpContentLength());
 
-
         SocketIOServer socketIOServer = new SocketIOServer(config);
         socketIOServer.addConnectListener(socketIOClient -> {
             String userId = socketIOClient.getHandshakeData().getSingleUrlParam("userId");
@@ -65,7 +63,8 @@ public class SocketIOConfiguration {
             String debounceKey = RTT_CHECK_EVENT_NAME + "-" + client.getSessionId().toString();
             DebounceExecutor.debounce(debounceKey, () -> {
                 RttCheckVo rttCheckVo = new RttCheckVo();
-                rttCheckVo.setReceiveTimestamp(TimeUtils.getCurrentTimestamp().getTime() - properties.getRttDebounceGap());
+                rttCheckVo
+                    .setReceiveTimestamp(TimeUtils.getCurrentTimestamp().getTime() - properties.getRttDebounceGap());
                 rttCheckVo.setId(StrUtil.blankToDefault(data.getId(), ""));
                 rttCheckVo.setSendTimestamp(TimeUtils.getCurrentTimestamp().getTime());
                 client.sendEvent(RTT_CHECK_EVENT_NAME, rttCheckVo);

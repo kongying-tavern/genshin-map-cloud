@@ -48,14 +48,23 @@ import java.util.stream.Collectors;
 public class MarkerService {
 
     private final MarkerMapper markerMapper;
+
     private final MarkerMBPService markerMBPService;
+
     private final MarkerDao markerDao;
+
     private final MarkerLinkageDao markerLinkageDao;
+
     private final MarkerItemLinkMapper markerItemLinkMapper;
+
     private final MarkerItemLinkMBPService markerItemLinkMBPService;
+
     private final MarkerPunctuateMapper markerPunctuateMapper;
+
     private final ItemMapper itemMapper;
+
     private final ItemTypeLinkMapper itemTypeLinkMapper;
+
     private final HistoryMBPService historyMBPService;
 
     /**
@@ -73,40 +82,51 @@ public class MarkerService {
             throw new GenshinApiException("条件冲突");
         List<Long> itemIdList = new ArrayList<>();
         if (isArea) {
-            itemIdList = itemMapper.selectList(Wrappers.<Item>lambdaQuery()
-                            .in(Item::getAreaId, searchVo.getAreaIdList()).in(Item::getHiddenFlag, hiddenFlagList)
-                            .select(Item::getId))
-                    .stream()
-                    .map(Item::getId).distinct().collect(Collectors.toList());
+            itemIdList = itemMapper.selectList(
+                Wrappers.<Item>lambdaQuery()
+                    .in(Item::getAreaId, searchVo.getAreaIdList()).in(Item::getHiddenFlag, hiddenFlagList)
+                    .select(Item::getId)
+            )
+                .stream()
+                .map(Item::getId).distinct().collect(Collectors.toList());
         }
         if (isItem) {
-            itemIdList = itemMapper.selectList(Wrappers.<Item>lambdaQuery()
-                            .in(Item::getId, searchVo.getItemIdList()).in(Item::getHiddenFlag, hiddenFlagList)
-                            .select(Item::getId)).stream()
-                    .map(Item::getId).distinct().collect(Collectors.toList());
+            itemIdList = itemMapper.selectList(
+                Wrappers.<Item>lambdaQuery()
+                    .in(Item::getId, searchVo.getItemIdList()).in(Item::getHiddenFlag, hiddenFlagList)
+                    .select(Item::getId)
+            ).stream()
+                .map(Item::getId).distinct().collect(Collectors.toList());
         }
         if (isType) {
-            List<Long> tempItemIdList = itemTypeLinkMapper.selectList(Wrappers.<ItemTypeLink>lambdaQuery()
-                            .in(ItemTypeLink::getTypeId, searchVo.getTypeIdList())
-                            .select(ItemTypeLink::getItemId))
-                    .stream()
-                    .map(ItemTypeLink::getItemId).distinct().collect(Collectors.toList());
-            if (tempItemIdList.isEmpty()) return new ArrayList<>();
-            itemIdList = itemMapper.selectList(Wrappers.<Item>lambdaQuery()
-                            .in(Item::getId, tempItemIdList).in(Item::getHiddenFlag, hiddenFlagList)
-                            .select(Item::getId)).stream()
-                    .map(Item::getId).distinct().collect(Collectors.toList());
+            List<Long> tempItemIdList = itemTypeLinkMapper.selectList(
+                Wrappers.<ItemTypeLink>lambdaQuery()
+                    .in(ItemTypeLink::getTypeId, searchVo.getTypeIdList())
+                    .select(ItemTypeLink::getItemId)
+            )
+                .stream()
+                .map(ItemTypeLink::getItemId).distinct().collect(Collectors.toList());
+            if (tempItemIdList.isEmpty())
+                return new ArrayList<>();
+            itemIdList = itemMapper.selectList(
+                Wrappers.<Item>lambdaQuery()
+                    .in(Item::getId, tempItemIdList).in(Item::getHiddenFlag, hiddenFlagList)
+                    .select(Item::getId)
+            ).stream()
+                .map(Item::getId).distinct().collect(Collectors.toList());
         }
 
-
-            log.info("从物品ID获取正式点位ID， 物品ID:{}", itemIdList);
-            if (itemIdList.isEmpty()) return new ArrayList<>();
-            return markerItemLinkMapper.selectList(Wrappers.<MarkerItemLink>lambdaQuery()
-                            .in(MarkerItemLink::getItemId, itemIdList)
-                            .select(MarkerItemLink::getMarkerId))
-                    .stream()
-                    .map(MarkerItemLink::getMarkerId)
-                    .distinct().collect(Collectors.toList());
+        log.info("从物品ID获取正式点位ID， 物品ID:{}", itemIdList);
+        if (itemIdList.isEmpty())
+            return new ArrayList<>();
+        return markerItemLinkMapper.selectList(
+            Wrappers.<MarkerItemLink>lambdaQuery()
+                .in(MarkerItemLink::getItemId, itemIdList)
+                .select(MarkerItemLink::getMarkerId)
+        )
+            .stream()
+            .map(MarkerItemLink::getMarkerId)
+            .distinct().collect(Collectors.toList());
     }
 
     /**
@@ -147,7 +167,7 @@ public class MarkerService {
      * @param hiddenFlagList   hidden_flag范围
      * @return 点位完整信息的前端封装的分页记录
      */
-    public PageListVo<MarkerVo> listMarkerPage(PageSearchDto pageSearchDto,List<Integer> hiddenFlagList) {
+    public PageListVo<MarkerVo> listMarkerPage(PageSearchDto pageSearchDto, List<Integer> hiddenFlagList) {
         PageListVo<MarkerVo> page = markerDao.listMarkerPage(pageSearchDto, hiddenFlagList);
         return page;
     }
@@ -163,9 +183,10 @@ public class MarkerService {
         Marker marker = markerDto.getEntity();
         markerMapper.insert(marker);
         List<MarkerItemLink> itemLinkList = new ArrayList<>(
-                markerDto.getItemList().parallelStream()
-                        .map(MarkerItemLinkDto::new).map(dto -> dto.withMarkerId(marker.getId()).getEntity())
-                        .collect(Collectors.toMap(MarkerItemLink::getItemId, Function.identity())).values());
+            markerDto.getItemList().parallelStream()
+                .map(MarkerItemLinkDto::new).map(dto -> dto.withMarkerId(marker.getId()).getEntity())
+                .collect(Collectors.toMap(MarkerItemLink::getItemId, Function.identity())).values()
+        );
         markerItemLinkMBPService.saveBatch(itemLinkList);
 
         return marker.getId();
@@ -189,7 +210,7 @@ public class MarkerService {
         markerDto.setExtra(mergeResult);
 
         Boolean updated = this.saveMarker(markerDto);
-        if(!updated) {
+        if (!updated) {
             throw new GenshinApiException("该点位已更新，请重新提交");
         }
         return updated;
@@ -222,22 +243,26 @@ public class MarkerService {
      */
     public List<MarkerVo> tweakMultiMarkers(List<TweakVo> tweakVos) {
         List<MarkerVo> markers = new ArrayList<>();
-        if(CollUtil.isEmpty(tweakVos)) {
+        if (CollUtil.isEmpty(tweakVos)) {
             return new ArrayList<>();
         }
 
-        for(TweakVo tweakVo : tweakVos) {
-           List<MarkerVo> newMarkers = this.tweakMarkers(tweakVo);
-           markers.addAll(newMarkers);
+        for (TweakVo tweakVo : tweakVos) {
+            List<MarkerVo> newMarkers = this.tweakMarkers(tweakVo);
+            markers.addAll(newMarkers);
         }
 
-        markers = new ArrayList<>(markers.stream()
-            .collect(Collectors.toMap(
-                MarkerVo::getId,
-                v -> v,
-                (o, n) -> n
-            ))
-            .values());
+        markers = new ArrayList<>(
+            markers.stream()
+                .collect(
+                    Collectors.toMap(
+                        MarkerVo::getId,
+                        v -> v,
+                        (o, n) -> n
+                    )
+                )
+                .values()
+        );
         return markers;
     }
 
@@ -247,20 +272,20 @@ public class MarkerService {
             .stream()
             .distinct()
             .collect(Collectors.toList());
-        if(CollUtil.isEmpty(markerIds)) {
+        if (CollUtil.isEmpty(markerIds)) {
             return new ArrayList<>();
         }
 
         // 生成数据
         final List<MarkerDto> originalMarkers = this.buildMarkerDto(markerIds);
         final List<MarkerDto> tweakedMarkers = originalMarkers.parallelStream()
-                .map(MarkerDto::getCopy)
-                .filter(Objects::nonNull)
-                .map(marker -> MarkerTweakDataHelper.applyTweakRules(marker, tweakVo.getTweaks()))
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+            .map(MarkerDto::getCopy)
+            .filter(Objects::nonNull)
+            .map(marker -> MarkerTweakDataHelper.applyTweakRules(marker, tweakVo.getTweaks()))
+            .filter(Objects::nonNull)
+            .collect(Collectors.toList());
 
-        if(CollUtil.isEmpty(tweakedMarkers)) {
+        if (CollUtil.isEmpty(tweakedMarkers)) {
             return new ArrayList<>();
         }
 
@@ -273,9 +298,9 @@ public class MarkerService {
         // 重新获取数据，防止返回旧数据
         List<MarkerDto> updatedMarkers = this.buildMarkerDto(markerIds);
         return updatedMarkers.parallelStream()
-                .filter(Objects::nonNull)
-                .map(MarkerDto::getVo)
-                .collect(Collectors.toList());
+            .filter(Objects::nonNull)
+            .map(MarkerDto::getVo)
+            .collect(Collectors.toList());
     }
 
     //--------------------构造点位Dto-----------------------
@@ -286,7 +311,8 @@ public class MarkerService {
 
     private List<MarkerDto> buildMarkerDto(List<Long> markerId) {
         final String markerIdListStr = PgsqlUtils.unnestLongStr(markerId);
-        final List<Marker> markerList = markerMapper.selectListWithLargeIn(markerIdListStr, Wrappers.<Marker>lambdaQuery());
+        final List<Marker> markerList = markerMapper
+            .selectListWithLargeIn(markerIdListStr, Wrappers.<Marker>lambdaQuery());
         final List<Long> markerIdList = markerList.stream().map(Marker::getId).collect(Collectors.toList());
 
         Map<Long, Item> itemMap = new HashMap<>();
@@ -297,9 +323,10 @@ public class MarkerService {
         markerDao.generateMarkerLinkageInfo(markerIdList, markerLinkageMap);
 
         return markerList.parallelStream()
-            .map(marker -> new MarkerDto(marker)
-                .withItemList(markerItemLinkMap.getOrDefault(marker.getId(), List.of()))
-                .withLinkageId(markerLinkageMap.getOrDefault(marker.getId(), ""))
+            .map(
+                marker -> new MarkerDto(marker)
+                    .withItemList(markerItemLinkMap.getOrDefault(marker.getId(), List.of()))
+                    .withLinkageId(markerLinkageMap.getOrDefault(marker.getId(), ""))
             )
             .collect(Collectors.toList());
     }
@@ -308,15 +335,16 @@ public class MarkerService {
     private boolean saveMarker(MarkerDto markerDto) {
         return saveMarkers(List.of(markerDto), 1, (list) -> {
             boolean success = true;
-            for(Marker item : list) {
+            for (Marker item : list) {
                 try {
                     int modifiedCount = 0;
-                    if(item.getId() != null && item.getId() > 0) {
-                        modifiedCount = markerMapper.update(item, Wrappers.<Marker>lambdaQuery().eq(Marker::getId, item.getId()));
+                    if (item.getId() != null && item.getId() > 0) {
+                        modifiedCount = markerMapper
+                            .update(item, Wrappers.<Marker>lambdaQuery().eq(Marker::getId, item.getId()));
                     } else {
                         modifiedCount = markerMapper.insert(item);
                     }
-                    if(modifiedCount != 1) {
+                    if (modifiedCount != 1) {
                         return false;
                     }
                 } catch (Exception e) {
@@ -327,50 +355,54 @@ public class MarkerService {
         });
     }
 
-    private boolean saveMarkers(List<MarkerDto> markerDtos, int validateCount, Function<List<Marker>, Boolean> saveAction) {
+    private boolean saveMarkers(
+        List<MarkerDto> markerDtos, int validateCount, Function<List<Marker>, Boolean> saveAction
+    ) {
         // Extract data
         final List<Marker> markerList = markerDtos.parallelStream()
-                .map(MarkerDto::getEntity)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+            .map(MarkerDto::getEntity)
+            .filter(Objects::nonNull)
+            .collect(Collectors.toList());
         final List<Long> markerIdList = markerList.parallelStream()
-                .map(Marker::getId)
-                .filter(Objects::nonNull)
-                .distinct()
-                .collect(Collectors.toList());
+            .map(Marker::getId)
+            .filter(Objects::nonNull)
+            .distinct()
+            .collect(Collectors.toList());
         final List<MarkerItemLink> itemList = markerDtos.parallelStream()
-                .map(markerDto -> {
-                    List<MarkerItemLinkVo> itemListData = markerDto.getItemList();
-                    if (itemListData == null) {
-                        return null;
-                    }
-                    return itemListData.parallelStream()
-                            .map(MarkerItemLinkDto::new)
-                            .map(dto -> dto.withMarkerId(markerDto.getId()).getEntity())
-                            .collect(Collectors.toList());
-                })
-                .filter(Objects::nonNull)
-                .flatMap(List::stream)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+            .map(markerDto -> {
+                List<MarkerItemLinkVo> itemListData = markerDto.getItemList();
+                if (itemListData == null) {
+                    return null;
+                }
+                return itemListData.parallelStream()
+                    .map(MarkerItemLinkDto::new)
+                    .map(dto -> dto.withMarkerId(markerDto.getId()).getEntity())
+                    .collect(Collectors.toList());
+            })
+            .filter(Objects::nonNull)
+            .flatMap(List::stream)
+            .filter(Objects::nonNull)
+            .collect(Collectors.toList());
         final List<Long> itemMarkerIdList = itemList.parallelStream()
-                .map(MarkerItemLink::getMarkerId)
-                .filter(Objects::nonNull)
-                .distinct()
-                .collect(Collectors.toList());
+            .map(MarkerItemLink::getMarkerId)
+            .filter(Objects::nonNull)
+            .distinct()
+            .collect(Collectors.toList());
 
         // Save marker
-        if(CollUtil.isEmpty(markerIdList)) {
+        if (CollUtil.isEmpty(markerIdList)) {
             return validateCount == 0;
         }
         boolean updated = saveAction.apply(markerList);
-        if(!updated) {
+        if (!updated) {
             return false;
         }
-        if(CollUtil.isNotEmpty(itemMarkerIdList)) {
-            markerItemLinkMapper.deleteWithLargeCustomIn("marker_id", PgsqlUtils.unnestLongStr(itemMarkerIdList), Wrappers.<MarkerItemLink>lambdaQuery());
+        if (CollUtil.isNotEmpty(itemMarkerIdList)) {
+            markerItemLinkMapper.deleteWithLargeCustomIn(
+                "marker_id", PgsqlUtils.unnestLongStr(itemMarkerIdList), Wrappers.<MarkerItemLink>lambdaQuery()
+            );
         }
-        if(CollUtil.isNotEmpty(itemList)) {
+        if (CollUtil.isNotEmpty(itemList)) {
             markerItemLinkMBPService.saveBatch(itemList);
         }
         return true;
@@ -382,15 +414,15 @@ public class MarkerService {
     }
 
     private void saveHistory(List<MarkerDto> markerDtos, HistoryEditType historyType) {
-        if(CollUtil.isEmpty(markerDtos)) {
+        if (CollUtil.isEmpty(markerDtos)) {
             return;
         }
 
         List<History> historyList = markerDtos.stream()
-                .filter(Objects::nonNull)
-                .map(markerRecord -> HistoryConvert.convert(markerRecord, historyType))
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+            .filter(Objects::nonNull)
+            .map(markerRecord -> HistoryConvert.convert(markerRecord, historyType))
+            .filter(Objects::nonNull)
+            .collect(Collectors.toList());
         historyMBPService.saveBatch(historyList, 100);
     }
 }

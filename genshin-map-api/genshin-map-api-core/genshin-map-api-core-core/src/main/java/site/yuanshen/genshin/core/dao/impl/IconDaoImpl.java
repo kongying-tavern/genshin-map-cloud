@@ -36,7 +36,9 @@ import java.util.stream.Collectors;
 public class IconDaoImpl implements IconDao {
 
     private final CacheManager cacheManager;
+
     private final IconMapper iconMapper;
+
     private final IconTypeLinkMapper iconTypeLinkMapper;
 
     /**
@@ -56,8 +58,10 @@ public class IconDaoImpl implements IconDao {
 
         // 收集分类信息
         Map<Long, List<Long>> typeMap = new HashMap<>();
-        iconTypeLinkMapper.selectList(Wrappers.<IconTypeLink>lambdaQuery()
-                .in(IconTypeLink::getIconId, iconIdList))
+        iconTypeLinkMapper.selectList(
+            Wrappers.<IconTypeLink>lambdaQuery()
+                .in(IconTypeLink::getIconId, iconIdList)
+        )
             .forEach(typeLink -> {
                 List<Long> tempList = typeMap.getOrDefault(typeLink.getIconId(), new ArrayList<>());
                 tempList.add(typeLink.getTypeId());
@@ -67,10 +71,10 @@ public class IconDaoImpl implements IconDao {
         listAllTagBinaryMd5GenerateTimestamp.clear();
         listAllTagBinaryMd5GenerateTimestamp.put("", TimeUtils.getCurrentTimestamp().getTime());
 
-        return iconDtoList.stream().map(dto ->
-                dto.getVo()
-                    .withTypeIdList(typeMap.getOrDefault(dto.getId(), new ArrayList<>()))
-            )
+        return iconDtoList.stream().map(
+            dto -> dto.getVo()
+                .withTypeIdList(typeMap.getOrDefault(dto.getId(), new ArrayList<>()))
+        )
             .collect(Collectors.toList());
     }
 
@@ -81,9 +85,12 @@ public class IconDaoImpl implements IconDao {
     @Cacheable("listAllIconBinary")
     public byte[] listAllIconBinary() {
         try {
-            return CompressUtils.compress(JSON.toJSONString(
-                    listAllIcon())
-                .getBytes(StandardCharsets.UTF_8));
+            return CompressUtils.compress(
+                JSON.toJSONString(
+                    listAllIcon()
+                )
+                    .getBytes(StandardCharsets.UTF_8)
+            );
         } catch (Exception e) {
             throw new GenshinApiException("创建压缩失败" + e);
         }
@@ -96,7 +103,8 @@ public class IconDaoImpl implements IconDao {
     @Cacheable("listAllIconBinaryMd5")
     public BinaryMD5Vo listAllIconBinaryMd5() {
         CaffeineCache iconBinaryCache = (CaffeineCache) cacheManager.getCache("listAllIcon");
-        CaffeineCache binaryMd5GenerateTimestampCache = (CaffeineCache) cacheManager.getCache("listAllTagBinaryMd5GenerateTimestamp");
+        CaffeineCache binaryMd5GenerateTimestampCache = (CaffeineCache) cacheManager
+            .getCache("listAllTagBinaryMd5GenerateTimestamp");
         byte[] allTagBinary;
         if (iconBinaryCache != null) {
             if (!iconBinaryCache.getNativeCache().asMap().isEmpty()) {
@@ -124,7 +132,8 @@ public class IconDaoImpl implements IconDao {
     }
 
     private Cache getListAllTagBinaryMd5GenerateTimestamp() {
-        final Cache listAllTagBinaryMd5GenerateTimestamp = cacheManager.getCache("listAllTagBinaryMd5GenerateTimestamp");
+        final Cache listAllTagBinaryMd5GenerateTimestamp = cacheManager
+            .getCache("listAllTagBinaryMd5GenerateTimestamp");
         if (listAllTagBinaryMd5GenerateTimestamp == null)
             throw new GenshinApiException("缓存未初始化");
         return listAllTagBinaryMd5GenerateTimestamp;

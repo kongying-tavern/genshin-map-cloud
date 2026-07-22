@@ -31,7 +31,9 @@ import java.util.stream.Collectors;
 public class MarkerDocService {
 
     private final MarkerDao markerDao;
+
     private final MarkerDataDao markerDataDao;
+
     private final AreaMapper areaMapper;
 
     public List<String> listMarkerBinaryMD5() {
@@ -56,7 +58,8 @@ public class MarkerDocService {
             .collect(Collectors.toList());
         markerSearchVo.setAreaIdList(areaIds);
         final List<MarkerVo> markerList = markerService.searchMarker(markerSearchVo, hiddenFlagList);
-        final MarkerDiffSnapshotVoOuterClass.MarkerDiffSnapshotVoList snapshotListProto = markerDataDao.buildMarkerDiffSnapshotListProto(markerList);
+        final MarkerDiffSnapshotVoOuterClass.MarkerDiffSnapshotVoList snapshotListProto = markerDataDao
+            .buildMarkerDiffSnapshotListProto(markerList);
 
         return snapshotListProto.toByteArray();
     }

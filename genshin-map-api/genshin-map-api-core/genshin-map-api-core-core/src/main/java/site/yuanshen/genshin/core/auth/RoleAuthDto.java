@@ -6,7 +6,6 @@ import org.springframework.security.core.GrantedAuthority;
 import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.data.enums.RoleEnum;
 
-
 /**
  * 角色数据封装
  *

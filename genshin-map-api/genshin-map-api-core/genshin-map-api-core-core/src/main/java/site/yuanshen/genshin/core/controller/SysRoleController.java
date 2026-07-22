@@ -33,10 +33,12 @@ public class SysRoleController {
     @Operation(summary = "返回可用角色列表", description = "返回可用角色列表")
     @GetMapping("/list")
     public R<List<SysRoleVo>> listRole() {
-        return RUtils.create(Arrays.stream(RoleEnum.values())
+        return RUtils.create(
+            Arrays.stream(RoleEnum.values())
                 .sorted(Comparator.comparingInt(RoleEnum::getSort))
                 .map(e -> BeanUtils.copy(e, SysRoleVo.class).withId(e.ordinal()))
-                .collect(Collectors.toList()));
+                .collect(Collectors.toList())
+        );
     }
 
 }

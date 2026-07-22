@@ -12,7 +12,9 @@ import java.util.List;
 public interface MarkerDataDao {
     MarkerDiffSnapshotVoOuterClass.MarkerDiffSnapshotVo buildMarkerDiffSnapshotProto(MarkerVo markerVo);
 
-    MarkerDiffSnapshotVoOuterClass.MarkerDiffSnapshotVoList buildMarkerDiffSnapshotListProto(List<MarkerVo> markerVoList);
+    MarkerDiffSnapshotVoOuterClass.MarkerDiffSnapshotVoList buildMarkerDiffSnapshotListProto(
+        List<MarkerVo> markerVoList
+    );
 
     MarkerVoOuterClass.MarkerItemLinkVo buildMarkerItemLinkProto(MarkerItemLinkVo markerItemLinkVo);
 

@@ -16,7 +16,9 @@ import java.util.List;
  */
 @Mapper
 public interface HistoryMapper extends BaseMapper<History> {
-    List<History> selectListWithLargeIn(@Param("unnest")String unnest, @Param(Constants.WRAPPER) LambdaQueryWrapper<History> wrapper);
+    List<History> selectListWithLargeIn(
+        @Param("unnest") String unnest, @Param(Constants.WRAPPER) LambdaQueryWrapper<History> wrapper
+    );
 
     /**
      *  配合in使用
@@ -25,5 +27,8 @@ public interface HistoryMapper extends BaseMapper<History> {
      * @param wrapper
      * @return
      */
-    List<History> selectWithLargeCustomIn(@Param("column")String column, @Param("unnest")String unnest, @Param(Constants.WRAPPER)LambdaQueryWrapper<History> wrapper);
+    List<History> selectWithLargeCustomIn(
+        @Param("column") String column, @Param("unnest") String unnest,
+        @Param(Constants.WRAPPER) LambdaQueryWrapper<History> wrapper
+    );
 }

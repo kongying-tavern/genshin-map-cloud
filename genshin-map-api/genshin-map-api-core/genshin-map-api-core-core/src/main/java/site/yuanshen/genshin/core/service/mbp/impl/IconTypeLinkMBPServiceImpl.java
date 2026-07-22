@@ -12,6 +12,7 @@ import site.yuanshen.genshin.core.service.mbp.IconTypeLinkMBPService;
  * @author Mybatis Plus generator
  */
 @Service
-public class IconTypeLinkMBPServiceImpl extends ServiceImpl<IconTypeLinkMapper, IconTypeLink> implements IconTypeLinkMBPService {
+public class IconTypeLinkMBPServiceImpl extends ServiceImpl<IconTypeLinkMapper, IconTypeLink>
+    implements IconTypeLinkMBPService {
 
 }

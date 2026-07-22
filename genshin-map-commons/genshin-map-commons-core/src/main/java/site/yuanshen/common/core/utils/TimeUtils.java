@@ -13,7 +13,9 @@ import java.util.Date;
 
 public class TimeUtils {
     public static final int ONE_DAY_SECOND = 86400;
+
     public static final int ONE_DAY_MILLISECOND = ONE_DAY_SECOND * 1000;
+
     public static final String DEFAULT_ZONE_OFFSET = "+08:00";
 
     /**
@@ -30,7 +32,8 @@ public class TimeUtils {
             ldt = LocalDateTime.parse(time, df);
         } catch (Exception e) {
         }
-        if (ldt != null) return new Timestamp(ldt.toEpochSecond(ZoneOffset.of(DEFAULT_ZONE_OFFSET)) * 1000L);
+        if (ldt != null)
+            return new Timestamp(ldt.toEpochSecond(ZoneOffset.of(DEFAULT_ZONE_OFFSET)) * 1000L);
 
         // yyyy-MM-dd HH:mm:ss
         try {
@@ -38,7 +41,8 @@ public class TimeUtils {
             ldt = LocalDateTime.parse(time, df);
         } catch (Exception e) {
         }
-        if (ldt != null) return new Timestamp(ldt.toEpochSecond(ZoneOffset.of(DEFAULT_ZONE_OFFSET)) * 1000L);
+        if (ldt != null)
+            return new Timestamp(ldt.toEpochSecond(ZoneOffset.of(DEFAULT_ZONE_OFFSET)) * 1000L);
 
         // yyyy-MM-dd HH:mm:ss +0800
         try {
@@ -46,7 +50,8 @@ public class TimeUtils {
             ldt = LocalDateTime.parse(time, df);
         } catch (Exception e) {
         }
-        if (ldt != null) return new Timestamp(ldt.toEpochSecond(ZoneOffset.of(DEFAULT_ZONE_OFFSET)) * 1000L);
+        if (ldt != null)
+            return new Timestamp(ldt.toEpochSecond(ZoneOffset.of(DEFAULT_ZONE_OFFSET)) * 1000L);
 
         // yyyy-MM-dd'T'HH:mm:ss.SSS
         try {
@@ -54,7 +59,8 @@ public class TimeUtils {
             ldt = LocalDateTime.parse(time, df);
         } catch (Exception e) {
         }
-        if (ldt != null) return new Timestamp(ldt.toEpochSecond(ZoneOffset.of(DEFAULT_ZONE_OFFSET)) * 1000L);
+        if (ldt != null)
+            return new Timestamp(ldt.toEpochSecond(ZoneOffset.of(DEFAULT_ZONE_OFFSET)) * 1000L);
 
         // yyyy-MM-dd'T'HH:mm:ss
         try {
@@ -62,7 +68,8 @@ public class TimeUtils {
             ldt = LocalDateTime.parse(time, df);
         } catch (Exception e) {
         }
-        if (ldt != null) return new Timestamp(ldt.toEpochSecond(ZoneOffset.of(DEFAULT_ZONE_OFFSET)) * 1000L);
+        if (ldt != null)
+            return new Timestamp(ldt.toEpochSecond(ZoneOffset.of(DEFAULT_ZONE_OFFSET)) * 1000L);
 
         return null;
     }
@@ -161,7 +168,9 @@ public class TimeUtils {
      * @param millisecond 毫秒数，为 null 则不修改
      * @return 调整后的时间戳
      */
-    public static Timestamp toMillisecond(Timestamp ts, Integer hour, Integer minute, Integer second, Integer millisecond) {
+    public static Timestamp toMillisecond(
+        Timestamp ts, Integer hour, Integer minute, Integer second, Integer millisecond
+    ) {
         if (ts == null) {
             return null;
         }
@@ -268,7 +277,9 @@ public class TimeUtils {
      * @param secondRangeEnd   时间区域2终止时间
      * @return 判断结果
      */
-    public static boolean timeRangeIntersected(Timestamp firstRangeStart, Timestamp firstRangeEnd, Timestamp secondRangeStart, Timestamp secondRangeEnd) {
+    public static boolean timeRangeIntersected(
+        Timestamp firstRangeStart, Timestamp firstRangeEnd, Timestamp secondRangeStart, Timestamp secondRangeEnd
+    ) {
         if (firstRangeStart == null || firstRangeEnd == null || secondRangeStart == null || secondRangeEnd == null) {
             // Any time is null
             return false;

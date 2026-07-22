@@ -3,7 +3,6 @@ package site.yuanshen.common.web.response;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-
 /**
  * 接口响应的响应码美剧
  *
@@ -23,6 +22,8 @@ public enum Codes {
     // spotless:on
 
     private final Integer status;
+
     private final String msg;
+
     private final Boolean isError;
 }

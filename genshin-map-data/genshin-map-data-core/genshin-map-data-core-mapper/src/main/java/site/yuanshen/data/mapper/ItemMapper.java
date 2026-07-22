@@ -20,9 +20,14 @@ import java.util.List;
 @Mapper
 public interface ItemMapper extends BaseMapper<Item> {
 
-    Page<Item> selectPageItem(IPage<?> page, @Param("itemSearchDto") ItemSearchDto itemSearchDto, @Param(Constants.WRAPPER)LambdaQueryWrapper<Item> wrapper);
+    Page<Item> selectPageItem(
+        IPage<?> page, @Param("itemSearchDto") ItemSearchDto itemSearchDto,
+        @Param(Constants.WRAPPER) LambdaQueryWrapper<Item> wrapper
+    );
 
-    List<Item> selectListWithLargeIn(@Param("unnest")String unnest, @Param(Constants.WRAPPER) LambdaQueryWrapper<Item> wrapper);
+    List<Item> selectListWithLargeIn(
+        @Param("unnest") String unnest, @Param(Constants.WRAPPER) LambdaQueryWrapper<Item> wrapper
+    );
 
     /**
      *  配合in使用
@@ -31,6 +36,9 @@ public interface ItemMapper extends BaseMapper<Item> {
      * @param wrapper
      * @return
      */
-    List<Item> selectWithLargeCustomIn(@Param("column")String column, @Param("unnest")String unnest, @Param(Constants.WRAPPER)LambdaQueryWrapper<Item> wrapper);
+    List<Item> selectWithLargeCustomIn(
+        @Param("column") String column, @Param("unnest") String unnest,
+        @Param(Constants.WRAPPER) LambdaQueryWrapper<Item> wrapper
+    );
 
 }

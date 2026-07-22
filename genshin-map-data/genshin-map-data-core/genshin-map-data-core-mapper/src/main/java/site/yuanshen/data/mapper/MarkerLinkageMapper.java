@@ -25,7 +25,10 @@ public interface MarkerLinkageMapper extends BaseMapper<MarkerLinkage> {
      * @param wrapper
      * @return
      */
-    List<MarkerLinkage> selectWithLargeCustomIn(@Param("column") String column, @Param("type") String type, @Param("unnest") String unnest, @Param(Constants.WRAPPER) LambdaQueryWrapper<MarkerLinkage> wrapper);
+    List<MarkerLinkage> selectWithLargeCustomIn(
+        @Param("column") String column, @Param("type") String type, @Param("unnest") String unnest,
+        @Param(Constants.WRAPPER) LambdaQueryWrapper<MarkerLinkage> wrapper
+    );
 
     /**
      *  配合in使用
@@ -33,7 +36,9 @@ public interface MarkerLinkageMapper extends BaseMapper<MarkerLinkage> {
      * @param wrapper
      * @return
      */
-    List<MarkerLinkage> selectWithLargeMarkerIdIn(@Param("unnest") String unnest, @Param(Constants.WRAPPER)LambdaQueryWrapper<MarkerLinkage> wrapper);
+    List<MarkerLinkage> selectWithLargeMarkerIdIn(
+        @Param("unnest") String unnest, @Param(Constants.WRAPPER) LambdaQueryWrapper<MarkerLinkage> wrapper
+    );
 
     Integer deleteByIds(@Param("unnest") String unnest);
 

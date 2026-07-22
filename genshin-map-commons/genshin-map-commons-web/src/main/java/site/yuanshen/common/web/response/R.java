@@ -57,7 +57,7 @@ public class R<T> implements Serializable {
         this.errorStatus = code.getStatus();
         this.errorData = error;
         this.message = code.getMsg();
-        if(StrUtil.isNotBlank(message)) {
+        if (StrUtil.isNotBlank(message)) {
             this.message = message;
         }
         this.data = data;
@@ -69,7 +69,7 @@ public class R<T> implements Serializable {
         this.errorStatus = Codes.FAIL.getStatus();
         this.errorData = error;
         this.message = e.getMessage();
-        if(StrUtil.isNotBlank(message)) {
+        if (StrUtil.isNotBlank(message)) {
             this.message = message;
         }
         this.data = data;

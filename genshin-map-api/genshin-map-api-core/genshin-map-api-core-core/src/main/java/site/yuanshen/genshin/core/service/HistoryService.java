@@ -36,24 +36,34 @@ public class HistoryService extends ServiceImpl<HistoryMapper, History> {
         wrapper = PgsqlUtils.sortWrapper(wrapper, sortList);
 
         LambdaQueryWrapper<History> queryWrapper = wrapper.lambda()
-                .eq(ObjectUtil.isNotNull(historySearchDto.getType()), History::getType, historySearchDto.getType())
-                .in(!historySearchDto.getId().isEmpty(), History::getTId, historySearchDto.getId())
-                .eq(ObjectUtil.isNotNull(historySearchDto.getEditType()), History::getEditType, historySearchDto.getEditType())
-                .eq(ObjectUtil.isNotNull(historySearchDto.getCreatorId()), History::getCreatorId, historySearchDto.getCreatorId())
-                .ge(ObjectUtil.isNotNull(historySearchDto.getCreateTimeStart()), History::getCreateTime, historySearchDto.getCreateTimeStart())
-                .le(ObjectUtil.isNotNull(historySearchDto.getCreateTimeEnd()), History::getCreateTime, historySearchDto.getCreateTimeEnd());
+            .eq(ObjectUtil.isNotNull(historySearchDto.getType()), History::getType, historySearchDto.getType())
+            .in(!historySearchDto.getId().isEmpty(), History::getTId, historySearchDto.getId())
+            .eq(
+                ObjectUtil.isNotNull(historySearchDto.getEditType()), History::getEditType,
+                historySearchDto.getEditType()
+            )
+            .eq(
+                ObjectUtil.isNotNull(historySearchDto.getCreatorId()), History::getCreatorId,
+                historySearchDto.getCreatorId()
+            )
+            .ge(
+                ObjectUtil.isNotNull(historySearchDto.getCreateTimeStart()), History::getCreateTime,
+                historySearchDto.getCreateTimeStart()
+            )
+            .le(
+                ObjectUtil.isNotNull(historySearchDto.getCreateTimeEnd()), History::getCreateTime,
+                historySearchDto.getCreateTimeEnd()
+            );
 
         Page<History> historyPage = historyMapper.selectPage(historySearchDto.getPageEntity(), queryWrapper);
 
         List<HistoryVo> result = historyPage.getRecords().stream()
-                .map(HistoryDto::new)
-                .map(HistoryDto::getVo)
-                .collect(Collectors.toList());
+            .map(HistoryDto::new)
+            .map(HistoryDto::getVo)
+            .collect(Collectors.toList());
         return new PageListVo<HistoryVo>()
-                .setRecord(result)
-                .setTotal(historyPage.getTotal())
-                .setSize(historyPage.getSize());
+            .setRecord(result)
+            .setTotal(historyPage.getTotal())
+            .setSize(historyPage.getSize());
     }
 }
-
-

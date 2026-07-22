@@ -1,6 +1,5 @@
 package site.yuanshen.genshin.core.controller;
 
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
@@ -33,7 +32,7 @@ public class HistoryController {
     @PostMapping("/get/list")
     public R<PageListVo<HistoryVo>> searchHistory(@RequestBody HistorySearchVo historySearchVo) {
         R<PageListVo<HistoryVo>> result = RUtils.create(
-                historyService.listPage(new HistorySearchDto(historySearchVo))
+            historyService.listPage(new HistorySearchDto(historySearchVo))
         );
         UserAppenderService.appendUser(result, result.getData().getRecord(), true, HistoryVo::getCreatorId);
         UserAppenderService.appendUser(result, result.getData().getRecord(), true, HistoryVo::getUpdaterId);

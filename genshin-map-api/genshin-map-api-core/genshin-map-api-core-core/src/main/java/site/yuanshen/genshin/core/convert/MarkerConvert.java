@@ -9,7 +9,7 @@ import site.yuanshen.data.dto.MarkerDto;
 import site.yuanshen.data.entity.History;
 import site.yuanshen.data.enums.HistoryType;
 
-public class MarkerConvert extends DefaultConvert{
+public class MarkerConvert extends DefaultConvert {
 
     @Override
     public boolean support(Object o) {
@@ -32,7 +32,7 @@ public class MarkerConvert extends DefaultConvert{
     Pair<String, Long> getContentAndId(Object o) {
         MarkerDto markerDto = (MarkerDto) o;
         markerDto.setVersion(null);
-        String content= JSON.toJSONString(markerDto);
+        String content = JSON.toJSONString(markerDto);
         Long id = markerDto.getId();
         return Pair.of(content, id);
     }

@@ -34,28 +34,30 @@ public class SysUserDeviceDaoImpl implements SysUserDeviceDao {
         } catch (Exception e) {
             return List.of();
         }
-        return sysUserDeviceMapper.selectList(Wrappers.<SysUserDevice>lambdaQuery()
+        return sysUserDeviceMapper.selectList(
+            Wrappers.<SysUserDevice>lambdaQuery()
                 .eq(SysUserDevice::getUserId, userIdVal)
-                .orderByAsc(SysUserDevice::getId))
-                .stream()
-                .map(SysUserDeviceDto::new)
-                .collect(Collectors.toList());
+                .orderByAsc(SysUserDevice::getId)
+        )
+            .stream()
+            .map(SysUserDeviceDto::new)
+            .collect(Collectors.toList());
     }
 
     @Override
     public SysUserDeviceDto createNewDevice(Long userId, String ipv4, String devId) {
         SysUserDevice device = new SysUserDevice()
-                .withUserId(userId)
-                .withIpv4(ipv4)
-                .withDeviceId(devId)
-                .withStatus(DeviceStatusEnum.UNKNOWN)
-                .withLastLoginTime(null);
+            .withUserId(userId)
+            .withIpv4(ipv4)
+            .withDeviceId(devId)
+            .withStatus(DeviceStatusEnum.UNKNOWN)
+            .withLastLoginTime(null);
         return new SysUserDeviceDto(device);
     }
 
     @Override
     public SysUserDeviceDto addNewDevice(SysUserDeviceDto deviceDto) {
-        if(deviceDto == null || deviceDto.getUserId() == null) {
+        if (deviceDto == null || deviceDto.getUserId() == null) {
             return null;
         }
         SysUserDevice device = deviceDto.getEntity();
@@ -65,22 +67,27 @@ public class SysUserDeviceDaoImpl implements SysUserDeviceDao {
 
     @Override
     public SysUserDeviceDto findDevice(List<SysUserDeviceDto> deviceList, SysUserDeviceDto device) {
-        if(device == null) {
+        if (device == null) {
             return null;
         }
         return deviceList.stream()
-                .filter(devItem -> devItem != null && Objects.equals(devItem.getIpv4(), device.getIpv4()) && Objects.equals(devItem.getDeviceId(), device.getDeviceId()))
-                .findFirst()
-                .orElse(null);
+            .filter(
+                devItem -> devItem != null && Objects.equals(devItem.getIpv4(), device.getIpv4())
+                    && Objects.equals(devItem.getDeviceId(), device.getDeviceId())
+            )
+            .findFirst()
+            .orElse(null);
     }
 
     @Override
     public void updateDeviceLoginTime(Long id) {
-        if(id == null) {
+        if (id == null) {
             return;
         }
-        sysUserDeviceMapper.update(null, Wrappers.<SysUserDevice>lambdaUpdate()
+        sysUserDeviceMapper.update(
+            null, Wrappers.<SysUserDevice>lambdaUpdate()
                 .set(SysUserDevice::getLastLoginTime, TimeUtils.getCurrentTimestamp())
-                .eq(SysUserDevice::getId, id));
+                .eq(SysUserDevice::getId, id)
+        );
     }
 }

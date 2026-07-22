@@ -34,7 +34,10 @@ public class SocketIOEntrypoint {
             uuidList.add(sessionId);
             return uuidList;
         });
-        log.info("[websocket] new connection, userID:{}, socketClientUUID:{}, connection size:{} ", userId, sessionId, socketIOServer.getAllClients().size());
+        log.info(
+            "[websocket] new connection, userID:{}, socketClientUUID:{}, connection size:{} ", userId, sessionId,
+            socketIOServer.getAllClients().size()
+        );
     }
 
     @OnDisconnect
@@ -49,7 +52,10 @@ public class SocketIOEntrypoint {
             uuidList.remove(sessionId);
             return uuidList;
         });
-        log.info("[websocket] connection disconnected, userID:{}, socketClientUUID:{}, connection size:{} ", userId, sessionId, socketIOServer.getAllClients().size());
+        log.info(
+            "[websocket] connection disconnected, userID:{}, socketClientUUID:{}, connection size:{} ", userId,
+            sessionId, socketIOServer.getAllClients().size()
+        );
     }
 
     public <T> void broadcast(W<T> message) {
@@ -66,7 +72,10 @@ public class SocketIOEntrypoint {
                 continue;
             }
             uuidList.forEach(uuid -> {
-                log.info("[websocket] send message to users, userID:{}, socketClientUUID:{} , message:{}", userId, uuid, messageText);
+                log.info(
+                    "[websocket] send message to users, userID:{}, socketClientUUID:{} , message:{}", userId, uuid,
+                    messageText
+                );
                 socketIOServer.getClient(uuid).sendEvent(SocketIOEventEnum.MESSAGE.getEvent(), messageText);
             });
         }
@@ -78,7 +87,10 @@ public class SocketIOEntrypoint {
         userIdToSocketClientUUID.forEach((userId, uuidList) -> {
             if (!userIdsSet.contains(userId)) {
                 uuidList.forEach(uuid -> {
-                    log.info("[websocket] send message to users, userID:{}, socketClientUUID:{} , message:{}", userId, uuid, messageText);
+                    log.info(
+                        "[websocket] send message to users, userID:{}, socketClientUUID:{} , message:{}", userId, uuid,
+                        messageText
+                    );
                     socketIOServer.getClient(uuid).sendEvent(SocketIOEventEnum.MESSAGE.getEvent(), messageText);
                 });
             }

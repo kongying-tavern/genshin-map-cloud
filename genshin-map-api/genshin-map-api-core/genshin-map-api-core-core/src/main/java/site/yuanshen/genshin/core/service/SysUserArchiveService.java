@@ -29,9 +29,10 @@ public class SysUserArchiveService {
 
     private SysUserArchive getSlotEntity(int slotIndex, Long userId) {
         return sysUserArchiveMapper.selectOne(
-                Wrappers.<SysUserArchive>lambdaQuery()
-                        .eq(SysUserArchive::getSlotIndex, slotIndex)
-                        .eq(SysUserArchive::getUserId, userId));
+            Wrappers.<SysUserArchive>lambdaQuery()
+                .eq(SysUserArchive::getSlotIndex, slotIndex)
+                .eq(SysUserArchive::getUserId, userId)
+        );
     }
 
     /**
@@ -45,7 +46,7 @@ public class SysUserArchiveService {
             throw new GenshinApiException("存档不存在");
         }
         return new SysUserArchiveSlotDto(entity)
-                .getArchiveVo(1);
+            .getArchiveVo(1);
     }
 
     /**
@@ -61,18 +62,18 @@ public class SysUserArchiveService {
         return new SysUserArchiveSlotDto(entity).getSlotVo();
     }
 
-
     /**
      * @param userId 用户id
      * @return 所有槽位的历史存档
      */
     public List<SysArchiveSlotVo> getAllSlot(Long userId) {
-        return sysUserArchiveMapper.selectList(Wrappers.<SysUserArchive>lambdaQuery().eq(SysUserArchive::getUserId, userId))
-                .parallelStream()
-                .map(SysUserArchiveSlotDto::new)
-                .sorted(Comparator.comparingLong(SysUserArchiveSlotDto::getSlotIndex))
-                .map(SysUserArchiveSlotDto::getSlotVo)
-                .collect(Collectors.toList());
+        return sysUserArchiveMapper
+            .selectList(Wrappers.<SysUserArchive>lambdaQuery().eq(SysUserArchive::getUserId, userId))
+            .parallelStream()
+            .map(SysUserArchiveSlotDto::new)
+            .sorted(Comparator.comparingLong(SysUserArchiveSlotDto::getSlotIndex))
+            .map(SysUserArchiveSlotDto::getSlotVo)
+            .collect(Collectors.toList());
     }
 
     /**
@@ -85,14 +86,15 @@ public class SysUserArchiveService {
      * @return 是否成功
      */
     public Boolean createSlotAndSaveArchive(int slotIndex, String archive, Long userId, String name) {
-        if (this.getSlotEntity(slotIndex, userId) != null) throw new GenshinApiException("槽位下标冲突，请重新选择下标");
+        if (this.getSlotEntity(slotIndex, userId) != null)
+            throw new GenshinApiException("槽位下标冲突，请重新选择下标");
         return sysUserArchiveMapper.insert(
-                new SysUserArchive()
-                        .withSlotIndex(slotIndex)
-                        .withUserId(userId)
-                        .withName(name)
-                        .withData(Collections.singletonList(new SysUserArchiveDto(archive))))
-                == 1;
+            new SysUserArchive()
+                .withSlotIndex(slotIndex)
+                .withUserId(userId)
+                .withName(name)
+                .withData(Collections.singletonList(new SysUserArchiveDto(archive)))
+        ) == 1;
     }
 
     /**
@@ -123,7 +125,8 @@ public class SysUserArchiveService {
      */
     public boolean renameSlot(int slotIndex, Long userId, String newName) {
         SysUserArchive archive = getSlotEntity(slotIndex, userId);
-        if (archive == null) throw new GenshinApiException("槽位不存在");
+        if (archive == null)
+            throw new GenshinApiException("槽位不存在");
         return sysUserArchiveMapper.updateById(archive.withName(newName)) == 1;
     }
 
@@ -150,11 +153,12 @@ public class SysUserArchiveService {
      * @return 是否成功
      */
     public Boolean removeArchive(int slotIndex, Long userId) {
-        if (this.getSlotEntity(slotIndex, userId) == null) throw new GenshinApiException("槽位不存在");
+        if (this.getSlotEntity(slotIndex, userId) == null)
+            throw new GenshinApiException("槽位不存在");
         return sysUserArchiveMapper.delete(
-                Wrappers.<SysUserArchive>lambdaQuery()
-                        .eq(SysUserArchive::getUserId, userId)
-                        .eq(SysUserArchive::getSlotIndex, slotIndex))
-                == 1;
+            Wrappers.<SysUserArchive>lambdaQuery()
+                .eq(SysUserArchive::getUserId, userId)
+                .eq(SysUserArchive::getSlotIndex, slotIndex)
+        ) == 1;
     }
 }

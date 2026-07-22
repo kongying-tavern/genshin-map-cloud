@@ -27,7 +27,9 @@ public class ResourceController {
 
     @PutMapping("/upload/image")
     @Operation(summary = "上传图片", description = "上传图片至图床并返回访问地址")
-    public R<ResourceUploadVo> uploadImage(@RequestParam(value = "file", required = false) MultipartFile file, @ModelAttribute ResourceUploadVo uploadVo) {
+    public R<ResourceUploadVo> uploadImage(
+        @RequestParam(value = "file", required = false) MultipartFile file, @ModelAttribute ResourceUploadVo uploadVo
+    ) {
         R<ResourceUploadVo> result = RUtils.create(
             resourceService.uploadImage(
                 (new ResourceUploadDto(uploadVo)).withFile(file)

@@ -13,10 +13,10 @@ public class MinioSaoImpl implements MinioSao {
     @Override
     public MinioClient createClient(String endpoint, String key, String secret) {
         MinioClient minioClient = MinioClient.builder()
-                .endpoint(endpoint)
-                .credentials(key, secret)
-                .credentialsProvider(null)
-                .build();
+            .endpoint(endpoint)
+            .credentials(key, secret)
+            .credentialsProvider(null)
+            .build();
         return minioClient;
     }
 
@@ -24,9 +24,9 @@ public class MinioSaoImpl implements MinioSao {
     public boolean bucketExist(MinioClient client, String bucket) throws BucketNotFoundException {
         try {
             boolean found = client.bucketExists(
-                    BucketExistsArgs.builder()
-                            .bucket(bucket)
-                            .build()
+                BucketExistsArgs.builder()
+                    .bucket(bucket)
+                    .build()
             );
             return found;
         } catch (Exception e) {
@@ -38,12 +38,13 @@ public class MinioSaoImpl implements MinioSao {
     public boolean objectExists(MinioClient client, String bucket, String object) {
         try {
             StatObjectResponse objectStat = client.statObject(
-                    StatObjectArgs.builder()
-                            .bucket(bucket)
-                            .object(object)
-                            .build()
+                StatObjectArgs.builder()
+                    .bucket(bucket)
+                    .object(object)
+                    .build()
             );
-            if(objectStat == null) return false;
+            if (objectStat == null)
+                return false;
             return objectStat.size() >= 0;
         } catch (Exception e) {
             return false;
@@ -51,22 +52,23 @@ public class MinioSaoImpl implements MinioSao {
     }
 
     @Override
-    public String putObject(MinioClient client, String bucket, String object, MultipartFile file) throws ObjectPutException {
-        if(file == null) {
+    public String putObject(MinioClient client, String bucket, String object, MultipartFile file)
+        throws ObjectPutException {
+        if (file == null) {
             throw new ObjectPutException("上传文件不能为空");
         }
 
         try {
             ObjectWriteResponse objectRes = client.putObject(
-                    PutObjectArgs.builder()
-                            .bucket(bucket)
-                            .object(object)
-                            .stream(file.getInputStream(), -1, 10485760)
-                            .contentType(file.getContentType())
-                            .build()
+                PutObjectArgs.builder()
+                    .bucket(bucket)
+                    .object(object)
+                    .stream(file.getInputStream(), -1, 10485760)
+                    .contentType(file.getContentType())
+                    .build()
             );
             return objectRes.object();
-        } catch(Exception e) {
+        } catch (Exception e) {
             throw new ObjectPutException();
         }
     }
