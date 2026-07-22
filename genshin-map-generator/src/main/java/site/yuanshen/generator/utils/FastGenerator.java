@@ -57,8 +57,10 @@ public class FastGenerator {
     @Getter
     @RequiredArgsConstructor
     public enum ResourceType {
+        // spotless:off
         Resource("资源", "src/main/resources"),
         JavaSource("Java代码", "src/main/java");
+        // spotless:on
 
         private final String name;
 

@@ -12,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum Codes {
-
+    // spotless:off
     //相关的枚举对象
     SUCCESS(200, "成功", false),
     FAIL(500, "服务器异常", true),
@@ -20,6 +20,7 @@ public enum Codes {
     PARAMETER_ERROR(501, "参数校验异常", true),
     FLOW_ERROR(429, "流量限制", true),
     DEGRADE_ERROR(430, "服务降级", true);
+    // spotless:on
 
     private final Integer status;
     private final String msg;

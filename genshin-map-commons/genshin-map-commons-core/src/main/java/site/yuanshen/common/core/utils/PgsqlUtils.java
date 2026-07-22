@@ -49,8 +49,10 @@ public class PgsqlUtils {
      * 排序顺序
      */
     public enum Order {
+        // spotless:off
         ASC,
         DESC
+        // spotless:on
     }
 
     /**

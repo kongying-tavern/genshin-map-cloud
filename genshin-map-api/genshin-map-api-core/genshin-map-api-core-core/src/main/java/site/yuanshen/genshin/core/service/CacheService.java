@@ -184,14 +184,19 @@ public class CacheService {
     }
 
     enum FunctionKeyEnum {
+        // spotless:off
         refreshIconBinary,
         refreshItemBinary,
         refreshMarkerBinary,
         refreshMarkerLinkageBinary,
+        // spotless:on
     }
 
     enum Status {
-        OK, FAIL
+        // spotless:off
+        OK,
+        FAIL
+        // spotless:on
     }
 
     private void runAfterTransactionDebounceByKey(Runnable r, FunctionKeyEnum keyEnum, int second) {
