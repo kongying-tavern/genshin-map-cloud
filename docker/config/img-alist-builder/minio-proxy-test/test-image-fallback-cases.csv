@@ -1,0 +1,141 @@
+test_format,image_path,exp_status,exp_type,use_webp_header,fallback_routine
+PNG,png~no_fb~with_webp.webp,200,WEBP,1,-
+PNG,png~no_fb~with_webp.png,200,WEBP,1,WEBP - PNG
+PNG,png~no_fb~with_webp.jpg,200,WEBP,1,WEBP - PNG - JPG
+PNG,png~no_fb~with_webp.jpeg,200,WEBP,1,WEBP - PNG - JPEG
+PNG,png~no_fb~with_webp.jfif,200,WEBP,1,WEBP - PNG - JFIF
+PNG,png~no_fb~no_webp.webp,404,,1,-
+PNG,png~no_fb~no_webp.png,200,PNG,1,WEBP - PNG
+PNG,png~no_fb~no_webp.jpg,200,PNG,1,WEBP - PNG - JPG
+PNG,png~no_fb~no_webp.jpeg,200,PNG,1,WEBP - PNG - JPEG
+PNG,png~no_fb~no_webp.jfif,200,PNG,1,WEBP - PNG - JFIF
+JPG,jpg~no_fb~with_webp.webp,200,WEBP,1,-
+JPG,jpg~no_fb~with_webp.png,200,WEBP,1,WEBP - PNG
+JPG,jpg~no_fb~with_webp.jpg,200,WEBP,1,WEBP - PNG - JPG
+JPG,jpg~no_fb~with_webp.jpeg,200,WEBP,1,WEBP - PNG - JPEG
+JPG,jpg~no_fb~with_webp.jfif,200,WEBP,1,WEBP - PNG - JFIF
+JPG,jpg~no_fb~no_webp.webp,404,,1,-
+JPG,jpg~no_fb~no_webp.png,404,,1,WEBP - PNG
+JPG,jpg~no_fb~no_webp.jpg,200,JPG,1,WEBP - PNG - JPG
+JPG,jpg~no_fb~no_webp.jpeg,404,,1,WEBP - PNG - JPEG
+JPG,jpg~no_fb~no_webp.jfif,404,,1,WEBP - PNG - JFIF
+JPG,jpg~png_fb~with_webp.webp,200,WEBP,1,-
+JPG,jpg~png_fb~with_webp.png,200,WEBP,1,WEBP - PNG
+JPG,jpg~png_fb~with_webp.jpg,200,WEBP,1,WEBP - PNG - JPG
+JPG,jpg~png_fb~with_webp.jpeg,200,WEBP,1,WEBP - PNG - JPEG
+JPG,jpg~png_fb~with_webp.jfif,200,WEBP,1,WEBP - PNG - JFIF
+JPG,jpg~png_fb~no_webp.webp,404,,1,-
+JPG,jpg~png_fb~no_webp.png,200,PNG,1,WEBP - PNG
+JPG,jpg~png_fb~no_webp.jpg,200,PNG,1,WEBP - PNG - JPG
+JPG,jpg~png_fb~no_webp.jpeg,200,PNG,1,WEBP - PNG - JPEG
+JPG,jpg~png_fb~no_webp.jfif,200,PNG,1,WEBP - PNG - JFIF
+JPEG,jpeg~no_fb~with_webp.webp,200,WEBP,1,-
+JPEG,jpeg~no_fb~with_webp.png,200,WEBP,1,WEBP - PNG
+JPEG,jpeg~no_fb~with_webp.jpg,200,WEBP,1,WEBP - PNG - JPG
+JPEG,jpeg~no_fb~with_webp.jpeg,200,WEBP,1,WEBP - PNG - JPEG
+JPEG,jpeg~no_fb~with_webp.jfif,200,WEBP,1,WEBP - PNG - JFIF
+JPEG,jpeg~no_fb~no_webp.webp,404,,1,-
+JPEG,jpeg~no_fb~no_webp.png,404,,1,WEBP - PNG
+JPEG,jpeg~no_fb~no_webp.jpg,404,,1,WEBP - PNG - JPG
+JPEG,jpeg~no_fb~no_webp.jpeg,200,JPG,1,WEBP - PNG - JPEG
+JPEG,jpeg~no_fb~no_webp.jfif,404,,1,WEBP - PNG - JFIF
+JPEG,jpeg~png_fb~with_webp.webp,200,WEBP,1,-
+JPEG,jpeg~png_fb~with_webp.png,200,WEBP,1,WEBP - PNG
+JPEG,jpeg~png_fb~with_webp.jpg,200,WEBP,1,WEBP - PNG - JPG
+JPEG,jpeg~png_fb~with_webp.jpeg,200,WEBP,1,WEBP - PNG - JPEG
+JPEG,jpeg~png_fb~with_webp.jfif,200,WEBP,1,WEBP - PNG - JFIF
+JPEG,jpeg~png_fb~no_webp.webp,404,,1,-
+JPEG,jpeg~png_fb~no_webp.png,200,PNG,1,WEBP - PNG
+JPEG,jpeg~png_fb~no_webp.jpg,200,PNG,1,WEBP - PNG - JPG
+JPEG,jpeg~png_fb~no_webp.jpeg,200,PNG,1,WEBP - PNG - JPEG
+JPEG,jpeg~png_fb~no_webp.jfif,200,PNG,1,WEBP - PNG - JFIF
+JFIF,jfif~no_fb~with_webp.webp,200,WEBP,1,-
+JFIF,jfif~no_fb~with_webp.png,200,WEBP,1,WEBP - PNG
+JFIF,jfif~no_fb~with_webp.jpg,200,WEBP,1,WEBP - PNG - JPG
+JFIF,jfif~no_fb~with_webp.jpeg,200,WEBP,1,WEBP - PNG - JPEG
+JFIF,jfif~no_fb~with_webp.jfif,200,WEBP,1,WEBP - PNG - JFIF
+JFIF,jfif~no_fb~no_webp.webp,404,,1,-
+JFIF,jfif~no_fb~no_webp.png,404,,1,WEBP - PNG
+JFIF,jfif~no_fb~no_webp.jpg,404,,1,WEBP - PNG - JPG
+JFIF,jfif~no_fb~no_webp.jpeg,404,,1,WEBP - PNG - JPEG
+JFIF,jfif~no_fb~no_webp.jfif,200,JPG,1,WEBP - PNG - JFIF
+JFIF,jfif~png_fb~with_webp.webp,200,WEBP,1,-
+JFIF,jfif~png_fb~with_webp.png,200,WEBP,1,WEBP - PNG
+JFIF,jfif~png_fb~with_webp.jpg,200,WEBP,1,WEBP - PNG - JPG
+JFIF,jfif~png_fb~with_webp.jpeg,200,WEBP,1,WEBP - PNG - JPEG
+JFIF,jfif~png_fb~with_webp.jfif,200,WEBP,1,WEBP - PNG - JFIF
+JFIF,jfif~png_fb~no_webp.webp,404,,1,-
+JFIF,jfif~png_fb~no_webp.png,200,PNG,1,WEBP - PNG
+JFIF,jfif~png_fb~no_webp.jpg,200,PNG,1,WEBP - PNG - JPG
+JFIF,jfif~png_fb~no_webp.jpeg,200,PNG,1,WEBP - PNG - JPEG
+JFIF,jfif~png_fb~no_webp.jfif,200,PNG,1,WEBP - PNG - JFIF
+PNG,png~no_fb~with_webp.webp,200,WEBP,0,-
+PNG,png~no_fb~with_webp.png,200,PNG,0,PNG
+PNG,png~no_fb~with_webp.jpg,200,PNG,0,PNG - JPG
+PNG,png~no_fb~with_webp.jpeg,200,PNG,0,PNG - JPEG
+PNG,png~no_fb~with_webp.jfif,200,PNG,0,PNG - JFIF
+PNG,png~no_fb~no_webp.webp,404,,0,-
+PNG,png~no_fb~no_webp.png,200,PNG,0,PNG
+PNG,png~no_fb~no_webp.jpg,200,PNG,0,PNG - JPG
+PNG,png~no_fb~no_webp.jpeg,200,PNG,0,PNG - JPEG
+PNG,png~no_fb~no_webp.jfif,200,PNG,0,PNG - JFIF
+JPG,jpg~no_fb~with_webp.webp,200,WEBP,0,-
+JPG,jpg~no_fb~with_webp.png,404,,0,PNG
+JPG,jpg~no_fb~with_webp.jpg,200,JPG,0,PNG - JPG
+JPG,jpg~no_fb~with_webp.jpeg,404,,0,PNG - JPEG
+JPG,jpg~no_fb~with_webp.jfif,404,,0,PNG - JFIF
+JPG,jpg~no_fb~no_webp.webp,404,,0,-
+JPG,jpg~no_fb~no_webp.png,404,,0,PNG
+JPG,jpg~no_fb~no_webp.jpg,200,JPG,0,PNG - JPG
+JPG,jpg~no_fb~no_webp.jpeg,404,,0,PNG - JPEG
+JPG,jpg~no_fb~no_webp.jfif,404,,0,PNG - JFIF
+JPG,jpg~png_fb~with_webp.webp,200,WEBP,0,-
+JPG,jpg~png_fb~with_webp.png,200,PNG,0,PNG
+JPG,jpg~png_fb~with_webp.jpg,200,PNG,0,PNG - JPG
+JPG,jpg~png_fb~with_webp.jpeg,200,PNG,0,PNG - JPEG
+JPG,jpg~png_fb~with_webp.jfif,200,PNG,0,PNG - JFIF
+JPG,jpg~png_fb~no_webp.webp,404,,0,-
+JPG,jpg~png_fb~no_webp.png,200,PNG,0,PNG
+JPG,jpg~png_fb~no_webp.jpg,200,PNG,0,PNG - JPG
+JPG,jpg~png_fb~no_webp.jpeg,200,PNG,0,PNG - JPEG
+JPG,jpg~png_fb~no_webp.jfif,200,PNG,0,PNG - JFIF
+JPEG,jpeg~no_fb~with_webp.webp,200,WEBP,0,-
+JPEG,jpeg~no_fb~with_webp.png,404,,0,PNG
+JPEG,jpeg~no_fb~with_webp.jpg,404,,0,PNG - JPG
+JPEG,jpeg~no_fb~with_webp.jpeg,200,JPG,0,PNG - JPEG
+JPEG,jpeg~no_fb~with_webp.jfif,404,,0,PNG - JFIF
+JPEG,jpeg~no_fb~no_webp.webp,404,,0,-
+JPEG,jpeg~no_fb~no_webp.png,404,,0,PNG
+JPEG,jpeg~no_fb~no_webp.jpg,404,,0,PNG - JPG
+JPEG,jpeg~no_fb~no_webp.jpeg,200,JPG,0,PNG - JPEG
+JPEG,jpeg~no_fb~no_webp.jfif,404,,0,PNG - JFIF
+JPEG,jpeg~png_fb~with_webp.webp,200,WEBP,0,-
+JPEG,jpeg~png_fb~with_webp.png,200,PNG,0,PNG
+JPEG,jpeg~png_fb~with_webp.jpg,200,PNG,0,PNG - JPG
+JPEG,jpeg~png_fb~with_webp.jpeg,200,PNG,0,PNG - JPEG
+JPEG,jpeg~png_fb~with_webp.jfif,200,PNG,0,PNG - JFIF
+JPEG,jpeg~png_fb~no_webp.webp,404,,0,-
+JPEG,jpeg~png_fb~no_webp.png,200,PNG,0,PNG
+JPEG,jpeg~png_fb~no_webp.jpg,200,PNG,0,PNG - JPG
+JPEG,jpeg~png_fb~no_webp.jpeg,200,PNG,0,PNG - JPEG
+JPEG,jpeg~png_fb~no_webp.jfif,200,PNG,0,PNG - JFIF
+JFIF,jfif~no_fb~with_webp.webp,200,WEBP,0,-
+JFIF,jfif~no_fb~with_webp.png,404,,0,PNG
+JFIF,jfif~no_fb~with_webp.jpg,404,,0,PNG - JPG
+JFIF,jfif~no_fb~with_webp.jpeg,404,,0,PNG - JPEG
+JFIF,jfif~no_fb~with_webp.jfif,200,JPG,0,PNG - JFIF
+JFIF,jfif~no_fb~no_webp.webp,404,,0,-
+JFIF,jfif~no_fb~no_webp.png,404,,0,PNG
+JFIF,jfif~no_fb~no_webp.jpg,404,,0,PNG - JPG
+JFIF,jfif~no_fb~no_webp.jpeg,404,,0,PNG - JPEG
+JFIF,jfif~no_fb~no_webp.jfif,200,JPG,0,PNG - JFIF
+JFIF,jfif~png_fb~with_webp.webp,200,WEBP,0,-
+JFIF,jfif~png_fb~with_webp.png,200,PNG,0,PNG
+JFIF,jfif~png_fb~with_webp.jpg,200,PNG,0,PNG - JPG
+JFIF,jfif~png_fb~with_webp.jpeg,200,PNG,0,PNG - JPEG
+JFIF,jfif~png_fb~with_webp.jfif,200,PNG,0,PNG - JFIF
+JFIF,jfif~png_fb~no_webp.webp,404,,0,-
+JFIF,jfif~png_fb~no_webp.png,200,PNG,0,PNG
+JFIF,jfif~png_fb~no_webp.jpg,200,PNG,0,PNG - JPG
+JFIF,jfif~png_fb~no_webp.jpeg,200,PNG,0,PNG - JPEG
+JFIF,jfif~png_fb~no_webp.jfif,200,PNG,0,PNG - JFIF

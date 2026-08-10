@@ -29,9 +29,9 @@ public class MarkerItemLinkVo {
     private Integer count;
 
     /**
-     * 图标标签
+     * 图标ID
      */
-    @Schema(title = "图标标签")
-    private String iconTag;
+    @Schema(title = "图标ID")
+    private Long iconId;
 
 }

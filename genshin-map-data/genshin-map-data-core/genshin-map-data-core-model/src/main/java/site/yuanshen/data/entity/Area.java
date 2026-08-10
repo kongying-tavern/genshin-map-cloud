@@ -65,10 +65,10 @@ public class Area extends BaseEntity {
     private String content;
 
     /**
-     * 图标标签
+     * 图标ID
      */
-    @TableField("icon_tag")
-    private String iconTag;
+    @TableField("icon_id")
+    private Long iconId;
 
     /**
      * 父级地区ID（无父级则为-1）

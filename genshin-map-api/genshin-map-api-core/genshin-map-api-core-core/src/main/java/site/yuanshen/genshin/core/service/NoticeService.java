@@ -13,7 +13,7 @@ import site.yuanshen.common.core.utils.TimeUtils;
 import site.yuanshen.data.dto.NoticeDto;
 import site.yuanshen.data.dto.NoticeSearchDto;
 import site.yuanshen.data.entity.Notice;
-import site.yuanshen.data.enums.notice.NoticeTransformerEnum;
+import site.yuanshen.data.enums.transformer.HtmlTransformerEnum;
 import site.yuanshen.data.mapper.NoticeMapper;
 import site.yuanshen.data.vo.NoticeVo;
 import site.yuanshen.data.vo.helper.PageListVo;
@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class NoticeService {
     private final NoticeDao noticeDao;
+
     private final NoticeMapper noticeMapper;
 
     public PageListVo<NoticeVo> listNotice(NoticeSearchDto noticeSearchDto) {
@@ -36,81 +37,112 @@ public class NoticeService {
         List<PgsqlUtils.Sort<Notice>> sortList = PgsqlUtils.toSortConfigurations(
             noticeSearchDto.getSort(),
             PgsqlUtils.SortConfig.<Notice>create()
-                .addEntry(PgsqlUtils.SortConfigItem.<Notice>create().withProp("id").withComparator(Comparator.comparingLong(Notice::getId)))
-                .addEntry(PgsqlUtils.SortConfigItem.<Notice>create().withProp("title").withComparator((a, b) -> String.CASE_INSENSITIVE_ORDER.compare(a.getTitle(), b.getTitle())))
-                .addEntry(PgsqlUtils.SortConfigItem.<Notice>create().withProp("sortIndex").withComparator(Comparator.comparingInt(Notice::getSortIndex)))
-                .addEntry(PgsqlUtils.SortConfigItem.<Notice>create().withProp("validTimeStart")
-                    .withComparator((a, b) -> {
-                        final Timestamp aTime = a.getValidTimeStart();
-                        final long aTs = aTime == null ? Long.MIN_VALUE : aTime.getTime();
-                        final Timestamp bTime = b.getValidTimeStart();
-                        final long bTs = bTime == null ? Long.MIN_VALUE : bTime.getTime();
-                        return Long.compare(aTs, bTs);
-                    })
+                .addEntry(
+                    PgsqlUtils.SortConfigItem.<Notice>create().withProp("id")
+                        .withComparator(Comparator.comparingLong(Notice::getId))
                 )
-                .addEntry(PgsqlUtils.SortConfigItem.<Notice>create().withProp("validTimeEnd")
-                    .withComparator((a, b) -> {
-                        final Timestamp aTime = a.getValidTimeEnd();
-                        final long aTs = aTime == null ? Long.MAX_VALUE : aTime.getTime();
-                        final Timestamp bTime = b.getValidTimeEnd();
-                        final long bTs = bTime == null ? Long.MAX_VALUE : bTime.getTime();
-                        return Long.compare(aTs, bTs);
-                    })
+                .addEntry(
+                    PgsqlUtils.SortConfigItem.<Notice>create().withProp("title")
+                        .withComparator((a, b) -> String.CASE_INSENSITIVE_ORDER.compare(a.getTitle(), b.getTitle()))
                 )
-                .addEntry(PgsqlUtils.SortConfigItem.<Notice>create().withProp("isValid")
-                    .withComparator((a, b) -> {
-                        final long ts = TimeUtils.getCurrentTimestamp().getTime();
-                        final Timestamp aTimeStart = a.getValidTimeStart();
-                        final long aTsStart = aTimeStart == null ? Long.MIN_VALUE : aTimeStart.getTime();
-                        final Timestamp aTimeEnd = a.getValidTimeEnd();
-                        final long aTsEnd = aTimeEnd == null ? Long.MAX_VALUE : aTimeEnd.getTime();
-                        final boolean aIsValid = aTsStart <= ts && ts <= aTsEnd;
-                        final Timestamp bTimeStart = b.getValidTimeStart();
-                        final long bTsStart = bTimeStart == null ? Long.MIN_VALUE : bTimeStart.getTime();
-                        final Timestamp bTimeEnd = b.getValidTimeEnd();
-                        final long bTsEnd = bTimeEnd == null ? Long.MAX_VALUE : bTimeEnd.getTime();
-                        final boolean bIsValid = bTsStart <= ts && ts <= bTsEnd;
-                        return Boolean.compare(aIsValid, bIsValid);
-                    })
+                .addEntry(
+                    PgsqlUtils.SortConfigItem.<Notice>create().withProp("sortIndex")
+                        .withComparator(Comparator.comparingInt(Notice::getSortIndex))
                 )
-                .addEntry(PgsqlUtils.SortConfigItem.<Notice>create().withProp("updateTime")
-                    .withComparator((a, b) -> {
-                        final Timestamp aTime = a.getUpdateTime();
-                        final long aTs = aTime == null ? Long.MIN_VALUE : aTime.getTime();
-                        final Timestamp bTime = b.getUpdateTime();
-                        final long bTs = bTime == null ? Long.MIN_VALUE : bTime.getTime();
-                        return Long.compare(aTs, bTs);
-                    })
+                .addEntry(
+                    PgsqlUtils.SortConfigItem.<Notice>create().withProp("validTimeStart")
+                        .withComparator((a, b) -> {
+                            final Timestamp aTime = a.getValidTimeStart();
+                            final long aTs = aTime == null ? Long.MIN_VALUE : aTime.getTime();
+                            final Timestamp bTime = b.getValidTimeStart();
+                            final long bTs = bTime == null ? Long.MIN_VALUE : bTime.getTime();
+                            return Long.compare(aTs, bTs);
+                        })
+                )
+                .addEntry(
+                    PgsqlUtils.SortConfigItem.<Notice>create().withProp("validTimeEnd")
+                        .withComparator((a, b) -> {
+                            final Timestamp aTime = a.getValidTimeEnd();
+                            final long aTs = aTime == null ? Long.MAX_VALUE : aTime.getTime();
+                            final Timestamp bTime = b.getValidTimeEnd();
+                            final long bTs = bTime == null ? Long.MAX_VALUE : bTime.getTime();
+                            return Long.compare(aTs, bTs);
+                        })
+                )
+                .addEntry(
+                    PgsqlUtils.SortConfigItem.<Notice>create().withProp("isValid")
+                        .withComparator((a, b) -> {
+                            final long ts = TimeUtils.getCurrentTimestamp().getTime();
+                            final Timestamp aTimeStart = a.getValidTimeStart();
+                            final long aTsStart = aTimeStart == null ? Long.MIN_VALUE : aTimeStart.getTime();
+                            final Timestamp aTimeEnd = a.getValidTimeEnd();
+                            final long aTsEnd = aTimeEnd == null ? Long.MAX_VALUE : aTimeEnd.getTime();
+                            final boolean aIsValid = aTsStart <= ts && ts <= aTsEnd;
+                            final Timestamp bTimeStart = b.getValidTimeStart();
+                            final long bTsStart = bTimeStart == null ? Long.MIN_VALUE : bTimeStart.getTime();
+                            final Timestamp bTimeEnd = b.getValidTimeEnd();
+                            final long bTsEnd = bTimeEnd == null ? Long.MAX_VALUE : bTimeEnd.getTime();
+                            final boolean bIsValid = bTsStart <= ts && ts <= bTsEnd;
+                            return Boolean.compare(aIsValid, bIsValid);
+                        })
+                )
+                .addEntry(
+                    PgsqlUtils.SortConfigItem.<Notice>create().withProp("validType")
+                        .withComparator((a, b) -> {
+                            final long nowTimestamp = TimeUtils.getCurrentTimestamp().getTime();
+
+                            final Timestamp aTimeEnd = a.getValidTimeEnd();
+                            final long aTsEnd = aTimeEnd == null ? Long.MAX_VALUE : aTimeEnd.getTime();
+                            final boolean aIsValid = nowTimestamp <= aTsEnd;
+
+                            final Timestamp bTimeEnd = b.getValidTimeEnd();
+                            final long bTsEnd = bTimeEnd == null ? Long.MAX_VALUE : bTimeEnd.getTime();
+                            final boolean bIsValid = nowTimestamp <= bTsEnd;
+
+                            return Boolean.compare(aIsValid, bIsValid);
+                        })
+                )
+                .addEntry(
+                    PgsqlUtils.SortConfigItem.<Notice>create().withProp("updateTime")
+                        .withComparator((a, b) -> {
+                            final Timestamp aTime = a.getUpdateTime();
+                            final long aTs = aTime == null ? Long.MIN_VALUE : aTime.getTime();
+                            final Timestamp bTime = b.getUpdateTime();
+                            final long bTs = bTime == null ? Long.MIN_VALUE : bTime.getTime();
+                            return Long.compare(aTs, bTs);
+                        })
                 )
         );
         List<Notice> fullList = noticeDao.getList(searchDto);
         fullList = noticeDao.postGetList(fullList, noticeSearchDto);
         fullList = PgsqlUtils.sortWrapper(fullList, sortList);
-        List<Notice> list = PgsqlUtils.paginateWrapper(fullList, noticeSearchDto.getCurrent(), noticeSearchDto.getSize());
+        List<Notice> list = PgsqlUtils
+            .paginateWrapper(fullList, noticeSearchDto.getCurrent(), noticeSearchDto.getSize());
 
         final PageListVo<NoticeVo> res = new PageListVo<NoticeVo>()
-            .setRecord(list.stream()
-                .map(NoticeDto::new)
-                .map(NoticeDto::getVo)
-                .map(notice -> {
-                    String content = notice.getContent();
-                    if(content == null) {
+            .setRecord(
+                list.stream()
+                    .map(NoticeDto::new)
+                    .map(NoticeDto::getVo)
+                    .map(notice -> {
+                        String content = notice.getContent();
+                        if (content == null) {
+                            return notice;
+                        }
+                        final String transformerName = noticeSearchDto.getTransformer();
+                        final HtmlTransformerEnum transformerEnum = HtmlTransformerEnum.find(transformerName);
+                        if (transformerEnum == null) {
+                            return notice;
+                        }
+                        final Function<String, String> contentTransformer = transformerEnum.getContentTransformer();
+                        if (contentTransformer == null) {
+                            return notice;
+                        }
+                        content = contentTransformer.apply(content);
+                        notice.setContent(content);
                         return notice;
-                    }
-                    final String transformerName = noticeSearchDto.getTransformer();
-                    final NoticeTransformerEnum transformerEnum = NoticeTransformerEnum.find(transformerName);
-                    if(transformerEnum == null) {
-                        return notice;
-                    }
-                    final Function<String, String> contentTransformer = transformerEnum.getContentTransformer();
-                    if(contentTransformer == null) {
-                        return notice;
-                    }
-                    content = contentTransformer.apply(content);
-                    notice.setContent(content);
-                    return notice;
-                })
-                .collect(Collectors.toList())
+                    })
+                    .collect(Collectors.toList())
             )
             .setSize(list.size())
             .setTotal(fullList.size());
@@ -121,11 +153,11 @@ public class NoticeService {
     @Transactional
     @Caching(
         evict = {
-            @CacheEvict(value = "listNotice", allEntries = true)
+                @CacheEvict(value = "listNotice", allEntries = true)
         }
     )
     public Long createNotice(NoticeDto noticeDto) {
-        if(CollUtil.isEmpty(noticeDto.getChannel())) {
+        if (CollUtil.isEmpty(noticeDto.getChannel())) {
             throw new GenshinApiException("公告频道不能为空");
         }
 
@@ -137,11 +169,11 @@ public class NoticeService {
     @Transactional
     @Caching(
         evict = {
-            @CacheEvict(value = "listNotice", allEntries = true)
+                @CacheEvict(value = "listNotice", allEntries = true)
         }
     )
     public Boolean updateNotice(NoticeDto noticeDto) {
-        if(CollUtil.isEmpty(noticeDto.getChannel())) {
+        if (CollUtil.isEmpty(noticeDto.getChannel())) {
             throw new GenshinApiException("公告频道不能为空");
         }
 
@@ -149,7 +181,8 @@ public class NoticeService {
         notice.setValidTimeStart(null);
         notice.setValidTimeEnd(null);
 
-        return 1 == noticeMapper.update(notice, Wrappers.<Notice>lambdaUpdate()
+        return 1 == noticeMapper.update(
+            notice, Wrappers.<Notice>lambdaUpdate()
                 .eq(Notice::getId, noticeDto.getId())
                 .set(Notice::getValidTimeStart, noticeDto.getValidTimeStart())
                 .set(Notice::getValidTimeEnd, noticeDto.getValidTimeEnd())
@@ -159,7 +192,7 @@ public class NoticeService {
     @Transactional
     @Caching(
         evict = {
-            @CacheEvict(value = "listNotice", allEntries = true)
+                @CacheEvict(value = "listNotice", allEntries = true)
         }
     )
     public Boolean deleteNotice(Long noticeId) {

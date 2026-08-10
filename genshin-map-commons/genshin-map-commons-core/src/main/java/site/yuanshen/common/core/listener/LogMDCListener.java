@@ -46,9 +46,11 @@ public class LogMDCListener implements GenericApplicationListener {
         ConfigurableEnvironment environment = preparedEvent.getEnvironment();
         //获取参数列表
         MutablePropertySources propertySources = environment.getPropertySources();
-        if (!propertySources.contains(APPLICATION_CONFIG_PROPERTIES)) return;
+        if (!propertySources.contains(APPLICATION_CONFIG_PROPERTIES))
+            return;
         PropertySource<?> propertySource = propertySources.get(APPLICATION_CONFIG_PROPERTIES);
-        if (!propertySource.containsProperty(APP_NAME_PROPERTIES)) return;
+        if (!propertySource.containsProperty(APP_NAME_PROPERTIES))
+            return;
         String appName = (String) propertySource.getProperty(APP_NAME_PROPERTIES);
         //将应用名称放入MDC
         MDC.put("appName", appName);

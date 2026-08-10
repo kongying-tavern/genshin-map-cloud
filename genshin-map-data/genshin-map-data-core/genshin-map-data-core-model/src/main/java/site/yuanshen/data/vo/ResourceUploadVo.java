@@ -13,8 +13,8 @@ import org.springframework.web.multipart.MultipartFile;
 public class ResourceUploadVo {
 
     @Schema(title = "文件路径")
-    private String filePath;
+    private String filePath = "";
 
     @Schema(title = "文件地址")
-    private String fileUrl;
+    private String fileUrl = "";
 }

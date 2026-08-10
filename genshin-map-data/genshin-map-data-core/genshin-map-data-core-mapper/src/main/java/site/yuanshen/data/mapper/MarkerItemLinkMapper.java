@@ -17,7 +17,9 @@ import java.util.List;
 @Mapper
 public interface MarkerItemLinkMapper extends BaseMapper<MarkerItemLink> {
 
-    List<MarkerItemLink> selectListWithLargeIn(@Param("unnest")String unnest, @Param(Constants.WRAPPER) LambdaQueryWrapper<MarkerItemLink> wrapper);
+    List<MarkerItemLink> selectListWithLargeIn(
+        @Param("unnest") String unnest, @Param(Constants.WRAPPER) LambdaQueryWrapper<MarkerItemLink> wrapper
+    );
 
     /**
      *  配合in使用
@@ -26,7 +28,10 @@ public interface MarkerItemLinkMapper extends BaseMapper<MarkerItemLink> {
      * @param wrapper
      * @return
      */
-    List<MarkerItemLink> selectWithLargeCustomIn(@Param("column")String column, @Param("unnest")String unnest, @Param(Constants.WRAPPER)LambdaQueryWrapper<MarkerItemLink> wrapper);
+    List<MarkerItemLink> selectWithLargeCustomIn(
+        @Param("column") String column, @Param("unnest") String unnest,
+        @Param(Constants.WRAPPER) LambdaQueryWrapper<MarkerItemLink> wrapper
+    );
 
     /**
      * 批量删除
@@ -35,5 +40,8 @@ public interface MarkerItemLinkMapper extends BaseMapper<MarkerItemLink> {
      * @param wrapper
      * @return
      */
-    int deleteWithLargeCustomIn(@Param("column")String column, @Param("unnest")String unnest, @Param(Constants.WRAPPER)LambdaQueryWrapper<MarkerItemLink> wrapper);
+    int deleteWithLargeCustomIn(
+        @Param("column") String column, @Param("unnest") String unnest,
+        @Param(Constants.WRAPPER) LambdaQueryWrapper<MarkerItemLink> wrapper
+    );
 }

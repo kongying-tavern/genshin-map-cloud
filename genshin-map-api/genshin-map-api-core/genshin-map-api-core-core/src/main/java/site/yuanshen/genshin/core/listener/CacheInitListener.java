@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
-import site.yuanshen.genshin.core.dao.IconTagDao;
+import site.yuanshen.genshin.core.dao.IconDao;
 import site.yuanshen.genshin.core.service.ItemDocService;
 import site.yuanshen.genshin.core.service.MarkerDocService;
 import site.yuanshen.genshin.core.service.MarkerLinkageDocService;
@@ -21,9 +21,12 @@ import site.yuanshen.genshin.core.service.MarkerLinkageDocService;
 public class CacheInitListener implements ApplicationListener<ApplicationReadyEvent> {
 
     private final MarkerDocService markerDocService;
+
     private final MarkerLinkageDocService markerLinkageDocService;
+
     private final ItemDocService itemDocService;
-    private final IconTagDao iconTagDao;
+
+    private final IconDao iconDao;
 
     /**
      * Handle an application event.
@@ -41,7 +44,7 @@ public class CacheInitListener implements ApplicationListener<ApplicationReadyEv
         markerLinkageDocService.graphMarkerLinkageBinaryMD5();
         itemDocService.refreshItemBinaryMD5();
         itemDocService.listItemBinaryMD5();
-        iconTagDao.listAllTagBinaryMd5();
+        iconDao.listAllIconBinaryMd5();
         log.info("完成缓存初始化，花费{}", System.currentTimeMillis() - startTime);
     }
 }

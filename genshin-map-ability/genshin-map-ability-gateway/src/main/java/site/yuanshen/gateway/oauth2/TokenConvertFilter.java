@@ -33,6 +33,7 @@ import java.util.List;
 public class TokenConvertFilter implements GlobalFilter, Ordered {
 
     private final NimbusJwtDecoder jwtDecoder;
+
     private final GenshinGatewayProperties genshinGatewayProperties;
 
     @Value("${env:prd}")
@@ -46,7 +47,8 @@ public class TokenConvertFilter implements GlobalFilter, Ordered {
         log.debug("path: " + path);
         boolean isPass = false;
         for (String filter : genshinGatewayProperties.getPassFilter()) {
-            if(matcher.match(filter, path)) isPass = true;
+            if (matcher.match(filter, path))
+                isPass = true;
         }
         if (isPass) {
             log.debug("match PassFilter, pass");
@@ -74,8 +76,8 @@ public class TokenConvertFilter implements GlobalFilter, Ordered {
         if (userNameClaim == null || userNameClaim.toString().equals("")) {
             log.debug("client token, write visitor authority");
             ServerHttpRequest request = exchange.getRequest().mutate()
-                    .headers(httpHeaders -> httpHeaders.remove("Authorization"))
-                    .header("Authorities", JSON.toJSONString(List.of(RoleEnum.VISITOR.getCode()))).build();
+                .headers(httpHeaders -> httpHeaders.remove("Authorization"))
+                .header("Authorities", JSON.toJSONString(List.of(RoleEnum.VISITOR.getCode()))).build();
             return chain.filter(exchange.mutate().request(request).build());
         }
         String userName = userNameClaim.toString();
@@ -93,13 +95,14 @@ public class TokenConvertFilter implements GlobalFilter, Ordered {
             return response.setComplete();
         }
 
-        final boolean isTestUser = JSONArray.parseArray(authorities, RoleEnum.class).stream().anyMatch(role -> role.getSort() <= RoleEnum.MAP_NEIGUI.getSort());
+        final boolean isTestUser = JSONArray.parseArray(authorities, RoleEnum.class).stream()
+            .anyMatch(role -> role.getSort() <= RoleEnum.MAP_BETA.getSort());
         ServerHttpRequest request = exchange.getRequest().mutate()
-                .headers(httpHeaders -> httpHeaders.remove("Authorization"))
-                .header("userName", userName)
-                .header("Authorities", authorities)
-                .header("isTestUser", isTestUser ? "TEST" : "")
-                .header("userId", userId).build();
+            .headers(httpHeaders -> httpHeaders.remove("Authorization"))
+            .header("userName", userName)
+            .header("Authorities", authorities)
+            .header("isTestUser", isTestUser ? "TEST" : "")
+            .header("userId", userId).build();
         return chain.filter(exchange.mutate().request(request).build());
     }
 

@@ -20,6 +20,7 @@ import java.util.*;
 @RequiredArgsConstructor
 public class ScoreDataV1Service {
     private final ScoreHelper commonHelper;
+
     private final SysUserMapper sysUserMapper;
 
     public List<? extends ScoreDataPackVo<ScoreDataPunctuateVo>> getData(ScoreParamsVo config) {
@@ -27,7 +28,7 @@ public class ScoreDataV1Service {
         final ScoreSpanConfigDto span = config.calculateSpan();
         List<? extends ScoreDataPackVo<ScoreDataPunctuateVo>> list = new ArrayList<>();
 
-        if(ScoreScopeEnum.PUNCTUATE.name().equals(scope))
+        if (ScoreScopeEnum.PUNCTUATE.name().equals(scope))
             list = this.getDataPunctuate(span);
 
         packDataList(list);
@@ -35,7 +36,8 @@ public class ScoreDataV1Service {
     }
 
     private void packDataList(List<? extends ScoreDataPackVo<ScoreDataPunctuateVo>> list) {
-        UserAppenderService.appendUser(list, ScoreDataPackVo::getUserId, ScoreDataPackVo::getUserId, ScoreDataPackVo::setUser);
+        UserAppenderService
+            .appendUser(list, ScoreDataPackVo::getUserId, ScoreDataPackVo::getUserId, ScoreDataPackVo::setUser);
     }
 
     private List<ScoreDataPackVo<ScoreDataPunctuateVo>> getDataPunctuate(ScoreSpanConfigDto span) {
@@ -50,7 +52,8 @@ public class ScoreDataV1Service {
                     .setUserId(userId)
                     .setData(new ScoreDataPunctuateVo())
             );
-            final ScoreDataPunctuateVo scoreContent = JSONObject.parseObject(JSON.toJSONString(scoreRow.getContent()), ScoreDataPunctuateVo.class);
+            final ScoreDataPunctuateVo scoreContent = JSONObject
+                .parseObject(JSON.toJSONString(scoreRow.getContent()), ScoreDataPunctuateVo.class);
             scoreDataMap.get(userId).getData().merge(scoreContent);
         });
 

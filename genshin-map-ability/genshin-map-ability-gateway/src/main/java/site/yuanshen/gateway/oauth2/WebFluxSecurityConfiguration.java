@@ -32,7 +32,7 @@ public class WebFluxSecurityConfiguration {
         ServerHttpSecurity.AuthorizeExchangeSpec authorizeExchangeSpec = http.authorizeExchange();
         authorizeExchangeSpec.pathMatchers(genshinGatewayProperties.getPassFilter().toArray(new String[0])).permitAll();
         authorizeExchangeSpec.pathMatchers("/api/**").authenticated()
-                .anyExchange().permitAll();
+            .anyExchange().permitAll();
         //oauth2资源服务器验证
         http.oauth2ResourceServer().jwt().jwtDecoder(jwtReactiveDecoder());
         return http.build();
@@ -47,6 +47,5 @@ public class WebFluxSecurityConfiguration {
     NimbusJwtDecoder jwtDecoder() {
         return NimbusJwtDecoder.withJwkSetUri(this.jwkSetUri).build();
     }
-
 
 }

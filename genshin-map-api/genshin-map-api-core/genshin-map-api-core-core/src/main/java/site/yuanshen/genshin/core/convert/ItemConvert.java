@@ -8,8 +8,7 @@ import site.yuanshen.data.dto.ItemDto;
 import site.yuanshen.data.entity.History;
 import site.yuanshen.data.enums.HistoryType;
 
-
-public class ItemConvert extends DefaultConvert{
+public class ItemConvert extends DefaultConvert {
 
     @Override
     public boolean support(Object o) {

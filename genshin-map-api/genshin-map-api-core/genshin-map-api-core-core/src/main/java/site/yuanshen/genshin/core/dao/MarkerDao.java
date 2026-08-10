@@ -43,7 +43,9 @@ public interface MarkerDao {
      * @param itemMap 物品Map  key:item_id, value:item
      * @param markerItemLinkMap 物品链接Map  key:marker_id, value:marker_item_link[]
      */
-    void generateMarkerItemInfo(List<Long> markerIdList, Map<Long, Item> itemMap, ConcurrentMap<Long, List<MarkerItemLinkVo>> markerItemLinkMap);
+    void generateMarkerItemInfo(
+        List<Long> markerIdList, Map<Long, Item> itemMap, ConcurrentMap<Long, List<MarkerItemLinkVo>> markerItemLinkMap
+    );
 
     /**
      * 生成点位关联信息
@@ -61,6 +63,12 @@ public interface MarkerDao {
      * @return 压缩后的字节数组
      */
     byte[] getMarkerBinary(List<Integer> flagList, String md5);
+
+    Map<Integer, List<MarkerVo>> getMarkerVoGroups(
+        Map<Long, Item> itemMap,
+        ConcurrentMap<Long, List<MarkerItemLinkVo>> markerItemLinkMap,
+        ConcurrentMap<Long, String> markerLinkageMap
+    );
 
     /**
      * 返回MD5列表

@@ -19,7 +19,7 @@ import site.yuanshen.data.vo.helper.PageSearchVo;
 import site.yuanshen.genshin.core.service.CacheService;
 import site.yuanshen.genshin.core.service.MarkerService;
 import site.yuanshen.genshin.core.service.UserAppenderService;
-import site.yuanshen.genshin.core.websocket.WebSocketEntrypoint;
+import site.yuanshen.genshin.core.socketIO.SocketIOEntrypoint;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,26 +37,38 @@ import java.util.stream.Collectors;
 public class MarkerController {
 
     private final MarkerService markerService;
+
     private final CacheService cacheService;
-    private final WebSocketEntrypoint webSocket;
+
+    private final SocketIOEntrypoint socketIOEntrypoint;
 
     //////////////START:点位自身的API//////////////
 
-    @Operation(summary = "根据各种条件筛选查询点位ID",
-            description = "支持根据末端地区、末端类型、物品来进行查询，三种查询不能同时生效，同时存在时报错，同时支持测试点位获取")
+    @Operation(
+        summary = "根据各种条件筛选查询点位ID",
+        description = "支持根据末端地区、末端类型、物品来进行查询，三种查询不能同时生效，同时存在时报错，同时支持测试点位获取"
+    )
     @PostMapping("/get/id")
-    public R<List<Long>> searchMarkerId(@Parameter(hidden = true) @RequestHeader(value = "userDataLevel", required = false) String userDataLevel, @RequestBody MarkerSearchVo markerSearchVo) {
+    public R<List<Long>> searchMarkerId(
+        @Parameter(hidden = true) @RequestHeader(value = "userDataLevel", required = false) String userDataLevel,
+        @RequestBody MarkerSearchVo markerSearchVo
+    ) {
         return RUtils.create(
-                markerService.searchMarkerId(markerSearchVo, HiddenFlagEnum.getFlagListByMask(userDataLevel))
+            markerService.searchMarkerId(markerSearchVo, HiddenFlagEnum.getFlagListByMask(userDataLevel))
         );
     }
 
-    @Operation(summary = "根据各种条件筛选查询点位信息",
-            description = "支持根据末端地区、末端类型、物品来进行查询，三种查询不能同时生效，同时存在时报错，同时支持测试点位获取")
+    @Operation(
+        summary = "根据各种条件筛选查询点位信息",
+        description = "支持根据末端地区、末端类型、物品来进行查询，三种查询不能同时生效，同时存在时报错，同时支持测试点位获取"
+    )
     @PostMapping("/get/list_byinfo")
-    public R<List<MarkerVo>> searchMarker(@Parameter(hidden = true) @RequestHeader(value = "userDataLevel", required = false) String userDataLevel, @RequestBody MarkerSearchVo markerSearchVo) {
+    public R<List<MarkerVo>> searchMarker(
+        @Parameter(hidden = true) @RequestHeader(value = "userDataLevel", required = false) String userDataLevel,
+        @RequestBody MarkerSearchVo markerSearchVo
+    ) {
         R<List<MarkerVo>> result = RUtils.create(
-                markerService.searchMarker(markerSearchVo, HiddenFlagEnum.getFlagListByMask(userDataLevel))
+            markerService.searchMarker(markerSearchVo, HiddenFlagEnum.getFlagListByMask(userDataLevel))
         );
         UserAppenderService.appendUser(result, result.getData(), true, MarkerVo::getCreatorId);
         UserAppenderService.appendUser(result, result.getData(), true, MarkerVo::getUpdaterId);
@@ -65,9 +77,12 @@ public class MarkerController {
 
     @Operation(summary = "通过ID列表查询点位信息", description = "通过ID列表来进行查询点位信息")
     @PostMapping("/get/list_byid")
-    public R<List<MarkerVo>> listMarkerById(@Parameter(hidden = true) @RequestHeader(value = "userDataLevel", required = false) String userDataLevel, @RequestBody List<Long> markerIdList) {
+    public R<List<MarkerVo>> listMarkerById(
+        @Parameter(hidden = true) @RequestHeader(value = "userDataLevel", required = false) String userDataLevel,
+        @RequestBody MarkerSearchVo markerSearchVo
+    ) {
         R<List<MarkerVo>> result = RUtils.create(
-                markerService.listMarkerById(markerIdList, HiddenFlagEnum.getFlagListByMask(userDataLevel))
+            markerService.listMarkerById(markerSearchVo, HiddenFlagEnum.getFlagListByMask(userDataLevel))
         );
         UserAppenderService.appendUser(result, result.getData(), true, MarkerVo::getCreatorId);
         UserAppenderService.appendUser(result, result.getData(), true, MarkerVo::getUpdaterId);
@@ -76,9 +91,13 @@ public class MarkerController {
 
     @Operation(summary = "分页查询所有点位信息", description = "分页查询所有点位信息")
     @PostMapping("/get/page")
-    public R<PageListVo<MarkerVo>> listMarkerPage(@Parameter(hidden = true) @RequestHeader(value = "userDataLevel", required = false) String userDataLevel, @RequestBody PageSearchVo pageSearchVo) {
+    public R<PageListVo<MarkerVo>> listMarkerPage(
+        @Parameter(hidden = true) @RequestHeader(value = "userDataLevel", required = false) String userDataLevel,
+        @RequestBody PageSearchVo pageSearchVo
+    ) {
         R<PageListVo<MarkerVo>> result = RUtils.create(
-                markerService.listMarkerPage(new PageSearchDto(pageSearchVo), HiddenFlagEnum.getFlagListByMask(userDataLevel))
+            markerService
+                .listMarkerPage(new PageSearchDto(pageSearchVo), HiddenFlagEnum.getFlagListByMask(userDataLevel))
         );
         UserAppenderService.appendUser(result, result.getData().getRecord(), true, MarkerVo::getCreatorId);
         UserAppenderService.appendUser(result, result.getData().getRecord(), true, MarkerVo::getUpdaterId);
@@ -93,7 +112,7 @@ public class MarkerController {
         cacheService.cleanMarkerCache();
         // For new marker, no need to clean marker linkage related path cache
         // since new marker will not be linked in path list.
-        webSocket.broadcast(WUtils.create("MarkerAdded", newId));
+        socketIOEntrypoint.broadcast(WUtils.create("MarkerAdded", newId));
         return RUtils.create(newId);
     }
 
@@ -104,7 +123,7 @@ public class MarkerController {
         cacheService.cleanItemCache();
         cacheService.cleanMarkerCache();
         cacheService.cleanMarkerLinkageCache();
-        webSocket.broadcast(WUtils.create("MarkerUpdated", markerVo.getId()));
+        socketIOEntrypoint.broadcast(WUtils.create("MarkerUpdated", markerVo.getId()));
         return RUtils.create(result);
     }
 
@@ -115,10 +134,9 @@ public class MarkerController {
         cacheService.cleanItemCache();
         cacheService.cleanMarkerCache();
         cacheService.cleanMarkerLinkageCache();
-        webSocket.broadcast(WUtils.create("MarkerDeleted", markerId));
+        socketIOEntrypoint.broadcast(WUtils.create("MarkerDeleted", markerId));
         return RUtils.create(result);
     }
-
 
     //////////////END:点位自身的API//////////////
 
@@ -130,7 +148,9 @@ public class MarkerController {
         cacheService.cleanItemCache();
         cacheService.cleanMarkerCache();
         cacheService.cleanMarkerLinkageCache();
-        webSocket.broadcast(WUtils.create("MarkerTweaked", result.parallelStream().map(MarkerVo::getId).collect(Collectors.toList())));
+        socketIOEntrypoint.broadcast(
+            WUtils.create("MarkerTweaked", result.parallelStream().map(MarkerVo::getId).collect(Collectors.toList()))
+        );
         return RUtils.create(result);
     }
     //////////////END:点位调整的API//////////////

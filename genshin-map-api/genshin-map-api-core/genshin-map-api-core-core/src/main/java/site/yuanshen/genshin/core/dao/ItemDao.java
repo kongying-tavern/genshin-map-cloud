@@ -19,7 +19,10 @@ public interface ItemDao {
      * @param itemTypeIdMap 物品类型Map key:item_id, value:item_type_id[]
      * @param itemCountMap 物品计数Map key:item_id, value:{hiddenFlag: count}
      */
-    void generateItemMarkerInfo(List<Long> itemIdList, ConcurrentMap<Long, List<Long>> itemTypeIdMap, ConcurrentMap<Long, Map<Integer, Integer>> itemCountMap);
+    void generateItemMarkerInfo(
+        List<Long> itemIdList, ConcurrentMap<Long, List<Long>> itemTypeIdMap,
+        ConcurrentMap<Long, Map<Integer, Integer>> itemCountMap
+    );
 
     /**
      * 返回物品分页压缩文档

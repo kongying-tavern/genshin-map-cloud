@@ -1,12 +1,12 @@
 package site.yuanshen.data.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import site.yuanshen.data.dto.IconSearchDto;
 import site.yuanshen.data.entity.Icon;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.apache.ibatis.annotations.Mapper;
 
 /**
  * 图标主表 Mapper 接口
@@ -15,6 +15,10 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface IconMapper extends BaseMapper<Icon> {
+
+    Icon getIcon(@Param("tagName") String tagName, @Param("withDeleted") boolean withDeleted);
+
+    Integer undeleteIcon(@Param("iconId") Long iconId);
 
     Page<Icon> selectPageIcon(IPage<?> page, @Param("searchDto") IconSearchDto searchDto);
 

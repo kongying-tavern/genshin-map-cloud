@@ -15,7 +15,7 @@ import site.yuanshen.data.vo.adapter.marker.linkage.LinkDeleteVo;
 import site.yuanshen.data.vo.adapter.marker.linkage.graph.GraphVo;
 import site.yuanshen.genshin.core.service.CacheService;
 import site.yuanshen.genshin.core.service.MarkerLinkageService;
-import site.yuanshen.genshin.core.websocket.WebSocketEntrypoint;
+import site.yuanshen.genshin.core.socketIO.SocketIOEntrypoint;
 
 import java.util.List;
 import java.util.Map;
@@ -33,14 +33,18 @@ import java.util.Map;
 public class MarkerLinkageController {
 
     private final MarkerLinkageService markerLinkageService;
+
     private final CacheService cacheService;
-    private final WebSocketEntrypoint webSocket;
+
+    private final SocketIOEntrypoint socketIOEntrypoint;
 
     @Operation(summary = "关联点位列表", description = "关联点位列表")
     @PostMapping("/get/list")
-    public R<Map<String, List<MarkerLinkageVo>>> getMarkerLinkageList(@RequestBody MarkerLinkageSearchVo markerLinkageSearchVo) {
+    public R<Map<String, List<MarkerLinkageVo>>> getMarkerLinkageList(
+        @RequestBody MarkerLinkageSearchVo markerLinkageSearchVo
+    ) {
         return RUtils.create(
-                markerLinkageService.listMarkerLinkage(markerLinkageSearchVo)
+            markerLinkageService.listMarkerLinkage(markerLinkageSearchVo)
         );
     }
 
@@ -48,7 +52,7 @@ public class MarkerLinkageController {
     @PostMapping("/get/graph")
     public R<Map<String, GraphVo>> getMarkerLinkageGraph(@RequestBody MarkerLinkageSearchVo markerLinkageSearchVo) {
         return RUtils.create(
-                markerLinkageService.graphMarkerLinkage(markerLinkageSearchVo)
+            markerLinkageService.graphMarkerLinkage(markerLinkageSearchVo)
         );
     }
 
@@ -59,7 +63,7 @@ public class MarkerLinkageController {
         String groupId = markerLinkageService.linkMarker(markerLinkageVoList, linkChangeVo);
         cacheService.cleanMarkerCache();
         cacheService.cleanMarkerLinkageCache();
-        webSocket.broadcast(WUtils.create("MarkerLinked", linkChangeVo));
+        socketIOEntrypoint.broadcast(WUtils.create("MarkerLinked", linkChangeVo));
         return RUtils.create(groupId);
     }
 
@@ -70,7 +74,7 @@ public class MarkerLinkageController {
         markerLinkageService.deleteMarkerLinkage(linkDeleteQueryVo, linkDeleteVo);
         cacheService.cleanMarkerCache();
         cacheService.cleanMarkerLinkageCache();
-        webSocket.broadcast(WUtils.create("MarkerLinkageDeleted", linkDeleteVo));
+        socketIOEntrypoint.broadcast(WUtils.create("MarkerLinkageDeleted", linkDeleteVo));
         return RUtils.create(linkDeleteVo);
     }
 }

@@ -13,7 +13,9 @@ import java.util.Date;
 
 public class TimeUtils {
     public static final int ONE_DAY_SECOND = 86400;
+
     public static final int ONE_DAY_MILLISECOND = ONE_DAY_SECOND * 1000;
+
     public static final String DEFAULT_ZONE_OFFSET = "+08:00";
 
     /**
@@ -161,7 +163,9 @@ public class TimeUtils {
      * @param millisecond 毫秒数，为 null 则不修改
      * @return 调整后的时间戳
      */
-    public static Timestamp toMillisecond(Timestamp ts, Integer hour, Integer minute, Integer second, Integer millisecond) {
+    public static Timestamp toMillisecond(
+        Timestamp ts, Integer hour, Integer minute, Integer second, Integer millisecond
+    ) {
         if (ts == null) {
             return null;
         }

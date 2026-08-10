@@ -50,20 +50,26 @@ import java.util.stream.Collectors;
 public class ItemDaoImpl implements ItemDao {
 
     private final MarkerMapper markerMapper;
+
     private final MarkerItemLinkMapper markerItemLinkMapper;
+
     private final ItemMapper itemMapper;
+
     private final ItemTypeLinkMapper itemTypeLinkMapper;
+
     private final AreaMapper areaMapper;
+
     private final CacheManager neverRefreshCacheManager;
 
     @Autowired
-    public ItemDaoImpl(MarkerMapper markerMapper,
-                       MarkerItemLinkMapper markerItemLinkMapper,
-                       ItemMapper itemMapper,
-                       ItemTypeLinkMapper itemTypeLinkMapper,
-                       AreaMapper areaMapper,
-                       @Qualifier("neverRefreshCacheManager")
-                       CacheManager neverRefreshCacheManager) {
+    public ItemDaoImpl(
+        MarkerMapper markerMapper,
+        MarkerItemLinkMapper markerItemLinkMapper,
+        ItemMapper itemMapper,
+        ItemTypeLinkMapper itemTypeLinkMapper,
+        AreaMapper areaMapper,
+        @Qualifier("neverRefreshCacheManager") CacheManager neverRefreshCacheManager
+    ) {
         this.markerMapper = markerMapper;
         this.markerItemLinkMapper = markerItemLinkMapper;
         this.itemMapper = itemMapper;
@@ -88,16 +94,25 @@ public class ItemDaoImpl implements ItemDao {
         if (CollUtil.isEmpty(itemIdList))
             return;
         // 获取物品数据
-        final List<MarkerItemLink> markerItemLinkList = markerItemLinkMapper.selectWithLargeCustomIn("item_id", PgsqlUtils.unnestLongStr(itemIdList), Wrappers.<MarkerItemLink>lambdaQuery().eq(MarkerItemLink::getDelFlag, false));
-        final List<ItemTypeLink> itemTypeLinkList = itemTypeLinkMapper.selectWithLargeCustomIn("item_id", PgsqlUtils.unnestLongStr(itemIdList), Wrappers.<ItemTypeLink>lambdaQuery().eq(ItemTypeLink::getDelFlag, false));
+        final List<MarkerItemLink> markerItemLinkList = markerItemLinkMapper.selectWithLargeCustomIn(
+            "item_id", PgsqlUtils.unnestLongStr(itemIdList),
+            Wrappers.<MarkerItemLink>lambdaQuery().eq(MarkerItemLink::getDelFlag, false)
+        );
+        final List<ItemTypeLink> itemTypeLinkList = itemTypeLinkMapper.selectWithLargeCustomIn(
+            "item_id", PgsqlUtils.unnestLongStr(itemIdList),
+            Wrappers.<ItemTypeLink>lambdaQuery().eq(ItemTypeLink::getDelFlag, false)
+        );
         // 获取点位数据
-        final List<Marker> markerList = markerMapper.selectList(Wrappers.<Marker>lambdaQuery().eq(Marker::getDelFlag, false).select(Marker::getId, Marker::getHiddenFlag));
+        final List<Marker> markerList = markerMapper.selectList(
+            Wrappers.<Marker>lambdaQuery().eq(Marker::getDelFlag, false).select(Marker::getId, Marker::getHiddenFlag)
+        );
         final Map<Long, Integer> markerFlagMap = markerList
             .parallelStream()
             .collect(Collectors.toMap(Marker::getId, Marker::getHiddenFlag, (o, n) -> n));
         // 汇总 item_id -> 物品类型ID映射
         itemTypeLinkList.forEach(itemTypeLink -> {
-            itemTypeIdMap.compute(itemTypeLink.getItemId(),
+            itemTypeIdMap.compute(
+                itemTypeLink.getItemId(),
                 (itemId, typeIdList) -> {
                     if (typeIdList == null)
                         return new ArrayList<>(Collections.singletonList(itemTypeLink.getTypeId()));
@@ -108,7 +123,8 @@ public class ItemDaoImpl implements ItemDao {
         });
         // 汇总 item_id -> 物品计数映射
         markerItemLinkList.forEach(markerItemLink -> {
-            itemCountMap.compute(markerItemLink.getItemId(),
+            itemCountMap.compute(
+                markerItemLink.getItemId(),
                 (itemId, countSplitMap) -> {
                     final Long markerId = markerItemLink.getMarkerId();
                     final Integer itemCount = ObjUtil.defaultIfNull(markerItemLink.getCount(), 0);
@@ -163,7 +179,8 @@ public class ItemDaoImpl implements ItemDao {
     @Override
     public List<BinaryMD5Vo> listItemBinaryMD5(List<Integer> flagList) {
         final Map<ItemListCacheKey, String> binaryMd5Map = getItemMd5ByFlags(flagList);
-        CaffeineCache binaryMd5CacheGenerateTimestamp = (CaffeineCache) neverRefreshCacheManager.getCache(ItemCacheKeyConst.ITEM_LIST_BIN_MD5_GENERATE_TIMESTAMP);
+        CaffeineCache binaryMd5CacheGenerateTimestamp = (CaffeineCache) neverRefreshCacheManager
+            .getCache(ItemCacheKeyConst.ITEM_LIST_BIN_MD5_GENERATE_TIMESTAMP);
 
         Long time = Optional.ofNullable(binaryMd5CacheGenerateTimestamp.getNativeCache().getIfPresent(""))
             .map(v -> NumberUtils.createLong(v.toString()))
@@ -212,14 +229,18 @@ public class ItemDaoImpl implements ItemDao {
                 final List<ItemVo> itemList = itemGroups.getOrDefault(flagEnum.getCode(), List.of());
                 if (CollUtil.isEmpty(itemList))
                     continue;
-                log.info("[binary][item] item list fetched from group, cost: {}, hiddenFlag: {}", timer.intervalPretty(), flag);
+                log.info(
+                    "[binary][item] item list fetched from group, cost: {}, hiddenFlag: {}", timer.intervalPretty(),
+                    flag
+                );
 
                 // 切割物品列表
                 timer.restart();
                 final CacheSplitterEnum cacheSplitterEnum = CacheSplitterEnum.findSplitter(flagEnum);
                 if (cacheSplitterEnum == null)
                     continue;
-                final Function<List<ItemVo>, Map<ItemListCacheKey, List<ItemVo>>> cacheSplitter = cacheSplitterEnum.getItemSplitter();
+                final Function<List<ItemVo>, Map<ItemListCacheKey, List<ItemVo>>> cacheSplitter = cacheSplitterEnum
+                    .getItemSplitter();
                 if (cacheSplitter == null)
                     continue;
                 final Map<ItemListCacheKey, List<ItemVo>> itemShards = cacheSplitter.apply(itemList);
@@ -229,7 +250,8 @@ public class ItemDaoImpl implements ItemDao {
                 timer.restart();
                 for (Map.Entry<ItemListCacheKey, List<ItemVo>> itemShard : itemShards.entrySet()) {
                     final List<ItemVo> cacheShardList = ObjUtil.defaultIfNull(itemShard.getValue(), List.of());
-                    final byte[] cacheBinary = JSON.toJSONString(cacheShardList, JsonUtils.defaultWriteFeatures).getBytes(StandardCharsets.UTF_8);
+                    final byte[] cacheBinary = JSON.toJSONString(cacheShardList, JsonUtils.defaultWriteFeatures)
+                        .getBytes(StandardCharsets.UTF_8);
                     final byte[] cacheBinaryCompressed = CompressUtils.compress(cacheBinary);
                     final String cacheBinaryMd5 = DigestUtils.md5DigestAsHex(cacheBinaryCompressed);
                     final ItemListCacheKey cacheKey = itemShard.getKey()
@@ -272,7 +294,8 @@ public class ItemDaoImpl implements ItemDao {
     }
 
     private Cache getListItemBinaryMD5GenerateTimestamp() {
-        final Cache binaryMd5CacheGenerateTimestamp = neverRefreshCacheManager.getCache(ItemCacheKeyConst.ITEM_LIST_BIN_MD5_GENERATE_TIMESTAMP);
+        final Cache binaryMd5CacheGenerateTimestamp = neverRefreshCacheManager
+            .getCache(ItemCacheKeyConst.ITEM_LIST_BIN_MD5_GENERATE_TIMESTAMP);
         if (binaryMd5CacheGenerateTimestamp == null)
             throw new GenshinApiException("缓存未初始化");
         return binaryMd5CacheGenerateTimestamp;
@@ -285,7 +308,8 @@ public class ItemDaoImpl implements ItemDao {
 
         final Cache binaryMd5Cache = getItemBinaryMd5Cache();
         final Cache.ValueWrapper binaryMd5Data = binaryMd5Cache.get("");
-        final Map<ItemListCacheKey, String> binaryMd5Map = binaryMd5Data == null ? new HashMap<>() : ((Map<ItemListCacheKey, String>) binaryMd5Data.get());
+        final Map<ItemListCacheKey, String> binaryMd5Map = binaryMd5Data == null ? new HashMap<>()
+            : ((Map<ItemListCacheKey, String>) binaryMd5Data.get());
         final Set<Integer> flagSet = new HashSet<>(flagList);
         for (Map.Entry<ItemListCacheKey, String> binaryMd5Entry : binaryMd5Map.entrySet()) {
             final ItemListCacheKey key = binaryMd5Entry.getKey();
@@ -325,11 +349,13 @@ public class ItemDaoImpl implements ItemDao {
 
         // 获取覆盖标记映射
         timer.restart();
-        final Map<Integer, Set<Integer>> overrideFlagMap = Arrays.stream(HiddenFlagEnum.values()).collect(Collectors.toMap(
-            HiddenFlagEnum::getCode,
-            v -> HiddenFlagEnum.getOverrideFlagList(v.getCode()),
-            (o, n) -> n
-        ));
+        final Map<Integer, Set<Integer>> overrideFlagMap = Arrays.stream(HiddenFlagEnum.values()).collect(
+            Collectors.toMap(
+                HiddenFlagEnum::getCode,
+                v -> HiddenFlagEnum.getOverrideFlagList(v.getCode()),
+                (o, n) -> n
+            )
+        );
         log.info("[binary][item] item flag override map generation, cost: {}", timer.intervalPretty());
 
         // 获取物品和物品相关映射数据
@@ -338,9 +364,14 @@ public class ItemDaoImpl implements ItemDao {
         final List<Long> itemIdList = itemList.stream().map(Item::getId).distinct().collect(Collectors.toList());
         generateItemMarkerInfo(itemIdList, itemTypeIdMap, itemCountMap);
         // 获取物品合并所需数据
-        final List<Area> areaList = areaMapper.selectList(Wrappers.<Area>lambdaQuery().eq(Area::getDelFlag, false).select(Area::getId, Area::getParentId, Area::getHiddenFlag, Area::getIsFinal));
-        final Map<Long, Long> areaParentMap = areaList.stream().collect(Collectors.toMap(Area::getId, Area::getParentId, (o, n) -> n));
-        final Map<Boolean, List<Area>> areaPartition = areaList.stream().collect(Collectors.partitioningBy(Area::getIsFinal));
+        final List<Area> areaList = areaMapper.selectList(
+            Wrappers.<Area>lambdaQuery().eq(Area::getDelFlag, false)
+                .select(Area::getId, Area::getParentId, Area::getHiddenFlag, Area::getIsFinal)
+        );
+        final Map<Long, Long> areaParentMap = areaList.stream()
+            .collect(Collectors.toMap(Area::getId, Area::getParentId, (o, n) -> n));
+        final Map<Boolean, List<Area>> areaPartition = areaList.stream()
+            .collect(Collectors.partitioningBy(Area::getIsFinal));
         final Map<Long, Integer> areaFinalFlagMap = areaPartition.getOrDefault(true, List.of())
             .stream()
             .collect(Collectors.toMap(Area::getId, Area::getHiddenFlag, (o, n) -> n));
@@ -378,12 +409,18 @@ public class ItemDaoImpl implements ItemDao {
                 // 制作物品计数数据
                 final Integer itemOverrideFlag = flag;
                 final Set<Integer> itemOverrideableFlagSet = overrideFlagMap.getOrDefault(flag, new HashSet<>());
-                final LinkedHashMap<Integer, Integer> itemCountSplit = itemCountMap.getOrDefault(itemId, new HashMap<>())
+                final LinkedHashMap<Integer, Integer> itemCountSplit = itemCountMap
+                    .getOrDefault(itemId, new HashMap<>())
                     .entrySet()
                     .stream()
-                    .map(v -> itemOverrideableFlagSet.contains(v.getKey()) ? Map.entry(itemOverrideFlag, v.getValue()) : v)
+                    .map(
+                        v -> itemOverrideableFlagSet.contains(v.getKey()) ? Map.entry(itemOverrideFlag, v.getValue())
+                            : v
+                    )
                     .sorted(Comparator.comparingInt(Map.Entry::getKey))
-                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, Integer::sum, LinkedHashMap::new));
+                    .collect(
+                        Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, Integer::sum, LinkedHashMap::new)
+                    );
                 final Integer itemCount = itemCountSplit
                     .entrySet()
                     .stream()

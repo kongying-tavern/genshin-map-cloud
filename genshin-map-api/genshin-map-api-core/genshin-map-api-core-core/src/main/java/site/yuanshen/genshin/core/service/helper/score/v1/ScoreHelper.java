@@ -22,6 +22,7 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class ScoreHelper {
     private final ScoreStatMapper scoreStatMapper;
+
     public final static String tz = "Asia/Shanghai";
 
     @Data
@@ -36,12 +37,13 @@ public class ScoreHelper {
 
     public static ScoreKey getScoreKey(ScoreSpanConfigDto span, Long operatorId, Timestamp ts) {
         final ScoreSpanConfigDto spanPeriod = ScoreSpanConfigDto.calibrateSpan(span.getSpan(), ts);
-        final LocalDateTime spanStart = LocalDateTime.ofInstant(spanPeriod.getSpanStartTime().toInstant(), ZoneId.of(tz));
+        final LocalDateTime spanStart = LocalDateTime
+            .ofInstant(spanPeriod.getSpanStartTime().toInstant(), ZoneId.of(tz));
         final LocalDateTime spanEnd = LocalDateTime.ofInstant(spanPeriod.getSpanEndTime().toInstant(), ZoneId.of(tz));
         final ScoreKey scoreKey = (new ScoreKey())
-                .setUserId(operatorId)
-                .setSpanStartTime(spanStart)
-                .setSpanEndTime(spanEnd);
+            .setUserId(operatorId)
+            .setSpanStartTime(spanStart)
+            .setSpanEndTime(spanEnd);
         return scoreKey;
     }
 
@@ -53,17 +55,17 @@ public class ScoreHelper {
     public void clearData(String scope, ScoreSpanConfigDto span) {
         scope = StrUtil.emptyToDefault(scope, "");
         scoreStatMapper.delete(
-                Wrappers.<ScoreStat>lambdaQuery()
-                        .eq(ScoreStat::getScope, scope)
-                        .eq(ScoreStat::getSpan, span.getSpan())
-                        .ge(ScoreStat::getSpanStartTime, span.getSpanStartTime())
-                        .le(ScoreStat::getSpanEndTime, span.getSpanEndTime())
+            Wrappers.<ScoreStat>lambdaQuery()
+                .eq(ScoreStat::getScope, scope)
+                .eq(ScoreStat::getSpan, span.getSpan())
+                .ge(ScoreStat::getSpanStartTime, span.getSpanStartTime())
+                .le(ScoreStat::getSpanEndTime, span.getSpanEndTime())
         );
     }
 
     public void saveData(List<ScoreStat> dataList, boolean parallel) {
         Stream<ScoreStat> stream;
-        if(parallel)
+        if (parallel)
             stream = dataList.parallelStream();
         else
             stream = dataList.stream();
@@ -76,12 +78,12 @@ public class ScoreHelper {
     public List<ScoreStat> getData(String scope, ScoreSpanConfigDto span) {
         scope = StrUtil.emptyToDefault(scope, "");
         final List<ScoreStat> scoreList = scoreStatMapper.selectList(
-                Wrappers.<ScoreStat>lambdaQuery()
-                        .eq(BaseEntity::getDelFlag, false)
-                        .eq(ScoreStat::getScope, scope)
-                        .eq(ScoreStat::getSpan, span.getSpan())
-                        .ge(ScoreStat::getSpanStartTime, span.getSpanStartTime())
-                        .le(ScoreStat::getSpanEndTime, span.getSpanEndTime())
+            Wrappers.<ScoreStat>lambdaQuery()
+                .eq(BaseEntity::getDelFlag, false)
+                .eq(ScoreStat::getScope, scope)
+                .eq(ScoreStat::getSpan, span.getSpan())
+                .ge(ScoreStat::getSpanStartTime, span.getSpanStartTime())
+                .le(ScoreStat::getSpanEndTime, span.getSpanEndTime())
         );
         return scoreList;
     }

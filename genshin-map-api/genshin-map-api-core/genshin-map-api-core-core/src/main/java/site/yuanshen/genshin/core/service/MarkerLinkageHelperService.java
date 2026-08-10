@@ -38,22 +38,23 @@ import java.util.stream.Collectors;
 public class MarkerLinkageHelperService {
 
     private final MarkerMBPService markerMBPService;
+
     private final MarkerLinkageMBPService markerLinkageMBPService;
 
     /**
      * 校验关联列表是否合法
      */
     public void checkLinkList(List<MarkerLinkageVo> linkageVos) {
-        for(MarkerLinkageVo linkageVo : linkageVos) {
+        for (MarkerLinkageVo linkageVo : linkageVos) {
             final Long fromId = linkageVo.getFromId();
             final Long toId = linkageVo.getToId();
-            if(fromId == null || fromId.compareTo(0L) <= 0 || toId == null || toId.compareTo(0L) <= 0) {
+            if (fromId == null || fromId.compareTo(0L) <= 0 || toId == null || toId.compareTo(0L) <= 0) {
                 throw new GenshinApiException("无效的关联节点ID");
-            } else if(fromId.compareTo(toId) == 0) {
+            } else if (fromId.compareTo(toId) == 0) {
                 throw new GenshinApiException("不能将点位关联到自身");
             }
         }
-        if(CollUtil.isEmpty(linkageVos)) {
+        if (CollUtil.isEmpty(linkageVos)) {
             throw new GenshinApiException("关联数据不可为空");
         }
     }
@@ -62,14 +63,19 @@ public class MarkerLinkageHelperService {
      * 根据组ID获取关联列表
      */
     @Cacheable(value = "getMarkerLinkageList")
-    public List<MarkerLinkageVo> getLinkageList(List<String> groupIds) {
-        if(CollUtil.isEmpty(groupIds)) {
-            return new ArrayList<>();
-        }
-
+    public List<MarkerLinkageVo> getLinkageList(Boolean isTraverse, List<String> groupIds) {
         // 获取关联列表
-        final List<MarkerLinkageVo> linkageList = markerLinkageMBPService.list(Wrappers.<MarkerLinkage>lambdaQuery().in(MarkerLinkage::getGroupId, groupIds)).parallelStream()
-            .map(markerLinkage -> BeanUtils.copy(markerLinkage, MarkerLinkageVo.class)).collect(Collectors.toList());
+        List<MarkerLinkageVo> linkageList = new ArrayList<>();
+        if (isTraverse) {
+            linkageList = markerLinkageMBPService.list(Wrappers.<MarkerLinkage>lambdaQuery()).parallelStream()
+                .map(markerLinkage -> BeanUtils.copy(markerLinkage, MarkerLinkageVo.class))
+                .collect(Collectors.toList());
+        } else if (!CollUtil.isEmpty(groupIds)) {
+            linkageList = markerLinkageMBPService
+                .list(Wrappers.<MarkerLinkage>lambdaQuery().in(MarkerLinkage::getGroupId, groupIds)).parallelStream()
+                .map(markerLinkage -> BeanUtils.copy(markerLinkage, MarkerLinkageVo.class))
+                .collect(Collectors.toList());
+        }
         MarkerLinkageDataHelper.reverseLinkageIds(linkageList);
         return linkageList;
     }
@@ -78,14 +84,11 @@ public class MarkerLinkageHelperService {
      * 根据组ID获取关联绘图数据
      */
     @Cacheable(value = "getMarkerLinkageGraph")
-    public Map<String, GraphVo> getLinkageGraph(List<String> groupIds) {
-        if(CollUtil.isEmpty(groupIds)) {
-            return new HashMap<>();
-        }
-
-        final MarkerLinkageHelperService markerLinkageHelperService = (MarkerLinkageHelperService) SpringContextUtils.getBean("markerLinkageHelperService");
+    public Map<String, GraphVo> getLinkageGraph(Boolean isTraverse, List<String> groupIds) {
+        final MarkerLinkageHelperService markerLinkageHelperService = (MarkerLinkageHelperService) SpringContextUtils
+            .getBean("markerLinkageHelperService");
         // 获取关联绘图数据
-        final List<MarkerLinkageVo> linkageList = markerLinkageHelperService.getLinkageList(groupIds);
+        final List<MarkerLinkageVo> linkageList = markerLinkageHelperService.getLinkageList(isTraverse, groupIds);
         final Map<String, GraphVo> linkageGraph = MarkerLinkageDataHelper.buildLinkageGraph(linkageList);
         return linkageGraph;
     }
@@ -95,27 +98,28 @@ public class MarkerLinkageHelperService {
      */
     @Cacheable(value = "getMarkerLinkagePathCoords")
     public Map<Long, Point2D.Double> getPathCoords(List<Long> markerIds) {
-        if(CollUtil.isEmpty(markerIds)) {
+        if (CollUtil.isEmpty(markerIds)) {
             return new HashMap<>();
         }
-        final List<Marker> markerList = markerMBPService.list(Wrappers.<Marker>lambdaQuery().in(Marker::getId, markerIds));
+        final List<Marker> markerList = markerMBPService
+            .list(Wrappers.<Marker>lambdaQuery().in(Marker::getId, markerIds));
         final Map<Long, Point2D.Double> markerCoords = new HashMap<>();
         markerList.parallelStream()
-                .forEach(marker -> {
-                    final Long markerId = ObjectUtil.defaultIfNull(marker.getId(), 0L);
-                    final String position = StrUtil.blankToDefault(marker.getPosition(), "");
-                    final List<String> posChunks = StrUtil.split(position, ',', 2);
-                    if(posChunks.size() >= 2) {
-                        try {
-                            final double x = NumberUtil.parseDouble(posChunks.get(0));
-                            final double y = NumberUtil.parseDouble(posChunks.get(1));
-                            final Point2D.Double coords = new Point2D.Double(x, y);
-                            markerCoords.putIfAbsent(markerId, coords);
-                        } catch (Exception e) {
-                            // Ignore invalid coordinates
-                        }
+            .forEach(marker -> {
+                final Long markerId = ObjectUtil.defaultIfNull(marker.getId(), 0L);
+                final String position = StrUtil.blankToDefault(marker.getPosition(), "");
+                final List<String> posChunks = StrUtil.split(position, ',', 2);
+                if (posChunks.size() >= 2) {
+                    try {
+                        final double x = NumberUtil.parseDouble(posChunks.get(0));
+                        final double y = NumberUtil.parseDouble(posChunks.get(1));
+                        final Point2D.Double coords = new Point2D.Double(x, y);
+                        markerCoords.putIfAbsent(markerId, coords);
+                    } catch (Exception e) {
+                        // Ignore invalid coordinates
                     }
-                });
+                }
+            });
         return markerCoords;
     }
 }

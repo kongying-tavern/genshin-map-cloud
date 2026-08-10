@@ -55,17 +55,18 @@ public class NoticeDaoImpl implements NoticeDao {
         // 字段：频道
         String searchChannelsArr = "";
         String searchChannelsSegment = "";
-        if(CollUtil.isNotEmpty(noticeSearchDto.getChannels())) {
+        if (CollUtil.isNotEmpty(noticeSearchDto.getChannels())) {
             final List<String> channels = noticeSearchDto.getChannels();
-            final List<String> channelArr = channels.stream().map(channel -> "'" + channel + "'").collect(Collectors.toList());
+            final List<String> channelArr = channels.stream().map(channel -> "'" + channel + "'")
+                .collect(Collectors.toList());
             searchChannelsArr = StrUtil.join(",", channelArr);
             searchChannelsSegment = String.format("(\"channel\"::jsonb) ??| array[%s]", searchChannelsArr);
         }
 
         // 获取数据
         final LambdaQueryWrapper<Notice> wrapper = Wrappers.<Notice>lambdaQuery()
-                .apply(StrUtil.isNotBlank(searchChannelsSegment), searchChannelsSegment)
-                .like(StrUtil.isNotBlank(noticeSearchDto.getTitle()), Notice::getTitle, noticeSearchDto.getTitle());
+            .apply(StrUtil.isNotBlank(searchChannelsSegment), searchChannelsSegment)
+            .like(StrUtil.isNotBlank(noticeSearchDto.getTitle()), Notice::getTitle, noticeSearchDto.getTitle());
         final List<Notice> result = noticeMapper.selectList(wrapper);
 
         return result;
@@ -74,7 +75,7 @@ public class NoticeDaoImpl implements NoticeDao {
     @Override
     public List<Notice> postGetList(List<Notice> list, NoticeSearchDto noticeSearchDto) {
         Boolean getValid = noticeSearchDto.getGetValid();
-        if(getValid == null) {
+        if (getValid == null) {
             return list;
         }
 

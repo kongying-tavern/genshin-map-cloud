@@ -4,8 +4,10 @@ import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import site.yuanshen.data.base.BaseEntity;
+import site.yuanshen.handler.MBPJsonObjectTypeHandler;
 
 import java.sql.Timestamp;
+import java.util.Map;
 
 /**
  * 图标主表
@@ -17,7 +19,7 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-@TableName("icon")
+@TableName(value = "icon", autoResultMap = true)
 public class Icon extends BaseEntity {
 
     /**
@@ -47,15 +49,27 @@ public class Icon extends BaseEntity {
     private Timestamp updateTime;
 
     /**
-     * 图标名称
+     * 图标标签
      */
-    @TableField("name")
-    private String name;
+    @TableField("tag")
+    private String tag;
 
     /**
      * 图标url
      */
     @TableField("url")
     private String url;
+
+    /**
+     * 图标变体url
+     */
+    @TableField(value = "url_variants", typeHandler = MBPJsonObjectTypeHandler.class)
+    private Map<String, String> urlVariants;
+
+    /**
+     * 图标描述
+     */
+    @TableField("description")
+    private String description;
 
 }

@@ -33,7 +33,8 @@ public class ClientDetailsServiceImpl implements ClientDetailsService {
      */
     @Override
     public ClientDetails loadClientByClientId(String clientId) throws ClientRegistrationException {
-        OauthClientDetails oauthClientDetails = clientDetailsMapper.selectOne(Wrappers.<OauthClientDetails>lambdaQuery().eq(OauthClientDetails::getClientId, clientId));
+        OauthClientDetails oauthClientDetails = clientDetailsMapper
+            .selectOne(Wrappers.<OauthClientDetails>lambdaQuery().eq(OauthClientDetails::getClientId, clientId));
         if (oauthClientDetails == null) {
             throw new ClientRegistrationException("客户端不存在");
         }

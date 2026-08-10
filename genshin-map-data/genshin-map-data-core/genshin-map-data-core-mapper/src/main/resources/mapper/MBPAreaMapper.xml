@@ -14,7 +14,7 @@
         <result column="name" property="name"/>
         <result column="code" property="code"/>
         <result column="content" property="content"/>
-        <result column="icon_tag" property="iconTag"/>
+        <result column="icon_id" property="iconId"/>
         <result column="parent_id" property="parentId"/>
         <result column="is_final" property="isFinal"/>
         <result column="hidden_flag" property="hiddenFlag"/>
@@ -34,7 +34,7 @@
         area.name,
         area.code,
         area.content,
-        area.icon_tag,
+        area.icon_id,
         area.parent_id,
         area.is_final,
         area.hidden_flag,

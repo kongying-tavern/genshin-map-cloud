@@ -33,7 +33,6 @@ public class SysUserDao {
 
     private final SysUserMapper userMapper;
 
-
     /**
      * 此方法建议只用于同级service
      *
@@ -61,7 +60,8 @@ public class SysUserDao {
      * @return 用户实体类Optional
      */
     public Optional<SysUser> getUser(String userName) {
-        return Optional.ofNullable(userMapper.selectOne(Wrappers.lambdaQuery(SysUser.class).eq(SysUser::getUsername, userName)));
+        return Optional
+            .ofNullable(userMapper.selectOne(Wrappers.lambdaQuery(SysUser.class).eq(SysUser::getUsername, userName)));
     }
 
     public Long insertUser(SysUserDto userDto) {
@@ -93,20 +93,23 @@ public class SysUserDao {
         wrapper = PgsqlUtils.sortWrapper(wrapper, sortList);
 
         LambdaQueryWrapper<SysUser> queryWrapper = wrapper.lambda()
-                .like(isNotBlank(searchDto.getNickname()), SysUser::getNickname, searchDto.getNickname())
-                .like(isNotBlank(searchDto.getUsername()), SysUser::getUsername, searchDto.getUsername())
-                .in(CollUtil.isNotEmpty(searchDto.getRoleIds()), SysUser::getRoleId, searchDto.getRoleIds());
+            .like(isNotBlank(searchDto.getNickname()), SysUser::getNickname, searchDto.getNickname())
+            .like(isNotBlank(searchDto.getUsername()), SysUser::getUsername, searchDto.getUsername())
+            .in(CollUtil.isNotEmpty(searchDto.getRoleIds()), SysUser::getRoleId, searchDto.getRoleIds());
 
         //此处mbp的分页优化有问题，关闭分页优化，减少报错日志
-        IPage<SysUser> sysUserPage = userMapper.selectPage(searchDto.getPageEntity().setOptimizeCountSql(false), queryWrapper);
+        IPage<SysUser> sysUserPage = userMapper
+            .selectPage(searchDto.getPageEntity().setOptimizeCountSql(false), queryWrapper);
 
         return new PageListVo<SysUserVo>()
-                .setRecord(sysUserPage.getRecords().stream()
-                        .map(SysUserDto::new)
-                        .map(SysUserDto::getVo)
-                        .collect(Collectors.toList()))
-                .setTotal(sysUserPage.getTotal())
-                .setSize(sysUserPage.getSize());
+            .setRecord(
+                sysUserPage.getRecords().stream()
+                    .map(SysUserDto::new)
+                    .map(SysUserDto::getVo)
+                    .collect(Collectors.toList())
+            )
+            .setTotal(sysUserPage.getTotal())
+            .setSize(sysUserPage.getSize());
     }
 
 }

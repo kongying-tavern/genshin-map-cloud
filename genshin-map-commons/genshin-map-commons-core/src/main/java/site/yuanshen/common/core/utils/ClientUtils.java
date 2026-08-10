@@ -42,6 +42,7 @@ public class ClientUtils {
     @NoArgsConstructor
     public static class Region {
         private static String UNKNOWN_REGION = "未知";
+
         private static String DEFAULT_REGION_TEXT = "0";
 
         @Schema(title = "是否是未知地区")
@@ -67,7 +68,7 @@ public class ClientUtils {
         private String isp = "";
 
         public void setFullRegion(String fullRegion) {
-            if(fullRegion == null) {
+            if (fullRegion == null) {
                 this.setUnknown(true);
             } else {
                 List<String> ipRegionParts = StrUtil.split(fullRegion, "|");
@@ -81,13 +82,14 @@ public class ClientUtils {
         }
 
         public void updateHash() {
-            final String fullKey = this.country + "|" + this.region + "|" + this.province + "|" + this.city + "|" + this.isp;
+            final String fullKey = this.country + "|" + this.region + "|" + this.province + "|" + this.city + "|"
+                + this.isp;
             this.hash = DigestUtils.md5DigestAsHex(fullKey.getBytes());
         }
 
         public void setUnknown(boolean isUnknown) {
             this.unknown = isUnknown;
-            if(isUnknown) {
+            if (isUnknown) {
                 this.country = UNKNOWN_REGION;
                 this.region = "";
                 this.province = "";
@@ -135,7 +137,8 @@ public class ClientUtils {
         String ipRegion = null;
         try {
             ipRegion = Ip2RegionHolder.searcher.search(ip);
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
         region.setFullRegion(ipRegion);
         return region;
     }

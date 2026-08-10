@@ -33,23 +33,39 @@ import java.util.function.BiConsumer;
 
 public class FastGenerator {
     private String url;
+
     private String schema;
+
     private String userName;
+
     private String password;
+
     private String author;
+
     private String entity;
+
     private String outputDir;
+
     private String commentDateFormat;
 
     private String moduleType;
+
     private String apiPackageName;
+
     private String apiModuleName;
+
     private String entityPackage;
+
     private String servicePackage;
+
     private String serviceImplPackage;
+
     private String mapperPackage;
+
     private String xmlPackage;
+
     private String dtoPackage;
+
     private String voPackage;
 
     private static final String defaultSchema = "genshin_map";
@@ -57,8 +73,10 @@ public class FastGenerator {
     @Getter
     @RequiredArgsConstructor
     public enum ResourceType {
+        // spotless:off
         Resource("资源", "src/main/resources"),
         JavaSource("Java代码", "src/main/java");
+        // spotless:on
 
         private final String name;
 
@@ -77,9 +95,9 @@ public class FastGenerator {
 
         public String getPath(boolean withPackageName) {
             final String outputBase = System.getProperty("user.dir") + outputDir;
-            if(this.type == null || StringUtils.isBlank(this.packageName) || StringUtils.isBlank(this.modulePath))
+            if (this.type == null || StringUtils.isBlank(this.packageName) || StringUtils.isBlank(this.modulePath))
                 return "";
-            return outputBase + this.modulePath + "/" + this.type.getPath() + "/" +
+            return outputBase + "/" + this.modulePath + "/" + this.type.getPath() + "/" +
                 (withPackageName ? this.packageName.replace(".", "/") : "");
         }
     }
@@ -89,11 +107,17 @@ public class FastGenerator {
     @NoArgsConstructor
     public class OutputConfig {
         public SourcePath entityPath;
+
         public SourcePath servicePath;
+
         public SourcePath serviceImplPath;
+
         public SourcePath mapperPath;
+
         public SourcePath xmlPath;
+
         public SourcePath dtoPath;
+
         public SourcePath voPath;
 
         public Map<OutputFile, String> getPathInfo() {
@@ -115,176 +139,209 @@ public class FastGenerator {
         }
     }
 
-    private final Map<String, OutputConfig> TARGET_PATH_MAP = new HashMap<>(){{
-        put("api", (new OutputConfig())
-            .withEntityPath((new SourcePath())
-                .withModulePath("genshin-map-data/genshin-map-data-core/genshin-map-data-core-model")
-                .withType(ResourceType.JavaSource)
-                .withPackageName("site.yuanshen.data.entity")
-            )
-            .withServicePath((new SourcePath())
-                .withModulePath("genshin-map-api/genshin-map-api-core/genshin-map-api-core-core")
-                .withType(ResourceType.JavaSource)
-                .withPackageName("site.yuanshen.genshin.core.service.mbp")
-            )
-            .withServiceImplPath((new SourcePath())
-                .withModulePath("genshin-map-api/genshin-map-api-core/genshin-map-api-core-core")
-                .withType(ResourceType.JavaSource)
-                .withPackageName("site.yuanshen.genshin.core.service.mbp.impl")
-            )
-            .withMapperPath((new SourcePath())
-                .withModulePath("genshin-map-data/genshin-map-data-core/genshin-map-data-core-mapper")
-                .withType(ResourceType.JavaSource)
-                .withPackageName("site.yuanshen.data.mapper")
-            )
-            .withXmlPath((new SourcePath())
-                .withModulePath("genshin-map-data/genshin-map-data-core/genshin-map-data-core-mapper")
-                .withType(ResourceType.Resource)
-                .withPackageName("mapper")
-            )
-            .withDtoPath((new SourcePath())
-                .withModulePath("genshin-map-data/genshin-map-data-core/genshin-map-data-core-model")
-                .withType(ResourceType.JavaSource)
-                .withPackageName("site.yuanshen.data.dto")
-            )
-            .withVoPath((new SourcePath())
-                .withModulePath("genshin-map-data/genshin-map-data-core/genshin-map-data-core-model")
-                .withType(ResourceType.JavaSource)
-                .withPackageName("site.yuanshen.data.vo")
-            )
-        );
-        put("system", (new OutputConfig())
-            .withEntityPath((new SourcePath())
-                .withModulePath("genshin-map-data/genshin-map-data-system/genshin-map-data-system-model")
-                .withType(ResourceType.JavaSource)
-                .withPackageName("site.yuanshen.data.entity")
-            )
-            .withServicePath((new SourcePath())
-                .withModulePath("genshin-map-api/genshin-map-api-core/genshin-map-api-core-core")
-                .withType(ResourceType.JavaSource)
-                .withPackageName("site.yuanshen.genshin.core.service.mbp")
-            )
-            .withServiceImplPath((new SourcePath())
-                .withModulePath("genshin-map-api/genshin-map-api-core/genshin-map-api-core-core")
-                .withType(ResourceType.JavaSource)
-                .withPackageName("site.yuanshen.genshin.core.service.mbp.impl")
-            )
-            .withMapperPath((new SourcePath())
-                .withModulePath("genshin-map-data/genshin-map-data-system/genshin-map-data-system-mapper")
-                .withType(ResourceType.JavaSource)
-                .withPackageName("site.yuanshen.data.mapper")
-            )
-            .withXmlPath((new SourcePath())
-                .withModulePath("genshin-map-data/genshin-map-data-system/genshin-map-data-system-mapper")
-                .withType(ResourceType.Resource)
-                .withPackageName("mapper")
-            )
-            .withDtoPath((new SourcePath())
-                .withModulePath("genshin-map-data/genshin-map-data-system/genshin-map-data-system-model")
-                .withType(ResourceType.JavaSource)
-                .withPackageName("site.yuanshen.data.dto")
-            )
-            .withVoPath((new SourcePath())
-                .withModulePath("genshin-map-data/genshin-map-data-system/genshin-map-data-system-model")
-                .withType(ResourceType.JavaSource)
-                .withPackageName("site.yuanshen.data.vo")
-            )
-        );
-    }};
+    private final Map<String, OutputConfig> TARGET_PATH_MAP = new HashMap<>() {
+        {
+            put(
+                "api", (new OutputConfig())
+                    .withEntityPath(
+                        (new SourcePath())
+                            .withModulePath("genshin-map-data/genshin-map-data-core/genshin-map-data-core-model")
+                            .withType(ResourceType.JavaSource)
+                            .withPackageName("site.yuanshen.data.entity")
+                    )
+                    .withServicePath(
+                        (new SourcePath())
+                            .withModulePath("genshin-map-api/genshin-map-api-core/genshin-map-api-core-core")
+                            .withType(ResourceType.JavaSource)
+                            .withPackageName("site.yuanshen.genshin.core.service.mbp")
+                    )
+                    .withServiceImplPath(
+                        (new SourcePath())
+                            .withModulePath("genshin-map-api/genshin-map-api-core/genshin-map-api-core-core")
+                            .withType(ResourceType.JavaSource)
+                            .withPackageName("site.yuanshen.genshin.core.service.mbp.impl")
+                    )
+                    .withMapperPath(
+                        (new SourcePath())
+                            .withModulePath("genshin-map-data/genshin-map-data-core/genshin-map-data-core-mapper")
+                            .withType(ResourceType.JavaSource)
+                            .withPackageName("site.yuanshen.data.mapper")
+                    )
+                    .withXmlPath(
+                        (new SourcePath())
+                            .withModulePath("genshin-map-data/genshin-map-data-core/genshin-map-data-core-mapper")
+                            .withType(ResourceType.Resource)
+                            .withPackageName("mapper")
+                    )
+                    .withDtoPath(
+                        (new SourcePath())
+                            .withModulePath("genshin-map-data/genshin-map-data-core/genshin-map-data-core-model")
+                            .withType(ResourceType.JavaSource)
+                            .withPackageName("site.yuanshen.data.dto")
+                    )
+                    .withVoPath(
+                        (new SourcePath())
+                            .withModulePath("genshin-map-data/genshin-map-data-core/genshin-map-data-core-model")
+                            .withType(ResourceType.JavaSource)
+                            .withPackageName("site.yuanshen.data.vo")
+                    )
+            );
+            put(
+                "system", (new OutputConfig())
+                    .withEntityPath(
+                        (new SourcePath())
+                            .withModulePath("genshin-map-data/genshin-map-data-system/genshin-map-data-system-model")
+                            .withType(ResourceType.JavaSource)
+                            .withPackageName("site.yuanshen.data.entity")
+                    )
+                    .withServicePath(
+                        (new SourcePath())
+                            .withModulePath("genshin-map-api/genshin-map-api-core/genshin-map-api-core-core")
+                            .withType(ResourceType.JavaSource)
+                            .withPackageName("site.yuanshen.genshin.core.service.mbp")
+                    )
+                    .withServiceImplPath(
+                        (new SourcePath())
+                            .withModulePath("genshin-map-api/genshin-map-api-core/genshin-map-api-core-core")
+                            .withType(ResourceType.JavaSource)
+                            .withPackageName("site.yuanshen.genshin.core.service.mbp.impl")
+                    )
+                    .withMapperPath(
+                        (new SourcePath())
+                            .withModulePath("genshin-map-data/genshin-map-data-system/genshin-map-data-system-mapper")
+                            .withType(ResourceType.JavaSource)
+                            .withPackageName("site.yuanshen.data.mapper")
+                    )
+                    .withXmlPath(
+                        (new SourcePath())
+                            .withModulePath("genshin-map-data/genshin-map-data-system/genshin-map-data-system-mapper")
+                            .withType(ResourceType.Resource)
+                            .withPackageName("mapper")
+                    )
+                    .withDtoPath(
+                        (new SourcePath())
+                            .withModulePath("genshin-map-data/genshin-map-data-system/genshin-map-data-system-model")
+                            .withType(ResourceType.JavaSource)
+                            .withPackageName("site.yuanshen.data.dto")
+                    )
+                    .withVoPath(
+                        (new SourcePath())
+                            .withModulePath("genshin-map-data/genshin-map-data-system/genshin-map-data-system-model")
+                            .withType(ResourceType.JavaSource)
+                            .withPackageName("site.yuanshen.data.vo")
+                    )
+            );
+        }
+    };
 
     public void build() {
         System.out.println("Output Dir: " + outputDir);
         final OutputConfig targetPaths = this.TARGET_PATH_MAP.get(this.moduleType);
-        if(targetPaths == null) {
+        if (targetPaths == null) {
             throw new IllegalArgumentException("Invalid module type `" + this.moduleType + "`");
         }
 
-        FastAutoGenerator.create(new DataSourceConfig.Builder(url,userName,password)
-                        //3.5.3之后，默认为DefaultQuery，会使得pg的json数据被识别为object，且无法被mbp的转化器转化
-                        .databaseQueryClass(SQLQuery.class)
-                        .schema(schema)
-                        .dbQuery(new PostgreSqlQuery())
-                        .typeConvert(new PostgreSqlTypeConvert()))
-                //全局配置
-                .globalConfig(builder -> builder
-                        .author(author)
-                        .dateType(DateType.SQL_PACK)
-                        .outputDir(System.getProperty("user.dir") + outputDir)
-                        //关闭生成后自动打开文件夹
-                        .disableOpenDir()
-                        .commentDate(commentDateFormat))
-                .packageConfig(builder -> builder
-                        .parent("")
-                        .moduleName("")
-                        .entity(entityPackage)
-                        .service(servicePackage)
-                        .serviceImpl(serviceImplPackage)
-                        .mapper(mapperPackage)
-                        .xml(xmlPackage)
-                        .pathInfo(targetPaths.getPathInfo())
-                )
-                .strategyConfig(builder -> builder
-                        // 添加需要生成模块的白名单列表
-                        .addInclude(StrUtil.split(entity, ","))
-                        // 跳过视图
-                        .enableSkipView()
-                        /*-------------entity配置-------------*/
-                        .entityBuilder()
-                        //启用lombok
-                        .enableLombok()
-                        //生成字段关联注解
-                        .enableTableFieldAnnotation()
-                        //BaseEntity中已经实现Serialize接口
-                        .disableSerialVersionUID()
-                        //entity公共父类设置
-                        .superClass(BaseEntity.class)
-                        .versionPropertyName("version")
-                        .addTableFills(new Property("version", FieldFill.INSERT_UPDATE))
-                        .addTableFills(new Property("updateTime", FieldFill.INSERT_UPDATE))
-                        .addTableFills(new Property("updaterId", FieldFill.INSERT_UPDATE))
-                        .addSuperEntityColumns("create_time", "creator_id", "del_flag")
-                        .enableFileOverride()
-                        /*-------------service配置-------------*/
-                        .serviceBuilder()
-                        .formatServiceFileName("%sMBPService")
-                        .formatServiceImplFileName("%sMBPServiceImpl")
-                        .enableFileOverride()
-                        /*-------------mapper配置-------------*/
-                        .mapperBuilder()
-                        .mapperAnnotation(Mapper.class)
-                        .enableFileOverride()
-                        .enableBaseColumnList()
-                        .enableBaseResultMap()
-                        .convertXmlFileName(tableName -> "MBP"+tableName+"Mapper"))
-                .templateConfig(builder -> builder
-                        .disable(TemplateType.CONTROLLER)
-                        .entity("/templates/entity.java")
-                        .service("/templates/service.java")
-                        .serviceImpl("/templates/serviceImpl.java")
-                        .mapper("/templates/mapper.java")
-                        .xml("/templates/mapper.xml"))
-                .injectionConfig(builder -> builder
-                        .beforeOutputFile(getBeforeOutputFileHandler())
-                        .customFile(fileBuilder -> fileBuilder
-                                .fileName("Dto.java")
-                                .templatePath("/templates/dto.java.ftl")
-                                .packageName(dtoPackage)
-                                .filePath(targetPaths.getDtoPath())
-                                .enableFileOverride())
-                        .customFile(fileBuilder -> fileBuilder
-                                .fileName("Vo.java")
-                                .templatePath("/templates/vo.java.ftl")
-                                .packageName(voPackage)
-                                .filePath(targetPaths.getVoPath())
-                                .enableFileOverride()))
-                .templateEngine(new FreemarkerTemplateEngine())
-                .execute();
+        FastAutoGenerator.create(
+            new DataSourceConfig.Builder(url, userName, password)
+                //3.5.3之后，默认为DefaultQuery，会使得pg的json数据被识别为object，且无法被mbp的转化器转化
+                .databaseQueryClass(SQLQuery.class)
+                .schema(schema)
+                .dbQuery(new PostgreSqlQuery())
+                .typeConvert(new PostgreSqlTypeConvert())
+        )
+            //全局配置
+            .globalConfig(
+                builder -> builder
+                    .author(author)
+                    .dateType(DateType.SQL_PACK)
+                    .outputDir(System.getProperty("user.dir") + outputDir)
+                    //关闭生成后自动打开文件夹
+                    .disableOpenDir()
+                    .commentDate(commentDateFormat)
+            )
+            .packageConfig(
+                builder -> builder
+                    .parent("")
+                    .moduleName("")
+                    .entity(entityPackage)
+                    .service(servicePackage)
+                    .serviceImpl(serviceImplPackage)
+                    .mapper(mapperPackage)
+                    .xml(xmlPackage)
+                    .pathInfo(targetPaths.getPathInfo())
+            )
+            .strategyConfig(
+                builder -> builder
+                    // 添加需要生成模块的白名单列表
+                    .addInclude(StrUtil.split(entity, ","))
+                    // 跳过视图
+                    .enableSkipView()
+                    /*-------------entity配置-------------*/
+                    .entityBuilder()
+                    //启用lombok
+                    .enableLombok()
+                    //生成字段关联注解
+                    .enableTableFieldAnnotation()
+                    //BaseEntity中已经实现Serialize接口
+                    .disableSerialVersionUID()
+                    //entity公共父类设置
+                    .superClass(BaseEntity.class)
+                    .versionPropertyName("version")
+                    .addTableFills(new Property("version", FieldFill.INSERT_UPDATE))
+                    .addTableFills(new Property("updateTime", FieldFill.INSERT_UPDATE))
+                    .addTableFills(new Property("updaterId", FieldFill.INSERT_UPDATE))
+                    .addSuperEntityColumns("create_time", "creator_id", "del_flag")
+                    .enableFileOverride()
+                    /*-------------service配置-------------*/
+                    .serviceBuilder()
+                    .formatServiceFileName("%sMBPService")
+                    .formatServiceImplFileName("%sMBPServiceImpl")
+                    .enableFileOverride()
+                    /*-------------mapper配置-------------*/
+                    .mapperBuilder()
+                    .mapperAnnotation(Mapper.class)
+                    .enableFileOverride()
+                    .enableBaseColumnList()
+                    .enableBaseResultMap()
+                    .convertXmlFileName(tableName -> "MBP" + tableName + "Mapper")
+            )
+            .templateConfig(
+                builder -> builder
+                    .disable(TemplateType.CONTROLLER)
+                    .entity("/templates/entity.java")
+                    .service("/templates/service.java")
+                    .serviceImpl("/templates/serviceImpl.java")
+                    .mapper("/templates/mapper.java")
+                    .xml("/templates/mapper.xml")
+            )
+            .injectionConfig(
+                builder -> builder
+                    .beforeOutputFile(getBeforeOutputFileHandler())
+                    .customFile(
+                        fileBuilder -> fileBuilder
+                            .fileName("Dto.java")
+                            .templatePath("/templates/dto.java.ftl")
+                            .packageName(dtoPackage)
+                            .filePath(targetPaths.getDtoPath())
+                            .enableFileOverride()
+                    )
+                    .customFile(
+                        fileBuilder -> fileBuilder
+                            .fileName("Vo.java")
+                            .templatePath("/templates/vo.java.ftl")
+                            .packageName(voPackage)
+                            .filePath(targetPaths.getVoPath())
+                            .enableFileOverride()
+                    )
+            )
+            .templateEngine(new FreemarkerTemplateEngine())
+            .execute();
     }
 
     private BiConsumer<TableInfo, Map<String, Object>> getBeforeOutputFileHandler() {
         return (tableInfo, stringObjectMap) -> {
-            for(TableField field : tableInfo.getFields()) {
-                if("Timestamp".equals(field.getPropertyType())) {
+            for (TableField field : tableInfo.getFields()) {
+                if ("Timestamp".equals(field.getPropertyType())) {
                     tableInfo.addImportPackages("com.fasterxml.jackson.annotation.JsonFormat");
                 }
             }
@@ -305,14 +362,14 @@ public class FastGenerator {
         try {
             URI jdbcUri = new URI(this.url);
             UriComponents jdbcUriComponents = UriComponentsBuilder
-                    .fromUri(jdbcUri)
-                    .encode(StandardCharsets.UTF_8)
-                    .build();
+                .fromUri(jdbcUri)
+                .encode(StandardCharsets.UTF_8)
+                .build();
             String jdbcUriSsp = StrUtil.blankToDefault(jdbcUriComponents.getSchemeSpecificPart(), "");
             UriComponents dbUriComponents = UriComponentsBuilder
-                    .fromUriString(jdbcUriSsp)
-                    .encode(StandardCharsets.UTF_8)
-                    .build();
+                .fromUriString(jdbcUriSsp)
+                .encode(StandardCharsets.UTF_8)
+                .build();
 
             MultiValueMap<String, String> queryMap = dbUriComponents.getQueryParams();
             String querySchema = queryMap.getFirst("currentSchema");
@@ -384,15 +441,19 @@ public class FastGenerator {
     }
 
     public FastGenerator servicePackageAfterApi(String servicePackageAfterApi) throws Exception {
-        if (apiPackageName == null) throw new Exception("serviceImplPackageAfterApi前必须设置apiPackageName");
-        if (apiModuleName == null) throw new Exception("serviceImplPackageAfterApi前必须设置apiModuleName");
+        if (apiPackageName == null)
+            throw new Exception("serviceImplPackageAfterApi前必须设置apiPackageName");
+        if (apiModuleName == null)
+            throw new Exception("serviceImplPackageAfterApi前必须设置apiModuleName");
         this.servicePackage = apiPackageName + "." + apiModuleName + "." + servicePackageAfterApi;
         return this;
     }
 
     public FastGenerator serviceImplPackageAfterApi(String serviceImplPackageAfterApi) throws Exception {
-        if (apiPackageName == null) throw new Exception("serviceImplPackageAfterApi前必须设置apiPackageName");
-        if (apiModuleName == null) throw new Exception("serviceImplPackageAfterApi前必须设置apiModuleName");
+        if (apiPackageName == null)
+            throw new Exception("serviceImplPackageAfterApi前必须设置apiPackageName");
+        if (apiModuleName == null)
+            throw new Exception("serviceImplPackageAfterApi前必须设置apiModuleName");
         this.serviceImplPackage = apiPackageName + "." + apiModuleName + "." + serviceImplPackageAfterApi;
         return this;
     }

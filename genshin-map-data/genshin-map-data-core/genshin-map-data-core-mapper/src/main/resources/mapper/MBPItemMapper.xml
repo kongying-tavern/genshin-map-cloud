@@ -16,7 +16,7 @@
         <result column="default_refresh_time" property="defaultRefreshTime"/>
         <result column="default_content" property="defaultContent"/>
         <result column="default_count" property="defaultCount"/>
-        <result column="icon_tag" property="iconTag"/>
+        <result column="icon_id" property="iconId"/>
         <result column="icon_style_type" property="iconStyleType"/>
         <result column="hidden_flag" property="hiddenFlag"/>
         <result column="sort_index" property="sortIndex"/>
@@ -37,7 +37,7 @@
         item.default_refresh_time,
         item.default_content,
         item.default_count,
-        item.icon_tag,
+        item.icon_id,
         item.icon_style_type,
         item.hidden_flag,
         item.sort_index,

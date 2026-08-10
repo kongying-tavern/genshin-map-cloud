@@ -7,4 +7,5 @@ spring:
       - doc-uat
       - database-uat
       - datasource-uat
+      - websocket-uat
       - image-uat

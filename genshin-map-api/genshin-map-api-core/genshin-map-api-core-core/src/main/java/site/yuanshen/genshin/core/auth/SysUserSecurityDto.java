@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
  * @author Moment
  */
 @Data
-public class SysUserSecurityDto  implements UserDetails {
+public class SysUserSecurityDto implements UserDetails {
 
     /**
      * 用户ID

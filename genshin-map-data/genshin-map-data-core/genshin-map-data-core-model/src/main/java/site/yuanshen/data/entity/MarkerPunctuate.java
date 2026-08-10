@@ -6,6 +6,8 @@ import lombok.*;
 import site.yuanshen.data.base.BaseEntity;
 import site.yuanshen.data.enums.PunctuateMethodEnum;
 import site.yuanshen.data.enums.PunctuateStatusEnum;
+import site.yuanshen.data.helper.marker.marker.MarkerExtraTypeHandler;
+import site.yuanshen.data.vo.adapter.marker.marker.MarkerExtraVo;
 import site.yuanshen.handler.MBPJsonObjectTypeHandler;
 
 import java.sql.Timestamp;
@@ -89,8 +91,8 @@ public class MarkerPunctuate extends BaseEntity {
     /**
      * 额外特殊字段
      */
-    @TableField(value = "extra", typeHandler = MBPJsonObjectTypeHandler.class)
-    private Map<String, Object> extra;
+    @TableField(value = "extra", typeHandler = MarkerExtraTypeHandler.class)
+    private MarkerExtraVo extra;
 
     /**
      * 点位图片

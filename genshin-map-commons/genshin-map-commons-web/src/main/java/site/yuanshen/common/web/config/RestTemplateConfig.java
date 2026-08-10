@@ -18,14 +18,13 @@ import java.util.concurrent.TimeUnit;
 public class RestTemplateConfig {
 
     @Bean
-    public RestTemplate restTemplate(){
+    public RestTemplate restTemplate() {
         RestTemplate restTemplate = new RestTemplate(getClientHttpRequestFactory());
         return restTemplate;
     }
 
-    @Qualifier("gbkRestTemplate")
-    @Bean
-    public RestTemplate gbkRestTemplate(){
+    @Qualifier("gbkRestTemplate") @Bean
+    public RestTemplate gbkRestTemplate() {
         RestTemplate restTemplate = new RestTemplate(getClientHttpRequestFactory());
         restTemplate.getMessageConverters().set(1, new StringHttpMessageConverter(Charset.forName("gbk")));
         return restTemplate;
@@ -34,12 +33,12 @@ public class RestTemplateConfig {
     /**
      * 使用OkHttpClient作为底层客户端
      */
-    private ClientHttpRequestFactory getClientHttpRequestFactory(){
+    private ClientHttpRequestFactory getClientHttpRequestFactory() {
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                .connectTimeout(5, TimeUnit.SECONDS)
-                .writeTimeout(5, TimeUnit.SECONDS)
-                .readTimeout(5, TimeUnit.SECONDS)
-                .build();
+            .connectTimeout(5, TimeUnit.SECONDS)
+            .writeTimeout(5, TimeUnit.SECONDS)
+            .readTimeout(5, TimeUnit.SECONDS)
+            .build();
         return new OkHttp3ClientHttpRequestFactory(okHttpClient);
     }
 

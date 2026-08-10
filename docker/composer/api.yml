@@ -1,0 +1,65 @@
+include:
+  - _network.yml
+  - dataenv.yml
+
+services:
+  api-builder:
+    container_name: gsapi-api-builder
+    hostname: gsapi-api-builder
+    image: gsapi/api-builder
+    build:
+      context: ${PROJECT_BASE:-../../}
+      dockerfile: docker/composer/api.api-builder.Dockerfile
+      args:
+        - BUILD_PROFILE=${BUILD_PROFILE:-dev}
+  api-gateway:
+    container_name: gsapi-api-gateway
+    hostname: gsapi-api-gateway
+    image: gsapi/api-gateway
+    build:
+      context: ${PROJECT_BASE:-../../}
+      dockerfile: docker/composer/api.api-gateway.Dockerfile
+      additional_contexts:
+        api-builder: service:api-builder
+    depends_on:
+      api-builder:
+        condition: service_started
+      nacos:
+        condition: service_healthy
+    networks:
+      gsapi-api:
+        aliases:
+          - api-gateway.local
+    volumes:
+      - ${DATA_DIR}/api/logs/gateway:/data/logs
+    ports:
+      - ${GATEWAY_PORT:-8101}:8101
+    restart: always
+  api-core:
+    container_name: gsapi-api-core
+    hostname: gsapi-api-core
+    image: gsapi/api-core
+    build:
+      context: ${PROJECT_BASE:-../../}
+      dockerfile: docker/composer/api.api-core.Dockerfile
+      additional_contexts:
+        api-builder: service:api-builder
+    depends_on:
+      api-builder:
+        condition: service_started
+      postgresql:
+        condition: service_healthy
+      nacos:
+        condition: service_healthy
+    networks:
+      gsapi-api:
+        aliases:
+          - api-core.local
+      gsapi-img-alist:
+        aliases:
+          - img-alist.local
+    volumes:
+      - ${DATA_DIR}/api/logs/core:/data/logs
+    ports:
+      - ${API_PORT:-8092}:8092
+    restart: always

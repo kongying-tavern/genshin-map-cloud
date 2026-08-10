@@ -1,6 +1,5 @@
 package site.yuanshen.genshin.core.auth;
 
-
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

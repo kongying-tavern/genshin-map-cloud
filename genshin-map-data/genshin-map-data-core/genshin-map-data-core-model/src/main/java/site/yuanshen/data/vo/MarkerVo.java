@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.With;
+import site.yuanshen.data.vo.adapter.marker.marker.MarkerExtraVo;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -131,7 +132,7 @@ public class MarkerVo {
      * 额外特殊字段
      */
     @Schema(title = "额外特殊字段")
-    private Map<String, Object> extra;
+    private MarkerExtraVo extra;
 
     /**
      * 点位关联组ID

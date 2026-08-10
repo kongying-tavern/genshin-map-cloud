@@ -60,10 +60,10 @@ public class ItemTypeVo {
     private Timestamp updateTime;
 
     /**
-     * 图标标签
+     * 图标ID
      */
-    @Schema(title = "图标标签")
-    private String iconTag;
+    @Schema(title = "图标ID")
+    private Long iconId;
 
     /**
      * 类型名

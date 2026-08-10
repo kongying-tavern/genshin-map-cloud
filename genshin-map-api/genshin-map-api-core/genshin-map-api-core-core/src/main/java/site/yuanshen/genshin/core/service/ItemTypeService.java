@@ -37,7 +37,9 @@ import java.util.stream.Collectors;
 public class ItemTypeService {
 
     private final ItemTypeMapper itemTypeMapper;
+
     private final ItemTypeMBPService itemTypeMBPService;
+
     private final ItemTypeLinkMapper itemTypeLinkMapper;
 
     /**
@@ -48,34 +50,42 @@ public class ItemTypeService {
      * @return 物品类型的前端封装的分页封装
      */
     @Cacheable("listItemType")
-    public PageListVo<ItemTypeVo> listItemType(PageAndTypeSearchDto searchDto, Integer self, List<Integer> hiddenFlagList) {
+    public PageListVo<ItemTypeVo> listItemType(
+        PageAndTypeSearchDto searchDto, Integer self, List<Integer> hiddenFlagList
+    ) {
         Page<ItemType> itemTypePage = new Page<>();
         //查询自身
         List<Long> typeIdList = searchDto.getTypeIdList();
         if (self.equals(0)) {
             if (typeIdList != null && typeIdList.size() > 0) {
-                itemTypePage = itemTypeMapper.selectPage(searchDto.getPageEntity(), Wrappers.<ItemType>lambdaQuery()
-                        .in(!hiddenFlagList.isEmpty(),ItemType::getHiddenFlag,hiddenFlagList)
-                        .in(ItemType::getId, typeIdList));
+                itemTypePage = itemTypeMapper.selectPage(
+                    searchDto.getPageEntity(), Wrappers.<ItemType>lambdaQuery()
+                        .in(!hiddenFlagList.isEmpty(), ItemType::getHiddenFlag, hiddenFlagList)
+                        .in(ItemType::getId, typeIdList)
+                );
             } else {
                 itemTypePage.setTotal(0L);
             }
         }
         //查询子级
         else if (self.equals(1)) {
-            itemTypePage = itemTypeMapper.selectPage(searchDto.getPageEntity(), Wrappers.<ItemType>lambdaQuery()
-                    .in(!hiddenFlagList.isEmpty(),ItemType::getHiddenFlag,hiddenFlagList)
-                    .in(ItemType::getParentId,
-                            typeIdList != null && typeIdList.size() > 0 ? typeIdList : Collections.singletonList(-1L)));
+            itemTypePage = itemTypeMapper.selectPage(
+                searchDto.getPageEntity(), Wrappers.<ItemType>lambdaQuery()
+                    .in(!hiddenFlagList.isEmpty(), ItemType::getHiddenFlag, hiddenFlagList)
+                    .in(
+                        ItemType::getParentId,
+                        typeIdList != null && typeIdList.size() > 0 ? typeIdList : Collections.singletonList(-1L)
+                    )
+            );
         }
         List<ItemTypeVo> result = itemTypePage.getRecords().stream()
-                .map(ItemTypeDto::new).map(ItemTypeDto::getVo)
-                .sorted(Comparator.comparing(ItemTypeVo::getSortIndex).reversed())
-                .collect(Collectors.toList());
+            .map(ItemTypeDto::new).map(ItemTypeDto::getVo)
+            .sorted(Comparator.comparing(ItemTypeVo::getSortIndex).reversed())
+            .collect(Collectors.toList());
         return new PageListVo<ItemTypeVo>()
-                .setRecord(result)
-                .setSize(itemTypePage.getSize())
-                .setTotal(itemTypePage.getTotal());
+            .setRecord(result)
+            .setSize(itemTypePage.getSize())
+            .setTotal(itemTypePage.getTotal());
     }
 
     /**
@@ -86,12 +96,14 @@ public class ItemTypeService {
      */
     @Cacheable("listAllItemType")
     public List<ItemTypeVo> listAllItemType(List<Integer> hiddenFlagList) {
-        List<ItemTypeVo> result = itemTypeMapper.selectList(Wrappers.<ItemType>lambdaQuery()
-                        .in(!hiddenFlagList.isEmpty(), ItemType::getHiddenFlag, hiddenFlagList))
-                .stream()
-                .map(ItemTypeDto::new)
-                .map(ItemTypeDto::getVo)
-                .collect(Collectors.toList());
+        List<ItemTypeVo> result = itemTypeMapper.selectList(
+            Wrappers.<ItemType>lambdaQuery()
+                .in(!hiddenFlagList.isEmpty(), ItemType::getHiddenFlag, hiddenFlagList)
+        )
+            .stream()
+            .map(ItemTypeDto::new)
+            .map(ItemTypeDto::getVo)
+            .collect(Collectors.toList());
         return result;
     }
 
@@ -103,10 +115,10 @@ public class ItemTypeService {
      */
     @Transactional
     @Caching(
-            evict = {
+        evict = {
                 @CacheEvict(value = "listItemType", allEntries = true),
                 @CacheEvict(value = "listAllItemType", allEntries = true)
-            }
+        }
     )
     public Long addItemType(ItemTypeDto itemTypeDto) {
         if (Objects.equals(itemTypeDto.getId(), itemTypeDto.getParentId())) {
@@ -131,10 +143,10 @@ public class ItemTypeService {
      */
     @Transactional
     @Caching(
-            evict = {
+        evict = {
                 @CacheEvict(value = "listItemType", allEntries = true),
                 @CacheEvict(value = "listAllItemType", allEntries = true)
-            }
+        }
     )
     public Boolean updateItemType(ItemTypeDto itemTypeDto) {
         if (Objects.equals(itemTypeDto.getId(), itemTypeDto.getParentId())) {
@@ -142,8 +154,10 @@ public class ItemTypeService {
         }
 
         //获取类型实体
-        ItemType itemType = itemTypeMapper.selectOne(Wrappers.<ItemType>lambdaQuery()
-                .eq(ItemType::getId, itemTypeDto.getId()));
+        ItemType itemType = itemTypeMapper.selectOne(
+            Wrappers.<ItemType>lambdaQuery()
+                .eq(ItemType::getId, itemTypeDto.getId())
+        );
         //更新父级的末端标志
         if (!Objects.equals(itemType.getParentId(), itemTypeDto.getParentId())) {
             // 更改新父级的末端标识
@@ -167,26 +181,30 @@ public class ItemTypeService {
      */
     @Transactional
     @Caching(
-            evict = {
+        evict = {
                 @CacheEvict(value = "listItemType", allEntries = true),
                 @CacheEvict(value = "listAllItemType", allEntries = true)
-            }
+        }
     )
     public Boolean moveItemType(List<Long> itemTypeIdList, Long targetTypeId) {
-        if(CollUtil.contains(itemTypeIdList, targetTypeId)) {
+        if (CollUtil.contains(itemTypeIdList, targetTypeId)) {
             throw new GenshinApiException("物品类型ID不允许与父ID相同，会造成自身父子");
         }
 
         // 获取实体
-        List<ItemType> itemTypeList = itemTypeMapper.selectList(Wrappers.<ItemType>lambdaQuery()
-                .in(ItemType::getId, itemTypeIdList));
-        if(CollUtil.isEmpty(itemTypeList))
+        List<ItemType> itemTypeList = itemTypeMapper.selectList(
+            Wrappers.<ItemType>lambdaQuery()
+                .in(ItemType::getId, itemTypeIdList)
+        );
+        if (CollUtil.isEmpty(itemTypeList))
             return true;
-        List<Long> parentIdList = itemTypeList.parallelStream().map(ItemType::getParentId).distinct().collect(Collectors.toList());
+        List<Long> parentIdList = itemTypeList.parallelStream().map(ItemType::getParentId).distinct()
+            .collect(Collectors.toList());
         //更新父级
         updateItemTypeIsFinal(targetTypeId, false);
         //更新实体
-        itemTypeList = itemTypeList.parallelStream().peek(itemType -> itemType.setParentId(targetTypeId)).collect(Collectors.toList());
+        itemTypeList = itemTypeList.parallelStream().peek(itemType -> itemType.setParentId(targetTypeId))
+            .collect(Collectors.toList());
         itemTypeMBPService.updateBatchById(itemTypeList);
         //更新原父级
         parentIdList.parallelStream().forEach(parentId -> {
@@ -204,10 +222,10 @@ public class ItemTypeService {
      */
     @Transactional
     @Caching(
-            evict = {
+        evict = {
                 @CacheEvict(value = "listItemType", allEntries = true),
                 @CacheEvict(value = "listAllItemType", allEntries = true)
-            }
+        }
     )
     public Boolean deleteItemType(Long itemTypeId) {
         final Long parentItemTypeId = itemTypeMapper.selectById(itemTypeId).getParentId();
@@ -219,9 +237,10 @@ public class ItemTypeService {
             //删除类型关联
             itemTypeLinkMapper.delete(Wrappers.<ItemTypeLink>lambdaQuery().in(ItemTypeLink::getTypeId, nowTypeIdList));
             //查找所有子级
-            nowTypeIdList = itemTypeMapper.selectList(Wrappers.<ItemType>lambdaQuery().in(ItemType::getParentId, nowTypeIdList))
-                    .parallelStream()
-                    .map(ItemType::getId).distinct().collect(Collectors.toList());
+            nowTypeIdList = itemTypeMapper
+                .selectList(Wrappers.<ItemType>lambdaQuery().in(ItemType::getParentId, nowTypeIdList))
+                .parallelStream()
+                .map(ItemType::getId).distinct().collect(Collectors.toList());
         }
 
         //更新父级标记
@@ -231,35 +250,43 @@ public class ItemTypeService {
     }
 
     private void updateItemTypeIsFinal(Long parentId, boolean isFinal) {
-            if(parentId != null && parentId > 0L) {
-            itemTypeMapper.update(null, Wrappers.<ItemType>lambdaUpdate()
-                .eq(ItemType::getId, parentId)
-                .set(ItemType::getIsFinal, isFinal));
+        if (parentId != null && parentId > 0L) {
+            itemTypeMapper.update(
+                null, Wrappers.<ItemType>lambdaUpdate()
+                    .eq(ItemType::getId, parentId)
+                    .set(ItemType::getIsFinal, isFinal)
+            );
         }
     }
 
     private void updateItemTypeIsFinal(ItemType itemType) {
-        if(itemType != null) {
-            itemType.setIsFinal(itemTypeMapper.selectCount(Wrappers.<ItemType>lambdaQuery()
-                .eq(ItemType::getParentId, itemType.getId()))
-                == 0);
+        if (itemType != null) {
+            itemType.setIsFinal(
+                itemTypeMapper.selectCount(
+                    Wrappers.<ItemType>lambdaQuery()
+                        .eq(ItemType::getParentId, itemType.getId())
+                ) == 0
+            );
         }
     }
 
     private void recalculateItemTypeIsFinal(Long parentId, boolean beforeModify) {
-        if(parentId != null) {
-            if (
-                itemTypeMapper.selectCount(Wrappers.<ItemType>lambdaQuery()
-                    .eq(ItemType::getParentId, parentId))
-                    == (beforeModify ? 1 : 0)
-            ) {
-                itemTypeMapper.update(null, Wrappers.<ItemType>lambdaUpdate()
+        if (parentId != null) {
+            if (itemTypeMapper.selectCount(
+                Wrappers.<ItemType>lambdaQuery()
+                    .eq(ItemType::getParentId, parentId)
+            ) == (beforeModify ? 1 : 0)) {
+                itemTypeMapper.update(
+                    null, Wrappers.<ItemType>lambdaUpdate()
                         .eq(ItemType::getId, parentId)
-                        .set(ItemType::getIsFinal, true));
+                        .set(ItemType::getIsFinal, true)
+                );
             } else {
-                itemTypeMapper.update(null, Wrappers.<ItemType>lambdaUpdate()
+                itemTypeMapper.update(
+                    null, Wrappers.<ItemType>lambdaUpdate()
                         .eq(ItemType::getId, parentId)
-                        .set(ItemType::getIsFinal, false));
+                        .set(ItemType::getIsFinal, false)
+                );
             }
         }
     }

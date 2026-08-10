@@ -66,19 +66,19 @@ public class EntityUtils {
         List<String> columnsAllow = pref.getColumnsAllow();
 
         List<Field> fields = ClassUtils.getFields(clazz);
-        for(Field field : fields) {
+        for (Field field : fields) {
             final TableField fieldAnnotation = field.getDeclaredAnnotation(TableField.class);
             final TableId fieldIdAnnotation = field.getDeclaredAnnotation(TableId.class);
             final String fieldDbName = fieldAnnotation == null ? "" : fieldAnnotation.value();
             final String fieldName = field.getName();
 
-            if(StrUtil.isNotBlank(fieldDbName) && StrUtil.isNotBlank(fieldName)) {
+            if (StrUtil.isNotBlank(fieldDbName) && StrUtil.isNotBlank(fieldName)) {
                 final ColumnConfig fieldConfig = new ColumnConfig();
                 fieldConfig.setDbFieldName(fieldDbName);
                 fieldConfig.setPropertyName(fieldName);
 
-                if(fieldIdAnnotation == null) {
-                    if(columnsAllow != null && !columnsAllow.contains(fieldName)) {
+                if (fieldIdAnnotation == null) {
+                    if (columnsAllow != null && !columnsAllow.contains(fieldName)) {
                         continue;
                     }
                     columnsMain.add(fieldConfig);

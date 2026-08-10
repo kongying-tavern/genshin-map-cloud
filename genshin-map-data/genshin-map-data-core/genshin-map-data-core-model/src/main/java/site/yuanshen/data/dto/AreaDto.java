@@ -74,9 +74,9 @@ public class AreaDto {
     private String content;
 
     /**
-     * 图标标签
+     * 图标ID
      */
-    private String iconTag;
+    private Long iconId;
 
     /**
      * 父级地区ID（无父级则为-1）

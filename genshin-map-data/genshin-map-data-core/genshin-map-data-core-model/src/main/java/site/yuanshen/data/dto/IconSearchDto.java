@@ -48,10 +48,10 @@ public class IconSearchDto {
     private List<Long> typeIdList;
 
     /**
-     * 图标名
+     * 图标标签
      */
-    @Schema(title = "图标名")
-    private String name;
+    @Schema(title = "图标标签")
+    private String tag;
 
     /**
      * 当前页，从1开始

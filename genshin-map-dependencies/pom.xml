@@ -15,10 +15,13 @@
         <druid.version>1.2.13</druid.version>
         <fastjson2.version>2.0.24</fastjson2.version>
         <jackson.version>2.12.4</jackson.version>
+        <protobuf.version>4.33.0</protobuf.version>
         <springdoc.version>1.6.11</springdoc.version>
         <swagger.version>2.2.2</swagger.version>
         <nimbus-jose-jwt.version>9.21</nimbus-jose-jwt.version>
         <springboot.version>2.3.12.RELEASE</springboot.version>
+        <netty.version>4.1.65.Final</netty.version>
+        <socketio.version>2.0.11</socketio.version>
         <hutool.version>5.8.11</hutool.version>
         <velocity.version>2.3</velocity.version>
         <minio.version>8.5.7</minio.version>
@@ -82,6 +85,13 @@
                 <groupId>com.alibaba</groupId>
                 <artifactId>druid-spring-boot-starter</artifactId>
                 <version>${druid.version}</version>
+            </dependency>
+
+            <!-- protobuf -->
+            <dependency>
+                <groupId>com.google.protobuf</groupId>
+                <artifactId>protobuf-java</artifactId>
+                <version>${protobuf.version}</version>
             </dependency>
 
             <!--fastjson-->
@@ -167,6 +177,26 @@
                 <version>${minio.version}</version>
             </dependency>
 
+            <!-- socketio -->
+            <dependency>
+                <groupId>com.corundumstudio.socketio</groupId>
+                <artifactId>netty-socketio</artifactId>
+                <version>${socketio.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>io.netty</groupId>
+                        <artifactId>*</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <!-- netty -->
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-all</artifactId>
+                <version>${netty.version}</version>
+            </dependency>
+
             <!-- okhttp -->
             <dependency>
                 <groupId>com.squareup.okhttp3</groupId>
@@ -221,6 +251,14 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.diffplug.spotless</groupId>
+                <artifactId>spotless-maven-plugin</artifactId>
+                <version>2.43.0</version>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
             </plugin>
         </plugins>
     </build>

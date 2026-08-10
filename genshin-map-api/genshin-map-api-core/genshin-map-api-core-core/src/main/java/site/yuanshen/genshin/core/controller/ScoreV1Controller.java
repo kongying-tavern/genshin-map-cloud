@@ -30,7 +30,9 @@ public class ScoreV1Controller {
 
     @Operation(summary = "生成评分", description = "生成评分数据")
     @PostMapping("/generate")
-    public R<Object> generate(@RequestBody ScoreParamsVo scoreParamsVo, @Parameter(hidden = true) @RequestHeader("userId") Long userId) {
+    public R<Object> generate(
+        @RequestBody ScoreParamsVo scoreParamsVo, @Parameter(hidden = true) @RequestHeader("userId") Long userId
+    ) {
         scoreParamsVo.setGeneratorId(userId);
         scoreGenerateV1Service.generateScore(scoreParamsVo);
         return RUtils.create("ok");

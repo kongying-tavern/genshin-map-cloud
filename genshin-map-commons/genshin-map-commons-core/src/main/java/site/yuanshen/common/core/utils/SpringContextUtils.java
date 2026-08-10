@@ -68,4 +68,3 @@ public class SpringContextUtils implements ApplicationContextAware {
         return getApplicationContext().getBean(name, clazz);
     }
 }
-

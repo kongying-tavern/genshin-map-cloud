@@ -28,9 +28,14 @@
         <maven-plugin.version>3.8.1</maven-plugin.version>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
+
+        <protobuf.version>4.33.0</protobuf.version>
+        <protoc-plugin.version>3.10.2</protoc-plugin.version>
+
         <jdk.version>11</jdk.version>
         <gsapi.version>1.0</gsapi.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <spotless.version>2.43.0</spotless.version>
     </properties>
 
     <!-- 添加SpringBoot、SpringCloud Netflix、SpringCloud alibaba的相关基础依赖 -->
@@ -91,6 +96,12 @@
             </dependency>
 
             <dependency>
+                <groupId>com.google.protobuf</groupId>
+                <artifactId>protobuf-java</artifactId>
+                <version>${protobuf.version}</version>
+            </dependency>
+
+            <dependency>
                 <groupId>site.yuanshen</groupId>
                 <artifactId>genshin-map-dependencies</artifactId>
                 <version>${gsapi.version}</version>
@@ -130,6 +141,7 @@
                 <runtime-profile>uat</runtime-profile>
             </properties>
         </profile>
+
     </profiles>
 
 
@@ -180,6 +192,7 @@
                     <showDeprecation>true</showDeprecation>
                 </configuration>
             </plugin>
+
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>flatten-maven-plugin</artifactId>
@@ -206,6 +219,11 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <plugin>
+                <groupId>com.diffplug.spotless</groupId>
+                <artifactId>spotless-maven-plugin</artifactId>
+            </plugin>
         </plugins>
 
         <!-- 插件管理 -->
@@ -215,6 +233,50 @@
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-maven-plugin</artifactId>
                     <version>${springboot.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>io.github.ascopes</groupId>
+                    <artifactId>protobuf-maven-plugin</artifactId>
+                    <version>${protoc-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>generate</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <protoc>${protobuf.version}</protoc>
+                        <sourceDirectories>
+                            <sourceDirectory>src/main/resources/proto</sourceDirectory>
+                        </sourceDirectories>
+                        <outputDirectory>src/main/java</outputDirectory>
+                    </configuration>
+                    <dependencies>
+                        <dependency>
+                            <groupId>com.google.protobuf</groupId>
+                            <artifactId>protobuf-java</artifactId>
+                            <version>${protobuf.version}</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+                <plugin>
+                    <groupId>com.diffplug.spotless</groupId>
+                    <artifactId>spotless-maven-plugin</artifactId>
+                    <version>${spotless.version}</version>
+                    <configuration>
+                        <java>
+                            <includes>
+                                <include>src/main/java/**/*.java</include>
+                                <include>src/test/java/**/*.java</include>
+                            </includes>
+                            <toggleOffOn/>
+                            <eclipse>
+                                <file>${session.executionRootDirectory}/.eclipse-formatter.xml</file>
+                            </eclipse>
+                            <formatAnnotations/>
+                        </java>
+                    </configuration>
                 </plugin>
             </plugins>
         </pluginManagement>

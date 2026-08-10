@@ -12,6 +12,7 @@ import site.yuanshen.genshin.core.service.mbp.ItemAreaPublicMBPService;
  * @author Mybatis Plus generator
  */
 @Service
-public class ItemAreaPublicMBPServiceImpl extends ServiceImpl<ItemAreaPublicMapper, ItemAreaPublic> implements ItemAreaPublicMBPService {
+public class ItemAreaPublicMBPServiceImpl extends ServiceImpl<ItemAreaPublicMapper, ItemAreaPublic>
+    implements ItemAreaPublicMBPService {
 
 }

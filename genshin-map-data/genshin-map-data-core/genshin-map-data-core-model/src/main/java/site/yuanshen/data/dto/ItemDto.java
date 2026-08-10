@@ -87,9 +87,9 @@ public class ItemDto {
     private Integer defaultCount;
 
     /**
-     * 图标标签
+     * 图标ID
      */
-    private String iconTag;
+    private Long iconId;
 
     /**
      * 图标样式类型

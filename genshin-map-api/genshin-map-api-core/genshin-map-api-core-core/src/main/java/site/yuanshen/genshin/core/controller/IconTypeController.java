@@ -34,7 +34,7 @@ public class IconTypeController {
     @PostMapping("/get/list")
     public R<PageListVo<IconTypeVo>> listIconType(@RequestBody PageAndTypeSearchVo searchVo) {
         R<PageListVo<IconTypeVo>> result = RUtils.create(
-                iconTypeService.listIconType(new PageAndTypeSearchDto(searchVo))
+            iconTypeService.listIconType(new PageAndTypeSearchDto(searchVo))
         );
         UserAppenderService.appendUser(result, result.getData().getRecord(), true, IconTypeVo::getCreatorId);
         UserAppenderService.appendUser(result, result.getData().getRecord(), true, IconTypeVo::getUpdaterId);
@@ -45,7 +45,7 @@ public class IconTypeController {
     @PutMapping("/add")
     public R<Long> addIconType(@RequestBody IconTypeVo iconTypeVo) {
         return RUtils.create(
-                iconTypeService.addIconType(new IconTypeDto(iconTypeVo))
+            iconTypeService.addIconType(new IconTypeDto(iconTypeVo))
         );
     }
 
@@ -53,7 +53,7 @@ public class IconTypeController {
     @PostMapping("/update")
     public R<Boolean> updateIconType(@RequestBody IconTypeVo iconTypeVo) {
         return RUtils.create(
-                iconTypeService.updateIconType(new IconTypeDto(iconTypeVo))
+            iconTypeService.updateIconType(new IconTypeDto(iconTypeVo))
         );
     }
 
@@ -61,7 +61,7 @@ public class IconTypeController {
     @DeleteMapping("/delete/{typeId}")
     public R<Boolean> deleteIconType(@PathVariable("typeId") Long typeId) {
         return RUtils.create(
-                iconTypeService.deleteIconType(typeId)
+            iconTypeService.deleteIconType(typeId)
         );
     }
 

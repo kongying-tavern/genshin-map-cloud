@@ -11,5 +11,6 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class A<T> implements Serializable {
     private String action = "";
+
     private T data;
 }
