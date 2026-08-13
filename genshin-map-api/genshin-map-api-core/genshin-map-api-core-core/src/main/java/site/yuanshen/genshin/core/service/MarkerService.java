@@ -12,6 +12,7 @@ import site.yuanshen.common.core.utils.BeanUtils;
 import site.yuanshen.common.core.utils.JsonUtils;
 import site.yuanshen.common.core.utils.PgsqlUtils;
 import site.yuanshen.common.core.utils.SpringContextUtils;
+import site.yuanshen.common.web.utils.UserUtils;
 import site.yuanshen.data.dto.MarkerDto;
 import site.yuanshen.data.dto.MarkerItemLinkDto;
 import site.yuanshen.data.dto.helper.PageSearchDto;
@@ -163,8 +164,8 @@ public class MarkerService {
     /**
      * 分页查询所有点位信息
      *
-     * @param pageSearchDto 分页查询数据封装
-     * @param hiddenFlagList   hidden_flag范围
+     * @param pageSearchDto  分页查询数据封装
+     * @param hiddenFlagList hidden_flag范围
      * @return 点位完整信息的前端封装的分页记录
      */
     public PageListVo<MarkerVo> listMarkerPage(PageSearchDto pageSearchDto, List<Integer> hiddenFlagList) {
@@ -181,6 +182,7 @@ public class MarkerService {
     @Transactional
     public Long createMarker(MarkerDto markerDto) {
         Marker marker = markerDto.getEntity();
+        marker.setMarkerCreatorId(UserUtils.getUserId() == null ? 0L : UserUtils.getUserId());
         markerMapper.insert(marker);
         List<MarkerItemLink> itemLinkList = new ArrayList<>(
             markerDto.getItemList().parallelStream()
