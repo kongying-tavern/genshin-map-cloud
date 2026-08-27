@@ -291,22 +291,23 @@ public final class MarkerLinkageDataHelper {
             List<MarkerLinkageVo> linkageVos,
             Map<Long, Point2D.Double> markerCoords
     ) {
-        linkageVos.stream().forEach(linkage -> {
-            linkage.getPath().forEach(path -> {
-                final Long id1 = path.getId1();
-                final Point2D.Double coord1 = markerCoords.get(id1);
-                if(coord1 != null) {
-                    path.setX1(coord1.getX());
-                    path.setY1(coord1.getY());
-                }
-                final Long id2 = path.getId2();
-                final Point2D.Double coord2 = markerCoords.get(id2);
-                if(coord2 != null) {
-                    path.setX2(coord2.getX());
-                    path.setY2(coord2.getY());
-                }
-            });
-        });
+        linkageVos.stream()
+                .filter(Objects::nonNull)
+                .map(linkage -> CollUtil.defaultIfEmpty(linkage.getPath(), List.of()))
+                .forEach(pathList -> pathList.forEach(path -> {
+                    final Long id1 = path.getId1();
+                    final Point2D.Double coord1 = markerCoords.get(id1);
+                    if(coord1 != null) {
+                        path.setX1(coord1.getX());
+                        path.setY1(coord1.getY());
+                    }
+                    final Long id2 = path.getId2();
+                    final Point2D.Double coord2 = markerCoords.get(id2);
+                    if(coord2 != null) {
+                        path.setX2(coord2.getX());
+                        path.setY2(coord2.getY());
+                    }
+                }));
     }
 
     public static void patchPathMarkerCoordsInGraph(
