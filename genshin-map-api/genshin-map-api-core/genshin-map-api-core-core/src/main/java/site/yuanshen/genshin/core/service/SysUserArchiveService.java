@@ -28,10 +28,15 @@ public class SysUserArchiveService {
     private final SysUserArchiveMapper sysUserArchiveMapper;
 
     private SysUserArchive getSlotEntity(int slotIndex, Long userId) {
+        // 容忍脏数据：同一 userId+slotIndex 存在多条记录时，
+        // 取 updateTime 最新的一条；updateTime 相同则取 ID 最新的一条
         return sysUserArchiveMapper.selectOne(
             Wrappers.<SysUserArchive>lambdaQuery()
                 .eq(SysUserArchive::getSlotIndex, slotIndex)
                 .eq(SysUserArchive::getUserId, userId)
+                .orderByDesc(SysUserArchive::getUpdateTime)
+                .orderByDesc(SysUserArchive::getId)
+                .last("LIMIT 1")
         );
     }
 
