@@ -34,14 +34,22 @@ services:
           - nacos.local
     environment:
       MODE: standalone
+    volumes:
+      - ${DATA_DIR}/nacos/logs:/home/nacos/logs
+      - ${DATA_DIR}/nacos/data:/home/nacos/data
     ports:
       - ${NACOS_PORT_HTTP:-8848}:8848
       - ${NACOS_PORT_GRPC_CLIENT:-9848}:9848
       - ${NACOS_PORT_GRPC_SERVER:-9849}:9849
     restart: always
     healthcheck:
-      test: ["CMD-SHELL", "curl -f 'http://localhost:8848/nacos' || exit 1"]
-      interval: 30s
-      timeout: 30s
-      retries: 3
-      start_period: 2m
+      # Readiness signal:
+      #  1. gRPC port 9848 reachable (used by Spring Cloud Alibaba clients for
+      #     registration & config); `timeout` guards the TCP connect.
+      #  2. HTTP 8848 answers a successful curl probe (curl exists in the image);
+      #     `--max-time 5` guards against hanging.
+      test: ["CMD-SHELL", "bash -c 'timeout 5 bash -c \"echo > /dev/tcp/127.0.0.1/9848 2>/dev/null\" && curl -sf --max-time 5 http://127.0.0.1:8848/nacos/ >/dev/null 2>&1'"]
+      interval: 10s
+      timeout: 10s
+      retries: 30
+      start_period: 20s
