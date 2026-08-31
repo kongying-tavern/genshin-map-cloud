@@ -1,5 +1,6 @@
 package site.yuanshen.genshin.core.service;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
@@ -132,6 +133,8 @@ public class AreaService {
         if (Objects.equals(parentId, id)) {
             throw new GenshinApiException("指定的父节点无效");
         }
+        //守卫：name、code 不能为空；content 空值转空字符串
+        guardAreaFields(areaDto);
 
         Area area = areaDto.getEntity()
             .withIsFinal(true);
@@ -177,6 +180,8 @@ public class AreaService {
         if (Objects.equals(parentId, id)) {
             throw new GenshinApiException("指定的父节点无效");
         }
+        //守卫：name、code 不能为空；content 空值转空字符串
+        guardAreaFields(areaDto);
 
         //获取地区实体
         Area area = areaMapper.selectOne(
@@ -225,6 +230,21 @@ public class AreaService {
         recalculateAreaIsFinal(parentAreaId, false);
 
         return true;
+    }
+
+    /**
+     * 地区守卫：name、code 不能为空；content 为空时归一化为空字符串
+     *
+     * @param areaDto 地区数据封装
+     */
+    private void guardAreaFields(AreaDto areaDto) {
+        if (StrUtil.isBlank(areaDto.getName())) {
+            throw new GenshinApiException("地区名称不能为空");
+        }
+        if (StrUtil.isBlank(areaDto.getCode())) {
+            throw new GenshinApiException("地区代码不能为空");
+        }
+        areaDto.setContent(StrUtil.blankToDefault(areaDto.getContent(), ""));
     }
 
     private void updateAreaIsFinal(Long parentId, boolean isFinal) {
