@@ -12,6 +12,7 @@ import site.yuanshen.genshin.core.service.mbp.SysUserDeviceMBPService;
  * @author Alex Fang
  */
 @Service
-public class SysUserDeviceMBPServiceImpl extends ServiceImpl<SysUserDeviceMapper, SysUserDevice> implements SysUserDeviceMBPService {
+public class SysUserDeviceMBPServiceImpl extends ServiceImpl<SysUserDeviceMapper, SysUserDevice>
+    implements SysUserDeviceMBPService {
 
 }

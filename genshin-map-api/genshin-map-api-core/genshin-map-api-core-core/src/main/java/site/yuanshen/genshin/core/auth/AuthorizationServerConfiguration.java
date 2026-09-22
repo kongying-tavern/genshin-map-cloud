@@ -46,8 +46,10 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 
     @Autowired
     private ClientDetailsServiceImpl clientDetailsServiceImpl;
+
     @Autowired
     private SysActionLogService sysActionLogService;
+
     @Autowired
     private SysUserDeviceService sysUserDeviceService;
 
@@ -73,13 +75,16 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
                 List<AccessPathVo> accessPaths = new ArrayList<>();
                 ClientUtils.ClientInfo clientInfo = ClientUtils.getClientInfo(null, null);
 
-                boolean isDeviceAccessible = sysUserDeviceService.checkDeviceAccess(userPrincipal.getUserId(), userPrincipal.getAccessPolicyList(), accessPaths, clientInfo);
+                boolean isDeviceAccessible = sysUserDeviceService.checkDeviceAccess(
+                    userPrincipal.getUserId(), userPrincipal.getAccessPolicyList(), accessPaths, clientInfo
+                );
                 Map<String, Object> logExtraData = new HashMap<>();
                 logExtraData.put("accessPaths", accessPaths);
 
                 sysActionLogService.addNewLog(userId, "LOGIN", !isDeviceAccessible, logExtraData, clientInfo);
                 List<RoleEnum> roleList = userPrincipal.getRoleEnumList();
-                List<String> roleCodeList = Optional.of(roleList).orElse(new ArrayList<>()).stream().map(RoleEnum::getCode).collect(Collectors.toList());
+                List<String> roleCodeList = Optional.of(roleList).orElse(new ArrayList<>()).stream()
+                    .map(RoleEnum::getCode).collect(Collectors.toList());
                 additionalInfo.put("userId", userId);
                 additionalInfo.put("userRoles", roleCodeList);
                 additionalInfo.put("env", env);
@@ -110,7 +115,9 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
      */
     @Bean
     public KeyPair keyPair() {
-        KeyStoreKeyFactory factory = new KeyStoreKeyFactory(new ClassPathResource("oauth2.jks"), "oauth2".toCharArray());
+        KeyStoreKeyFactory factory = new KeyStoreKeyFactory(
+            new ClassPathResource("oauth2.jks"), "oauth2".toCharArray()
+        );
         return factory.getKeyPair("oauth2", "oauth2".toCharArray());
     }
 
@@ -122,19 +129,19 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) {
         endpoints.tokenStore(tokenStore())
-                //jwt需要userDetailsService来将用户信息放入jwt中
-                .userDetailsService(userDetailsService)
-                .authenticationManager(authenticationManager)
-                .tokenEnhancer(tokenEnhancerChain())
-                .accessTokenConverter(jwtAccessTokenConverter())
-                .allowedTokenEndpointRequestMethods(HttpMethod.GET, HttpMethod.POST);
+            //jwt需要userDetailsService来将用户信息放入jwt中
+            .userDetailsService(userDetailsService)
+            .authenticationManager(authenticationManager)
+            .tokenEnhancer(tokenEnhancerChain())
+            .accessTokenConverter(jwtAccessTokenConverter())
+            .allowedTokenEndpointRequestMethods(HttpMethod.GET, HttpMethod.POST);
     }
 
     @Override
     public void configure(AuthorizationServerSecurityConfigurer security) {
         security
-                .tokenKeyAccess("permitAll()")
-                .checkTokenAccess("permitAll()")
-                .allowFormAuthenticationForClients();
+            .tokenKeyAccess("permitAll()")
+            .checkTokenAccess("permitAll()")
+            .allowFormAuthenticationForClients();
     }
 }

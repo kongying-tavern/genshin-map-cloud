@@ -69,9 +69,9 @@ public class BaseConfiguration {
         public CacheManager cacheManager() {
             CaffeineCacheManager caffeineCacheManager = new CaffeineCacheManager();
             Caffeine<Object, Object> caffeine = Caffeine.newBuilder()
-                    // 设置最后一次写入或访问后经过固定时间过期
-                    .expireAfterAccess(1, TimeUnit.MINUTES)
-                    .softValues();
+                // 设置最后一次写入或访问后经过固定时间过期
+                .expireAfterAccess(1, TimeUnit.MINUTES)
+                .softValues();
             caffeineCacheManager.setCaffeine(caffeine);
             return caffeineCacheManager;
         }
@@ -88,7 +88,6 @@ public class BaseConfiguration {
         }
 
     }
-
 
     /**
      * nacos 注册中心相关的配置

@@ -26,11 +26,14 @@ import java.util.List;
 @Tag(name = "score", description = "评分统计API")
 public class ScoreController {
     private final ScoreGenerateService scoreGenerateService;
+
     private final ScoreDataService scoreDataService;
 
     @Operation(summary = "生成评分", description = "生成评分数据")
     @PostMapping("/generate")
-    public R<Object> generate(@RequestBody ScoreParamsVo scoreParamsVo, @Parameter(hidden = true) @RequestHeader("userId") Long userId) {
+    public R<Object> generate(
+        @RequestBody ScoreParamsVo scoreParamsVo, @Parameter(hidden = true) @RequestHeader("userId") Long userId
+    ) {
         scoreParamsVo.setGeneratorId(userId);
         scoreGenerateService.generateScore(scoreParamsVo);
         return RUtils.create("ok");

@@ -31,8 +31,8 @@ import java.util.stream.Collectors;
 public class RestException {
     private List<String> getStackTraceErrors(StackTraceElement[] stackTraceElements) {
         List<String> stl = Arrays.stream(stackTraceElements)
-                .map(StackTraceElement::toString)
-                .collect(Collectors.toList());
+            .map(StackTraceElement::toString)
+            .collect(Collectors.toList());
         return stl;
     }
 
@@ -72,9 +72,11 @@ public class RestException {
     /**
      * 对象数据校验异常处理方法
      */
-    @ExceptionHandler({
-            BindException.class,
-            MethodArgumentNotValidException.class})
+    @ExceptionHandler(
+        {
+                BindException.class,
+                MethodArgumentNotValidException.class }
+    )
     public R bindExceptionHandler(Exception e) {
         BindingResult bindingResult = null;
         //取出BindResult
@@ -84,12 +86,14 @@ public class RestException {
             bindingResult = ((MethodArgumentNotValidException) e).getBindingResult();
         //创建Response
         assert bindingResult != null;
-        return RUtils.create(Codes.PARAMETER_ERROR,
-                null,
-                bindingResult.getAllErrors().stream()
-                        .map(ObjectError::getDefaultMessage)
-                        .collect(Collectors.toSet()),
-                null);
+        return RUtils.create(
+            Codes.PARAMETER_ERROR,
+            null,
+            bindingResult.getAllErrors().stream()
+                .map(ObjectError::getDefaultMessage)
+                .collect(Collectors.toSet()),
+            null
+        );
     }
 
     /**
@@ -97,10 +101,12 @@ public class RestException {
      */
     @ExceptionHandler(ConstraintViolationException.class)
     public R constraintViolationExceptionHandler(ConstraintViolationException e) {
-        return RUtils.create(Codes.PARAMETER_ERROR,
-                null,
-                e.getConstraintViolations().stream()
-                        .map(ConstraintViolation::getMessage)
-                        .collect(Collectors.toSet()));
+        return RUtils.create(
+            Codes.PARAMETER_ERROR,
+            null,
+            e.getConstraintViolations().stream()
+                .map(ConstraintViolation::getMessage)
+                .collect(Collectors.toSet())
+        );
     }
 }

@@ -28,7 +28,7 @@ public class originPathSaveFilter implements GlobalFilter, Ordered {
         //请求url
         String path = exchange.getRequest().getPath().value();
         ServerHttpRequest request = exchange.getRequest().mutate()
-                .header("originalPath", path).build();
+            .header("originalPath", path).build();
         return chain.filter(exchange.mutate().request(request).build());
     }
 

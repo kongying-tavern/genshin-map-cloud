@@ -13,7 +13,7 @@ public class JwtAccessToken extends JwtAccessTokenConverter {
     @Override
     public OAuth2AccessToken enhance(OAuth2AccessToken accessToken, OAuth2Authentication authentication) {
         DefaultOAuth2AccessToken defaultOAuth2AccessToken = new DefaultOAuth2AccessToken(accessToken);
-        defaultOAuth2AccessToken.setExpiration(new Date(System.currentTimeMillis() + 1000 * 1800 ));
+        defaultOAuth2AccessToken.setExpiration(new Date(System.currentTimeMillis() + 1000 * 1800));
         return super.enhance(defaultOAuth2AccessToken, authentication);
     }
 }

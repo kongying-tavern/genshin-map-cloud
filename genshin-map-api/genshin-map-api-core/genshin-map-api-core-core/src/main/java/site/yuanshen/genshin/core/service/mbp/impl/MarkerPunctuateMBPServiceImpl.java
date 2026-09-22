@@ -12,6 +12,7 @@ import site.yuanshen.genshin.core.service.mbp.MarkerPunctuateMBPService;
  * @author Mybatis Plus generator
  */
 @Service
-public class MarkerPunctuateMBPServiceImpl extends ServiceImpl<MarkerPunctuateMapper, MarkerPunctuate> implements MarkerPunctuateMBPService {
+public class MarkerPunctuateMBPServiceImpl extends ServiceImpl<MarkerPunctuateMapper, MarkerPunctuate>
+    implements MarkerPunctuateMBPService {
 
 }

@@ -25,6 +25,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class ScoreGenerateService {
     private final ScoreHelper commonHelper;
+
     private final ScoreGeneratePunctuateHelper punctuateHelper;
 
     public void generateScore(ScoreParamsVo config) {
@@ -32,7 +33,7 @@ public class ScoreGenerateService {
         final ScoreSpanConfigDto span = config.calculateSpan();
         final Long generatorId = config.getGeneratorId();
 
-        if(ScoreScopeEnum.PUNCTUATE.name().equals(scope))
+        if (ScoreScopeEnum.PUNCTUATE.name().equals(scope))
             this.generateScorePunctuate(span, generatorId);
     }
 
@@ -59,7 +60,8 @@ public class ScoreGenerateService {
         // 日志分组
         Map<Long, List<History>> historyGroup = punctuateHelper.getHistoryGroup(fullHistory);
         // 生成模块化日志
-        Map<ScoreHelper.ScoreKey, ScoreDataPunctuateVo> fieldsDiff = punctuateHelper.getHistoryFieldDiff(span, null, historyGroup);
+        Map<ScoreHelper.ScoreKey, ScoreDataPunctuateVo> fieldsDiff = punctuateHelper
+            .getHistoryFieldDiff(span, null, historyGroup);
 
         // 保存日志
         final List<ScoreStat> scoreData = punctuateHelper.getScoreData(generatorId, span, fieldsDiff);

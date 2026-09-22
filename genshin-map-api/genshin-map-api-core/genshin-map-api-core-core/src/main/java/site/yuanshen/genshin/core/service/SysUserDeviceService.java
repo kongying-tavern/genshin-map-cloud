@@ -39,6 +39,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class SysUserDeviceService {
     private final SysUserDeviceDao sysUserDeviceDao;
+
     private final SysUserDeviceMapper sysUserDeviceMapper;
 
     /**
@@ -63,58 +64,63 @@ public class SysUserDeviceService {
         ClientUtils.ClientInfo clientInfo
     ) {
         List<SysUserDeviceDto> deviceList = sysUserDeviceDao.getDeviceList(userId.toString());
-        SysUserDeviceDto userDevice = sysUserDeviceDao.createNewDevice(userId, clientInfo.getIpv4(), clientInfo.getUa());
+        SysUserDeviceDto userDevice = sysUserDeviceDao
+            .createNewDevice(userId, clientInfo.getIpv4(), clientInfo.getUa());
 
         SysUserDeviceDto currentDevice = sysUserDeviceDao.findDevice(deviceList, userDevice);
-        if(currentDevice == null) {
+        if (currentDevice == null) {
             currentDevice = sysUserDeviceDao.addNewDevice(userDevice);
         }
         boolean accessRes = checkDeviceAccessPolicies(deviceList, accessPolicyList, currentDevice, accessPaths);
-        if(Objects.equals(accessRes, true)) {
+        if (Objects.equals(accessRes, true)) {
             sysUserDeviceDao.updateDeviceLoginTime(currentDevice.getId());
         }
         return accessRes;
     }
 
     public boolean checkDeviceAccessPolicies(
-            List<SysUserDeviceDto> deviceList,
-            List<AccessPolicyEnum> accessPolicyList,
-            SysUserDeviceDto currentDevice,
-            List<AccessPathVo> accessPaths
+        List<SysUserDeviceDto> deviceList,
+        List<AccessPolicyEnum> accessPolicyList,
+        SysUserDeviceDto currentDevice,
+        List<AccessPathVo> accessPaths
     ) {
-        if(currentDevice == null) {
+        if (currentDevice == null) {
             return false;
         }
-        if(CollUtil.isEmpty(accessPolicyList)) {
+        if (CollUtil.isEmpty(accessPolicyList)) {
             return true;
         }
 
         Boolean policyPass = null;
         boolean policyAccessPathExists = accessPaths != null;
-        for(AccessPolicyEnum accessPolicyEnum : accessPolicyList) {
-            BiFunction<List<SysUserDeviceDto>, SysUserDeviceDto, BoolLogicPair> policyTester = accessPolicyEnum.getTester();
-            if(policyTester != null) {
+        for (AccessPolicyEnum accessPolicyEnum : accessPolicyList) {
+            BiFunction<List<SysUserDeviceDto>, SysUserDeviceDto, BoolLogicPair> policyTester = accessPolicyEnum
+                .getTester();
+            if (policyTester != null) {
                 BoolLogicPair policyResult = policyTester.apply(deviceList, currentDevice);
-                if(policyResult != null) {
-                    switch(policyResult.getLogic()) {
+                if (policyResult != null) {
+                    switch (policyResult.getLogic()) {
                         case OR:
-                            policyPass = policyPass == null ? policyResult.getBoolValue() : policyPass | policyResult.getBoolValue();
+                            policyPass = policyPass == null ? policyResult.getBoolValue()
+                                : policyPass | policyResult.getBoolValue();
                             break;
                         case AND:
-                            policyPass = policyPass == null ? policyResult.getBoolValue() : policyPass & policyResult.getBoolValue();
+                            policyPass = policyPass == null ? policyResult.getBoolValue()
+                                : policyPass & policyResult.getBoolValue();
                             break;
                     }
 
                     // 将当前策略判断追加到权限路径中
-                    if(policyAccessPathExists) {
-                        accessPaths.add(new AccessPathVo()
-                            .withPolicy(accessPolicyEnum.getCode())
-                            .withPassed(policyResult.getBoolValue())
+                    if (policyAccessPathExists) {
+                        accessPaths.add(
+                            new AccessPathVo()
+                                .withPolicy(accessPolicyEnum.getCode())
+                                .withPassed(policyResult.getBoolValue())
                         );
                     }
 
                     // 处理提前退出拦截
-                    if(policyResult.getTruncated()) {
+                    if (policyResult.getTruncated()) {
                         return policyPass;
                     }
                 }
@@ -141,29 +147,33 @@ public class SysUserDeviceService {
         wrapper = PgsqlUtils.sortWrapper(wrapper, sortList);
 
         LambdaQueryWrapper<SysUserDevice> queryWrapper = wrapper.lambda()
-                .eq(SysUserDevice::getUserId, deviceSearchDto.getUserId())
-                .like(StrUtil.isNotBlank(deviceSearchDto.getDeviceId()), SysUserDevice::getDeviceId, deviceSearchDto.getDeviceId())
-                .like(StrUtil.isNotBlank(deviceSearchDto.getIpv4()), SysUserDevice::getIpv4, deviceSearchDto.getIpv4())
-                .eq(deviceSearchDto.getStatus() != null, SysUserDevice::getStatus, deviceSearchDto.getStatus());
+            .eq(SysUserDevice::getUserId, deviceSearchDto.getUserId())
+            .like(
+                StrUtil.isNotBlank(deviceSearchDto.getDeviceId()), SysUserDevice::getDeviceId,
+                deviceSearchDto.getDeviceId()
+            )
+            .like(StrUtil.isNotBlank(deviceSearchDto.getIpv4()), SysUserDevice::getIpv4, deviceSearchDto.getIpv4())
+            .eq(deviceSearchDto.getStatus() != null, SysUserDevice::getStatus, deviceSearchDto.getStatus());
 
         Page<SysUserDevice> historyPage = sysUserDeviceMapper.selectPage(deviceSearchDto.getPageEntity(), queryWrapper);
 
         List<SysUserDeviceVo> result = historyPage.getRecords().stream()
-                .map(SysUserDeviceDto::new)
-                .map(SysUserDeviceDto::getVo)
-                .collect(Collectors.toList());
+            .map(SysUserDeviceDto::new)
+            .map(SysUserDeviceDto::getVo)
+            .collect(Collectors.toList());
         return new PageListVo<SysUserDeviceVo>()
-                .setRecord(result)
-                .setTotal(historyPage.getTotal())
-                .setSize(historyPage.getSize());
+            .setRecord(result)
+            .setTotal(historyPage.getTotal())
+            .setSize(historyPage.getSize());
 
     }
 
     public Boolean updateDevice(SysUserDeviceDto deviceDto) {
-        if(deviceDto.getId() == null) {
+        if (deviceDto.getId() == null) {
             return false;
         }
-        return 1 == sysUserDeviceMapper.update(null, Wrappers.<SysUserDevice>lambdaUpdate()
+        return 1 == sysUserDeviceMapper.update(
+            null, Wrappers.<SysUserDevice>lambdaUpdate()
                 .eq(SysUserDevice::getId, deviceDto.getId())
                 .set(deviceDto.getStatus() != null, SysUserDevice::getStatus, deviceDto.getStatus())
                 .set(SysUserDevice::getUpdateTime, TimeUtils.getCurrentTimestamp())

@@ -1,6 +1,5 @@
 package site.yuanshen.genshin.core.controller;
 
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -35,12 +34,15 @@ public class AreaController {
 
     @Operation(summary = "列出地区", description = "可根据父级地区id列出子地区列表")
     @PostMapping("/get/list")
-    public R<List<AreaVo>> listArea(@Schema(hidden = true)  @RequestHeader(value = "userDataLevel",required = false) String userDataLevel, @RequestBody AreaSearchVo areaSearchVo) {
+    public R<List<AreaVo>> listArea(
+        @Schema(hidden = true) @RequestHeader(value = "userDataLevel", required = false) String userDataLevel,
+        @RequestBody AreaSearchVo areaSearchVo
+    ) {
         //todo userDataLevel应该作为参数传入，vo作为前端传值不应该加userDataLevel
         areaSearchVo.setHiddenFlagList(HiddenFlagEnum.getFlagListByMask(userDataLevel));
         R<List<AreaVo>> result = RUtils.create(
-                areaService.listArea(areaSearchVo)
-                        .stream().map(AreaDto::getVo).collect(Collectors.toList())
+            areaService.listArea(areaSearchVo)
+                .stream().map(AreaDto::getVo).collect(Collectors.toList())
         );
         UserAppenderService.appendUser(result, result.getData(), true, AreaVo::getCreatorId);
         UserAppenderService.appendUser(result, result.getData(), true, AreaVo::getUpdaterId);
@@ -49,9 +51,12 @@ public class AreaController {
 
     @Operation(summary = "获取单个地区信息", description = "获取单个地区信息")
     @PostMapping("/get/{areaId}")
-    public R<AreaVo> getArea(@Parameter(hidden = true) @RequestHeader(value = "userDataLevel",required = false) String userDataLevel, @PathVariable("areaId") Long areaId) {
+    public R<AreaVo> getArea(
+        @Parameter(hidden = true) @RequestHeader(value = "userDataLevel", required = false) String userDataLevel,
+        @PathVariable("areaId") Long areaId
+    ) {
         R<AreaVo> result = RUtils.create(
-                areaService.getArea(areaId, HiddenFlagEnum.getFlagListByMask(userDataLevel)).getVo()
+            areaService.getArea(areaId, HiddenFlagEnum.getFlagListByMask(userDataLevel)).getVo()
         );
         UserAppenderService.appendUser(result, result.getData(), false, AreaVo::getCreatorId);
         UserAppenderService.appendUser(result, result.getData(), false, AreaVo::getUpdaterId);
@@ -62,7 +67,7 @@ public class AreaController {
     @PutMapping("/add")
     public R<Long> createArea(@RequestBody AreaVo areaVo) {
         return RUtils.create(
-                areaService.createArea(new AreaDto(areaVo))
+            areaService.createArea(new AreaDto(areaVo))
         );
     }
 
@@ -70,7 +75,7 @@ public class AreaController {
     @PostMapping("/update")
     public R<Boolean> updateArea(@RequestBody AreaVo areaVo) {
         return RUtils.create(
-                areaService.updateArea(new AreaDto(areaVo))
+            areaService.updateArea(new AreaDto(areaVo))
         );
     }
 
@@ -78,9 +83,8 @@ public class AreaController {
     @DeleteMapping("/{areaId}")
     public R<Boolean> deleteArea(@PathVariable("areaId") Long areaId) {
         return RUtils.create(
-                areaService.deleteArea(areaId)
+            areaService.deleteArea(areaId)
         );
     }
-
 
 }

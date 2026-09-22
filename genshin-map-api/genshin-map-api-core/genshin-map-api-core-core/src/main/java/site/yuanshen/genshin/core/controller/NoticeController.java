@@ -29,14 +29,16 @@ import site.yuanshen.genshin.core.socketIO.SocketIOEntrypoint;
 @Tag(name = "notice", description = "公告API")
 public class NoticeController {
     private final NoticeService noticeService;
+
     private final CacheService cacheService;
+
     private final SocketIOEntrypoint socketIOEntrypoint;
 
     @Operation(summary = "分页查询所有公告信息", description = "分页查询所有点位信息")
     @PostMapping("/get/list")
     public R<PageListVo<NoticeVo>> listNotice(@RequestBody NoticeSearchVo noticeSearchVo) {
         R<PageListVo<NoticeVo>> result = RUtils.create(
-                noticeService.listNotice(new NoticeSearchDto(noticeSearchVo))
+            noticeService.listNotice(new NoticeSearchDto(noticeSearchVo))
         );
         UserAppenderService.appendUser(result, result.getData().getRecord(), true, NoticeVo::getCreatorId);
         UserAppenderService.appendUser(result, result.getData().getRecord(), true, NoticeVo::getUpdaterId);

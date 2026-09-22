@@ -32,26 +32,31 @@ import java.util.stream.Collectors;
 public class PunctuateAuditController {
 
     private final PunctuateAuditService punctuateAuditService;
+
     private final CacheService cacheService;
 
     //////////////START:审核员的API//////////////
 
-    @Operation(summary = "根据各种条件筛选打点ID",
-            description = "支持根据末端地区、末端类型、物品、提交者来进行查询，地区、类型、物品查询不能同时生效，同时存在时报错")
+    @Operation(
+        summary = "根据各种条件筛选打点ID",
+        description = "支持根据末端地区、末端类型、物品、提交者来进行查询，地区、类型、物品查询不能同时生效，同时存在时报错"
+    )
     @PostMapping("/get/id")
     public R<List<Long>> searchPunctuateId(@RequestBody PunctuateSearchVo punctuateSearchVo) {
         return RUtils.create(
-                punctuateAuditService.searchPunctuateId(punctuateSearchVo)
+            punctuateAuditService.searchPunctuateId(punctuateSearchVo)
         );
     }
 
-    @Operation(summary = "根据各种条件筛选打点信息",
-            description = "支持根据末端地区、末端类型、物品、提交者来进行查询，地区、类型、物品查询不能同时生效，同时存在时报错")
+    @Operation(
+        summary = "根据各种条件筛选打点信息",
+        description = "支持根据末端地区、末端类型、物品、提交者来进行查询，地区、类型、物品查询不能同时生效，同时存在时报错"
+    )
     @PostMapping("/get/list_byinfo")
     public R<List<MarkerPunctuateVo>> searchPunctuate(@RequestBody PunctuateSearchVo punctuateSearchVo) {
         R<List<MarkerPunctuateVo>> result = RUtils.create(
-                punctuateAuditService.searchPunctuate(punctuateSearchVo).stream()
-                        .map(MarkerPunctuateDto::getVo).collect(Collectors.toList())
+            punctuateAuditService.searchPunctuate(punctuateSearchVo).stream()
+                .map(MarkerPunctuateDto::getVo).collect(Collectors.toList())
         );
         UserAppenderService.appendUser(result, result.getData(), true, MarkerPunctuateVo::getCreatorId);
         UserAppenderService.appendUser(result, result.getData(), true, MarkerPunctuateVo::getUpdaterId);
@@ -62,8 +67,8 @@ public class PunctuateAuditController {
     @PostMapping("/get/list_byid")
     public R<List<MarkerPunctuateVo>> listPunctuateById(@RequestBody List<Long> punctuateIdList) {
         R<List<MarkerPunctuateVo>> result = RUtils.create(
-                punctuateAuditService.listPunctuateById(punctuateIdList).stream()
-                        .map(MarkerPunctuateDto::getVo).collect(Collectors.toList())
+            punctuateAuditService.listPunctuateById(punctuateIdList).stream()
+                .map(MarkerPunctuateDto::getVo).collect(Collectors.toList())
         );
         UserAppenderService.appendUser(result, result.getData(), true, MarkerPunctuateVo::getCreatorId);
         UserAppenderService.appendUser(result, result.getData(), true, MarkerPunctuateVo::getUpdaterId);
@@ -74,15 +79,17 @@ public class PunctuateAuditController {
     @PostMapping("/get/page/all")
     public R<PageListVo<MarkerPunctuateVo>> listAllPunctuatePage(@RequestBody PageSearchVo pageSearchVo) {
         R<PageListVo<MarkerPunctuateVo>> result = RUtils.create(
-                punctuateAuditService.listAllPunctuatePage(new PageSearchDto(pageSearchVo))
+            punctuateAuditService.listAllPunctuatePage(new PageSearchDto(pageSearchVo))
         );
         UserAppenderService.appendUser(result, result.getData().getRecord(), true, MarkerPunctuateVo::getCreatorId);
         UserAppenderService.appendUser(result, result.getData().getRecord(), true, MarkerPunctuateVo::getUpdaterId);
         return result;
     }
 
-    @Operation(summary = "通过点位审核",
-            description = "通过审核，返回点位ID（如果是新建点位，则为新点位ID），通过额外字段关联的点位也会自动通过审核（但不会返回关联点位的ID）")
+    @Operation(
+        summary = "通过点位审核",
+        description = "通过审核，返回点位ID（如果是新建点位，则为新点位ID），通过额外字段关联的点位也会自动通过审核（但不会返回关联点位的ID）"
+    )
     @PostMapping("/pass/{punctuateId}")
     public R<Long> passPunctuate(@PathVariable("punctuateId") Long punctuateId) {
         Long passId = punctuateAuditService.passPunctuate(punctuateId);
@@ -94,7 +101,7 @@ public class PunctuateAuditController {
     @PostMapping("/reject/{punctuateId}")
     public R<Boolean> rejectPunctuate(@PathVariable("punctuateId") Long punctuateId, @RequestBody String auditRemark) {
         return RUtils.create(
-                punctuateAuditService.rejectPunctuate(punctuateId,auditRemark)
+            punctuateAuditService.rejectPunctuate(punctuateId, auditRemark)
         );
     }
 
@@ -102,7 +109,7 @@ public class PunctuateAuditController {
     @DeleteMapping("/delete/{punctuateId}")
     public R<Boolean> deletePunctuate(@PathVariable("punctuateId") Long punctuateId) {
         return RUtils.create(
-                punctuateAuditService.deletePunctuate(punctuateId)
+            punctuateAuditService.deletePunctuate(punctuateId)
         );
     }
 

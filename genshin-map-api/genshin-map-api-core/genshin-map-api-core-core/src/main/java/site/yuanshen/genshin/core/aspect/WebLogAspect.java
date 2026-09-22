@@ -26,9 +26,10 @@ import java.util.List;
 public class WebLogAspect {
 
     private static final String LINE_SEPARATOR = System.lineSeparator();
+
     public static final ThreadLocal<StopWatch> STOP_WATCH_THREAD_LOCAL = new ThreadLocal<>();
 
-    public static final JSONWriter.Feature[] defaultWriteFeatures = new JSONWriter.Feature[]{
+    public static final JSONWriter.Feature[] defaultWriteFeatures = new JSONWriter.Feature[] {
             JSONWriter.Feature.BrowserCompatible,
             JSONWriter.Feature.WriteEnumUsingToString,
             JSONWriter.Feature.WriteBigDecimalAsPlain,
@@ -38,17 +39,17 @@ public class WebLogAspect {
 
     private Object[] sanitizeArgs(Object[] args) {
         final Object[] sanitizedArgs = List.of(args)
-                .parallelStream()
-                .map(arg -> {
-                    if(arg == null) {
-                        return null;
-                    } else if(arg instanceof MultipartFile) {
-                        return "@[Instance MultipartFile]";
-                    } else {
-                        return arg;
-                    }
-                })
-                .toArray();
+            .parallelStream()
+            .map(arg -> {
+                if (arg == null) {
+                    return null;
+                } else if (arg instanceof MultipartFile) {
+                    return "@[Instance MultipartFile]";
+                } else {
+                    return arg;
+                }
+            })
+            .toArray();
         return sanitizedArgs;
     }
 
@@ -67,12 +68,10 @@ public class WebLogAspect {
      */
     @Before("webLog()")
     public void doBefore(JoinPoint joinPoint) {
-        StopWatch stopWatch =
-                new StopWatch(joinPoint.getSignature().getDeclaringTypeName() + "Controller计时器");
+        StopWatch stopWatch = new StopWatch(joinPoint.getSignature().getDeclaringTypeName() + "Controller计时器");
         STOP_WATCH_THREAD_LOCAL.set(stopWatch);
         stopWatch.start(joinPoint.getSignature().getDeclaringTypeName() + "切面开始");
-        ServletRequestAttributes attributes =
-                (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         assert attributes != null;
         HttpServletRequest request = attributes.getRequest();
         String args;
@@ -82,24 +81,25 @@ public class WebLogAspect {
             args = "[Too long arguments]";
         }
         log.info(
-                LINE_SEPARATOR
-                        + "URL          : "
-                        + request.getRequestURL().toString()
-                        + LINE_SEPARATOR
-                        + "请求方式     : "
-                        + request.getMethod()
-                        + LINE_SEPARATOR
-                        + "方法名称     : "
-                        + joinPoint.getSignature().getDeclaringTypeName()
-                        + "/"
-                        + joinPoint.getSignature().getName()
-                        + LINE_SEPARATOR
-                        + "IP           : "
-                        + request.getRemoteAddr()
-                        + LINE_SEPARATOR
-                        + "请求入参     : "
-                        + args
-                        + LINE_SEPARATOR);
+            LINE_SEPARATOR
+                + "URL          : "
+                + request.getRequestURL().toString()
+                + LINE_SEPARATOR
+                + "请求方式     : "
+                + request.getMethod()
+                + LINE_SEPARATOR
+                + "方法名称     : "
+                + joinPoint.getSignature().getDeclaringTypeName()
+                + "/"
+                + joinPoint.getSignature().getName()
+                + LINE_SEPARATOR
+                + "IP           : "
+                + request.getRemoteAddr()
+                + LINE_SEPARATOR
+                + "请求入参     : "
+                + args
+                + LINE_SEPARATOR
+        );
     }
 
     /**
@@ -121,8 +121,7 @@ public class WebLogAspect {
     @Around("webLog()")
     public Object doAround(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         Object result = null;
-        ServletRequestAttributes attributes =
-                (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         assert attributes != null;
         HttpServletRequest request = attributes.getRequest();
         try {
@@ -130,8 +129,9 @@ public class WebLogAspect {
             return result;
         } catch (Exception e) {
             log.info(
-                    proceedingJoinPoint.getTarget().getClass().getName() + "发生异常msg:{},code:{}",
-                    e.getMessage());
+                proceedingJoinPoint.getTarget().getClass().getName() + "发生异常msg:{},code:{}",
+                e.getMessage()
+            );
             throw e;
         } finally {
             STOP_WATCH_THREAD_LOCAL.get().stop();
@@ -142,24 +142,25 @@ public class WebLogAspect {
                 s = "[Too large data]";
             }
             log.info(
-                    LINE_SEPARATOR
-                            + "URL          : "
-                            + request.getRequestURL().toString()
-                            + LINE_SEPARATOR
-                            + "请求方式     : "
-                            + request.getMethod()
-                            + LINE_SEPARATOR
-                            + "方法名称     : "
-                            + proceedingJoinPoint.getSignature().getDeclaringTypeName()
-                            + "/"
-                            + proceedingJoinPoint.getSignature().getName() + LINE_SEPARATOR
-                            + "请求出参     : "
-                            + ((s.length()>100)?s.substring(0,99):s)
-                            + LINE_SEPARATOR
-                            + "请求耗时     : "
-                            + STOP_WATCH_THREAD_LOCAL.get().getTotalTimeMillis()
-                            + " ms"
-                            + LINE_SEPARATOR);
+                LINE_SEPARATOR
+                    + "URL          : "
+                    + request.getRequestURL().toString()
+                    + LINE_SEPARATOR
+                    + "请求方式     : "
+                    + request.getMethod()
+                    + LINE_SEPARATOR
+                    + "方法名称     : "
+                    + proceedingJoinPoint.getSignature().getDeclaringTypeName()
+                    + "/"
+                    + proceedingJoinPoint.getSignature().getName() + LINE_SEPARATOR
+                    + "请求出参     : "
+                    + ((s.length() > 100) ? s.substring(0, 99) : s)
+                    + LINE_SEPARATOR
+                    + "请求耗时     : "
+                    + STOP_WATCH_THREAD_LOCAL.get().getTotalTimeMillis()
+                    + " ms"
+                    + LINE_SEPARATOR
+            );
             STOP_WATCH_THREAD_LOCAL.remove();
         }
     }

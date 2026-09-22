@@ -12,6 +12,7 @@ import site.yuanshen.genshin.core.service.mbp.MarkerItemLinkMBPService;
  * @author Mybatis Plus generator
  */
 @Service
-public class MarkerItemLinkMBPServiceImpl extends ServiceImpl<MarkerItemLinkMapper, MarkerItemLink> implements MarkerItemLinkMBPService {
+public class MarkerItemLinkMBPServiceImpl extends ServiceImpl<MarkerItemLinkMapper, MarkerItemLink>
+    implements MarkerItemLinkMBPService {
 
 }

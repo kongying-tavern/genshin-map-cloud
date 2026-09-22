@@ -29,7 +29,6 @@ public abstract class DefaultConvert implements Convert {
         return history;
     }
 
-
     abstract HistoryType getType();
 
     abstract Pair<String, Long> getContentAndId(Object o);

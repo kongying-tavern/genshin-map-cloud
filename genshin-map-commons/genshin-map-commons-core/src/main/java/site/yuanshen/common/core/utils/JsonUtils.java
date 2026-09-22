@@ -13,18 +13,18 @@ import java.util.Map;
 
 public class JsonUtils {
 
-    public static final JSONReader.Feature[] defaultReadFeatures = new JSONReader.Feature[]{
-        JSONReader.Feature.UseBigDecimalForFloats,
-        JSONReader.Feature.UseBigDecimalForDoubles,
-        JSONReader.Feature.UseNativeObject
+    public static final JSONReader.Feature[] defaultReadFeatures = new JSONReader.Feature[] {
+            JSONReader.Feature.UseBigDecimalForFloats,
+            JSONReader.Feature.UseBigDecimalForDoubles,
+            JSONReader.Feature.UseNativeObject
     };
 
-    public static final JSONWriter.Feature[] defaultWriteFeatures = new JSONWriter.Feature[]{
-        JSONWriter.Feature.BrowserCompatible,
-        JSONWriter.Feature.WriteEnumUsingToString,
-        JSONWriter.Feature.WriteBigDecimalAsPlain,
-        JSONWriter.Feature.WriteEnumUsingToString,
-        JSONWriter.Feature.WriteNonStringKeyAsString
+    public static final JSONWriter.Feature[] defaultWriteFeatures = new JSONWriter.Feature[] {
+            JSONWriter.Feature.BrowserCompatible,
+            JSONWriter.Feature.WriteEnumUsingToString,
+            JSONWriter.Feature.WriteBigDecimalAsPlain,
+            JSONWriter.Feature.WriteEnumUsingToString,
+            JSONWriter.Feature.WriteNonStringKeyAsString
     };
 
     /**

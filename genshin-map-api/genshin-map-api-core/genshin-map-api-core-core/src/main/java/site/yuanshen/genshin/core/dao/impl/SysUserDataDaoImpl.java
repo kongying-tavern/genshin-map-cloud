@@ -16,7 +16,8 @@ public class SysUserDataDaoImpl implements SysUserDataDao {
             return null;
         }
 
-        final SysUserSmallVoOuterClass.SysUserSmallVo.Builder builder = SysUserSmallVoOuterClass.SysUserSmallVo.newBuilder();
+        final SysUserSmallVoOuterClass.SysUserSmallVo.Builder builder = SysUserSmallVoOuterClass.SysUserSmallVo
+            .newBuilder();
         builder.setUsername(StrUtil.nullToEmpty(sysUserSmallVo.getUsername()));
         builder.setNickname(StrUtil.nullToEmpty(sysUserSmallVo.getNickname()));
         builder.setQq(StrUtil.nullToEmpty(sysUserSmallVo.getQq()));

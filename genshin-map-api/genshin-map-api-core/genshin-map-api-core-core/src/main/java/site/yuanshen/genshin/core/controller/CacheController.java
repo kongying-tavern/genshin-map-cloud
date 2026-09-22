@@ -27,10 +27,10 @@ public class CacheController {
 
     private final CacheService cacheService;
 
-    @Operation(summary = "删除图标缓存",description = "list为空则删除所有图标缓存")
+    @Operation(summary = "删除图标缓存", description = "list为空则删除所有图标缓存")
     @DeleteMapping("/icon")
-    public R<Boolean> cleanIconCache(@RequestBody List<Long> idList){
-        if (idList.isEmpty()){
+    public R<Boolean> cleanIconCache(@RequestBody List<Long> idList) {
+        if (idList.isEmpty()) {
             cacheService.cleanIconCache();
         } else {
             idList.forEach(cacheService::cleanIconCache);
@@ -38,44 +38,44 @@ public class CacheController {
         return RUtils.create(true);
     }
 
-    @Operation(summary = "删除地区缓存",description = "删除地区缓存")
+    @Operation(summary = "删除地区缓存", description = "删除地区缓存")
     @DeleteMapping("/area")
-    public R<Boolean> cleanAreaCache(){
+    public R<Boolean> cleanAreaCache() {
         cacheService.cleanAreaCache();
         return RUtils.create(true);
     }
 
-    @Operation(summary = "删除全部物品缓存",description = "删除物品缓存")
+    @Operation(summary = "删除全部物品缓存", description = "删除物品缓存")
     @DeleteMapping("/item")
-    public R<Boolean> cleanItemCache(){
+    public R<Boolean> cleanItemCache() {
         cacheService.cleanItemCache();
         return RUtils.create(true);
     }
 
-    @Operation(summary = "删除全部公用物品缓存",description = "删除公用物品缓存")
+    @Operation(summary = "删除全部公用物品缓存", description = "删除公用物品缓存")
     @DeleteMapping("/commonItem")
-    public R<Boolean> cleanCommonItemCache(){
+    public R<Boolean> cleanCommonItemCache() {
         cacheService.cleanCommonItemCache();
         return RUtils.create(true);
     }
 
-    @Operation(summary = "删除全部点位缓存",description = "删除点位缓存")
+    @Operation(summary = "删除全部点位缓存", description = "删除点位缓存")
     @DeleteMapping("/marker")
-    public R<Boolean> cleanMarkerCache(){
+    public R<Boolean> cleanMarkerCache() {
         cacheService.cleanMarkerCache();
         return RUtils.create(true);
     }
 
-    @Operation(summary = "删除全部点位关联缓存",description = "删除点位关联缓存")
+    @Operation(summary = "删除全部点位关联缓存", description = "删除点位关联缓存")
     @DeleteMapping("/marker_link")
-    public R<Boolean> cleanMarkerLinkageCache(){
+    public R<Boolean> cleanMarkerLinkageCache() {
         cacheService.cleanMarkerLinkageCache();
         return RUtils.create(true);
     }
 
-    @Operation(summary = "删除公告缓存",description = "删除公告缓存")
+    @Operation(summary = "删除公告缓存", description = "删除公告缓存")
     @DeleteMapping("/notice")
-    public R<Boolean> cleanNoticeCache(){
+    public R<Boolean> cleanNoticeCache() {
         cacheService.cleanNoticeCache();
         return RUtils.create(true);
     }

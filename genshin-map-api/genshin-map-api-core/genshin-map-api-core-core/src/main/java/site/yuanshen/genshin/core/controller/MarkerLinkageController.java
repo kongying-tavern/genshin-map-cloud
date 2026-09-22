@@ -33,14 +33,18 @@ import java.util.Map;
 public class MarkerLinkageController {
 
     private final MarkerLinkageService markerLinkageService;
+
     private final CacheService cacheService;
+
     private final SocketIOEntrypoint socketIOEntrypoint;
 
     @Operation(summary = "关联点位列表", description = "关联点位列表")
     @PostMapping("/get/list")
-    public R<Map<String, List<MarkerLinkageVo>>> getMarkerLinkageList(@RequestBody MarkerLinkageSearchVo markerLinkageSearchVo) {
+    public R<Map<String, List<MarkerLinkageVo>>> getMarkerLinkageList(
+        @RequestBody MarkerLinkageSearchVo markerLinkageSearchVo
+    ) {
         return RUtils.create(
-                markerLinkageService.listMarkerLinkage(markerLinkageSearchVo)
+            markerLinkageService.listMarkerLinkage(markerLinkageSearchVo)
         );
     }
 
@@ -48,7 +52,7 @@ public class MarkerLinkageController {
     @PostMapping("/get/graph")
     public R<Map<String, GraphVo>> getMarkerLinkageGraph(@RequestBody MarkerLinkageSearchVo markerLinkageSearchVo) {
         return RUtils.create(
-                markerLinkageService.graphMarkerLinkage(markerLinkageSearchVo)
+            markerLinkageService.graphMarkerLinkage(markerLinkageSearchVo)
         );
     }
 

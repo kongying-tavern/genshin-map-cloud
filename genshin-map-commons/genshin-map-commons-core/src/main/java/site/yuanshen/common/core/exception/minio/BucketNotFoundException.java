@@ -16,7 +16,9 @@ public class BucketNotFoundException extends RuntimeException {
         super(cause);
     }
 
-    protected BucketNotFoundException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+    protected BucketNotFoundException(
+        String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace
+    ) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 }

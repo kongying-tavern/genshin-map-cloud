@@ -42,7 +42,7 @@ public class SysUserDeviceController {
     @PostMapping("/list")
     public R<PageListVo<SysUserDeviceVo>> searchPage(@RequestBody SysUserDeviceSearchVo searchVo) {
         SysUserDeviceSearchDto searchDto = new SysUserDeviceSearchDto(searchVo);
-        if(searchDto.getUserId() == null) {
+        if (searchDto.getUserId() == null) {
             throw new GenshinApiException("用户ID不能为空");
         }
         return RUtils.create(userDeviceService.listPage(searchDto));

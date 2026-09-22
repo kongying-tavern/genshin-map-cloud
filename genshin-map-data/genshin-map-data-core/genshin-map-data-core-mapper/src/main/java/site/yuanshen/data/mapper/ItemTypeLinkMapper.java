@@ -17,7 +17,9 @@ import java.util.List;
 @Mapper
 public interface ItemTypeLinkMapper extends BaseMapper<ItemTypeLink> {
 
-    List<ItemTypeLink> selectListWithLargeIn(@Param("unnest")String unnest, @Param(Constants.WRAPPER) LambdaQueryWrapper<ItemTypeLink> wrapper);
+    List<ItemTypeLink> selectListWithLargeIn(
+        @Param("unnest") String unnest, @Param(Constants.WRAPPER) LambdaQueryWrapper<ItemTypeLink> wrapper
+    );
 
     /**
      *  配合in使用
@@ -26,6 +28,9 @@ public interface ItemTypeLinkMapper extends BaseMapper<ItemTypeLink> {
      * @param wrapper
      * @return
      */
-    List<ItemTypeLink> selectWithLargeCustomIn(@Param("column")String column, @Param("unnest")String unnest, @Param(Constants.WRAPPER)LambdaQueryWrapper<ItemTypeLink> wrapper);
+    List<ItemTypeLink> selectWithLargeCustomIn(
+        @Param("column") String column, @Param("unnest") String unnest,
+        @Param(Constants.WRAPPER) LambdaQueryWrapper<ItemTypeLink> wrapper
+    );
 
 }

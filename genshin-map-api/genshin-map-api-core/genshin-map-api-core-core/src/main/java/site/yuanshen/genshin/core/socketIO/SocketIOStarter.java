@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import javax.annotation.Resource;
 
 @Configuration
-@AutoConfigureAfter({SocketIOConfiguration.class})
+@AutoConfigureAfter({ SocketIOConfiguration.class })
 @Slf4j
 public class SocketIOStarter implements CommandLineRunner, DisposableBean {
 

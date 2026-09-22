@@ -33,7 +33,7 @@ public class IconController {
     @PostMapping("/get/list")
     public R<PageListVo<IconVo>> listIcon(@RequestBody IconSearchVo iconSearchVo) {
         R<PageListVo<IconVo>> result = RUtils.create(
-                iconService.listIcon(new IconSearchDto(iconSearchVo))
+            iconService.listIcon(new IconSearchDto(iconSearchVo))
         );
         UserAppenderService.appendUser(result, result.getData().getRecord(), true, IconVo::getCreatorId);
         UserAppenderService.appendUser(result, result.getData().getRecord(), true, IconVo::getUpdaterId);
@@ -44,7 +44,7 @@ public class IconController {
     @PostMapping("/get/single/{iconId}")
     public R<IconVo> getIcon(@PathVariable("iconId") Long iconId) {
         R<IconVo> result = RUtils.create(
-                iconService.getIcon(iconId)
+            iconService.getIcon(iconId)
         );
         UserAppenderService.appendUser(result, result.getData(), false, IconVo::getCreatorId);
         UserAppenderService.appendUser(result, result.getData(), false, IconVo::getUpdaterId);
@@ -55,16 +55,18 @@ public class IconController {
     @PostMapping("/update")
     public R<Boolean> updateIcon(@RequestBody IconVo iconVo) {
         return RUtils.create(
-                iconService.updateIcon(iconVo)
+            iconService.updateIcon(iconVo)
         );
     }
 
-    @Operation(summary = "新增图标", description = "无需指定icon的id，id由系统自动生成并在响应中返回," +
-            "一组name和updater需要唯一（允许单一重复）")
+    @Operation(
+        summary = "新增图标", description = "无需指定icon的id，id由系统自动生成并在响应中返回," +
+            "一组name和updater需要唯一（允许单一重复）"
+    )
     @PutMapping("/add")
     public R<Long> createIcon(@RequestBody IconVo iconVo) {
         return RUtils.create(
-                iconService.createIcon(iconVo)
+            iconService.createIcon(iconVo)
         );
     }
 
@@ -72,7 +74,7 @@ public class IconController {
     @DeleteMapping("/delete/{iconId}")
     public R<Boolean> deleteIcon(@PathVariable("iconId") Long iconId) {
         return RUtils.create(
-                iconService.deleteIcon(iconId)
+            iconService.deleteIcon(iconId)
         );
     }
 

@@ -16,7 +16,6 @@ import site.yuanshen.data.enums.RoleEnum;
 import java.util.*;
 import java.util.stream.Collectors;
 
-
 /**
  * Spring默认Oauth2客户端数据封装
  *
@@ -108,6 +107,7 @@ public class OauthClientDetailsDto implements ClientDetails {
     public OauthClientDetails getEntity() {
         return BeanUtils.copy(this, OauthClientDetails.class);
     }
+
     @Override
     public String getClientId() {
         return clientId;
@@ -150,7 +150,8 @@ public class OauthClientDetailsDto implements ClientDetails {
 
     @Override
     public Collection<GrantedAuthority> getAuthorities() {
-        return Optional.ofNullable(JSON.parseArray(authorities,String.class)).orElse(new ArrayList<>()).stream().map(RoleEnum::getRoleFromCode).map(RoleAuthDto::new).collect(Collectors.toList());
+        return Optional.ofNullable(JSON.parseArray(authorities, String.class)).orElse(new ArrayList<>()).stream()
+            .map(RoleEnum::getRoleFromCode).map(RoleAuthDto::new).collect(Collectors.toList());
     }
 
     @Override

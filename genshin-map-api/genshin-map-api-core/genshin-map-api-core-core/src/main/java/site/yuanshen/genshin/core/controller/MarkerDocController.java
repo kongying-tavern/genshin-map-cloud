@@ -30,17 +30,23 @@ import java.util.List;
 public class MarkerDocController {
 
     private final MarkerDao markerDao;
+
     private final MarkerDocService markerDocService;
 
     @Operation(summary = "返回点位分页", description = "查询分页点位信息，返回压缩格式的byte数组")
     @GetMapping("/list_page_bin/{md5}")
-    public byte[] listPageMarkerByBinary(@Parameter(hidden = true) @RequestHeader(value = "userDataLevel", required = false) String userDataLevel, @PathVariable("md5") String md5) {
+    public byte[] listPageMarkerByBinary(
+        @Parameter(hidden = true) @RequestHeader(value = "userDataLevel", required = false) String userDataLevel,
+        @PathVariable("md5") String md5
+    ) {
         return markerDao.getMarkerBinary(HiddenFlagEnum.getFlagListByMask(userDataLevel), md5);
     }
 
     @Operation(summary = "返回点位分页的md5数组", description = "返回点位分页的md5数组")
     @GetMapping("/list_page_bin_md5")
-    public R<List<BinaryMD5Vo>> listMarkerBinaryMD5(@Parameter(hidden = true) @RequestHeader(value = "userDataLevel", required = false) String userDataLevel) {
+    public R<List<BinaryMD5Vo>> listMarkerBinaryMD5(
+        @Parameter(hidden = true) @RequestHeader(value = "userDataLevel", required = false) String userDataLevel
+    ) {
         return RUtils.create(
             markerDao.listMarkerBinaryMD5(HiddenFlagEnum.getFlagListByMask(userDataLevel))
         );
@@ -48,13 +54,17 @@ public class MarkerDocController {
 
     @Operation(summary = "返回点位差异比对快照", description = "点位差异比对二进制快照，快照为protobuf数据")
     @GetMapping("/list_diff_snapshot")
-    public byte[] listMarkerDiffSnapshotByBinary(@Parameter(hidden = true) @RequestHeader(value = "userDataLevel", required = false) String userDataLevel) {
+    public byte[] listMarkerDiffSnapshotByBinary(
+        @Parameter(hidden = true) @RequestHeader(value = "userDataLevel", required = false) String userDataLevel
+    ) {
         return markerDocService.getMarkerDiffSnapshot(HiddenFlagEnum.getFlagListByMask(userDataLevel));
     }
 
     @Operation(summary = "返回所有点位", description = "点位列表二进制，二进制位protobuf数据+压缩")
     @GetMapping("/list_markers")
-    public byte[] listMarkersByBinary(@Parameter(hidden = true) @RequestHeader(value = "userDataLevel", required = false) String userDataLevel) {
+    public byte[] listMarkersByBinary(
+        @Parameter(hidden = true) @RequestHeader(value = "userDataLevel", required = false) String userDataLevel
+    ) {
         try {
             return CompressUtils.compress(
                 markerDocService.getMarkerList(HiddenFlagEnum.getFlagListByMask(userDataLevel))

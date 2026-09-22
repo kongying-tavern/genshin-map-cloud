@@ -34,7 +34,7 @@ public class ItemCommonController {
     @PostMapping("/get/list")
     public R<PageListVo<ItemAreaPublicVo>> listCommonItem(@RequestBody PageSearchVo pageSearchVo) {
         return RUtils.create(
-                itemCommonService.listCommonItem(new PageSearchDto(pageSearchVo))
+            itemCommonService.listCommonItem(new PageSearchDto(pageSearchVo))
         );
     }
 
@@ -42,15 +42,15 @@ public class ItemCommonController {
     @PutMapping("/add")
     public R<Boolean> addCommonItem(@RequestBody List<Long> itemIdList) {
         return RUtils.create(
-                itemCommonService.addCommonItem(itemIdList)
+            itemCommonService.addCommonItem(itemIdList)
         );
     }
 
     @Operation(summary = "删除地区公用物品", description = "通过ID列表批量删除地区公用物品")
     @DeleteMapping("/delete/{itemId}")
-    public R<Boolean> deleteCommonItem(@PathVariable("itemId")Long itemId) {
+    public R<Boolean> deleteCommonItem(@PathVariable("itemId") Long itemId) {
         return RUtils.create(
-                itemCommonService.deleteCommonItem(itemId)
+            itemCommonService.deleteCommonItem(itemId)
         );
     }
 

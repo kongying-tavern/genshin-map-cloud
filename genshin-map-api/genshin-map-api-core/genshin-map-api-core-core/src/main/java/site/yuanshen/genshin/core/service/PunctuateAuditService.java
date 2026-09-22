@@ -42,8 +42,11 @@ import static com.google.common.primitives.Booleans.countTrue;
 public class PunctuateAuditService {
 
     private final MarkerMapper markerMapper;
+
     private final MarkerPunctuateMapper markerPunctuateMapper;
+
     private final ItemMapper itemMapper;
+
     private final ItemTypeLinkMapper itemTypeLinkMapper;
 
     /**
@@ -59,44 +62,54 @@ public class PunctuateAuditService {
         boolean isItem = !(searchVo.getItemIdList() == null || searchVo.getItemIdList().isEmpty());
         boolean isType = !(searchVo.getTypeIdList() == null || searchVo.getTypeIdList().isEmpty());
 
-
         if (countTrue(isArea, isItem, isType) > 1)
             throw new GenshinApiException("条件冲突");
         List<Long> itemIdList = new ArrayList<>();
         //根据地区，类型来筛选出需要的物品id，如果直接是物品id则直接使用提交的物品id
         if (isArea) {
-            itemIdList = itemMapper.selectList(Wrappers.<Item>lambdaQuery()
-                            .in(Item::getAreaId, searchVo.getAreaIdList())
-                            .select(Item::getId))
-                    .parallelStream()
-                    .map(Item::getId).distinct().collect(Collectors.toList());
+            itemIdList = itemMapper.selectList(
+                Wrappers.<Item>lambdaQuery()
+                    .in(Item::getAreaId, searchVo.getAreaIdList())
+                    .select(Item::getId)
+            )
+                .parallelStream()
+                .map(Item::getId).distinct().collect(Collectors.toList());
         }
         if (isItem) {
             itemIdList = searchVo.getItemIdList();
         }
         if (isType) {
-            itemIdList = itemTypeLinkMapper.selectList(Wrappers.<ItemTypeLink>lambdaQuery()
-                            .in(ItemTypeLink::getTypeId, searchVo.getTypeIdList())
-                            .select(ItemTypeLink::getItemId))
-                    .parallelStream()
-                    .map(ItemTypeLink::getItemId).distinct().collect(Collectors.toList());
+            itemIdList = itemTypeLinkMapper.selectList(
+                Wrappers.<ItemTypeLink>lambdaQuery()
+                    .in(ItemTypeLink::getTypeId, searchVo.getTypeIdList())
+                    .select(ItemTypeLink::getItemId)
+            )
+                .parallelStream()
+                .map(ItemTypeLink::getItemId).distinct().collect(Collectors.toList());
         }
         //如果上面的筛选都没有，则只筛选作者
         if (itemIdList.isEmpty()) {
-            if (!isAuthor) return new ArrayList<>();
-            return markerPunctuateMapper.selectList(Wrappers.<MarkerPunctuate>lambdaQuery()
-                            .in(MarkerPunctuate::getAuthor, searchVo.getAuthorList()))
-                    .stream().map(MarkerPunctuate::getPunctuateId).collect(Collectors.toList());
+            if (!isAuthor)
+                return new ArrayList<>();
+            return markerPunctuateMapper.selectList(
+                Wrappers.<MarkerPunctuate>lambdaQuery()
+                    .in(MarkerPunctuate::getAuthor, searchVo.getAuthorList())
+            )
+                .stream().map(MarkerPunctuate::getPunctuateId).collect(Collectors.toList());
         }
         List<Long> result = new ArrayList<>();
-        itemIdList.parallelStream().forEach(itemId ->
-                result.addAll(markerPunctuateMapper.selectList(Wrappers.<MarkerPunctuate>lambdaQuery()
-                                .in(isAuthor, MarkerPunctuate::getAuthor, searchVo.getAuthorList())
-                                //需要注意库中究竟存了什么
-                                .apply(String.format("(item_list::jsonb) @@ '$[*].itemId == %d'", itemId))
-                                .select(MarkerPunctuate::getPunctuateId))
-                        .stream()
-                        .map(MarkerPunctuate::getPunctuateId).collect(Collectors.toList()))
+        itemIdList.parallelStream().forEach(
+            itemId -> result.addAll(
+                markerPunctuateMapper.selectList(
+                    Wrappers.<MarkerPunctuate>lambdaQuery()
+                        .in(isAuthor, MarkerPunctuate::getAuthor, searchVo.getAuthorList())
+                        //需要注意库中究竟存了什么
+                        .apply(String.format("(item_list::jsonb) @@ '$[*].itemId == %d'", itemId))
+                        .select(MarkerPunctuate::getPunctuateId)
+                )
+                    .stream()
+                    .map(MarkerPunctuate::getPunctuateId).collect(Collectors.toList())
+            )
         );
         return result.stream().distinct().collect(Collectors.toList());
     }
@@ -124,9 +137,10 @@ public class PunctuateAuditService {
         if (punctuateIdList.isEmpty()) {
             return new ArrayList<>();
         }
-        List<MarkerPunctuateDto> result = markerPunctuateMapper.selectList(Wrappers.<MarkerPunctuate>lambdaQuery().in(MarkerPunctuate::getPunctuateId, punctuateIdList))
-                .parallelStream().map(MarkerPunctuateDto::new)
-                .collect(Collectors.toList());
+        List<MarkerPunctuateDto> result = markerPunctuateMapper
+            .selectList(Wrappers.<MarkerPunctuate>lambdaQuery().in(MarkerPunctuate::getPunctuateId, punctuateIdList))
+            .parallelStream().map(MarkerPunctuateDto::new)
+            .collect(Collectors.toList());
         return result;
     }
 
@@ -137,15 +151,18 @@ public class PunctuateAuditService {
      * @return 打点完整信息的前端分页记录封装
      */
     public PageListVo<MarkerPunctuateVo> listAllPunctuatePage(PageSearchDto pageSearchDto) {
-        Page<MarkerPunctuate> punctuatePage = markerPunctuateMapper.selectPage(pageSearchDto.getPageEntity(), Wrappers.lambdaQuery());
+        Page<MarkerPunctuate> punctuatePage = markerPunctuateMapper
+            .selectPage(pageSearchDto.getPageEntity(), Wrappers.lambdaQuery());
         PageListVo<MarkerPunctuateVo> page = new PageListVo<MarkerPunctuateVo>()
-                .setRecord(punctuatePage.getRecords()
-                        .parallelStream()
-                        .map(MarkerPunctuateDto::new)
-                        .map(MarkerPunctuateDto::getVo)
-                        .collect(Collectors.toList()))
-                .setSize(punctuatePage.getSize())
-                .setTotal(punctuatePage.getTotal());
+            .setRecord(
+                punctuatePage.getRecords()
+                    .parallelStream()
+                    .map(MarkerPunctuateDto::new)
+                    .map(MarkerPunctuateDto::getVo)
+                    .collect(Collectors.toList())
+            )
+            .setSize(punctuatePage.getSize())
+            .setTotal(punctuatePage.getTotal());
         return page;
     }
 
@@ -160,28 +177,35 @@ public class PunctuateAuditService {
     public Long passPunctuate(Long punctuateId) {
         //打点信息
         MarkerPunctuate markerPunctuate = Optional.ofNullable(
-                        markerPunctuateMapper.selectOne(Wrappers.<MarkerPunctuate>lambdaQuery()
-                                .eq(MarkerPunctuate::getPunctuateId, punctuateId)
-                                .eq(MarkerPunctuate::getStatus, PunctuateStatusEnum.COMMIT.getValue())))
-                .orElseThrow(() -> new RuntimeException("无打点相关信息，请联系系统管理员"));
+            markerPunctuateMapper.selectOne(
+                Wrappers.<MarkerPunctuate>lambdaQuery()
+                    .eq(MarkerPunctuate::getPunctuateId, punctuateId)
+                    .eq(MarkerPunctuate::getStatus, PunctuateStatusEnum.COMMIT.getValue())
+            )
+        )
+            .orElseThrow(() -> new RuntimeException("无打点相关信息，请联系系统管理员"));
         switch (markerPunctuate.getMethodType()) {
             case ADD: {
                 //插入自身
                 Marker marker = BeanUtils.copy(markerPunctuate, Marker.class)
-                        //ID应为空
-                        .withId(null);
+                    //ID应为空
+                    .withId(null);
                 markerMapper.insert(marker);
                 //清除提交信息
-                markerPunctuateMapper.delete(Wrappers.<MarkerPunctuate>lambdaQuery().eq(MarkerPunctuate::getPunctuateId, punctuateId));
+                markerPunctuateMapper
+                    .delete(Wrappers.<MarkerPunctuate>lambdaQuery().eq(MarkerPunctuate::getPunctuateId, punctuateId));
                 return marker.getId();
             }
             case UPDATE: {
                 //获取原有点位id
                 Long originalMarkerId = Optional.ofNullable(markerPunctuate.getOriginalMarkerId())
-                        .orElseThrow(() -> new RuntimeException("无法找到修改点位的原始id，请联系管理员"));
+                    .orElseThrow(() -> new RuntimeException("无法找到修改点位的原始id，请联系管理员"));
                 //根据ID查询原有点位
-                Marker oldMarker = Optional.ofNullable(markerMapper.selectOne(Wrappers.<Marker>lambdaQuery().eq(Marker::getId, originalMarkerId)))
-                        .orElseThrow(() -> new RuntimeException("无法找到原始id对应的原始点位，无法做出更改，请联系管理员"));
+                Marker oldMarker = Optional
+                    .ofNullable(
+                        markerMapper.selectOne(Wrappers.<Marker>lambdaQuery().eq(Marker::getId, originalMarkerId))
+                    )
+                    .orElseThrow(() -> new RuntimeException("无法找到原始id对应的原始点位，无法做出更改，请联系管理员"));
                 //原有点位拷贝一份作为新点位
                 Marker newMarker = BeanUtils.copy(oldMarker, Marker.class);
                 //打点的更改信息复制到新点位中（使用了hutool的copy，忽略null值）
@@ -192,11 +216,12 @@ public class PunctuateAuditService {
             case DELETE: {
                 //获取原有点位id
                 Long originalMarkerId = Optional.ofNullable(markerPunctuate.getOriginalMarkerId())
-                        .orElseThrow(() -> new RuntimeException("无法找到修改点位的原始id，请联系管理员"));
+                    .orElseThrow(() -> new RuntimeException("无法找到修改点位的原始id，请联系管理员"));
                 //删除
                 markerMapper.deleteById(originalMarkerId);
                 //清除提交信息
-                markerPunctuateMapper.delete(Wrappers.<MarkerPunctuate>lambdaQuery().eq(MarkerPunctuate::getPunctuateId, punctuateId));
+                markerPunctuateMapper
+                    .delete(Wrappers.<MarkerPunctuate>lambdaQuery().eq(MarkerPunctuate::getPunctuateId, punctuateId));
                 return originalMarkerId;
             }
             default:
@@ -216,11 +241,15 @@ public class PunctuateAuditService {
     public Boolean rejectPunctuate(Long punctuateId, String auditRemark) {
         //打点信息
         MarkerPunctuate markerPunctuate = Optional.ofNullable(
-                        markerPunctuateMapper.selectOne(Wrappers.<MarkerPunctuate>lambdaQuery()
-                                .eq(MarkerPunctuate::getPunctuateId, punctuateId)
-                                .eq(MarkerPunctuate::getStatus, PunctuateStatusEnum.COMMIT.getValue())))
-                .orElseThrow(() -> new RuntimeException("无打点相关信息，请联系系统管理员"));
-        markerPunctuateMapper.updateById(markerPunctuate.withStatus(PunctuateStatusEnum.REJECT).withAuditRemark(auditRemark));
+            markerPunctuateMapper.selectOne(
+                Wrappers.<MarkerPunctuate>lambdaQuery()
+                    .eq(MarkerPunctuate::getPunctuateId, punctuateId)
+                    .eq(MarkerPunctuate::getStatus, PunctuateStatusEnum.COMMIT.getValue())
+            )
+        )
+            .orElseThrow(() -> new RuntimeException("无打点相关信息，请联系系统管理员"));
+        markerPunctuateMapper
+            .updateById(markerPunctuate.withStatus(PunctuateStatusEnum.REJECT).withAuditRemark(auditRemark));
         return true;
     }
 
@@ -233,7 +262,8 @@ public class PunctuateAuditService {
     @Transactional
     @CacheEvict(value = "listPunctuatePage", allEntries = true)
     public Boolean deletePunctuate(Long punctuateId) {
-        markerPunctuateMapper.delete(Wrappers.<MarkerPunctuate>lambdaQuery().eq(MarkerPunctuate::getPunctuateId, punctuateId));
+        markerPunctuateMapper
+            .delete(Wrappers.<MarkerPunctuate>lambdaQuery().eq(MarkerPunctuate::getPunctuateId, punctuateId));
         return true;
     }
 

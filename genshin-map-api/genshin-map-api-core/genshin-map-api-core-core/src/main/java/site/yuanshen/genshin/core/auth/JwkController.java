@@ -1,6 +1,5 @@
 package site.yuanshen.genshin.core.auth;
 
-
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,9 +30,9 @@ public class JwkController {
     @GetMapping("/.well-known/jwks.json")
     public Map<String, Object> getJwk() {
         return new JWKSet(
-                new RSAKey.Builder(
-                        (RSAPublicKey) keyPair.getPublic()
-                ).build()
+            new RSAKey.Builder(
+                (RSAPublicKey) keyPair.getPublic()
+            ).build()
         ).toJSONObject();
     }
 }

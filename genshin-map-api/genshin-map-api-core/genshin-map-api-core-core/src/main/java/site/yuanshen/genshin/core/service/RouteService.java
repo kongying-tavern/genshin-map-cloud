@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 public class RouteService {
 
     private final RouteMapper routeMapper;
+
     private final SysUserMapper userMapper;
 
     /**
@@ -41,12 +42,18 @@ public class RouteService {
      * @return 路线信息分页封装
      */
     public PageListVo<RouteVo> listRoutePage(PageSearchDto pageSearchDto, List<Integer> hiddenFlagList) {
-        Page<Route> routePage = routeMapper.selectPage(pageSearchDto.getPageEntity(), Wrappers.<Route>lambdaQuery().in(!hiddenFlagList.isEmpty(), Route::getHiddenFlag, hiddenFlagList)
-                .orderByAsc(Route::getId));
+        Page<Route> routePage = routeMapper.selectPage(
+            pageSearchDto.getPageEntity(),
+            Wrappers.<Route>lambdaQuery().in(!hiddenFlagList.isEmpty(), Route::getHiddenFlag, hiddenFlagList)
+                .orderByAsc(Route::getId)
+        );
         PageListVo<RouteVo> page = new PageListVo<RouteVo>()
-                .setRecord(routePage.getRecords().parallelStream().map(RouteDto::new).map(RouteDto::getVo).collect(Collectors.toList()))
-                .setSize(routePage.getSize())
-                .setTotal(routePage.getTotal());
+            .setRecord(
+                routePage.getRecords().parallelStream().map(RouteDto::new).map(RouteDto::getVo)
+                    .collect(Collectors.toList())
+            )
+            .setSize(routePage.getSize())
+            .setTotal(routePage.getTotal());
         return page;
     }
 
@@ -61,20 +68,24 @@ public class RouteService {
         String namePart = searchDto.getNamePart();
         String nicknamePart = searchDto.getCreatorNicknamePart();
         String creatorId = searchDto.getCreatorId();
-        Page<Route> routePage = routeMapper.selectPage(searchDto.getPage(),
-                Wrappers.<Route>lambdaQuery()
-                        .orderByAsc(Route::getId)
-                        .like(StrUtil.isNotBlank(namePart), Route::getName, namePart)
-                        .like(StrUtil.isNotBlank(nicknamePart), Route::getCreatorNickname, nicknamePart)
-                        .eq(StrUtil.isNotBlank(creatorId), BaseEntity::getCreatorId, creatorId));
+        Page<Route> routePage = routeMapper.selectPage(
+            searchDto.getPage(),
+            Wrappers.<Route>lambdaQuery()
+                .orderByAsc(Route::getId)
+                .like(StrUtil.isNotBlank(namePart), Route::getName, namePart)
+                .like(StrUtil.isNotBlank(nicknamePart), Route::getCreatorNickname, nicknamePart)
+                .eq(StrUtil.isNotBlank(creatorId), BaseEntity::getCreatorId, creatorId)
+        );
         PageListVo<RouteVo> page = new PageListVo<RouteVo>()
-                .setRecord(routePage.getRecords().parallelStream()
-                        .filter(route -> hiddenFlagList.contains(route.getHiddenFlag()))
-                        .map(RouteDto::new)
-                        .map(RouteDto::getVo)
-                        .collect(Collectors.toList()))
-                .setSize(routePage.getSize())
-                .setTotal(routePage.getTotal());
+            .setRecord(
+                routePage.getRecords().parallelStream()
+                    .filter(route -> hiddenFlagList.contains(route.getHiddenFlag()))
+                    .map(RouteDto::new)
+                    .map(RouteDto::getVo)
+                    .collect(Collectors.toList())
+            )
+            .setSize(routePage.getSize())
+            .setTotal(routePage.getTotal());
         return page;
     }
 
@@ -87,9 +98,9 @@ public class RouteService {
      */
     public List<RouteDto> listRouteById(List<Long> idList, List<Integer> hiddenFlagList) {
         List<RouteDto> result = routeMapper.selectBatchIds(idList).parallelStream()
-                .filter(route -> hiddenFlagList.contains(route.getHiddenFlag()))
-                .map(RouteDto::new)
-                .collect(Collectors.toList());
+            .filter(route -> hiddenFlagList.contains(route.getHiddenFlag()))
+            .map(RouteDto::new)
+            .collect(Collectors.toList());
         return result;
     }
 
@@ -116,7 +127,8 @@ public class RouteService {
      */
     public Boolean updateRoute(RouteDto routeDto) {
         return 1 == routeMapper.updateById(
-                routeDto.getEntity());
+            routeDto.getEntity()
+        );
     }
 
     /**
@@ -131,6 +143,6 @@ public class RouteService {
 
     private SysUser getUserNotNull(Long id) {
         return Optional.ofNullable(userMapper.selectOne(Wrappers.lambdaQuery(SysUser.class).eq(SysUser::getId, id)))
-                .orElseThrow(() -> new GenshinApiException("用户不存在"));
+            .orElseThrow(() -> new GenshinApiException("用户不存在"));
     }
 }

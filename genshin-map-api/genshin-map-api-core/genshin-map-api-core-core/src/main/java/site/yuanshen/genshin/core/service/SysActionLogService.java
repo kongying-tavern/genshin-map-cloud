@@ -57,7 +57,7 @@ public class SysActionLogService {
         Map<String, Object> extraData,
         ClientUtils.ClientInfo clientInfo
     ) {
-        if(extraData == null) {
+        if (extraData == null) {
             extraData = new HashMap<>();
         }
 
@@ -89,21 +89,33 @@ public class SysActionLogService {
         wrapper = PgsqlUtils.sortWrapper(wrapper, sortList);
 
         LambdaQueryWrapper<SysActionLog> queryWrapper = wrapper.lambda()
-                .eq(sysActionLogSearchDto.getUserId() != null, SysActionLog::getUserId, sysActionLogSearchDto.getUserId())
-                .like(StrUtil.isNotBlank(sysActionLogSearchDto.getDeviceId()), SysActionLog::getDeviceId, sysActionLogSearchDto.getDeviceId())
-                .like(StrUtil.isNotBlank(sysActionLogSearchDto.getIpv4()), SysActionLog::getIpv4, sysActionLogSearchDto.getIpv4())
-                .eq(StrUtil.isNotBlank(sysActionLogSearchDto.getAction()), SysActionLog::getAction, sysActionLogSearchDto.getAction())
-                .eq(sysActionLogSearchDto.getIsError() != null, SysActionLog::getIsError, sysActionLogSearchDto.getIsError());
+            .eq(sysActionLogSearchDto.getUserId() != null, SysActionLog::getUserId, sysActionLogSearchDto.getUserId())
+            .like(
+                StrUtil.isNotBlank(sysActionLogSearchDto.getDeviceId()), SysActionLog::getDeviceId,
+                sysActionLogSearchDto.getDeviceId()
+            )
+            .like(
+                StrUtil.isNotBlank(sysActionLogSearchDto.getIpv4()), SysActionLog::getIpv4,
+                sysActionLogSearchDto.getIpv4()
+            )
+            .eq(
+                StrUtil.isNotBlank(sysActionLogSearchDto.getAction()), SysActionLog::getAction,
+                sysActionLogSearchDto.getAction()
+            )
+            .eq(
+                sysActionLogSearchDto.getIsError() != null, SysActionLog::getIsError, sysActionLogSearchDto.getIsError()
+            );
 
-        Page<SysActionLog> historyPage = sysActionLogMapper.selectPage(sysActionLogSearchDto.getPageEntity(), queryWrapper);
+        Page<SysActionLog> historyPage = sysActionLogMapper
+            .selectPage(sysActionLogSearchDto.getPageEntity(), queryWrapper);
 
         List<SysActionLogVo> result = historyPage.getRecords().stream()
-                .map(SysActionLogDto::new)
-                .map(SysActionLogDto::getVo)
-                .collect(Collectors.toList());
+            .map(SysActionLogDto::new)
+            .map(SysActionLogDto::getVo)
+            .collect(Collectors.toList());
         return new PageListVo<SysActionLogVo>()
-                .setRecord(result)
-                .setTotal(historyPage.getTotal())
-                .setSize(historyPage.getSize());
+            .setRecord(result)
+            .setTotal(historyPage.getTotal())
+            .setSize(historyPage.getSize());
     }
 }

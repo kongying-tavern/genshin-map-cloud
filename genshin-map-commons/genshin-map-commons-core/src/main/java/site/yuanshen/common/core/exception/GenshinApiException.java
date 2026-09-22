@@ -16,7 +16,9 @@ public class GenshinApiException extends RuntimeException {
         super(cause);
     }
 
-    protected GenshinApiException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+    protected GenshinApiException(
+        String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace
+    ) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 }

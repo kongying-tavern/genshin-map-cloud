@@ -35,6 +35,7 @@
         <jdk.version>11</jdk.version>
         <gsapi.version>1.0</gsapi.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <spotless.version>2.43.0</spotless.version>
     </properties>
 
     <!-- 添加SpringBoot、SpringCloud Netflix、SpringCloud alibaba的相关基础依赖 -->
@@ -140,6 +141,7 @@
                 <runtime-profile>uat</runtime-profile>
             </properties>
         </profile>
+
     </profiles>
 
 
@@ -190,6 +192,7 @@
                     <showDeprecation>true</showDeprecation>
                 </configuration>
             </plugin>
+
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>flatten-maven-plugin</artifactId>
@@ -215,6 +218,11 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>com.diffplug.spotless</groupId>
+                <artifactId>spotless-maven-plugin</artifactId>
             </plugin>
         </plugins>
 
@@ -251,6 +259,24 @@
                             <version>${protobuf.version}</version>
                         </dependency>
                     </dependencies>
+                </plugin>
+                <plugin>
+                    <groupId>com.diffplug.spotless</groupId>
+                    <artifactId>spotless-maven-plugin</artifactId>
+                    <version>${spotless.version}</version>
+                    <configuration>
+                        <java>
+                            <includes>
+                                <include>src/main/java/**/*.java</include>
+                                <include>src/test/java/**/*.java</include>
+                            </includes>
+                            <toggleOffOn/>
+                            <eclipse>
+                                <file>${session.executionRootDirectory}/.eclipse-formatter.xml</file>
+                            </eclipse>
+                            <formatAnnotations/>
+                        </java>
+                    </configuration>
                 </plugin>
             </plugins>
         </pluginManagement>

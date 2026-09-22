@@ -33,8 +33,10 @@ public class SysUserService {
 
     private final RestTemplate gbkRestTemplate;
 
-    public SysUserService(SysUserDao basicService,
-                          @Qualifier("gbkRestTemplate") RestTemplate gbkRestTemplate) {
+    public SysUserService(
+        SysUserDao basicService,
+        @Qualifier("gbkRestTemplate") RestTemplate gbkRestTemplate
+    ) {
         this.userDao = basicService;
         this.gbkRestTemplate = gbkRestTemplate;
     }
@@ -47,10 +49,11 @@ public class SysUserService {
     public Long register(SysUserRegisterVo registerVo) {
         String username = registerVo.getUsername();
         String password = registerVo.getPassword();
-        if (userDao.getUser(username).isPresent()) throw new GenshinApiException("用户已存在，请检查是否输入正确");
+        if (userDao.getUser(username).isPresent())
+            throw new GenshinApiException("用户已存在，请检查是否输入正确");
         SysUserDto userDto = new SysUserDto(registerVo)
-                .withPassword(PasswordEncoderFactories.createDelegatingPasswordEncoder().encode(password))
-                .withRoleId(RoleEnum.MAP_USER.ordinal());
+            .withPassword(PasswordEncoderFactories.createDelegatingPasswordEncoder().encode(password))
+            .withRoleId(RoleEnum.MAP_USER.ordinal());
         return userDao.insertUser(userDto);
     }
 
@@ -62,9 +65,11 @@ public class SysUserService {
     public Long registerByQQ(SysUserRegisterVo registerVo) {
         String qq = registerVo.getUsername();
         String password = registerVo.getPassword();
-        if (userDao.getUser(qq).isPresent()) throw new GenshinApiException("qq号已被注册，请联系管理员");
+        if (userDao.getUser(qq).isPresent())
+            throw new GenshinApiException("qq号已被注册，请联系管理员");
 
-        ResponseEntity<String> response = gbkRestTemplate.getForEntity("https://r.qzone.qq.com/fcg-bin/cgi_get_portrait.fcg?uins=" + qq, String.class);
+        ResponseEntity<String> response = gbkRestTemplate
+            .getForEntity("https://r.qzone.qq.com/fcg-bin/cgi_get_portrait.fcg?uins=" + qq, String.class);
         String qqInfo = response.getBody();
         if (!response.getStatusCode().equals(HttpStatus.OK) || qqInfo == null || !qqInfo.contains("portraitCallBack")) {
             throw new GenshinApiException("服务器无法连接qq服务器，请先检查使用的qq号是否正确");
@@ -72,22 +77,22 @@ public class SysUserService {
         String qqName;
         try {
             qqName = JSON
-                    .parseObject(qqInfo.substring(17, qqInfo.length() - 1))
-                    .getJSONArray(qq)
-                    .getString(6);
+                .parseObject(qqInfo.substring(17, qqInfo.length() - 1))
+                .getJSONArray(qq)
+                .getString(6);
         } catch (Exception e) {
             throw new GenshinApiException("QQ号有误，请使用真实的QQ号进行注册");
         }
         String qqLogo = "https://q1.qlogo.cn/g?b=qq&nk=" + qq + "&s=640";
 
         return userDao.insertUser(
-                new SysUserDto()
-                        .withQq(qq)
-                        .withUsername(qq)
-                        .withPassword(PasswordEncoderFactories.createDelegatingPasswordEncoder().encode(password))
-                        .withRoleId(RoleEnum.MAP_USER.ordinal())
-                        .withNickname(qqName)
-                        .withLogo(qqLogo)
+            new SysUserDto()
+                .withQq(qq)
+                .withUsername(qq)
+                .withPassword(PasswordEncoderFactories.createDelegatingPasswordEncoder().encode(password))
+                .withRoleId(RoleEnum.MAP_USER.ordinal())
+                .withNickname(qqName)
+                .withLogo(qqLogo)
         );
     }
 

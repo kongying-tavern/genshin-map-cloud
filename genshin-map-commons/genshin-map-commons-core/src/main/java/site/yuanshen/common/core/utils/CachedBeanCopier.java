@@ -21,7 +21,6 @@ package site.yuanshen.common.core.utils;
  * limitations under the License.
  */
 
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.asm.ClassVisitor;
@@ -43,11 +42,16 @@ abstract public class CachedBeanCopier {
     private static final String SET_PREFIX = "set";
 
     private static final Logger logger = LoggerFactory.getLogger(CachedBeanCopier.class);
+
     private static final Map<String, CachedBeanCopier> beanCopierCacheMap = new ConcurrentHashMap<>();
 
     private static final BeanCopierKey KEY_FACTORY = (BeanCopierKey) KeyFactory.create(BeanCopierKey.class);
+
     private static final Type BEAN_COPIER = TypeUtils.parseType(CachedBeanCopier.class.getName());
-    private static final Signature COPY = new Signature("copy", Type.VOID_TYPE, new Type[]{Constants.TYPE_OBJECT, Constants.TYPE_OBJECT});
+
+    private static final Signature COPY = new Signature(
+        "copy", Type.VOID_TYPE, new Type[] { Constants.TYPE_OBJECT, Constants.TYPE_OBJECT }
+    );
 
     interface BeanCopierKey {
         Object newInstance(String source, String target, boolean useConverter);
@@ -100,8 +104,11 @@ abstract public class CachedBeanCopier {
 
     public static class Generator extends AbstractClassGenerator {
         private static final Source SOURCE = new Source(CachedBeanCopier.class.getName());
+
         private Class source;
+
         private Class<?> target;
+
         private boolean useConverter;
 
         public Generator() {
@@ -141,12 +148,14 @@ abstract public class CachedBeanCopier {
             Type sourceType = Type.getType(source);
             Type targetType = Type.getType(target);
             ClassEmitter ce = new ClassEmitter(v);
-            ce.begin_class(Constants.V1_2,
-                    Constants.ACC_PUBLIC,
-                    getClassName(),
-                    BEAN_COPIER,
-                    null,
-                    Constants.SOURCE_FILE);
+            ce.begin_class(
+                Constants.V1_2,
+                Constants.ACC_PUBLIC,
+                getClassName(),
+                BEAN_COPIER,
+                null,
+                Constants.SOURCE_FILE
+            );
             EmitUtils.null_constructor(ce);
             CodeEmitter e = ce.begin_method(Constants.ACC_PUBLIC, COPY, null);
             PropertyDescriptor[] getters = ReflectUtils.getBeanGetters(source);
@@ -163,7 +172,9 @@ abstract public class CachedBeanCopier {
                 Class<?>[] argTypes = method.getParameterTypes();
                 int argCount = argTypes.length;
                 if (argCount == 1 && name.startsWith(SET_PREFIX)) {
-                    PropertyDescriptor propertyDescriptor = new PropertyDescriptor(Introspector.decapitalize(name.substring(3)), null, method);
+                    PropertyDescriptor propertyDescriptor = new PropertyDescriptor(
+                        Introspector.decapitalize(name.substring(3)), null, method
+                    );
                     setterList.add(propertyDescriptor);
                 }
             }
@@ -225,6 +236,3 @@ abstract public class CachedBeanCopier {
         }
     }
 }
-
-
-

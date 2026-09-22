@@ -13,12 +13,14 @@ import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@AutoConfigureAfter({SocketIOConfiguration.class})
+@AutoConfigureAfter({ SocketIOConfiguration.class })
 @Slf4j
 @RequiredArgsConstructor
 public class SocketIONacosDiscovery implements CommandLineRunner, DisposableBean {
     private final SocketIOProperties properties;
+
     private final NacosDiscoveryProperties discoveryProperties;
+
     private final static String websocketServiceName = "api-ws";
 
     @Override

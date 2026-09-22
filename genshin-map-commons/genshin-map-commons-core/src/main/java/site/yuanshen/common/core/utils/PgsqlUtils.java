@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 public class PgsqlUtils {
     public static String unnestLongStr(List<Long> longList) {
         String s = JSON.toJSONString(longList);
-        return "'{" + s.substring(1,s.length()-1) + "}'";
+        return "'{" + s.substring(1, s.length() - 1) + "}'";
     }
 
     public static String unnestLongStr(Set<Long> longSet) {
@@ -32,7 +32,7 @@ public class PgsqlUtils {
     public static String unnestStringStr(List<String> strList) {
         String s = JSON.toJSONString(strList);
         s = s.replace("\"", "");
-        return "'{" + s.substring(1,s.length()-1) + "}'";
+        return "'{" + s.substring(1, s.length() - 1) + "}'";
     }
 
     public static String unnestStringStr(Set<String> strSet) {
@@ -49,8 +49,10 @@ public class PgsqlUtils {
      * 排序顺序
      */
     public enum Order {
+        // spotless:off
         ASC,
         DESC
+        // spotless:on
     }
 
     /**
@@ -66,12 +68,12 @@ public class PgsqlUtils {
         private Map<String, SortConfigItem<E>> entries = new HashMap<>();
 
         public SortConfig<E> addEntry(SortConfigItem<E> entry) {
-            if(entry == null) {
+            if (entry == null) {
                 return this;
             }
 
             final String propertyName = entry.getProp();
-            if(StrUtil.isBlank(propertyName)) {
+            if (StrUtil.isBlank(propertyName)) {
                 return this;
             }
             entries.put(propertyName, entry);
@@ -94,8 +96,10 @@ public class PgsqlUtils {
 
         // 数据库字段
         private String prop = "";
+
         // 代码字段
         private SFunction<E, ?> propGetter;
+
         // 比较器
         private Comparator<E> comparator;
     }
@@ -114,12 +118,16 @@ public class PgsqlUtils {
 
         // 数据库字段
         private String field = "";
+
         // 代码字段
         private String prop = "";
+
         // 代码字段获取
         private SFunction<E, ?> propGetter;
+
         // 比较器
         private Comparator<E> comparator;
+
         // 排序方式
         private Order order;
     }
@@ -136,29 +144,30 @@ public class PgsqlUtils {
 
         // 提取字段名和初始排序映射
         List<Sort<E>> sortList = new ArrayList<>();
-        for(String sortString : sorts) {
-            if(StrUtil.isBlank(sortString)) {
+        for (String sortString : sorts) {
+            if (StrUtil.isBlank(sortString)) {
                 continue;
             }
 
             int sortStringLen = sortString.length();
             final String sortProperty = sortString.substring(0, sortStringLen - 1);
             final String sortOrder = sortString.substring(sortStringLen - 1);
-            if(StrUtil.isBlank(sortProperty)) {
+            if (StrUtil.isBlank(sortProperty)) {
                 continue;
-            } else if(!StrUtil.equalsAny(sortOrder, "+", "-")) {
+            } else if (!StrUtil.equalsAny(sortOrder, "+", "-")) {
                 continue;
             }
             final String sortField = NamingCase.toSymbolCase(sortProperty, '_');
             final Order sortOrderEnum = StrUtil.equals(sortOrder, "+") ? Order.ASC : Order.DESC;
             // 提取配置中的数据
             final SortConfigItem<E> sortConfig = config.getEntries().get(sortProperty);
-            if(sortConfig == null) {
+            if (sortConfig == null) {
                 continue;
             }
 
             // 构造排序
-            sortList.add(Sort.<E>create()
+            sortList.add(
+                Sort.<E>create()
                     .withField(sortField)
                     .withProp(sortProperty)
                     .withPropGetter(sortConfig.getPropGetter())
@@ -176,12 +185,12 @@ public class PgsqlUtils {
      * @param sortList 排序配置列表
      */
     public static <E> QueryWrapper<E> sortWrapper(QueryWrapper<E> wrapper, List<Sort<E>> sortList) {
-        for(Sort<E> sortItem : sortList) {
+        for (Sort<E> sortItem : sortList) {
             final String sortField = sortItem.getField();
             wrapper = wrapper.orderBy(
-                    StrUtil.isNotEmpty(sortField),
-                    Order.ASC.equals(sortItem.getOrder()),
-                    sortField
+                StrUtil.isNotEmpty(sortField),
+                Order.ASC.equals(sortItem.getOrder()),
+                sortField
             );
         }
         return wrapper;
@@ -193,7 +202,7 @@ public class PgsqlUtils {
      * @param sortList 排序配置列表
      */
     public static <E> LambdaQueryWrapper<E> sortWrapper(LambdaQueryWrapper<E> wrapper, List<Sort<E>> sortList) {
-        for(Sort<E> sortItem : sortList) {
+        for (Sort<E> sortItem : sortList) {
             final SFunction<E, ?> sortPropGetter = sortItem.getPropGetter();
             wrapper = wrapper.orderBy(
                 sortPropGetter != null,
@@ -210,19 +219,20 @@ public class PgsqlUtils {
      * @param sortList 排序配置列表
      */
     public static <E> List<E> sortWrapper(List<E> list, List<Sort<E>> sortList) {
-        if(CollUtil.isEmpty(sortList)) {
+        if (CollUtil.isEmpty(sortList)) {
             return list;
         }
 
         // 构造组合式排序规则
         Comparator<E> combinedComparator = null;
-        for(Sort<E> sortItem : sortList) {
+        for (Sort<E> sortItem : sortList) {
             final Comparator<E> sortComparator = sortItem.getComparator();
-            final Comparator<E> sortComparatorOrderd = Order.ASC.equals(sortItem.getOrder()) ? sortComparator : sortComparator.reversed();
-            if(sortComparator == null) {
+            final Comparator<E> sortComparatorOrderd = Order.ASC.equals(sortItem.getOrder()) ? sortComparator
+                : sortComparator.reversed();
+            if (sortComparator == null) {
                 continue;
             }
-            if(combinedComparator == null) {
+            if (combinedComparator == null) {
                 combinedComparator = sortComparatorOrderd;
             } else {
                 combinedComparator = combinedComparator.thenComparing(sortComparatorOrderd);
@@ -230,7 +240,7 @@ public class PgsqlUtils {
         }
 
         // 应用排序规则
-        if(combinedComparator == null) {
+        if (combinedComparator == null) {
             return list;
         } else {
             return list.stream().sorted(combinedComparator).collect(Collectors.toList());
@@ -244,10 +254,10 @@ public class PgsqlUtils {
      * @param size 每页条数
      */
     public static <E> List<E> paginateWrapper(List<E> list, Long current, Long size) {
-        if(current == null) {
+        if (current == null) {
             current = 1L;
         }
-        if(size == null) {
+        if (size == null) {
             size = 10L;
         }
 

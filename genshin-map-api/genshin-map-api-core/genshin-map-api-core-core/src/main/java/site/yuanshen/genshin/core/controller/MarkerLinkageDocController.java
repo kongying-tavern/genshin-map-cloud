@@ -12,7 +12,6 @@ import site.yuanshen.data.vo.BinaryMD5Vo;
 import site.yuanshen.genshin.core.dao.MarkerLinkageDao;
 import site.yuanshen.genshin.core.service.MarkerLinkageDocService;
 
-
 /**
  * 点位关联 Controller 层
  *
@@ -25,6 +24,7 @@ import site.yuanshen.genshin.core.service.MarkerLinkageDocService;
 @Tag(name = "marker_link_doc", description = "点位关联档案API")
 public class MarkerLinkageDocController {
     private final MarkerLinkageDao markerLinkageDao;
+
     private final MarkerLinkageDocService markerLinkageDocService;
 
     @Operation(summary = "返回所有点位关联列表", description = "查询所有点位关联列表，返回压缩格式的byte数组")

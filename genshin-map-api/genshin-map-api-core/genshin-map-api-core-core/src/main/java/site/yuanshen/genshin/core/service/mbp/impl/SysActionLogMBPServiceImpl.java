@@ -12,6 +12,7 @@ import site.yuanshen.genshin.core.service.mbp.SysActionLogMBPService;
  * @author Alex Fang
  */
 @Service
-public class SysActionLogMBPServiceImpl extends ServiceImpl<SysActionLogMapper, SysActionLog> implements SysActionLogMBPService {
+public class SysActionLogMBPServiceImpl extends ServiceImpl<SysActionLogMapper, SysActionLog>
+    implements SysActionLogMBPService {
 
 }

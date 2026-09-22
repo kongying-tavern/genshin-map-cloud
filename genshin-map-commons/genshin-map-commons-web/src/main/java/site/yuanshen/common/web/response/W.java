@@ -30,7 +30,7 @@ public class W<T> implements Serializable {
     private LocalDateTime time;
 
     public W(String event, T data, String message) {
-        if(StrUtil.isNotBlank(message)) {
+        if (StrUtil.isNotBlank(message)) {
             this.message = message;
         }
         this.event = event;

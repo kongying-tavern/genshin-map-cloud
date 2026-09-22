@@ -40,35 +40,41 @@ public class MBPGenerator {
 
     public static void main(String[] args) throws Exception {
         List<String> missingFieldNames = new ArrayList<>();
-        if(StrUtil.isBlankIfStr(url)) missingFieldNames.add("数据库地址 (GSAPI_DB_URL)");
-        if(StrUtil.isBlankIfStr(username)) missingFieldNames.add("数据库用户名 (GSAPI_DB_USER)");
-        if(StrUtil.isBlankIfStr(password)) missingFieldNames.add("数据库密码 (GSAPI_DB_PASS)");
-        if(StrUtil.isBlankIfStr(author)) missingFieldNames.add("代码作者 (GSAPI_AUTHOR)");
-        if(StrUtil.isBlankIfStr(outputDir)) missingFieldNames.add("生成目录 (GSAPI_OUTDIR)");
-        if(StrUtil.isBlankIfStr(outputModule)) missingFieldNames.add("生成模块 (GSAPI_OUTMODULE)");
-        if(CollUtil.isNotEmpty(missingFieldNames)) {
+        if (StrUtil.isBlankIfStr(url))
+            missingFieldNames.add("数据库地址 (GSAPI_DB_URL)");
+        if (StrUtil.isBlankIfStr(username))
+            missingFieldNames.add("数据库用户名 (GSAPI_DB_USER)");
+        if (StrUtil.isBlankIfStr(password))
+            missingFieldNames.add("数据库密码 (GSAPI_DB_PASS)");
+        if (StrUtil.isBlankIfStr(author))
+            missingFieldNames.add("代码作者 (GSAPI_AUTHOR)");
+        if (StrUtil.isBlankIfStr(outputDir))
+            missingFieldNames.add("生成目录 (GSAPI_OUTDIR)");
+        if (StrUtil.isBlankIfStr(outputModule))
+            missingFieldNames.add("生成模块 (GSAPI_OUTMODULE)");
+        if (CollUtil.isNotEmpty(missingFieldNames)) {
             throw new RuntimeException("以下环境变量缺失：\n" + StrUtil.join("\n", missingFieldNames));
         }
 
         FastGenerator generator = FastGenerator.getFastGenerator()
-                .url(url)
-                .userName(username)
-                .password(password)
-                .author(author)
-                .entity(StrUtil.isBlank(entity) ? null : entity)
-                .outputDir(outputDir)
-                .commentDateFormat("yyyy-MM-dd hh:mm:ss")
-                .moduleType(outputModule);
+            .url(url)
+            .userName(username)
+            .password(password)
+            .author(author)
+            .entity(StrUtil.isBlank(entity) ? null : entity)
+            .outputDir(outputDir)
+            .commentDateFormat("yyyy-MM-dd hh:mm:ss")
+            .moduleType(outputModule);
         generator
-                .entityPackage("site.yuanshen.data.entity")
-                .mapperPackage("site.yuanshen.data.mapper")
-                .xmlPackage("mapper")
-                .voPackage("site.yuanshen.data.vo")
-                .dtoPackage("site.yuanshen.data.dto")
-                .apiPackageName("site.yuanshen.genshin")
-                .apiModuleName("core")
-                .servicePackageAfterApi("service.mbp")
-                .serviceImplPackageAfterApi("service.mbp.impl")
-                .build();
+            .entityPackage("site.yuanshen.data.entity")
+            .mapperPackage("site.yuanshen.data.mapper")
+            .xmlPackage("mapper")
+            .voPackage("site.yuanshen.data.vo")
+            .dtoPackage("site.yuanshen.data.dto")
+            .apiPackageName("site.yuanshen.genshin")
+            .apiModuleName("core")
+            .servicePackageAfterApi("service.mbp")
+            .serviceImplPackageAfterApi("service.mbp.impl")
+            .build();
     }
 }

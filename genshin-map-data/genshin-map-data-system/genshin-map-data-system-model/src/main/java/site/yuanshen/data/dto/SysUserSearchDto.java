@@ -53,7 +53,7 @@ public class SysUserSearchDto {
      * 角色ID
      */
     @Schema(title = "角色ID")
-    private List<String> roleIds;
+    private List<Long> roleIds;
 
     /**
      * 排序条件

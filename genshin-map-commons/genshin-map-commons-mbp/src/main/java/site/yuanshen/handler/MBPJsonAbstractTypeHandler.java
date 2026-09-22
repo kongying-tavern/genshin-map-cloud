@@ -14,13 +14,13 @@ import java.sql.SQLException;
 
 public abstract class MBPJsonAbstractTypeHandler<U> extends BaseTypeHandler<U> {
 
-    protected static final JSONReader.Feature[] readFeatures = new JSONReader.Feature[]{
+    protected static final JSONReader.Feature[] readFeatures = new JSONReader.Feature[] {
             JSONReader.Feature.UseBigDecimalForFloats,
             JSONReader.Feature.UseBigDecimalForDoubles,
             JSONReader.Feature.UseNativeObject
     };
 
-    protected static final JSONWriter.Feature[] writeFeatures = new JSONWriter.Feature[]{
+    protected static final JSONWriter.Feature[] writeFeatures = new JSONWriter.Feature[] {
             JSONWriter.Feature.BrowserCompatible,
             JSONWriter.Feature.WriteEnumUsingToString,
             JSONWriter.Feature.WriteBigDecimalAsPlain,
@@ -29,7 +29,8 @@ public abstract class MBPJsonAbstractTypeHandler<U> extends BaseTypeHandler<U> {
     };
 
     @Override
-    public void setNonNullParameter(PreparedStatement preparedStatement, int i, U u, JdbcType jdbcType) throws SQLException {
+    public void setNonNullParameter(PreparedStatement preparedStatement, int i, U u, JdbcType jdbcType)
+        throws SQLException {
         final PGobject jsonObject = new PGobject();
         jsonObject.setType("json");
         jsonObject.setValue(stringifier(u));

@@ -40,8 +40,11 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class MarkerLinkageService {
     private final MarkerLinkageMapper markerLinkageMapper;
+
     private final MarkerMBPService markerMBPService;
+
     private final MarkerLinkageDao markerLinkageDao;
+
     private final MarkerLinkageHelperService markerLinkageHelperService;
 
     @Cacheable(value = "listMarkerLinkage")
@@ -56,7 +59,8 @@ public class MarkerLinkageService {
         final Map<Long, Point2D.Double> pathMarkerCoords = markerLinkageHelperService.getPathCoords(pathMarkerIds);
         MarkerLinkageDataHelper.patchPathMarkerCoordsInList(linkageList, pathMarkerCoords);
 
-        final Map<String, List<MarkerLinkageVo>> linkageMap = linkageList.parallelStream().collect(Collectors.groupingBy(MarkerLinkageVo::getGroupId));
+        final Map<String, List<MarkerLinkageVo>> linkageMap = linkageList.parallelStream()
+            .collect(Collectors.groupingBy(MarkerLinkageVo::getGroupId));
         return linkageMap;
     }
 
@@ -78,7 +82,8 @@ public class MarkerLinkageService {
     @Transactional
     public String linkMarker(List<MarkerLinkageVo> linkageVos, LinkChangeVo changeVo) {
         // 校验数据可用性
-        if(linkageVos == null) linkageVos = new ArrayList<>();
+        if (linkageVos == null)
+            linkageVos = new ArrayList<>();
         linkageVos = linkageVos.parallelStream().filter(Objects::nonNull).collect(Collectors.toList());
         markerLinkageHelperService.checkLinkList(linkageVos);
 
@@ -87,20 +92,20 @@ public class MarkerLinkageService {
         // 获取现有的列表
         final List<Long> idList = MarkerLinkageDataHelper.getLinkIdList(linkageVos);
         final List<MarkerLinkage> linkageExistsList = markerLinkageDao.getRelatedLinkageList(idList, true)
-                .parallelStream()
-                .map(v -> BeanUtils.copy(v, MarkerLinkage.class))
-                .collect(Collectors.toList());
+            .parallelStream()
+            .map(v -> BeanUtils.copy(v, MarkerLinkage.class))
+            .collect(Collectors.toList());
         final Set<String> linkExGroupIds = linkageExistsList
-                .parallelStream()
-                .map(MarkerLinkage::getGroupId)
-                .filter(StrUtil::isNotBlank)
-                .collect(Collectors.toSet());
+            .parallelStream()
+            .map(MarkerLinkage::getGroupId)
+            .filter(StrUtil::isNotBlank)
+            .collect(Collectors.toSet());
         final List<Long> linkExMarkerIds = MarkerLinkageDataHelper.getLinkIdList(
-                linkageExistsList
-                        .parallelStream()
-                        .map(MarkerLinkageDto::new)
-                        .map(MarkerLinkageDto::getVo)
-                        .collect(Collectors.toList())
+            linkageExistsList
+                .parallelStream()
+                .map(MarkerLinkageDto::new)
+                .map(MarkerLinkageDto::getVo)
+                .collect(Collectors.toList())
         );
 
         // 生成更新数据的数据列表
@@ -119,7 +124,7 @@ public class MarkerLinkageService {
         // 添加用户提交的关联数据
         changeVo.addMarkers(idList);
         // 添加新创建的关联组
-        if(StrUtil.isNotBlank(linkGroupId)) {
+        if (StrUtil.isNotBlank(linkGroupId)) {
             changeVo.addGroups(Set.of(linkGroupId));
         }
 
@@ -154,13 +159,15 @@ public class MarkerLinkageService {
         List<MarkerLinkageVo> list = new ArrayList<>(
             Stream.of(listWithIds, listWithGroupIds)
                 .flatMap(List::stream)
-                .collect(Collectors.toMap(
+                .collect(
+                    Collectors.toMap(
                         MarkerLinkage::getId,
                         v -> v,
                         (o, n) -> n
                     )
                 )
-                .values())
+                .values()
+        )
             .parallelStream()
             .map(link -> new MarkerLinkageDto(link).getVo())
             .collect(Collectors.toList());

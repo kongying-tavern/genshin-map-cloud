@@ -27,7 +27,7 @@ public class SysUserInvitationController {
     @PostMapping("/list")
     public R<PageListVo<SysUserInvitationVo>> listInvitation(@RequestBody SysUserInvitationSearchVo searchVo) {
         R<PageListVo<SysUserInvitationVo>> result = RUtils.create(
-                userInvitationService.searchInvitationPage(new SysUserInvitationSearchDto(searchVo))
+            userInvitationService.searchInvitationPage(new SysUserInvitationSearchDto(searchVo))
         );
         UserAppenderService.appendUser(result, result.getData().getRecord(), true, SysUserInvitationVo::getCreatorId);
         UserAppenderService.appendUser(result, result.getData().getRecord(), true, SysUserInvitationVo::getUpdaterId);
@@ -38,7 +38,7 @@ public class SysUserInvitationController {
     @PostMapping("/update")
     public R<SysUserInvitationSmallVo> updateInvitation(@RequestBody SysUserInvitationVo invitationVo) {
         R<SysUserInvitationSmallVo> result = RUtils.create(
-                userInvitationService.updateInvitation(new SysUserInvitationDto(invitationVo))
+            userInvitationService.updateInvitation(new SysUserInvitationDto(invitationVo))
         );
         return result;
     }
@@ -47,16 +47,18 @@ public class SysUserInvitationController {
     @PostMapping("/info")
     public R<SysUserInvitationSmallVo> checkInvitation(@RequestBody SysUserInvitationSmallVo invitationVo) {
         R<SysUserInvitationSmallVo> result = RUtils.create(
-                userInvitationService.checkInvitation(invitationVo)
+            userInvitationService.checkInvitation(invitationVo)
         );
         return result;
     }
 
     @Operation(summary = "检查用户邀请数据", description = "检查用户邀请数据")
     @PostMapping("/consume")
-    public R<SysUserInvitationConsumeResultVo> consumeInvitation(@RequestBody SysUserInvitationConsumeVo consumeInvitationVo) {
+    public R<SysUserInvitationConsumeResultVo> consumeInvitation(
+        @RequestBody SysUserInvitationConsumeVo consumeInvitationVo
+    ) {
         R<SysUserInvitationConsumeResultVo> result = RUtils.create(
-                userInvitationService.consumeInvitation(new SysUserInvitationConsumeDto(consumeInvitationVo))
+            userInvitationService.consumeInvitation(new SysUserInvitationConsumeDto(consumeInvitationVo))
         );
         return result;
     }
@@ -65,7 +67,7 @@ public class SysUserInvitationController {
     @DeleteMapping("/{invitationId}")
     public R<Boolean> deleteInvitation(@PathVariable("invitationId") Long invitationId) {
         return RUtils.create(
-                userInvitationService.deleteInvitation(invitationId)
+            userInvitationService.deleteInvitation(invitationId)
         );
     }
 }

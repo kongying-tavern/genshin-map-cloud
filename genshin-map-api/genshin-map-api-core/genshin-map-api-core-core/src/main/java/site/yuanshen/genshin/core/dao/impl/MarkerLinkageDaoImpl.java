@@ -43,8 +43,11 @@ import java.util.stream.Stream;
 public class MarkerLinkageDaoImpl implements MarkerLinkageDao {
 
     private final CacheManager cacheManager;
+
     private final MarkerLinkageMapper markerLinkageMapper;
+
     private final MarkerLinkageMBPService markerLinkageMBPService;
+
     private final MarkerLinkageHelperService markerLinkageHelperService;
 
     /**
@@ -63,7 +66,8 @@ public class MarkerLinkageDaoImpl implements MarkerLinkageDao {
         );
 
         // 根据 组ID 获取列表
-        final List<String> groupIdList = listWithIds.parallelStream().map(MarkerLinkage::getGroupId).distinct().collect(Collectors.toList());
+        final List<String> groupIdList = listWithIds.parallelStream().map(MarkerLinkage::getGroupId).distinct()
+            .collect(Collectors.toList());
         List<MarkerLinkage> listWithGroupIds = new ArrayList<>();
         if (CollUtil.isNotEmpty(groupIdList)) {
             listWithGroupIds = markerLinkageMapper.selectWithLargeCustomIn(
@@ -75,14 +79,18 @@ public class MarkerLinkageDaoImpl implements MarkerLinkageDao {
         }
 
         // 合并数据
-        List<MarkerLinkage> list = new ArrayList<>(Stream.of(listWithIds, listWithGroupIds)
-            .flatMap(List::stream)
-            .collect(Collectors.toMap(
-                MarkerLinkage::getId,
-                v -> v,
-                (o, n) -> n
-            ))
-            .values());
+        List<MarkerLinkage> list = new ArrayList<>(
+            Stream.of(listWithIds, listWithGroupIds)
+                .flatMap(List::stream)
+                .collect(
+                    Collectors.toMap(
+                        MarkerLinkage::getId,
+                        v -> v,
+                        (o, n) -> n
+                    )
+                )
+                .values()
+        );
 
         return list;
     }
@@ -96,7 +104,8 @@ public class MarkerLinkageDaoImpl implements MarkerLinkageDao {
         if (CollUtil.isEmpty(linkageList)) {
             return true;
         }
-        int deletedCount = markerLinkageMapper.deleteBatchIds(linkageList.stream().map(MarkerLinkage::getId).collect(Collectors.toList()));
+        int deletedCount = markerLinkageMapper
+            .deleteBatchIds(linkageList.stream().map(MarkerLinkage::getId).collect(Collectors.toList()));
         return deletedCount >= 0;
     }
 
@@ -140,7 +149,8 @@ public class MarkerLinkageDaoImpl implements MarkerLinkageDao {
             processSuccess = processSuccess && markerLinkageMBPService.updateBatchById(updateList, 100);
         }
         if (CollUtil.isNotEmpty(deleteIdList)) {
-            processSuccess = processSuccess && markerLinkageMapper.deleteByIds(PgsqlUtils.unnestLongStr(deleteIdList)) >= 0;
+            processSuccess = processSuccess
+                && markerLinkageMapper.deleteByIds(PgsqlUtils.unnestLongStr(deleteIdList)) >= 0;
         }
         return processSuccess;
     }
@@ -182,7 +192,8 @@ public class MarkerLinkageDaoImpl implements MarkerLinkageDao {
 
         // 获取关联列表数据
         final List<MarkerLinkageVo> linkageList = markerLinkageDao.getAllMarkerLinkage();
-        final Map<String, List<MarkerLinkageVo>> linkageMap = linkageList.parallelStream().collect(Collectors.groupingBy(MarkerLinkageVo::getGroupId));
+        final Map<String, List<MarkerLinkageVo>> linkageMap = linkageList.parallelStream()
+            .collect(Collectors.groupingBy(MarkerLinkageVo::getGroupId));
         return linkageMap;
     }
 
@@ -219,7 +230,8 @@ public class MarkerLinkageDaoImpl implements MarkerLinkageDao {
         try {
             final Cache listMarkerLinkageBinaryMD5GenerateTimestamp = getListMarkerLinkageBinaryMD5GenerateTimestamp();
             final Map<String, List<MarkerLinkageVo>> linkageList = listAllMarkerLinkage();
-            final byte[] result = JSON.toJSONString(linkageList, JsonUtils.defaultWriteFeatures).getBytes(StandardCharsets.UTF_8);
+            final byte[] result = JSON.toJSONString(linkageList, JsonUtils.defaultWriteFeatures)
+                .getBytes(StandardCharsets.UTF_8);
             listMarkerLinkageBinaryMD5GenerateTimestamp.clear();
             listMarkerLinkageBinaryMD5GenerateTimestamp.put("", TimeUtils.getCurrentTimestamp().getTime());
             return CompressUtils.compress(result);
@@ -246,7 +258,8 @@ public class MarkerLinkageDaoImpl implements MarkerLinkageDao {
         try {
             final Cache graphMarkerLinkageBinaryMD5GenerateTimestamp = getGraphMarkerLinkageBinaryMD5GenerateTimestamp();
             final Map<String, GraphVo> linkageGraph = graphAllMarkerLinkage();
-            final byte[] result = JSON.toJSONString(linkageGraph, JsonUtils.defaultWriteFeatures).getBytes(StandardCharsets.UTF_8);
+            final byte[] result = JSON.toJSONString(linkageGraph, JsonUtils.defaultWriteFeatures)
+                .getBytes(StandardCharsets.UTF_8);
             graphMarkerLinkageBinaryMD5GenerateTimestamp.clear();
             graphMarkerLinkageBinaryMD5GenerateTimestamp.put("", TimeUtils.getCurrentTimestamp().getTime());
             return CompressUtils.compress(result);
@@ -256,14 +269,16 @@ public class MarkerLinkageDaoImpl implements MarkerLinkageDao {
     }
 
     private Cache getListMarkerLinkageBinaryMD5GenerateTimestamp() {
-        final Cache listMarkerLinkageBinaryMD5GenerateTimestamp = cacheManager.getCache(MarkerLinkageCacheKeyConst.MARKER_LINKAGE_LIST_BIN_MD5_GENERATE_TIMESTAMP);
+        final Cache listMarkerLinkageBinaryMD5GenerateTimestamp = cacheManager
+            .getCache(MarkerLinkageCacheKeyConst.MARKER_LINKAGE_LIST_BIN_MD5_GENERATE_TIMESTAMP);
         if (listMarkerLinkageBinaryMD5GenerateTimestamp == null)
             throw new GenshinApiException("缓存未初始化");
         return listMarkerLinkageBinaryMD5GenerateTimestamp;
     }
 
     private Cache getGraphMarkerLinkageBinaryMD5GenerateTimestamp() {
-        final Cache graphMarkerLinkageBinaryMD5GenerateTimestamp = cacheManager.getCache(MarkerLinkageCacheKeyConst.MARKER_LINKAGE_GRAPH_BIN_MD5_GENERATE_TIMESTAMP);
+        final Cache graphMarkerLinkageBinaryMD5GenerateTimestamp = cacheManager
+            .getCache(MarkerLinkageCacheKeyConst.MARKER_LINKAGE_GRAPH_BIN_MD5_GENERATE_TIMESTAMP);
         if (graphMarkerLinkageBinaryMD5GenerateTimestamp == null)
             throw new GenshinApiException("缓存未初始化");
         return graphMarkerLinkageBinaryMD5GenerateTimestamp;

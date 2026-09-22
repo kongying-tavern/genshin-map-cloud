@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
  */
 public class BeanUtils {
     public static void copyNotNull(Object source, Object target) {
-        BeanUtil.copyProperties(source,target, CopyOptions.create().ignoreNullValue().ignoreError());
+        BeanUtil.copyProperties(source, target, CopyOptions.create().ignoreNullValue().ignoreError());
     }
 
     public static <T, R> T copy(R r, Class<T> clazz) {
@@ -21,7 +21,7 @@ public class BeanUtils {
     }
 
     public static <T, R> T copy(R r, T t) {
-        CglibUtil.copy(r,t);
+        CglibUtil.copy(r, t);
         return t;
     }
 

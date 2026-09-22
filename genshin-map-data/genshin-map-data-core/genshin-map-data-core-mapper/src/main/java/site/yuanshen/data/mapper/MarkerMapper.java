@@ -26,7 +26,9 @@ public interface MarkerMapper extends BaseMapper<Marker> {
      * @param wrapper
      * @return
      */
-    List<Marker> selectListWithLargeIn(@Param("unnest")String unnest, @Param(Constants.WRAPPER)LambdaQueryWrapper<Marker> wrapper);
+    List<Marker> selectListWithLargeIn(
+        @Param("unnest") String unnest, @Param(Constants.WRAPPER) LambdaQueryWrapper<Marker> wrapper
+    );
 
     /**
      *  配合in使用
@@ -35,11 +37,23 @@ public interface MarkerMapper extends BaseMapper<Marker> {
      * @param wrapper
      * @return
      */
-    List<Marker> selectWithLargeCustomIn(@Param("column")String column, @Param("unnest")String unnest, @Param(Constants.WRAPPER)LambdaQueryWrapper<Marker> wrapper);
+    List<Marker> selectWithLargeCustomIn(
+        @Param("column") String column, @Param("unnest") String unnest,
+        @Param(Constants.WRAPPER) LambdaQueryWrapper<Marker> wrapper
+    );
 
-    List<Marker> selectListByMarkerItemLink(@Param("column")String column, @Param("unnest")String unnest, @Param(Constants.WRAPPER)LambdaQueryWrapper<MarkerItemLink> wrapper);
+    List<Marker> selectListByMarkerItemLink(
+        @Param("column") String column, @Param("unnest") String unnest,
+        @Param(Constants.WRAPPER) LambdaQueryWrapper<MarkerItemLink> wrapper
+    );
 
-    IPage<Marker> selectPageFilterByHiddenFlag(Page<Marker> page, @Param("hiddenFlags") List<Integer> hiddenFlagList, @Param(Constants.WRAPPER) LambdaQueryWrapper<Marker> wrapper);
+    IPage<Marker> selectPageFilterByHiddenFlag(
+        Page<Marker> page, @Param("hiddenFlags") List<Integer> hiddenFlagList,
+        @Param(Constants.WRAPPER) LambdaQueryWrapper<Marker> wrapper
+    );
 
-    List<Marker> selectListWithLargeInFilterByHiddenFlag(@Param("unnest")String unnest,@Param("hiddenFlags") List<Integer> hiddenFlagList, @Param(Constants.WRAPPER) LambdaQueryWrapper<Marker> wrapper);
+    List<Marker> selectListWithLargeInFilterByHiddenFlag(
+        @Param("unnest") String unnest, @Param("hiddenFlags") List<Integer> hiddenFlagList,
+        @Param(Constants.WRAPPER) LambdaQueryWrapper<Marker> wrapper
+    );
 }

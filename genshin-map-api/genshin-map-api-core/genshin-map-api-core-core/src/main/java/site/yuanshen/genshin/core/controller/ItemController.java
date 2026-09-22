@@ -34,16 +34,20 @@ import java.util.stream.Collectors;
 public class ItemController {
 
     private final ItemService itemService;
+
     private final CacheService cacheService;
 
     //////////////START:物品本身的API//////////////
 
     @Operation(summary = "根据物品ID查询物品", description = "输入ID列表查询，单个查询也用此API")
     @PostMapping("/get/list_byid")
-    public R<List<ItemVo>> listItemById(@Schema(hidden = true)  @RequestHeader(value = "userDataLevel",required = false) String userDataLevel, @RequestBody List<Long> itemIdList) {
+    public R<List<ItemVo>> listItemById(
+        @Schema(hidden = true) @RequestHeader(value = "userDataLevel", required = false) String userDataLevel,
+        @RequestBody List<Long> itemIdList
+    ) {
         R<List<ItemVo>> result = RUtils.create(
-                itemService.listItemById(itemIdList, HiddenFlagEnum.getFlagListByMask(userDataLevel))
-                        .stream().map(ItemDto::getVo).collect(Collectors.toList())
+            itemService.listItemById(itemIdList, HiddenFlagEnum.getFlagListByMask(userDataLevel))
+                .stream().map(ItemDto::getVo).collect(Collectors.toList())
         );
         UserAppenderService.appendUser(result, result.getData(), true, ItemVo::getCreatorId);
         UserAppenderService.appendUser(result, result.getData(), true, ItemVo::getUpdaterId);
@@ -52,9 +56,14 @@ public class ItemController {
 
     @Operation(summary = "根据筛选条件列出物品信息", description = "传入的物品类型ID和地区ID列表，必须为末端的类型或地区")
     @PostMapping("/get/list")
-    public R<PageListVo<ItemVo>> listItemIdByType(@Parameter(hidden = true) @RequestHeader(value = "userDataLevel",required = false) String userDataLevel, @RequestBody ItemSearchVo itemSearchVo) {
+    public R<PageListVo<ItemVo>> listItemIdByType(
+        @Parameter(hidden = true) @RequestHeader(value = "userDataLevel", required = false) String userDataLevel,
+        @RequestBody ItemSearchVo itemSearchVo
+    ) {
         R<PageListVo<ItemVo>> result = RUtils.create(
-                itemService.listItem(new ItemSearchDto(itemSearchVo).setHiddenFlagList(HiddenFlagEnum.getFlagListByMask(userDataLevel)))
+            itemService.listItem(
+                new ItemSearchDto(itemSearchVo).setHiddenFlagList(HiddenFlagEnum.getFlagListByMask(userDataLevel))
+            )
         );
         UserAppenderService.appendUser(result, result.getData().getRecord(), true, ItemVo::getCreatorId);
         UserAppenderService.appendUser(result, result.getData().getRecord(), true, ItemVo::getUpdaterId);
@@ -85,7 +94,9 @@ public class ItemController {
         return RUtils.create(newId);
     }
 
-    @Operation(summary = "复制物品到地区", description = "此操作估计会占用较长时间，根据物品ID列表复制物品到新地区，此操作会递归复制类型及父级类型。会返回新的物品列表与新的类型列表，用于反映新的ID")
+    @Operation(
+        summary = "复制物品到地区", description = "此操作估计会占用较长时间，根据物品ID列表复制物品到新地区，此操作会递归复制类型及父级类型。会返回新的物品列表与新的类型列表，用于反映新的ID"
+    )
     @PutMapping("/copy/{areaId}")
     public R<List<Long>> copyItemToArea(@RequestBody List<Long> itemIdList, @PathVariable("areaId") Long areaId) {
         List<Long> idList = itemService.copyItemToArea(itemIdList, areaId);
@@ -95,7 +106,7 @@ public class ItemController {
 
     @Operation(summary = "删除物品", description = "根据物品ID列表批量删除物品")
     @DeleteMapping("/delete/{itemId}")
-    public R<Boolean> deleteItem(@PathVariable("itemId")Long itemId) {
+    public R<Boolean> deleteItem(@PathVariable("itemId") Long itemId) {
         Boolean result = itemService.deleteItem(itemId);
         if (result) {
             cacheService.cleanItemCache();

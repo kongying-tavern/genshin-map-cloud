@@ -37,32 +37,38 @@ import java.util.stream.Collectors;
 public class MarkerController {
 
     private final MarkerService markerService;
+
     private final CacheService cacheService;
+
     private final SocketIOEntrypoint socketIOEntrypoint;
 
     //////////////START:点位自身的API//////////////
 
-    @Operation(summary = "根据各种条件筛选查询点位ID",
-            description = "支持根据末端地区、末端类型、物品来进行查询，三种查询不能同时生效，同时存在时报错，同时支持测试点位获取")
+    @Operation(
+        summary = "根据各种条件筛选查询点位ID",
+        description = "支持根据末端地区、末端类型、物品来进行查询，三种查询不能同时生效，同时存在时报错，同时支持测试点位获取"
+    )
     @PostMapping("/get/id")
     public R<List<Long>> searchMarkerId(
         @Parameter(hidden = true) @RequestHeader(value = "userDataLevel", required = false) String userDataLevel,
         @RequestBody MarkerSearchVo markerSearchVo
     ) {
         return RUtils.create(
-                markerService.searchMarkerId(markerSearchVo, HiddenFlagEnum.getFlagListByMask(userDataLevel))
+            markerService.searchMarkerId(markerSearchVo, HiddenFlagEnum.getFlagListByMask(userDataLevel))
         );
     }
 
-    @Operation(summary = "根据各种条件筛选查询点位信息",
-            description = "支持根据末端地区、末端类型、物品来进行查询，三种查询不能同时生效，同时存在时报错，同时支持测试点位获取")
+    @Operation(
+        summary = "根据各种条件筛选查询点位信息",
+        description = "支持根据末端地区、末端类型、物品来进行查询，三种查询不能同时生效，同时存在时报错，同时支持测试点位获取"
+    )
     @PostMapping("/get/list_byinfo")
     public R<List<MarkerVo>> searchMarker(
         @Parameter(hidden = true) @RequestHeader(value = "userDataLevel", required = false) String userDataLevel,
         @RequestBody MarkerSearchVo markerSearchVo
     ) {
         R<List<MarkerVo>> result = RUtils.create(
-                markerService.searchMarker(markerSearchVo, HiddenFlagEnum.getFlagListByMask(userDataLevel))
+            markerService.searchMarker(markerSearchVo, HiddenFlagEnum.getFlagListByMask(userDataLevel))
         );
         UserAppenderService.appendUser(result, result.getData(), true, MarkerVo::getCreatorId);
         UserAppenderService.appendUser(result, result.getData(), true, MarkerVo::getUpdaterId);
@@ -76,7 +82,7 @@ public class MarkerController {
         @RequestBody MarkerSearchVo markerSearchVo
     ) {
         R<List<MarkerVo>> result = RUtils.create(
-                markerService.listMarkerById(markerSearchVo, HiddenFlagEnum.getFlagListByMask(userDataLevel))
+            markerService.listMarkerById(markerSearchVo, HiddenFlagEnum.getFlagListByMask(userDataLevel))
         );
         UserAppenderService.appendUser(result, result.getData(), true, MarkerVo::getCreatorId);
         UserAppenderService.appendUser(result, result.getData(), true, MarkerVo::getUpdaterId);
@@ -85,9 +91,13 @@ public class MarkerController {
 
     @Operation(summary = "分页查询所有点位信息", description = "分页查询所有点位信息")
     @PostMapping("/get/page")
-    public R<PageListVo<MarkerVo>> listMarkerPage(@Parameter(hidden = true) @RequestHeader(value = "userDataLevel", required = false) String userDataLevel, @RequestBody PageSearchVo pageSearchVo) {
+    public R<PageListVo<MarkerVo>> listMarkerPage(
+        @Parameter(hidden = true) @RequestHeader(value = "userDataLevel", required = false) String userDataLevel,
+        @RequestBody PageSearchVo pageSearchVo
+    ) {
         R<PageListVo<MarkerVo>> result = RUtils.create(
-                markerService.listMarkerPage(new PageSearchDto(pageSearchVo), HiddenFlagEnum.getFlagListByMask(userDataLevel))
+            markerService
+                .listMarkerPage(new PageSearchDto(pageSearchVo), HiddenFlagEnum.getFlagListByMask(userDataLevel))
         );
         UserAppenderService.appendUser(result, result.getData().getRecord(), true, MarkerVo::getCreatorId);
         UserAppenderService.appendUser(result, result.getData().getRecord(), true, MarkerVo::getUpdaterId);
@@ -128,7 +138,6 @@ public class MarkerController {
         return RUtils.create(result);
     }
 
-
     //////////////END:点位自身的API//////////////
 
     //////////////START:点位调整的API//////////////
@@ -139,7 +148,9 @@ public class MarkerController {
         cacheService.cleanItemCache();
         cacheService.cleanMarkerCache();
         cacheService.cleanMarkerLinkageCache();
-        socketIOEntrypoint.broadcast(WUtils.create("MarkerTweaked", result.parallelStream().map(MarkerVo::getId).collect(Collectors.toList())));
+        socketIOEntrypoint.broadcast(
+            WUtils.create("MarkerTweaked", result.parallelStream().map(MarkerVo::getId).collect(Collectors.toList()))
+        );
         return RUtils.create(result);
     }
     //////////////END:点位调整的API//////////////

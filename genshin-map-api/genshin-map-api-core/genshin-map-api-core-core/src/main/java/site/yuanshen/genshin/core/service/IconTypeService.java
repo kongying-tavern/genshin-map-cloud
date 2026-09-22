@@ -35,6 +35,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class IconTypeService {
     private final IconTypeMapper iconTypeMapper;
+
     private final IconTypeLinkMapper iconTypeLinkMapper;
 
     /**
@@ -45,20 +46,24 @@ public class IconTypeService {
      */
     @Cacheable(value = "listIconType")
     public PageListVo<IconTypeVo> listIconType(PageAndTypeSearchDto searchDto) {
-        Page<IconType> iconTypePage = iconTypeMapper.selectPage(searchDto.getPageEntity(),
-                Wrappers.<IconType>lambdaQuery()
-                        .in(IconType::getParentId,
-                                Optional.ofNullable(searchDto.getTypeIdList())
-                                        .orElse(Collections.singletonList(-1L))));
+        Page<IconType> iconTypePage = iconTypeMapper.selectPage(
+            searchDto.getPageEntity(),
+            Wrappers.<IconType>lambdaQuery()
+                .in(
+                    IconType::getParentId,
+                    Optional.ofNullable(searchDto.getTypeIdList())
+                        .orElse(Collections.singletonList(-1L))
+                )
+        );
         List<IconTypeVo> result = iconTypePage
-                .getRecords().stream()
-                .map(IconTypeDto::new)
-                .map(IconTypeDto::getVo)
-                .collect(Collectors.toList());
+            .getRecords().stream()
+            .map(IconTypeDto::new)
+            .map(IconTypeDto::getVo)
+            .collect(Collectors.toList());
         return new PageListVo<IconTypeVo>()
-                .setRecord(result)
-                .setSize(iconTypePage.getSize())
-                .setTotal(iconTypePage.getTotal());
+            .setRecord(result)
+            .setSize(iconTypePage.getSize())
+            .setTotal(iconTypePage.getTotal());
     }
 
     /**
@@ -69,10 +74,10 @@ public class IconTypeService {
      */
     @Transactional
     @Caching(
-            evict = {
-                    @CacheEvict(value = "listIcon", allEntries = true),
-                    @CacheEvict(value = "listIconType", allEntries = true)
-            }
+        evict = {
+                @CacheEvict(value = "listIcon", allEntries = true),
+                @CacheEvict(value = "listIconType", allEntries = true)
+        }
     )
     public Long addIconType(IconTypeDto iconTypeDto) {
         if (Objects.equals(iconTypeDto.getId(), iconTypeDto.getParentId())) {
@@ -97,11 +102,11 @@ public class IconTypeService {
      */
     @Transactional
     @Caching(
-            evict = {
-                    @CacheEvict(value = "icon", allEntries = true),
-                    @CacheEvict(value = "listIcon", allEntries = true),
-                    @CacheEvict(value = "listIconType", allEntries = true)
-            }
+        evict = {
+                @CacheEvict(value = "icon", allEntries = true),
+                @CacheEvict(value = "listIcon", allEntries = true),
+                @CacheEvict(value = "listIconType", allEntries = true)
+        }
     )
     public Boolean updateIconType(IconTypeDto iconTypeDto) {
         if (Objects.equals(iconTypeDto.getId(), iconTypeDto.getParentId())) {
@@ -109,9 +114,11 @@ public class IconTypeService {
         }
 
         //获取图标分类实体
-        IconType iconType = iconTypeMapper.selectOne(Wrappers.<IconType>lambdaQuery()
-                .eq(IconType::getId, iconTypeDto.getId()));
-        if(ObjUtil.isNull(iconType)){
+        IconType iconType = iconTypeMapper.selectOne(
+            Wrappers.<IconType>lambdaQuery()
+                .eq(IconType::getId, iconTypeDto.getId())
+        );
+        if (ObjUtil.isNull(iconType)) {
             return false;
         }
 
@@ -137,11 +144,11 @@ public class IconTypeService {
      */
     @Transactional
     @Caching(
-            evict = {
-                    @CacheEvict(value = "icon", allEntries = true),
-                    @CacheEvict(value = "listIcon", allEntries = true),
-                    @CacheEvict(value = "listIconType", allEntries = true)
-            }
+        evict = {
+                @CacheEvict(value = "icon", allEntries = true),
+                @CacheEvict(value = "listIcon", allEntries = true),
+                @CacheEvict(value = "listIconType", allEntries = true)
+        }
     )
     public Boolean deleteIconType(Long iconTypeId) {
         final Long parentIconTypeId = iconTypeMapper.selectById(iconTypeId).getParentId();
@@ -153,9 +160,10 @@ public class IconTypeService {
             //删除类型关联
             iconTypeLinkMapper.delete(Wrappers.<IconTypeLink>lambdaQuery().in(IconTypeLink::getTypeId, nowTypeIdList));
             //查找所有子级
-            nowTypeIdList = iconTypeMapper.selectList(Wrappers.<IconType>lambdaQuery().in(IconType::getParentId, nowTypeIdList))
-                    .parallelStream()
-                    .map(IconType::getId).collect(Collectors.toList());
+            nowTypeIdList = iconTypeMapper
+                .selectList(Wrappers.<IconType>lambdaQuery().in(IconType::getParentId, nowTypeIdList))
+                .parallelStream()
+                .map(IconType::getId).collect(Collectors.toList());
         }
 
         //更新父级标记
@@ -165,35 +173,43 @@ public class IconTypeService {
     }
 
     private void updateIconTypeIsFinal(Long parentId, boolean isFinal) {
-            if(parentId != null && parentId > 0L) {
-            iconTypeMapper.update(null, Wrappers.<IconType>lambdaUpdate()
-                .eq(IconType::getId, parentId)
-                .set(IconType::getIsFinal, isFinal));
+        if (parentId != null && parentId > 0L) {
+            iconTypeMapper.update(
+                null, Wrappers.<IconType>lambdaUpdate()
+                    .eq(IconType::getId, parentId)
+                    .set(IconType::getIsFinal, isFinal)
+            );
         }
     }
 
     private void updateIconTypeIsFinal(IconType iconType) {
-        if(iconType != null) {
-            iconType.setIsFinal(iconTypeMapper.selectCount(Wrappers.<IconType>lambdaQuery()
-                .eq(IconType::getParentId, iconType.getId()))
-                == 0);
+        if (iconType != null) {
+            iconType.setIsFinal(
+                iconTypeMapper.selectCount(
+                    Wrappers.<IconType>lambdaQuery()
+                        .eq(IconType::getParentId, iconType.getId())
+                ) == 0
+            );
         }
     }
 
     private void recalculateIconTypeIsFinal(Long parentId, boolean beforeModify) {
-        if(parentId != null) {
-            if (
-                iconTypeMapper.selectCount(Wrappers.<IconType>lambdaQuery()
-                    .eq(IconType::getParentId, parentId))
-                    == (beforeModify ? 1 : 0)
-            ) {
-                iconTypeMapper.update(null, Wrappers.<IconType>lambdaUpdate()
+        if (parentId != null) {
+            if (iconTypeMapper.selectCount(
+                Wrappers.<IconType>lambdaQuery()
+                    .eq(IconType::getParentId, parentId)
+            ) == (beforeModify ? 1 : 0)) {
+                iconTypeMapper.update(
+                    null, Wrappers.<IconType>lambdaUpdate()
                         .eq(IconType::getId, parentId)
-                        .set(IconType::getIsFinal, true));
+                        .set(IconType::getIsFinal, true)
+                );
             } else {
-                iconTypeMapper.update(null, Wrappers.<IconType>lambdaUpdate()
+                iconTypeMapper.update(
+                    null, Wrappers.<IconType>lambdaUpdate()
                         .eq(IconType::getId, parentId)
-                        .set(IconType::getIsFinal, false));
+                        .set(IconType::getIsFinal, false)
+                );
             }
         }
     }

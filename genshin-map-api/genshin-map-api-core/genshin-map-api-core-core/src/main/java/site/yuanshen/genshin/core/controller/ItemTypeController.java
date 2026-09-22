@@ -32,15 +32,21 @@ import java.util.List;
 public class ItemTypeController {
 
     private final ItemTypeService itemTypeService;
+
     private final CacheService cacheService;
 
     //////////////START:物品类型的API//////////////
 
     @Operation(summary = "列出物品类型", description = "不递归遍历，只遍历子级；{self}表示查询自身还是查询子级，0为查询自身，1为查询子级")
     @PostMapping("/get/list/{self}")
-    public R<PageListVo<ItemTypeVo>> listItemType(@Parameter(hidden = true) @RequestHeader(value = "userDataLevel",required = false) String userDataLevel, @RequestBody PageAndTypeSearchVo pageAndTypeSearchVo, @PathVariable("self") Integer self) {
+    public R<PageListVo<ItemTypeVo>> listItemType(
+        @Parameter(hidden = true) @RequestHeader(value = "userDataLevel", required = false) String userDataLevel,
+        @RequestBody PageAndTypeSearchVo pageAndTypeSearchVo, @PathVariable("self") Integer self
+    ) {
         R<PageListVo<ItemTypeVo>> result = RUtils.create(
-                itemTypeService.listItemType(new PageAndTypeSearchDto(pageAndTypeSearchVo), self, HiddenFlagEnum.getFlagListByMask(userDataLevel))
+            itemTypeService.listItemType(
+                new PageAndTypeSearchDto(pageAndTypeSearchVo), self, HiddenFlagEnum.getFlagListByMask(userDataLevel)
+            )
         );
         UserAppenderService.appendUser(result, result.getData().getRecord(), true, ItemTypeVo::getCreatorId);
         UserAppenderService.appendUser(result, result.getData().getRecord(), true, ItemTypeVo::getUpdaterId);
@@ -49,9 +55,11 @@ public class ItemTypeController {
 
     @Operation(summary = "列出所有物品类型", description = "返回所有可访问的物品类型")
     @PostMapping("/get/list_all")
-    public R<List<ItemTypeVo>> listItemType(@Parameter(hidden = true) @RequestHeader(value = "userDataLevel",required = false) String userDataLevel) {
+    public R<List<ItemTypeVo>> listItemType(
+        @Parameter(hidden = true) @RequestHeader(value = "userDataLevel", required = false) String userDataLevel
+    ) {
         R<List<ItemTypeVo>> result = RUtils.create(
-                itemTypeService.listAllItemType(HiddenFlagEnum.getFlagListByMask(userDataLevel))
+            itemTypeService.listAllItemType(HiddenFlagEnum.getFlagListByMask(userDataLevel))
         );
         UserAppenderService.appendUser(result, result.getData(), true, ItemTypeVo::getCreatorId);
         UserAppenderService.appendUser(result, result.getData(), true, ItemTypeVo::getUpdaterId);
@@ -62,7 +70,7 @@ public class ItemTypeController {
     @PutMapping("/add")
     public R<Long> addItemType(@RequestBody ItemTypeVo itemTypeVo) {
         return RUtils.create(
-                itemTypeService.addItemType(new ItemTypeDto(itemTypeVo))
+            itemTypeService.addItemType(new ItemTypeDto(itemTypeVo))
         );
     }
 
@@ -76,7 +84,9 @@ public class ItemTypeController {
 
     @Operation(summary = "批量移动类型为目标类型的子类型", description = "将类型批量移动到某个类型下作为其子类型")
     @PostMapping("/move/{targetTypeId}")
-    public R<Boolean> moveItemType(@RequestBody List<Long> itemTypeIdList, @PathVariable("targetTypeId") Long targetTypeId) {
+    public R<Boolean> moveItemType(
+        @RequestBody List<Long> itemTypeIdList, @PathVariable("targetTypeId") Long targetTypeId
+    ) {
         Boolean result = itemTypeService.moveItemType(itemTypeIdList, targetTypeId);
         cacheService.cleanItemCache();
         return RUtils.create(result);

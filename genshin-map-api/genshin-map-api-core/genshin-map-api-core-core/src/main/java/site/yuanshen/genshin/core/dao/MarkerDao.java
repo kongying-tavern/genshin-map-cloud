@@ -43,7 +43,9 @@ public interface MarkerDao {
      * @param itemMap 物品Map  key:item_id, value:item
      * @param markerItemLinkMap 物品链接Map  key:marker_id, value:marker_item_link[]
      */
-    void generateMarkerItemInfo(List<Long> markerIdList, Map<Long, Item> itemMap, ConcurrentMap<Long, List<MarkerItemLinkVo>> markerItemLinkMap);
+    void generateMarkerItemInfo(
+        List<Long> markerIdList, Map<Long, Item> itemMap, ConcurrentMap<Long, List<MarkerItemLinkVo>> markerItemLinkMap
+    );
 
     /**
      * 生成点位关联信息

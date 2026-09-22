@@ -46,8 +46,10 @@ public class UserUtils {
      */
     @SuppressWarnings("RedundantIfStatement")
     public static boolean checkPasswordParamEmpty(SysUserPasswordUpdateVo updateVo, boolean checkOldPassword) {
-        if (StrUtil.isEmpty(updateVo.getPassword())) return true;
-        if (checkOldPassword && StrUtil.isEmpty(updateVo.getOldPassword())) return true;
+        if (StrUtil.isEmpty(updateVo.getPassword()))
+            return true;
+        if (checkOldPassword && StrUtil.isEmpty(updateVo.getOldPassword()))
+            return true;
         return false;
     }
 
@@ -59,7 +61,8 @@ public class UserUtils {
      * @return 角色是否包含地图管理员权限
      */
     public static boolean checkRole(String rolesString, RoleEnum role) {
-        List<RoleEnum> userRoleList = JSON.parseArray(rolesString, String.class).stream().map(RoleEnum::valueOf).collect(Collectors.toList());
+        List<RoleEnum> userRoleList = JSON.parseArray(rolesString, String.class).stream().map(RoleEnum::valueOf)
+            .collect(Collectors.toList());
         return checkRole(userRoleList, role);
     }
 
@@ -74,7 +77,8 @@ public class UserUtils {
         if (roleEnumsList.size() != 1 && !roleEnumsList.contains(RoleEnum.ADMIN))
             throw new GenshinApiException("目标权限异常，请联系管理员处理");
         for (RoleEnum roleEnum : roleEnumsList) {
-            if (roleEnum.getSort() <= role.getSort()) return true;
+            if (roleEnum.getSort() <= role.getSort())
+                return true;
         }
         return false;
     }

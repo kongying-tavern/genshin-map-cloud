@@ -12,6 +12,7 @@ import site.yuanshen.genshin.core.service.mbp.SysUserInvitationMBPService;
  * @author Alex Fang
  */
 @Service
-public class SysUserInvitationMBPServiceImpl extends ServiceImpl<SysUserInvitationMapper, SysUserInvitation> implements SysUserInvitationMBPService {
+public class SysUserInvitationMBPServiceImpl extends ServiceImpl<SysUserInvitationMapper, SysUserInvitation>
+    implements SysUserInvitationMBPService {
 
 }

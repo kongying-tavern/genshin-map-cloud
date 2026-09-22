@@ -21,8 +21,11 @@ import site.yuanshen.genshin.core.service.MarkerLinkageDocService;
 public class CacheInitListener implements ApplicationListener<ApplicationReadyEvent> {
 
     private final MarkerDocService markerDocService;
+
     private final MarkerLinkageDocService markerLinkageDocService;
+
     private final ItemDocService itemDocService;
+
     private final IconDao iconDao;
 
     /**

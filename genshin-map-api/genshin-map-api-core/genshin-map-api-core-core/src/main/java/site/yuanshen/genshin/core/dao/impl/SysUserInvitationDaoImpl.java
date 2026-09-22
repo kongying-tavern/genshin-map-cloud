@@ -22,7 +22,7 @@ public class SysUserInvitationDaoImpl implements SysUserInvitationDao {
 
     @Override
     public String createInviteCode(String code) {
-        if(StrUtil.isNotBlank(code)) {
+        if (StrUtil.isNotBlank(code)) {
             return code;
         }
         final String uuid = IdUtil.randomUUID();
@@ -34,11 +34,11 @@ public class SysUserInvitationDaoImpl implements SysUserInvitationDao {
 
     @Override
     public boolean validateInviteCode(String code) {
-        if(StrUtil.isBlank(code)) {
+        if (StrUtil.isBlank(code)) {
             return false;
         }
         final List<String> chunks = StrUtil.split(code, '-', 3);
-        if(chunks.size() < 3) {
+        if (chunks.size() < 3) {
             return false;
         }
         final String uuid = chunks.get(2);
@@ -51,14 +51,15 @@ public class SysUserInvitationDaoImpl implements SysUserInvitationDao {
 
     @Override
     public Optional<SysUserInvitation> getInvitation(String code, String username) {
-        if(StrUtil.isBlank(code) || StrUtil.isBlank(username)) {
+        if (StrUtil.isBlank(code) || StrUtil.isBlank(username)) {
             return Optional.empty();
         }
-        List<SysUserInvitation> list = invitationMapper.selectList(Wrappers.<SysUserInvitation>lambdaQuery()
-            .eq(SysUserInvitation::getCode, code)
-            .eq(SysUserInvitation::getUsername, username)
+        List<SysUserInvitation> list = invitationMapper.selectList(
+            Wrappers.<SysUserInvitation>lambdaQuery()
+                .eq(SysUserInvitation::getCode, code)
+                .eq(SysUserInvitation::getUsername, username)
         );
-        if(list.isEmpty()) {
+        if (list.isEmpty()) {
             return Optional.empty();
         }
         return Optional.of(list.get(0));
@@ -66,13 +67,14 @@ public class SysUserInvitationDaoImpl implements SysUserInvitationDao {
 
     @Override
     public Optional<SysUserInvitation> getInvitation(String username) {
-        if(StrUtil.isBlank(username)) {
+        if (StrUtil.isBlank(username)) {
             return Optional.empty();
         }
-        List<SysUserInvitation> list = invitationMapper.selectList(Wrappers.<SysUserInvitation>lambdaQuery()
-            .eq(SysUserInvitation::getUsername, username)
+        List<SysUserInvitation> list = invitationMapper.selectList(
+            Wrappers.<SysUserInvitation>lambdaQuery()
+                .eq(SysUserInvitation::getUsername, username)
         );
-        if(list.isEmpty()) {
+        if (list.isEmpty()) {
             return Optional.empty();
         }
         return Optional.of(list.get(0));

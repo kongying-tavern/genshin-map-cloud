@@ -27,10 +27,13 @@ public class MybatisPlusMetaObjectHandler implements MetaObjectHandler {
         this.setFieldValByName("createTime", date, metaObject);
         this.setFieldValByName("updateTime", date, metaObject);
         this.setFieldValByName("version", 1L, metaObject);
-        ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        if (requestAttributes == null) return;
+        ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder
+            .getRequestAttributes();
+        if (requestAttributes == null)
+            return;
         String userId = requestAttributes.getRequest().getHeader("userId");
-        if (userId == null || userId.equals("")) return;
+        if (userId == null || userId.equals(""))
+            return;
         this.setFieldValByName("creatorId", Long.parseLong(userId), metaObject);
         this.setFieldValByName("updaterId", Long.parseLong(userId), metaObject);
     }
@@ -40,10 +43,13 @@ public class MybatisPlusMetaObjectHandler implements MetaObjectHandler {
         Timestamp date = new Timestamp((new Date()).getTime());
         log.debug("auto insert fill: createTime, updateTime : " + date);
         this.setFieldValByName("updateTime", date, metaObject);
-        ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        if (requestAttributes == null) return;
+        ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder
+            .getRequestAttributes();
+        if (requestAttributes == null)
+            return;
         String userId = requestAttributes.getRequest().getHeader("userId");
-        if (userId == null || userId.equals("")) return;
+        if (userId == null || userId.equals(""))
+            return;
         this.setFieldValByName("updaterId", Long.parseLong(userId), metaObject);
     }
 }

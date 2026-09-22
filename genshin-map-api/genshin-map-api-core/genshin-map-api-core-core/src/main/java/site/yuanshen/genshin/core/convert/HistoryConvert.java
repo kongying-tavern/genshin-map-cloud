@@ -19,28 +19,23 @@ public class HistoryConvert {
         MAPPER.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     }
 
-
     /**
      * 新转换模块需要在此插入
      */
     private static final List<Convert> converts = Lists.newArrayList(
-            new AreaConvert(),
-            new ItemConvert(),
-            new MarkerConvert()
+        new AreaConvert(),
+        new ItemConvert(),
+        new MarkerConvert()
     );
 
     public static History convert(Object source, HistoryEditType editType) {
         return converts.stream().filter(convert -> convert.support(source)).findAny()
-                .orElseThrow(() -> new RuntimeException(source.getClass() + " not support")).convert(source, editType);
+            .orElseThrow(() -> new RuntimeException(source.getClass() + " not support")).convert(source, editType);
     }
-
 
     public static Object reConvert(History history, HistoryType type) {
         return converts.stream().filter(convert -> convert.support(type)).findAny()
-                .orElseThrow(() -> new RuntimeException(type + " not support")).reConvert(history);
+            .orElseThrow(() -> new RuntimeException(type + " not support")).reConvert(history);
     }
 
-
 }
-
-

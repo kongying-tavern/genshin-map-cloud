@@ -21,12 +21,12 @@ public class ClassUtils {
         PropertyDescriptor pd = null;
         try {
             final Field field = clazz.getDeclaredField(propName);
-            if(field != null) {
+            if (field != null) {
                 final String propNameCap = NamingCase.toPascalCase(propName);
                 final String getMethodName = "get" + propNameCap;
-                final Method getMethod = clazz.getDeclaredMethod(getMethodName, new Class[]{});
+                final Method getMethod = clazz.getDeclaredMethod(getMethodName, new Class[] {});
                 final String setMethodName = "set" + propNameCap;
-                final Method setMethod = clazz.getDeclaredMethod(setMethodName, new Class[]{field.getType()});
+                final Method setMethod = clazz.getDeclaredMethod(setMethodName, new Class[] { field.getType() });
                 pd = new PropertyDescriptor(propName, getMethod, setMethod);
             }
         } catch (Exception ex) {
@@ -96,9 +96,9 @@ public class ClassUtils {
      * @return 获取到的数据，无法获取返回 null
      */
     public static Object getValue(Object item, String prop) {
-        if(StrUtil.isBlank(prop)) {
+        if (StrUtil.isBlank(prop)) {
             return null;
-        } else if(item == null) {
+        } else if (item == null) {
             return null;
         }
 
@@ -107,19 +107,19 @@ public class ClassUtils {
             Object itemChunk = item;
             Object obj = null;
             final int propChunkSize = propChunks.length;
-            if(itemChunk == null) {
+            if (itemChunk == null) {
                 return null;
             }
 
-            for(int i = 0; i < propChunkSize; i++) {
+            for (int i = 0; i < propChunkSize; i++) {
                 final String propChunk = propChunks[i];
-                if(itemChunk instanceof Map) {
+                if (itemChunk instanceof Map) {
                     ((Map<?, ?>) itemChunk).get(propChunk);
                 } else {
                     obj = getProperty(itemChunk, propChunk);
                 }
 
-                if(obj == null) {
+                if (obj == null) {
                     return null;
                 } else {
                     itemChunk = obj;
@@ -140,7 +140,7 @@ public class ClassUtils {
      */
     public static <T> T getValue(Object item, String prop, T defaultValue) {
         Object val = getValue(item, prop);
-        if(val == null) {
+        if (val == null) {
             return defaultValue;
         }
 
@@ -150,7 +150,7 @@ public class ClassUtils {
         } catch (Exception e) {
             // nothing to do;
         }
-        if(obj == null) {
+        if (obj == null) {
             return defaultValue;
         }
         return obj;
@@ -170,7 +170,7 @@ public class ClassUtils {
         list.addAll(List.of(fields));
 
         final Class superClazz = clazz.getSuperclass();
-        if(superClazz != null) {
+        if (superClazz != null) {
             getFields(list, superClazz);
         }
         return list;

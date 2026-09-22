@@ -55,20 +55,26 @@ import java.util.stream.Collectors;
 public class MarkerDaoImpl implements MarkerDao {
 
     private final MarkerMapper markerMapper;
+
     private final MarkerItemLinkMapper markerItemLinkMapper;
+
     private final MarkerLinkageMapper markerLinkageMapper;
+
     private final ItemMapper itemMapper;
+
     private final AreaMapper areaMapper;
+
     private final CacheManager neverRefreshCacheManager;
 
     @Autowired
-    public MarkerDaoImpl(MarkerMapper markerMapper,
-                         MarkerItemLinkMapper markerItemLinkMapper,
-                         MarkerLinkageMapper markerLinkageMapper,
-                         ItemMapper itemMapper,
-                         AreaMapper areaMapper,
-                         @Qualifier("neverRefreshCacheManager")
-                         CacheManager neverRefreshCacheManager) {
+    public MarkerDaoImpl(
+        MarkerMapper markerMapper,
+        MarkerItemLinkMapper markerItemLinkMapper,
+        MarkerLinkageMapper markerLinkageMapper,
+        ItemMapper itemMapper,
+        AreaMapper areaMapper,
+        @Qualifier("neverRefreshCacheManager") CacheManager neverRefreshCacheManager
+    ) {
         this.markerMapper = markerMapper;
         this.markerItemLinkMapper = markerItemLinkMapper;
         this.markerLinkageMapper = markerLinkageMapper;
@@ -87,7 +93,9 @@ public class MarkerDaoImpl implements MarkerDao {
     @Override
     @Cacheable(value = "listMarkerPage")
     public PageListVo<MarkerVo> listMarkerPage(PageSearchDto pageSearchDto, List<Integer> hiddenFlagList) {
-        IPage<Marker> markerPage = markerMapper.selectPageFilterByHiddenFlag(pageSearchDto.getPageEntity(), hiddenFlagList, Wrappers.<Marker>lambdaQuery().eq(Marker::getDelFlag, false));
+        IPage<Marker> markerPage = markerMapper.selectPageFilterByHiddenFlag(
+            pageSearchDto.getPageEntity(), hiddenFlagList, Wrappers.<Marker>lambdaQuery().eq(Marker::getDelFlag, false)
+        );
         List<Long> markerIdList = markerPage.getRecords().stream()
             .map(Marker::getId).collect(Collectors.toList());
 
@@ -99,12 +107,16 @@ public class MarkerDaoImpl implements MarkerDao {
         generateMarkerLinkageInfo(markerIdList, markerLinkageMap);
 
         return new PageListVo<MarkerVo>()
-            .setRecord(markerPage.getRecords().parallelStream()
-                .map(marker -> new MarkerDto(marker)
-                    .withItemList(markerItemLinkMap.getOrDefault(marker.getId(), List.of()))
-                    .withLinkageId(markerLinkageMap.getOrDefault(marker.getId(), ""))
-                    .getVo())
-                .collect(Collectors.toList()))
+            .setRecord(
+                markerPage.getRecords().parallelStream()
+                    .map(
+                        marker -> new MarkerDto(marker)
+                            .withItemList(markerItemLinkMap.getOrDefault(marker.getId(), List.of()))
+                            .withLinkageId(markerLinkageMap.getOrDefault(marker.getId(), ""))
+                            .getVo()
+                    )
+                    .collect(Collectors.toList())
+            )
             .setTotal(markerPage.getTotal())
             .setSize(markerPage.getSize());
     }
@@ -119,7 +131,10 @@ public class MarkerDaoImpl implements MarkerDao {
     @Override
     @Cacheable(value = "listMarkerById")
     public List<MarkerVo> listMarkerById(List<Long> markerIdList, List<Integer> hiddenFlagList) {
-        List<Marker> markerList = markerMapper.selectListWithLargeInFilterByHiddenFlag(PgsqlUtils.unnestLongStr(markerIdList), hiddenFlagList, Wrappers.<Marker>lambdaQuery().eq(Marker::getDelFlag, false));
+        List<Marker> markerList = markerMapper.selectListWithLargeInFilterByHiddenFlag(
+            PgsqlUtils.unnestLongStr(markerIdList), hiddenFlagList,
+            Wrappers.<Marker>lambdaQuery().eq(Marker::getDelFlag, false)
+        );
 
         markerIdList = markerList.stream().map(Marker::getId).collect(Collectors.toList());
 
@@ -131,10 +146,12 @@ public class MarkerDaoImpl implements MarkerDao {
         generateMarkerLinkageInfo(markerIdList, markerLinkageMap);
 
         return markerList.parallelStream()
-            .map(marker -> new MarkerDto(marker)
-                .withItemList(markerItemLinkMap.getOrDefault(marker.getId(), List.of()))
-                .withLinkageId(markerLinkageMap.getOrDefault(marker.getId(), ""))
-                .getVo())
+            .map(
+                marker -> new MarkerDto(marker)
+                    .withItemList(markerItemLinkMap.getOrDefault(marker.getId(), List.of()))
+                    .withLinkageId(markerLinkageMap.getOrDefault(marker.getId(), ""))
+                    .getVo()
+            )
             .collect(Collectors.toList());
     }
 
@@ -155,11 +172,15 @@ public class MarkerDaoImpl implements MarkerDao {
         if (CollUtil.isEmpty(markerIdList))
             return;
         // 获取物品数据
-        final List<MarkerItemLink> itemLinkList = markerItemLinkMapper.selectWithLargeCustomIn("marker_id", PgsqlUtils.unnestLongStr(markerIdList), Wrappers.<MarkerItemLink>lambdaQuery().eq(MarkerItemLink::getDelFlag, false));
+        final List<MarkerItemLink> itemLinkList = markerItemLinkMapper.selectWithLargeCustomIn(
+            "marker_id", PgsqlUtils.unnestLongStr(markerIdList),
+            Wrappers.<MarkerItemLink>lambdaQuery().eq(MarkerItemLink::getDelFlag, false)
+        );
         final List<Long> itemIdList = itemLinkList
             .parallelStream()
             .map(markerItemLink -> {
-                markerItemLinkMap.compute(markerItemLink.getMarkerId(),
+                markerItemLinkMap.compute(
+                    markerItemLink.getMarkerId(),
                     (markerId, linkList) -> {
                         final MarkerItemLinkVo vo = (new MarkerItemLinkDto(markerItemLink)).getVo();
                         if (linkList == null)
@@ -172,7 +193,9 @@ public class MarkerDaoImpl implements MarkerDao {
             })
             .distinct()
             .collect(Collectors.toList());
-        final List<Item> itemList = itemMapper.selectListWithLargeIn(PgsqlUtils.unnestLongStr(itemIdList), Wrappers.<Item>lambdaQuery().eq(Item::getDelFlag, false));
+        final List<Item> itemList = itemMapper.selectListWithLargeIn(
+            PgsqlUtils.unnestLongStr(itemIdList), Wrappers.<Item>lambdaQuery().eq(Item::getDelFlag, false)
+        );
         // 添加 item_id → item 映射项
         itemMap.putAll(
             itemList
@@ -180,11 +203,11 @@ public class MarkerDaoImpl implements MarkerDao {
                 .collect(Collectors.toMap(Item::getId, item -> item, (o, n) -> n))
         );
         // 汇总 marker_id → item_link 映射项
-        markerItemLinkMap.forEach((markerId, linkVoList) ->
-            linkVoList.forEach(link -> {
-                final Long iconId = ObjUtil.defaultIfNull(itemMap.getOrDefault(link.getItemId(), new Item()).getIconId(), 0L);
-                link.setIconId(iconId);
-            })
+        markerItemLinkMap.forEach((markerId, linkVoList) -> linkVoList.forEach(link -> {
+            final Long iconId = ObjUtil
+                .defaultIfNull(itemMap.getOrDefault(link.getItemId(), new Item()).getIconId(), 0L);
+            link.setIconId(iconId);
+        })
         );
     }
 
@@ -201,7 +224,10 @@ public class MarkerDaoImpl implements MarkerDao {
     ) {
         if (CollUtil.isEmpty(markerIdList))
             return;
-        final List<MarkerLinkage> markerLinkageList = markerLinkageMapper.selectWithLargeMarkerIdIn(PgsqlUtils.unnestLongStr(markerIdList), Wrappers.<MarkerLinkage>lambdaQuery().eq(MarkerLinkage::getDelFlag, false));
+        final List<MarkerLinkage> markerLinkageList = markerLinkageMapper.selectWithLargeMarkerIdIn(
+            PgsqlUtils.unnestLongStr(markerIdList),
+            Wrappers.<MarkerLinkage>lambdaQuery().eq(MarkerLinkage::getDelFlag, false)
+        );
         markerLinkageList.parallelStream()
             .forEach(markerLinkage -> {
                 final Long fromId = markerLinkage.getFromId();
@@ -255,23 +281,31 @@ public class MarkerDaoImpl implements MarkerDao {
 
         // 获取覆盖标记映射
         timer.restart();
-        final Map<Integer, Set<Integer>> overrideFlagMap = Arrays.stream(HiddenFlagEnum.values()).collect(Collectors.toMap(
-            HiddenFlagEnum::getCode,
-            v -> HiddenFlagEnum.getOverrideFlagList(v.getCode()),
-            (o, n) -> n
-        ));
+        final Map<Integer, Set<Integer>> overrideFlagMap = Arrays.stream(HiddenFlagEnum.values()).collect(
+            Collectors.toMap(
+                HiddenFlagEnum::getCode,
+                v -> HiddenFlagEnum.getOverrideFlagList(v.getCode()),
+                (o, n) -> n
+            )
+        );
         log.info("[binary][marker] marker flag override map generation, cost: {}", timer.intervalPretty());
 
         // 获取点位和点位相关映射数据
         timer.restart();
-        final List<Marker> markerList = markerMapper.selectList(Wrappers.<Marker>lambdaQuery().eq(Marker::getDelFlag, false));
+        final List<Marker> markerList = markerMapper
+            .selectList(Wrappers.<Marker>lambdaQuery().eq(Marker::getDelFlag, false));
         final List<Long> markerIdList = markerList.stream().map(Marker::getId).distinct().collect(Collectors.toList());
         generateMarkerItemInfo(markerIdList, itemMap, markerItemLinkMap);
         generateMarkerLinkageInfo(markerIdList, markerLinkageMap);
         // 获取点位合并所需数据
-        final List<Area> areaList = areaMapper.selectList(Wrappers.<Area>lambdaQuery().eq(Area::getDelFlag, false).select(Area::getId, Area::getParentId, Area::getHiddenFlag, Area::getIsFinal));
-        final Map<Long, Long> areaParentMap = areaList.stream().collect(Collectors.toMap(Area::getId, Area::getParentId, (o, n) -> n));
-        final Map<Boolean, List<Area>> areaPartition = areaList.stream().collect(Collectors.partitioningBy(Area::getIsFinal));
+        final List<Area> areaList = areaMapper.selectList(
+            Wrappers.<Area>lambdaQuery().eq(Area::getDelFlag, false)
+                .select(Area::getId, Area::getParentId, Area::getHiddenFlag, Area::getIsFinal)
+        );
+        final Map<Long, Long> areaParentMap = areaList.stream()
+            .collect(Collectors.toMap(Area::getId, Area::getParentId, (o, n) -> n));
+        final Map<Boolean, List<Area>> areaPartition = areaList.stream()
+            .collect(Collectors.partitioningBy(Area::getIsFinal));
         final Map<Long, Integer> areaFinalFlagMap = areaPartition.getOrDefault(true, List.of())
             .stream()
             .collect(Collectors.toMap(Area::getId, Area::getHiddenFlag, (o, n) -> n));
@@ -306,7 +340,8 @@ public class MarkerDaoImpl implements MarkerDao {
                     // 覆盖物品标记
                     final Item linkedItem = itemMap.getOrDefault(itemLink.getItemId(), new Item());
                     final Integer linkedItemFlag = ObjUtil.defaultIfNull(linkedItem.getHiddenFlag(), -1);
-                    final Set<Integer> linkedItemCanOverrideFlag = overrideFlagMap.getOrDefault(linkedItemFlag, new HashSet<>());
+                    final Set<Integer> linkedItemCanOverrideFlag = overrideFlagMap
+                        .getOrDefault(linkedItemFlag, new HashSet<>());
                     if (linkedItemCanOverrideFlag.contains(flag))
                         flag = linkedItemFlag;
                     // 覆盖地区标记
@@ -344,7 +379,8 @@ public class MarkerDaoImpl implements MarkerDao {
     public List<BinaryMD5Vo> listMarkerBinaryMD5(List<Integer> flagList) {
         final Map<MarkerListCacheKey, String> binaryMd5Map = getMarkerMd5ByFlags(flagList);
         final LinkedHashMap<MarkerListCacheKey, String> binaryMd5MapSorted = sortMarkerMd5Map(binaryMd5Map);
-        CaffeineCache binaryMd5CacheGenerateTimestamp = (CaffeineCache) neverRefreshCacheManager.getCache(MarkerCacheKeyConst.MARKER_LIST_BIN_MD5_GENERATE_TIMESTAMP);
+        CaffeineCache binaryMd5CacheGenerateTimestamp = (CaffeineCache) neverRefreshCacheManager
+            .getCache(MarkerCacheKeyConst.MARKER_LIST_BIN_MD5_GENERATE_TIMESTAMP);
 
         Long time = Optional.ofNullable(binaryMd5CacheGenerateTimestamp.getNativeCache().getIfPresent(""))
             .map(v -> NumberUtils.createLong(v.toString()))
@@ -379,7 +415,9 @@ public class MarkerDaoImpl implements MarkerDao {
             final Map<Long, Item> itemMap = new HashMap<>();
             final ConcurrentHashMap<Long, List<MarkerItemLinkVo>> markerItemLinkMap = new ConcurrentHashMap<>();
             final ConcurrentHashMap<Long, String> markerLinkageMap = new ConcurrentHashMap<>();
-            final Map<Integer, List<MarkerVo>> markerGroups = getMarkerVoGroups(itemMap, markerItemLinkMap, markerLinkageMap);
+            final Map<Integer, List<MarkerVo>> markerGroups = getMarkerVoGroups(
+                itemMap, markerItemLinkMap, markerLinkageMap
+            );
             log.info("[binary][marker] group creation, cost: {}", timer.intervalPretty());
 
             // 创建缓存数据
@@ -393,14 +431,18 @@ public class MarkerDaoImpl implements MarkerDao {
                 final List<MarkerVo> markerList = markerGroups.getOrDefault(flagEnum.getCode(), List.of());
                 if (CollUtil.isEmpty(markerList))
                     continue;
-                log.info("[binary][marker] marker list fetched from group, cost: {}, hiddenFlag: {}", timer.intervalPretty(), flag);
+                log.info(
+                    "[binary][marker] marker list fetched from group, cost: {}, hiddenFlag: {}", timer.intervalPretty(),
+                    flag
+                );
 
                 // 切割点位列表
                 timer.restart();
                 final CacheSplitterEnum cacheSplitterEnum = CacheSplitterEnum.findSplitter(flagEnum);
                 if (cacheSplitterEnum == null)
                     continue;
-                final Function<List<MarkerVo>, Map<MarkerListCacheKey, List<MarkerVo>>> cacheSplitter = cacheSplitterEnum.getMarkerSplitter();
+                final Function<List<MarkerVo>, Map<MarkerListCacheKey, List<MarkerVo>>> cacheSplitter = cacheSplitterEnum
+                    .getMarkerSplitter();
                 if (cacheSplitter == null)
                     continue;
                 final Map<MarkerListCacheKey, List<MarkerVo>> markerShards = cacheSplitter.apply(markerList);
@@ -410,7 +452,8 @@ public class MarkerDaoImpl implements MarkerDao {
                 timer.restart();
                 for (Map.Entry<MarkerListCacheKey, List<MarkerVo>> markerShard : markerShards.entrySet()) {
                     final List<MarkerVo> cacheShardList = ObjUtil.defaultIfNull(markerShard.getValue(), List.of());
-                    final byte[] cacheBinary = JSON.toJSONString(cacheShardList, JsonUtils.defaultWriteFeatures).getBytes(StandardCharsets.UTF_8);
+                    final byte[] cacheBinary = JSON.toJSONString(cacheShardList, JsonUtils.defaultWriteFeatures)
+                        .getBytes(StandardCharsets.UTF_8);
                     final byte[] cacheBinaryCompressed = CompressUtils.compress(cacheBinary);
                     final String cacheBinaryMd5 = DigestUtils.md5DigestAsHex(cacheBinaryCompressed);
                     final MarkerListCacheKey cacheKey = markerShard.getKey()
@@ -419,7 +462,9 @@ public class MarkerDaoImpl implements MarkerDao {
                     binaryMap.put(cacheBinaryMd5, cacheBinaryCompressed);
                     binaryMd5Map.put(cacheKey, cacheBinaryMd5);
                 }
-                log.info("[binary][marker] marker shards updated, cost: {}, hiddenFlag: {}", timer.intervalPretty(), flag);
+                log.info(
+                    "[binary][marker] marker shards updated, cost: {}, hiddenFlag: {}", timer.intervalPretty(), flag
+                );
             }
 
             // 更新缓存数据
@@ -453,7 +498,8 @@ public class MarkerDaoImpl implements MarkerDao {
     }
 
     private Cache getBinaryMd5CacheGenerateTimestamp() {
-        final Cache binaryMd5CacheGenerateTimestamp = neverRefreshCacheManager.getCache(MarkerCacheKeyConst.MARKER_LIST_BIN_MD5_GENERATE_TIMESTAMP);
+        final Cache binaryMd5CacheGenerateTimestamp = neverRefreshCacheManager
+            .getCache(MarkerCacheKeyConst.MARKER_LIST_BIN_MD5_GENERATE_TIMESTAMP);
         if (binaryMd5CacheGenerateTimestamp == null)
             throw new GenshinApiException("缓存未初始化");
         return binaryMd5CacheGenerateTimestamp;
@@ -466,7 +512,8 @@ public class MarkerDaoImpl implements MarkerDao {
 
         final Cache binaryMd5Cache = getMarkerBinaryMd5Cache();
         final Cache.ValueWrapper binaryMd5Data = binaryMd5Cache.get("");
-        final Map<MarkerListCacheKey, String> binaryMd5Map = binaryMd5Data == null ? new HashMap<>() : ((Map<MarkerListCacheKey, String>) binaryMd5Data.get());
+        final Map<MarkerListCacheKey, String> binaryMd5Map = binaryMd5Data == null ? new HashMap<>()
+            : ((Map<MarkerListCacheKey, String>) binaryMd5Data.get());
         final Set<Integer> flagSet = new HashSet<>(flagList);
         for (Map.Entry<MarkerListCacheKey, String> binaryMd5Entry : binaryMd5Map.entrySet()) {
             final MarkerListCacheKey key = binaryMd5Entry.getKey();

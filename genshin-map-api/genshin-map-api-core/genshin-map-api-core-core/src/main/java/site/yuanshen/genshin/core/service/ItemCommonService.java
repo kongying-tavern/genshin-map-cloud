@@ -35,8 +35,11 @@ import java.util.stream.Collectors;
 public class ItemCommonService {
 
     private final ItemMapper itemMapper;
+
     private final ItemService itemService;
+
     private final ItemAreaPublicMapper itemAreaPublicMapper;
+
     private final ItemAreaPublicMBPService itemAreaPublicMBPService;
 
     /**
@@ -48,27 +51,31 @@ public class ItemCommonService {
     @Cacheable("listCommonItem")
     public PageListVo<ItemAreaPublicVo> listCommonItem(PageSearchDto pageSearchDto) {
         //取公共物品实体
-        Page<ItemAreaPublic> itemPublicPage = itemAreaPublicMapper.selectPage(pageSearchDto.getPageEntity(), Wrappers.<ItemAreaPublic>query());
+        Page<ItemAreaPublic> itemPublicPage = itemAreaPublicMapper
+            .selectPage(pageSearchDto.getPageEntity(), Wrappers.<ItemAreaPublic>query());
         List<ItemAreaPublic> itemPublicList = itemPublicPage.getRecords();
         if (itemPublicList.isEmpty()) {
             return new PageListVo<>(new ArrayList<>(), itemPublicPage.getTotal(), itemPublicPage.getSize());
         }
         //取物品具体信息
         Map<Long, ItemDto> itemMap = itemService.listItemById(
-                        itemPublicList.parallelStream()
-                                .map(ItemAreaPublic::getItemId).collect(Collectors.toList()),
-                        HiddenFlagEnum.getAllFlagList())
-                .parallelStream().collect(Collectors.toMap(ItemDto::getId, item -> item));
+            itemPublicList.parallelStream()
+                .map(ItemAreaPublic::getItemId).collect(Collectors.toList()),
+            HiddenFlagEnum.getAllFlagList()
+        )
+            .parallelStream().collect(Collectors.toMap(ItemDto::getId, item -> item));
         //组合VO
         return new PageListVo<ItemAreaPublicVo>()
-                .setRecord(itemPublicList.parallelStream()
-                        .map(ItemAreaPublicDto::new)
-                        .map(dto -> dto.withItemDto(itemMap.get(dto.getItemId())))
-                        .map(ItemAreaPublicDto::getVo)
-                        .sorted(Comparator.comparingLong(ItemAreaPublicVo::getId))
-                        .collect(Collectors.toList()))
-                .setTotal(itemPublicPage.getTotal())
-                .setSize(itemPublicPage.getSize());
+            .setRecord(
+                itemPublicList.parallelStream()
+                    .map(ItemAreaPublicDto::new)
+                    .map(dto -> dto.withItemDto(itemMap.get(dto.getItemId())))
+                    .map(ItemAreaPublicDto::getVo)
+                    .sorted(Comparator.comparingLong(ItemAreaPublicVo::getId))
+                    .collect(Collectors.toList())
+            )
+            .setTotal(itemPublicPage.getTotal())
+            .setSize(itemPublicPage.getSize());
     }
 
     /**
@@ -81,23 +88,32 @@ public class ItemCommonService {
     @Transactional
     public Boolean addCommonItem(List<Long> itemIdList) {
         //获取存在的全部名字
-        List<Long> itemAreaList = itemAreaPublicMBPService.list().stream().map(ItemAreaPublic::getItemId).collect(Collectors.toList());
-        List<String> itemNameList = itemAreaList.isEmpty() ? new ArrayList<>() : itemMapper.selectList(Wrappers.<Item>lambdaQuery()
-                        .in(Item::getId, itemAreaList))
+        List<Long> itemAreaList = itemAreaPublicMBPService.list().stream().map(ItemAreaPublic::getItemId)
+            .collect(Collectors.toList());
+        List<String> itemNameList = itemAreaList.isEmpty() ? new ArrayList<>()
+            : itemMapper.selectList(
+                Wrappers.<Item>lambdaQuery()
+                    .in(Item::getId, itemAreaList)
+            )
                 .stream().map(Item::getName).collect(Collectors.toList());
         //查询出新增列表全部的名字 并根据名字分组 过滤出不存在的名字 并取第一个物品id
-        List<Long> itemList = itemMapper.selectList(Wrappers.<Item>lambdaQuery()
-                        .in(Item::getId, itemIdList))
-                .stream().filter(item -> !itemNameList.contains(item.getName()))
-                .collect(Collectors.groupingBy(Item::getName))
-                .values()
-                .stream().map(items -> items.get(0).getId()).collect(Collectors.toList());
+        List<Long> itemList = itemMapper.selectList(
+            Wrappers.<Item>lambdaQuery()
+                .in(Item::getId, itemIdList)
+        )
+            .stream().filter(item -> !itemNameList.contains(item.getName()))
+            .collect(Collectors.groupingBy(Item::getName))
+            .values()
+            .stream().map(items -> items.get(0).getId()).collect(Collectors.toList());
 
-
-        return itemAreaPublicMBPService.saveBatch(itemList.parallelStream()
-                .map(id -> new ItemAreaPublic()
-                        .withItemId(id))
-                .collect(Collectors.toList()));
+        return itemAreaPublicMBPService.saveBatch(
+            itemList.parallelStream()
+                .map(
+                    id -> new ItemAreaPublic()
+                        .withItemId(id)
+                )
+                .collect(Collectors.toList())
+        );
     }
 
     /**
@@ -109,8 +125,9 @@ public class ItemCommonService {
     @CacheEvict(value = "listCommonItem", allEntries = true)
     @Transactional
     public Boolean deleteCommonItem(Long itemId) {
-        return itemAreaPublicMapper.delete(Wrappers.<ItemAreaPublic>lambdaQuery()
-                .eq(ItemAreaPublic::getItemId, itemId))
-                == 1;
+        return itemAreaPublicMapper.delete(
+            Wrappers.<ItemAreaPublic>lambdaQuery()
+                .eq(ItemAreaPublic::getItemId, itemId)
+        ) == 1;
     }
 }

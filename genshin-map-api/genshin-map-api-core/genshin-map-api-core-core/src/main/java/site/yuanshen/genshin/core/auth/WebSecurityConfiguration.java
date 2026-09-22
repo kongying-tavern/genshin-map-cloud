@@ -37,19 +37,19 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
-                .authorizeRequests().antMatchers(
-                        "/test/**",
-                        "/ws/**",
-                        "/login",
-                        "/.well-known/jwks.json",
-                        "/api/**",
-                        "/system/**",
-                        "/v3/**",
-                        "/swagger-ui/**"
-                ).permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .formLogin().permitAll();
+            .authorizeRequests().antMatchers(
+                "/test/**",
+                "/ws/**",
+                "/login",
+                "/.well-known/jwks.json",
+                "/api/**",
+                "/system/**",
+                "/v3/**",
+                "/swagger-ui/**"
+            ).permitAll()
+            .anyRequest().authenticated()
+            .and()
+            .formLogin().permitAll();
     }
 
     @Override
