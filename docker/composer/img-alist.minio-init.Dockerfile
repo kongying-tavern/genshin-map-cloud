@@ -1,4 +1,4 @@
-FROM minio/mc:RELEASE.2024-01-05T05-04-32Z
+FROM quay.io/minio/mc:RELEASE.2024-01-05T05-04-32Z
 
 WORKDIR /data
 COPY docker/config/img-alist-builder/minio-init .

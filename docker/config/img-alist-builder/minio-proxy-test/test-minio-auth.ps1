@@ -59,7 +59,7 @@ try
 {
     docker run -d --name minio-proxy-mc --rm `
         --entrypoint /bin/sh `
-        minio/mc:latest `
+        quay.io/minio/mc:latest `
         -c "while true; do sleep 1000; done" | Out-Null
 
     Start-Sleep -Seconds 2
