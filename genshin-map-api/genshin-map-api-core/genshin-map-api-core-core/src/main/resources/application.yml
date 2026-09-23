@@ -2,5 +2,6 @@ spring:
   profiles:
     include:
       - "env-@runtime-profile@"
+      - "dsp-@runtime-profile@"
 server:
   port: 8092
