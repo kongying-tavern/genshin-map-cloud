@@ -17,6 +17,7 @@ COPY docker/config/maven docker/config
 COPY docker/cache docker/cache
 
 RUN --mount=type=cache,target=/root/.m2,rw \
+    cp -f ./docker/cache/application-dsp.yml ./genshin-map-config/src/main/resources-${BUILD_PROFILE}/application-dsp-${BUILD_PROFILE}.yml && \
     cp -f ./docker/cache/application-datasource.yml ./genshin-map-config/src/main/resources-${BUILD_PROFILE}/application-datasource-${BUILD_PROFILE}.yml && \
     cp -f ./docker/cache/application-image.yml ./genshin-map-config/src/main/resources-${BUILD_PROFILE}/application-image-${BUILD_PROFILE}.yml && \
     cp -f ./docker/cache/application-websocket.yml ./genshin-map-config/src/main/resources-${BUILD_PROFILE}/application-websocket-${BUILD_PROFILE}.yml && \

@@ -1,0 +1,28 @@
+# DSP（Data Shield Protection，数据防护）。
+#
+# 这里不放硬编码值：DspProperties 的每个字段都有对应的 {{DSP_*}} 占位符，取值全部来自
+# docker/.env（渲染实现见 docker/makefile/util.env.ds）。改值改 .env，不改这个文件。
+#
+# 占位符没被替换时（.env 里缺这个键）不等同于「安全」：带引号的会变成一个错误的值，
+# 不带引号的 {{...}} 会直接让 YAML 解析失败。两者都在启动期暴露，不会静默生效。
+dsp:
+  auth-server:
+    # 边缘回调地址，必须与 CDN 侧白名单里的那一条逐字符相等。
+    # 边缘是在公网访问它的，所以这里填对外地址，不是容器服务名。
+    url: "{{DSP_AUTH_SERVER_URL}}"
+  cookie:
+    # 两端对齐 Cookie 名的唯一依据；边缘一个票都认不出来，多半是它配错了
+    prefix: "{{DSP_COOKIE_PREFIX}}"
+    # CDN 与本站的共同父域；留空则不写 Domain，Cookie 只绑在本地 host 上
+    domain: "{{DSP_COOKIE_DOMAIN}}"
+    path: "{{DSP_COOKIE_PATH}}"
+    # 仅在 https 下会被浏览器回传（localhost 例外）；明文 http 部署要配 false
+    secure: {{DSP_COOKIE_SECURE}}
+    http-only: {{DSP_COOKIE_HTTP_ONLY}}
+    # 只有 CDN 与本站同站（同一 eTLD+1）时才能用 Lax；独立域名要 None + Secure
+    same-site: "{{DSP_COOKIE_SAME_SITE}}"
+  signing:
+    # 不得短于 32 字节，否则启动期直接失败（DspProperties.MIN_SECRET_KEY_BYTES）
+    secret-key: "{{DSP_SIGNING_SECRET_KEY}}"
+    # 票据寿命，同时也是 Cookie 的 Max-Age；须不小于 access_token 有效期（1800s）
+    expiry-seconds: {{DSP_SIGNING_EXPIRY_SECONDS}}
