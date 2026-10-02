@@ -12,6 +12,7 @@ server:
 
 genshin:
   pass-filter:
+    - /dsp/**
     - /ws
     - /ws/**
     - /oauth/**
@@ -130,6 +131,20 @@ spring:
           uri: lb://api-core
           predicates:
             - Path=/api/**
+        # DSP：校验接口（边缘 nginx lua 回流复核）等由 api-core 提供的 DSP 端点。
+        # 它不属于 /api/** 那组面向前端的接口，所以单独一条。
+        #
+        # 三处都用通配（本路由、上面的 genshin.pass-filter、api-core 的 permitAll）：
+        # 这一组的上游是同一批 CDN 边缘节点，流量特征一致，少一个端点就要改三处，
+        # 而漏改任意一处的表现是「边缘回流全部跳登录 / 全部 404」，只能靠现象反推。
+        #
+        # 放行是通配的，但安全边界不在这里：这组端点不走登录态，区分「这是不是一个合法
+        # 边缘」的是回调带来的第二段 HMAC 签名。将来往 /dsp/** 下挂端点时要知道这一点 ——
+        # 它自动是免鉴权的，需要登录态或用户角色的东西不要放进这个前缀。
+        - id: dsp
+          uri: lb://api-core
+          predicates:
+            - Path=/dsp/**
         - id: websocket
           uri: lb:ws://api-ws
           predicates:
