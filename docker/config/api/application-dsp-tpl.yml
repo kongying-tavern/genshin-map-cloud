@@ -19,10 +19,36 @@ dsp:
     # 仅在 https 下会被浏览器回传（localhost 例外）；明文 http 部署要配 false
     secure: {{DSP_COOKIE_SECURE}}
     http-only: {{DSP_COOKIE_HTTP_ONLY}}
-    # 只有 CDN 与本站同站（同一 eTLD+1）时才能用 Lax；独立域名要 None + Secure
+    # 只有 CDN 与本站同站（同一 eTLD+1）时才能用 Lax；独立域名要 None + Secure。
+    # 这里必须显式给值：Java 侧这一项没有默认值（DspProperties 里只有 secure / http-only
+    # 这类「默认取严格侧的布尔开关」才有），而答案取决于部署拓扑，模板猜不出来。
     same-site: "{{DSP_COOKIE_SAME_SITE}}"
   signing:
     # 不得短于 32 字节，否则启动期直接失败（DspProperties.MIN_SECRET_KEY_BYTES）
     secret-key: "{{DSP_SIGNING_SECRET_KEY}}"
     # 票据寿命，同时也是 Cookie 的 Max-Age；须不小于 access_token 有效期（1800s）
     expiry-seconds: {{DSP_SIGNING_EXPIRY_SECONDS}}
+  # 下面这一组是【校验接口】用的，与上面的签发密钥是两把不同的密钥 ——
+  # 混用会拆掉「两段签名不可互换」那层隔离。
+  edge:
+    # 令牌表 tokens[0..slotCount-1]，槽位数就是这里的条目数（不要另配一个数量）。
+    # 边缘回流时带 kid，本服务按 slot = kid mod slotCount 取该槽那把令牌验第二段签名，
+    # 边缘侧必须持有同一个槽位数（DSP_EDGE_SLOT_COUNT）以及自己槽位那把令牌。
+    #
+    # 多个槽位用逗号分隔（逗号后不要留空格，空白会被算进令牌本身，启动期校验会挡下）。
+    #
+    # 逗号是分隔符，没有转义写法 —— 令牌本身不得含逗号，否则会被切成两个槽。切出来的碎片
+    # 若仍够长，启动不会报错，只会悄悄多出一个槽，届时各边缘的 kid 会落到不相干的令牌上。
+    # 生成令牌用 hex / 去掉 padding 的 base64url / [A-Za-z0-9] 随机串，这些字符集天然没有逗号。
+    # 确实需要含逗号的令牌时，只能手写 yml 的数组形式（一条一行、加引号），那样不会被切。
+    #
+    # 手写 yml 时也推荐数组形式：diff 与评审能看出「加了一个槽」，模板里条目数随环境变化、
+    # 写不出行数，所以这里只能走逗号串 —— 两者的绑定结果是同一个列表。
+    #
+    # 顺序即 kid 的槽位：追加只能往表尾加，插在中间会把后面所有边缘整体挪一位。
+    tokens: "{{DSP_EDGE_TOKENS}}"
+    # 回流时间戳与本机时间的允许偏差（秒），超出即拒（防重放）。没有默认值，必须给
+    callback-window-seconds: {{DSP_EDGE_CALLBACK_WINDOW_SECONDS}}
+    # 判票面 exp 是否过期时的时钟容差（秒）。没有默认值，必须给；
+    # 它必须远小于 signing.expiry-seconds，否则启动期失败
+    ticket-tolerance-seconds: {{DSP_EDGE_TICKET_TOLERANCE_SECONDS}}
