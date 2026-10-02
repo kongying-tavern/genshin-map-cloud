@@ -211,9 +211,11 @@ public class DspProperties {
         // 这两项没有默认值，所以用包装类型：只有这样「未配置」与「配了 0」才分得开 ——
         // ticket-tolerance 的合法取值里本来就有 0（不容差），给默认值就等于默认不容差
         long callbackWindowSeconds = requireConfigured(
-            edge.getCallbackWindowSeconds(), "dsp.edge.callback-window-seconds");
+            edge.getCallbackWindowSeconds(), "dsp.edge.callback-window-seconds"
+        );
         long ticketToleranceSeconds = requireConfigured(
-            edge.getTicketToleranceSeconds(), "dsp.edge.ticket-tolerance-seconds");
+            edge.getTicketToleranceSeconds(), "dsp.edge.ticket-tolerance-seconds"
+        );
 
         validateEdgeTokens(tokens);
         // 槽位数没有「正确值」可校验 —— 它必须与边缘侧的 DSP_EDGE_SLOT_COUNT 相等，
