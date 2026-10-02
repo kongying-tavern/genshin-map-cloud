@@ -23,7 +23,7 @@ import java.util.Base64;
  * 登录换 token 时顺带下发 DSP Cookie。
  *
  * <p>挂在 /oauth/token 的成功响应上：登录成功 → 拿到 JWT → 从 JWT 里取出 userId →
- * 签一张 CDN 访问票塞回响应。客户端无需任何额外调用，前端在原有 Cookie 之外多了三个。
+ * 签一张 CDN 访问票塞回响应。客户端无需任何额外调用，前端在原有 Cookie 之外多了两个。
  *
  * <p><b>执行顺序很关键</b>：本过滤器必须排在 springSecurityFilterChain 之前。
  * Spring Security 的过滤器链在 order = -100，处理完 /oauth/token 后直接写出响应、
