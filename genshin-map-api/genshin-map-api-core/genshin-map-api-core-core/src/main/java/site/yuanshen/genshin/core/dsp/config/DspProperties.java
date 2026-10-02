@@ -10,6 +10,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import site.yuanshen.genshin.core.dsp.protocol.DspSigner;
 
 /**
  * dsp.* 配置绑定（数据防护）。
@@ -188,6 +189,13 @@ public class DspProperties {
             );
         }
 
+        // HMAC 算法本身用公开测试向量验一遍。它挡的不是「算法库坏了」——
+        // HmacSHA256 在 JCE 里足够稳；它挡的是「这台机器上走了预期之外的实现」
+        // （Provider 被换过、容器内打过补丁），症状是上线后所有票都签得不对、
+        // 边缘一律验不过，而日志只会写「签名不一致」，把人往「密钥是不是抄错了」引。
+        // 启动期跑一遍已知答案，把这一整片排查空间一次性消掉。
+        DspSigner.selfTest();
+
         if (signingExpirySeconds <= 0 || signingExpirySeconds > MAX_EXPIRY_SECONDS) {
             throw new IllegalStateException(
                 "dsp.signing.expiry-seconds 必须在 1 ~ " + MAX_EXPIRY_SECONDS
@@ -208,6 +216,19 @@ public class DspProperties {
         );
 
         validateEdgeTokens(tokens);
+
+        // 签发密钥与【每一把】边缘令牌都不得相同。validateEdgeTokens 只管令牌之间互不相同，
+        // 这一条补上「签发密钥和某个边缘令牌撞了」—— 那份配置看起来毫无异常（两个字段都填了、
+        // 长度都达标、令牌之间也不重复），唯一后果是两段签名不再互不可换：两段待签串只靠
+        // 换行的个数区分，同一把密钥会让一张票的签名同时成为一份合法的回流动词。
+        for (int i = 0; i < tokens.size(); i++) {
+            if (signingSecretKey.equals(tokens.get(i))) {
+                throw new IllegalStateException(
+                    "dsp.signing.secret-key 与 dsp.edge.tokens[" + i + "] 是同一个值 —— "
+                        + "两把密钥必须不同，否则两段签名（只靠换行个数区分）不再互不可换"
+                );
+            }
+        }
         // 槽位数没有「正确值」可校验 —— 它必须与边缘侧的 DSP_EDGE_SLOT_COUNT 相等，
         // 而那一边的值本服务看不到。能做的只有启动时把它打出来：两侧不一致的表现
         // 是「某些边缘的回流全部验不过」，排障时第一个要核对的就是这个数。
