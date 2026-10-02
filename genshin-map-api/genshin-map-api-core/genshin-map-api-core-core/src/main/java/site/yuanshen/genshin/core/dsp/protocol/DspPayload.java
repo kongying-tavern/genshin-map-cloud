@@ -34,9 +34,18 @@ public final class DspPayload {
     public static final long MAX_PLAUSIBLE_EPOCH_SECONDS = 100_000_000_000L;
 
     /**
-     * 规范形态：uid 最长 19 位（long 上限），exp 最长 12 位 —— 12 位是能写出
-     * {@link #MAX_PLAUSIBLE_EPOCH_SECONDS} 的最小位数，所以「位数上限」与「值域上限」
-     * 严格对应，不存在永远碰不到的分支。
+     * <p>规范形态：uid 最长 16 位、exp 最长 12 位。
+     *
+     * <p><b>uid 收在 16 位（= 2^53-1 的十进制位数）而不是 long 能到的 19 位，是为了两端同形。</b>
+     * 边缘是 Lua，数字就是 double，17 位起不再精确（{@code 9007199254740993} 与
+     * {@code 9007199254740992} 会撞成同一个值，两个 uid 会静默共用一张票）。本类用 long，
+     * 到 19 位都精确；若这里放 19 位而那边拒 17 位，同一张票就在这边解析得过、在那边根本
+     * 不存在 —— 而签名覆盖的是原文，这种顺手的差异会把「哪一端不认这张票」变成一个谜。
+     * 所以取<b>两边都精确</b>的那一段作为共同形态：超出即拒，两边同一条线，
+     * 任何合法 uid 在任一端都是精确整数。
+     *
+     * <p>exp 的 12 位是能写出 {@link #MAX_PLAUSIBLE_EPOCH_SECONDS} 的最小位数，所以它的
+     * 「位数上限」与「值域上限」严格对应，不存在永远碰不到的分支。
      *
      * <p>位数是形态、值域是判据，两者不是两层防线：13 位以上的 exp 必然 ≥ 10^12，
      * 值域检查本来就抓得到。留位数只是让正则自身读得通 —— 不接受任何永远不合法的形态。
@@ -50,7 +59,7 @@ public final class DspPayload {
      * 形态。边缘侧（PCRE）用 {@code \z}，不认这条串 —— 两端必须是同一个串集合，否则一条
      * payload 在这边能进去、在那边根本不存在，而签名是覆盖原文的，这样的串谁也签不出来。
      */
-    private static final Pattern CANONICAL = Pattern.compile("^uid=([0-9]{1,19})&exp=([0-9]{1,12})\\z");
+    private static final Pattern CANONICAL = Pattern.compile("^uid=([0-9]{1,16})&exp=([0-9]{1,12})\\z");
 
     private static final int MAX_LENGTH = 64;
 
@@ -66,6 +75,11 @@ public final class DspPayload {
     public static DspPayload of(long uid, long expireAt) {
         if (uid <= 0) {
             throw new IllegalArgumentException("uid 必须为正整数");
+        }
+        // 签发端自己就把值域收住：这里放出去的票若带一个边缘认不出的 uid，
+        // 症状是「签发成功、边缘静默拒」，而且拒因只会落在签名/形态上，指不到签发参数
+        if (uid > DspProtocol.MAX_SAFE_INTEGER) {
+            throw new IllegalArgumentException("uid 超出 double 能精确表示的整数范围（须 ≤ " + DspProtocol.MAX_SAFE_INTEGER + "）");
         }
         if (expireAt <= 0) {
             throw new IllegalArgumentException("exp 必须为秒级时间戳");
@@ -93,8 +107,11 @@ public final class DspPayload {
         try {
             long uid = Long.parseLong(matcher.group(1));
             long expireAt = Long.parseLong(matcher.group(2));
-            // 值域是判据：正则只保证形态，这里保证「这个数只可能是秒级」
-            if (uid <= 0 || expireAt <= 0 || expireAt >= MAX_PLAUSIBLE_EPOCH_SECONDS) {
+            // 值域是判据：正则只保证形态（位数），这里保证「这个数落在判据线以内」——
+            // uid 卡 double 能精确表示的最大整数（与边缘同一条线，见 DspProtocol.MAX_SAFE_INTEGER，
+            // 超出的 uid 在边缘会静默撞成另一个 uid），exp 卡秒级时间戳的可信上限
+            if (uid <= 0 || uid > DspProtocol.MAX_SAFE_INTEGER
+                || expireAt <= 0 || expireAt >= MAX_PLAUSIBLE_EPOCH_SECONDS) {
                 return null;
             }
             return new DspPayload(uid, expireAt);

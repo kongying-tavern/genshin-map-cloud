@@ -46,6 +46,22 @@ public final class DspProtocol {
     public static final String FIELD_PAYLOAD = "Payload";
 
     /**
+     * 所有「数字进过 Lua 就变成 double」的字段的合法上界（含）：2^53-1，即 IEEE-754 double
+     * 能精确表示的最大整数。目前被 kid 与 payload 里的 uid 共用。
+     *
+     * <p>校验段用 {@code long} 存这些数，本身不会有精度问题；卡这条线是为了让<b>两端口径一致</b>：
+     * 边缘是 Lua，数字就是 double，超过这个值的数在边缘侧已经失真 ——
+     * kid 会算出错误的 {@code floor(kid / slotCount)} 与 {@code kid mod slotCount}，于是选到
+     * 错误的令牌，症状是这台边缘<b>所有</b>回流都验不过、日志里却只有「签名不一致」；
+     * uid 则会让两个本不相同的 uid 撞成同一个值，于是两个用户的票静默等价。
+     *
+     * <p>边缘侧的启动期检查（DSP_EDGE_KID 按 base + kidJitter·slotCount 定界、payload 按
+     * 位数与定长串比较定界）已经在源头挡住，这里再挡一次，是让「配错了会拒」这件事在
+     * 校验段同样成立，并且让两端的拒绝边界落在同一个数上。
+     */
+    public static final long MAX_SAFE_INTEGER = 9_007_199_254_740_991L;
+
+    /**
      * 第二段待签串：边缘用自己的令牌签，回调校验段时带上。
      *
      * <p>只签 payload 与 timestamp 两个字段，判据是「校验段会不会读它」。校验端只回答

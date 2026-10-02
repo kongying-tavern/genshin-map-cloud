@@ -81,16 +81,21 @@ public class DspVerifyController {
             return deny(request, "缺少必填字段（payload / timestamp / signature）");
         }
 
-        // kid：必须给了、必须非负。契约允许它超过槽位数（取模后自然落进合法槽位），
-        // 也允许任意大的非负整数；负数在这里拒，而「压根不是整数」已经在绑定阶段
-        // 由下面的 handleUnreadableBody 接住 —— 那里拿不到字段名，所以只能给一个总的拒因。
+        // kid：必须给了、必须是 [0, 2^53-1] 的整数。契约允许它超过槽位数（取模后自然落进
+        // 合法槽位），但不允许超过 double 的精确整数范围 —— 那边是 Lua，超过之后边缘算出的
+        // floor(kid / slotCount) 与 kid mod slotCount 都失真，会选错令牌，症状是整台边缘的
+        // 回流全被拒、日志里只看到「签名不一致」。上界定在边缘自己已经拦住的同一条线，
+        // 是为了让「配错了会被拒」在两端都成立，而不是一边拦、一边放行到猜。
+        //
+        // 「压根不是整数」已经在绑定阶段由下面的 handleUnreadableBody 接住 ——
+        // 那里拿不到字段名，只能给一个总的拒因。
         Long kidValue = body.getKid();
         if (kidValue == null) {
             return deny(request, "缺少 kid");
         }
         long kid = kidValue;
-        if (kid < 0) {
-            return deny(request, "kid 非法（须为非负整数）");
+        if (kid < 0 || kid > DspProtocol.MAX_SAFE_INTEGER) {
+            return deny(request, "kid 非法（须是 0 … 2^53-1 之间的整数）");
         }
 
         // 1. 时间窗（防重放）。只有这一步需要把 timestamp 解析成数字
