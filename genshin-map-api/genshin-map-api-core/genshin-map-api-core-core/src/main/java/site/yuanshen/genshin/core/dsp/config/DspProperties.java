@@ -15,8 +15,8 @@ import java.util.Set;
  * dsp.* 配置绑定（数据防护）。
  *
  * <p>这里用 {@link Value} 而不是 {@code @ConfigurationProperties}，是为了让「配置没绑上」
- * 在启动时就暴露：注解里的 key 必须与 yml 字面一致，而 {@code dsp.auth-server.url} 与
- * {@code dsp.signing.secret-key} 不写默认值 —— 这两项缺失或名字拼错，应用直接起不来
+ * 在启动时就暴露：注解里的 key 必须与 yml 字面一致，而 {@code dsp.signing.secret-key}
+ * 不写默认值 —— 这项缺失或名字拼错，应用直接起不来
  * （Could not resolve placeholder），而不是等到第一次签票才抛异常。
  *
  * <p>代价是字段必须平铺：{@link Value} 只对 Spring 管理的 bean 生效，
@@ -47,15 +47,6 @@ import java.util.Set;
 @Data
 @Component
 public class DspProperties {
-
-    /**
-     * 校验服务地址。它会被原样写进 base Cookie，边缘拿它与自己的白名单做精确匹配。
-     *
-     * <p>它不在待签串里，所以白名单是它唯一的防线：白名单只应有一条，且必须与配置
-     * 精确相等，不能用「前缀包含」或宽松正则 —— 宽松匹配等于把边缘节点变成跳板。
-     */
-    @Value("${dsp.auth-server.url}")
-    private String authServerUrl;
 
     /**
      * Cookie 名前缀。这是项目自己的约定，按环境在配置里给。
@@ -182,7 +173,6 @@ public class DspProperties {
      */
     @PostConstruct
     void validate() {
-        requireNonEmpty(authServerUrl, "dsp.auth-server.url");
         requireNonEmpty(cookiePrefix, "dsp.cookie.prefix");
         // cookie.domain 有意不判非空 —— 空串是它的合法取值（不写 Domain）。
         // 但 path 与 same-site 空了就没有合理解释：Cookie Path 为空等于随便哪里都匹配不上，

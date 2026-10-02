@@ -37,9 +37,10 @@ public final class DspProtocol {
 
     /**
      * Cookie 字段名后缀，实际名字由 dsp.cookie.prefix 拼出。
+     *
+     * <p>只有 Sign 与 Payload 两个：票据里不携带「校验接口在哪」这类地址信息 —— 回调目标
+     * 只存在边缘自己的配置里，请求方能影响它的任何一点都是 SSRF 面。
      */
-    public static final String FIELD_BASE = "Base";
-
     public static final String FIELD_SIGN = "Sign";
 
     public static final String FIELD_PAYLOAD = "Payload";

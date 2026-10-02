@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 签发端：把一张 CDN 访问票据写成三个 Set-Cookie 头。
+ * 签发端：把一张 CDN 访问票据写成两个 Set-Cookie 头（Sign、Payload）。
  *
  * <p>票据只承载 uid 与 exp，不承载资源范围 —— 「哪些路径需要验票」由 CDN 的路径规则决定，
  * 「这张票现在还能不能用」由校验段每次回调现判，两者都不写进票据。范围不在票据里的好处是
@@ -51,11 +51,6 @@ public class DspCookieIssuer {
         // 权威检查在 DspProperties.validate()：启动期一次判掉空值、密钥长度、有效期上限。
         // 这里再判一遍是为了「绕过 Spring 直接 new 出来的实例」也挡得住 —— 签发失败会被
         // 过滤器降级成一条 warn，是整条链路上最不该靠日志兜底的地方，多一道判断比少一道便宜。
-        String base = dspProperties.getAuthServerUrl();
-        if (base == null || base.isEmpty()) {
-            throw new IllegalStateException("dsp.auth-server.url 为空，无法签发 DSP Cookie");
-        }
-
         String secretKey = dspProperties.getSigningSecretKey();
         if (secretKey == null || secretKey.isEmpty()) {
             throw new IllegalStateException("dsp.signing.secret-key 为空，无法签发 DSP Cookie");
@@ -74,8 +69,7 @@ public class DspCookieIssuer {
         // Sign = HMAC-SHA256(secretKey, <Payload cookie 的值>)，可用 openssl 手工复现
         String signature = DspSigner.sign(secretKey, payloadText);
 
-        List<String> headers = new ArrayList<>(3);
-        headers.add(buildSetCookie(dspProperties.cookieName(DspProtocol.FIELD_BASE), base));
+        List<String> headers = new ArrayList<>(2);
         headers.add(buildSetCookie(dspProperties.cookieName(DspProtocol.FIELD_SIGN), signature));
         headers.add(buildSetCookie(dspProperties.cookieName(DspProtocol.FIELD_PAYLOAD), payloadText));
 
