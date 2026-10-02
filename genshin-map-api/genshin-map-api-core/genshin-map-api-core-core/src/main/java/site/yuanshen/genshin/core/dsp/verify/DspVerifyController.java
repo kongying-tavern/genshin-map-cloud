@@ -53,8 +53,14 @@ import java.util.regex.Pattern;
 @RequiredArgsConstructor
 public class DspVerifyController {
 
-    /** 第二段签名的形态：HMAC-SHA256 的 32 字节，小写 hex，正好 64 字符 */
-    private static final Pattern HEX64 = Pattern.compile("^[0-9a-f]{64}$");
+    /**
+     * 第二段签名的形态：HMAC-SHA256 的 32 字节，小写 hex，正好 64 字符。
+     *
+     * <p>结尾锚用 {@code \z}：{@code $} 还能在末尾换行符之前匹配，于是「64 个 hex + 换行」
+     * 也算过了形态检查 —— 它随后必然验签失败，但那样只得到「签名不对」这一个拒因，
+     * 而形态检查存在的意义正是把「边缘换了编码」和「边缘算错了」分开。
+     */
+    private static final Pattern HEX64 = Pattern.compile("^[0-9a-f]{64}\\z");
 
     private final DspProperties props;
 

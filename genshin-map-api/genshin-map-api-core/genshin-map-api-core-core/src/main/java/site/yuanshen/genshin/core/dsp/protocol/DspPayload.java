@@ -44,8 +44,13 @@ public final class DspPayload {
      * <p>只约束形态（字段顺序、位数、无空格），不做数值归一化：{@code uid=012345} 与
      * {@code uid=12345} 数值相同、串不同，两者都能解析成功。这不是漏洞 —— 签名覆盖的是
      * 整串原文，没人能把一张票的串换成另一串，多出来的那个串只能由签发端亲手签出来。
+     *
+     * <p>结尾锚是 {@code \z} 不是 {@code $}：{@code matches()} 只保证整串被正则吃掉，而
+     * {@code $} 还能在末尾换行符<b>之前</b>匹配，于是 {@code "uid=1&exp=2\n"} 会被判成合法
+     * 形态。边缘侧（PCRE）用 {@code \z}，不认这条串 —— 两端必须是同一个串集合，否则一条
+     * payload 在这边能进去、在那边根本不存在，而签名是覆盖原文的，这样的串谁也签不出来。
      */
-    private static final Pattern CANONICAL = Pattern.compile("^uid=([0-9]{1,19})&exp=([0-9]{1,12})$");
+    private static final Pattern CANONICAL = Pattern.compile("^uid=([0-9]{1,19})&exp=([0-9]{1,12})\\z");
 
     private static final int MAX_LENGTH = 64;
 
