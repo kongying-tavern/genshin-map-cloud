@@ -5,6 +5,7 @@ import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
+import java.util.Arrays;
 import java.util.Base64;
 
 /**
@@ -37,6 +38,42 @@ public final class DspSigner {
             return toHex(mac.doFinal(message.getBytes(StandardCharsets.UTF_8)));
         } catch (Exception e) {
             throw new IllegalStateException("HMAC-SHA256 计算失败", e);
+        }
+    }
+
+    /**
+     * RFC 4231 第 4.1.1 节（HMAC-SHA256）测试向量的期望值：key 是 20 个 0x0b、data 是
+     * "Hi There"。硬编码在这里不构成密钥管理问题 —— 这两个输入是公开常量。
+     */
+    private static final String RFC4231_VECTOR_1 =
+        "b0344c61d8db38535ca8afceaf0bf12b881dc200c9833da726e9376c2e32cff7";
+
+    /**
+     * 启动期自检：拿上面那个公开测试向量算一次 HMAC-SHA256，对不上就拒绝启动。
+     *
+     * <p>它挡的不是「算法库坏了」—— {@code HmacSHA256} 在 JCE 里太老，坏掉的情况几乎不存在。
+     * 它挡的是「这台机器上 mac.init 之后悄悄走了另一条路径」这种看不出症状的偏差：
+     * Provider 被换过、容器里打了补丁、某次 JDK 升级改了默认值 —— 症状都是同一个，
+     * 上线之后所有票签得不对、所有回流验不过，而且线上日志只会写「签名不一致」，
+     * 指向「两把密钥配错了」这个最常见的猜测。跑一遍已知答案，把这一整片排查空间
+     * 在启动期一次性消掉。
+     *
+     * <p>与边缘侧（Lua）那次启动期自检是同一条设计：算法接错了必须表现成「起不来」，
+     * 而不是表现成上线之后的全站 403。
+     *
+     * @throws IllegalStateException 算出来的结果与测试向量不一致时
+     */
+    public static void selfTest() {
+        char[] key = new char[20];
+        // 0x0b / 20 个：写成 (char) 11 而不是 '\u000b'，后者编译前会被替换成真正的控制字符，源码里留一个不可见的东西不是想让人读到的。
+        Arrays.fill(key, (char) 11);
+        String actual = sign(new String(key), "Hi There");
+        if (!actual.equals(RFC4231_VECTOR_1)) {
+            throw new IllegalStateException(
+                "DSP HMAC-SHA256 启动自检失败：拿 RFC 4231 的测试向量算出 " + actual
+                    + "，期望 " + RFC4231_VECTOR_1
+                    + " —— 这台机器上的 HmacSHA256 实现与预期不一致，签出来的票边缘一律验不过"
+            );
         }
     }
 
