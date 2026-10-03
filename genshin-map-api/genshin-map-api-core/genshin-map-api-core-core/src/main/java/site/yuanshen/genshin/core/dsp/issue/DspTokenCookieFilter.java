@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.ContentCachingResponseWrapper;
+import site.yuanshen.genshin.core.service.SysActionLogService;
+import site.yuanshen.genshin.core.utils.ClientUtils;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -18,6 +20,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 登录换 token 时顺带下发 DSP Cookie。
@@ -47,7 +51,14 @@ public class DspTokenCookieFilter extends OncePerRequestFilter {
 
     private static final int MAX_BODY_LENGTH = 64 * 1024;
 
+    /**
+     * 下发 DSP Cookie 的操作日志动作名。
+     */
+    static final String ACTION_DSP_ISSUE = "DSP_ISSUE";
+
     private final DspCookieIssuer dspCookieIssuer;
+
+    private final SysActionLogService sysActionLogService;
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
@@ -61,7 +72,7 @@ public class DspTokenCookieFilter extends OncePerRequestFilter {
         ContentCachingResponseWrapper wrapper = new ContentCachingResponseWrapper(response);
         try {
             chain.doFilter(request, wrapper);
-            issueCookies(wrapper);
+            issueCookies(request, wrapper);
         } catch (Exception e) {
             log.warn("DSP Cookie 签发失败，已跳过，不影响本次登录", e);
         } finally {
@@ -70,7 +81,7 @@ public class DspTokenCookieFilter extends OncePerRequestFilter {
         }
     }
 
-    private void issueCookies(ContentCachingResponseWrapper wrapper) {
+    private void issueCookies(HttpServletRequest request, ContentCachingResponseWrapper wrapper) {
         if (wrapper.getStatus() != HttpStatus.OK.value()) {
             return;
         }
@@ -112,6 +123,30 @@ public class DspTokenCookieFilter extends OncePerRequestFilter {
             wrapper.addHeader(HttpHeaders.SET_COOKIE, setCookie);
         }
         log.info("已为用户 {} 下发 DSP Cookie，有效期至 {}", userId, issued.getPayload().getExpireAt());
+        recordIssueAction(request, userId, issued);
+    }
+
+    /**
+     * 记一条 {@code DSP_ISSUE} 操作日志，留下「谁在什么时候拿到了哪张票」。
+     *
+     * <p>把请求显式传给 {@link ClientUtils}：本过滤器排在 RequestContextFilter（order = -105）之前，
+     * 过滤器链上还没有「当前请求」，不显式传的话 ipv4 会记成 "N/A"。
+     *
+     * <p>只在签发成功后调用。写日志失败只告警 —— 票已经签好也塞进响应头了，不该因为日志表
+     * 不可用就让这次登录失败（与签发失败的处理同理：那是降级，这不是事故）。
+     */
+    private void recordIssueAction(HttpServletRequest request, long userId, DspCookieIssuer.Issued issued) {
+        try {
+            Map<String, Object> extraData = new HashMap<>(4);
+            extraData.put("sign", issued.getSignature());
+            extraData.put("payload", issued.getPayload().serialize());
+            sysActionLogService.addNewLog(
+                userId, ACTION_DSP_ISSUE, false, extraData,
+                ClientUtils.getClientInfo(request, null, null)
+            );
+        } catch (Exception e) {
+            log.warn("DSP 签发操作日志写入失败，不影响本次登录", e);
+        }
     }
 
     /**

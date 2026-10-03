@@ -53,6 +53,17 @@ public class ClientUtils {
      * 获取客户端信息
      */
     public static ClientInfo getClientInfo(ClientInfo info, ClientConfig config) {
+        return getClientInfo(null, info, config);
+    }
+
+    /**
+     * 获取客户端信息（显式指定请求）
+     *
+     * <p>Servlet 过滤器链上排在 RequestContextFilter（order = -105）之前的过滤器拿不到
+     * RequestContextHolder，也就没有「当前请求」可读，ipv4 会落成 "N/A"。这类调用方用本
+     * 重载把手上已有的请求传进来；传 null 时行为与 {@link #getClientInfo(ClientInfo, ClientConfig)} 一致。
+     */
+    public static ClientInfo getClientInfo(HttpServletRequest request, ClientInfo info, ClientConfig config) {
         if (info == null) {
             info = new ClientInfo();
         }
@@ -61,11 +72,11 @@ public class ClientUtils {
         }
 
         if (StrUtil.isBlank(info.getIpv4())) {
-            final String ipv4 = ClientUtils.getClientIpv4(config.getIpv4Default());
+            final String ipv4 = ClientUtils.getClientIpv4(request, config.getIpv4Default());
             info.setIpv4(ipv4);
         }
         if (StrUtil.isBlank(info.getUa())) {
-            final String ua = StrUtil.sub(ClientUtils.getClientUa(), 0, config.getUaMaxLength());
+            final String ua = StrUtil.sub(ClientUtils.getClientUa(request), 0, config.getUaMaxLength());
             info.setUa(ua);
         }
 
@@ -76,8 +87,14 @@ public class ClientUtils {
      * 获取客户端IPv4
      */
     public static String getClientIpv4(String nullIp) {
+        return getClientIpv4(null, nullIp);
+    }
+
+    /**
+     * 获取客户端IPv4（显式指定请求，见 {@link #getClientInfo(HttpServletRequest, ClientInfo, ClientConfig)}）
+     */
+    public static String getClientIpv4(HttpServletRequest request, String nullIp) {
         String ipv4 = nullIp;
-        final ServletRequestAttributes servletRequestAttributes;
         final String[] headers = new String[] { "X-Forwarded-For", "X-Real-IP", "Proxy-Client-IP", "WL-Proxy-Client-IP",
                 "HTTP_CLIENT_IP", "HTTP_X_FORWARDED_FOR" };
         final Function<String, Boolean> ipv4Test = (String ipStr) -> {
@@ -97,12 +114,10 @@ public class ClientUtils {
             }
             return true;
         };
-        if (Objects.nonNull(
-            servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes()
-        )) {
-            HttpServletRequest request = servletRequestAttributes.getRequest();
+        final HttpServletRequest target = resolveRequest(request);
+        if (Objects.nonNull(target)) {
             for (int i = 0; i < headers.length; i++) {
-                ipv4 = ServletUtil.getClientIPByHeader(request, headers[i]);
+                ipv4 = ServletUtil.getClientIPByHeader(target, headers[i]);
                 if (ipv4Test.apply(ipv4))
                     break;
             }
@@ -114,14 +129,30 @@ public class ClientUtils {
      * 获取客户端UA
      */
     public static String getClientUa() {
+        return getClientUa(null);
+    }
+
+    /**
+     * 获取客户端UA（显式指定请求，见 {@link #getClientInfo(HttpServletRequest, ClientInfo, ClientConfig)}）
+     */
+    public static String getClientUa(HttpServletRequest request) {
         String ua = "";
-        ServletRequestAttributes servletRequestAttributes;
-        if (Objects.nonNull(
-            servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes()
-        )) {
-            HttpServletRequest request = servletRequestAttributes.getRequest();
-            ua = ServletUtil.getHeader(request, "User-Agent", StandardCharsets.UTF_8);
+        final HttpServletRequest target = resolveRequest(request);
+        if (Objects.nonNull(target)) {
+            ua = ServletUtil.getHeader(target, "User-Agent", StandardCharsets.UTF_8);
         }
         return ua;
+    }
+
+    /**
+     * 解析出本次调用要用的请求：显式传入的优先，否则取 RequestContextHolder 里的当前请求
+     */
+    private static HttpServletRequest resolveRequest(HttpServletRequest request) {
+        if (Objects.nonNull(request)) {
+            return request;
+        }
+        final ServletRequestAttributes servletRequestAttributes =
+            (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        return Objects.isNull(servletRequestAttributes) ? null : servletRequestAttributes.getRequest();
     }
 }
