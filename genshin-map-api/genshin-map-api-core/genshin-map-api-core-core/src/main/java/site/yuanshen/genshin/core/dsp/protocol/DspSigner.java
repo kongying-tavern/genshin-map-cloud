@@ -45,8 +45,7 @@ public final class DspSigner {
      * RFC 4231 第 4.1.1 节（HMAC-SHA256）测试向量的期望值：key 是 20 个 0x0b、data 是
      * "Hi There"。硬编码在这里不构成密钥管理问题 —— 这两个输入是公开常量。
      */
-    private static final String RFC4231_VECTOR_1 =
-        "b0344c61d8db38535ca8afceaf0bf12b881dc200c9833da726e9376c2e32cff7";
+    private static final String RFC4231_VECTOR_1 = "b0344c61d8db38535ca8afceaf0bf12b881dc200c9833da726e9376c2e32cff7";
 
     /**
      * 启动期自检：拿上面那个公开测试向量算一次 HMAC-SHA256，对不上就拒绝启动。
