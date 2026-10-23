@@ -60,6 +60,8 @@ services:
           - img-alist.local
     volumes:
       - ${DATA_DIR}/api/logs/core:/data/logs
+    # api-core 自身不校验鉴权（WebSecurityConfiguration 对 /api/**、/system/** permitAll），
+    # 鉴权的唯一边界是网关，因此这里只绑定回环地址，禁止从宿主机外部直连。
     ports:
-      - ${API_PORT:-8092}:8092
+      - "127.0.0.1:${API_PORT:-8092}:8092"
     restart: always
