@@ -58,8 +58,13 @@ services:
       gsapi-img-alist:
         aliases:
           - img-alist.local
+    environment:
+      # JWT 密钥库路径与口令：密钥库以只读文件方式挂载，不再内置在镜像中
+      - OAUTH2_JKS_LOCATION=${OAUTH2_JKS_LOCATION:-file:/data/secrets/oauth2.jks}
+      - OAUTH2_JKS_PASSWORD=${OAUTH2_JKS_PASSWORD:?OAUTH2_JKS_PASSWORD is required, see docker/.env.example}
     volumes:
       - ${DATA_DIR}/api/logs/core:/data/logs
+      - ${DATA_DIR}/api/secrets:/data/secrets:ro
     # api-core 自身不校验鉴权（WebSecurityConfiguration 对 /api/**、/system/** permitAll），
     # 鉴权的唯一边界是网关，因此这里只绑定回环地址，禁止从宿主机外部直连。
     ports:
