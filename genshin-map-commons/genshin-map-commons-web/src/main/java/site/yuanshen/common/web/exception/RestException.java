@@ -40,18 +40,19 @@ public class RestException {
      * 统一异常处理方法
      */
     @ExceptionHandler(Throwable.class)
-    public R exceptionHandler(Throwable t, @RequestHeader(name = "V-Debug") String debug) {
+    public R exceptionHandler(Throwable t, @RequestHeader(name = "V-Debug", required = false) String debug) {
         try {
             //获取当前请求
             HttpServletRequest request = RequestUtils.getHttpServletRequest();
             log.error("[Rest-Exception]-[{}]-message: {}", request.getRequestURL(), t);
             log.debug("[Rest-Exception]-[{}]-debug error message: {} - cause:", request.getRequestURL(), t);
-            t.printStackTrace();
         } catch (Exception e) {
             log.error("[Rest-Exception]-message: {}", t.getMessage());
             log.debug("[Rest-Exception]-debug error message:: {} - cause {}", t.getMessage(), t.getStackTrace());
         }
 
+        // 堆栈仅在调用方显式携带 "V-Debug: DEBUG" 时回传，该请求头仅供内网/本地调试使用，
+        // 线上入口（网关）不应透传；默认只返回通用错误文案。
         return RUtils.create(
             Codes.FAIL,
             "请求失败",

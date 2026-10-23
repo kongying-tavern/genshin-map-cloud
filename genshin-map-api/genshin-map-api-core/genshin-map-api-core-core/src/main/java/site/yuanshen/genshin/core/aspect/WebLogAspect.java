@@ -15,6 +15,8 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author kraken
@@ -36,6 +38,28 @@ public class WebLogAspect {
             JSONWriter.Feature.WriteEnumUsingToString,
             JSONWriter.Feature.WriteNonStringKeyAsString
     };
+
+    /**
+     * 敏感字段名关键字（大小写不敏感）：命中后把对应 JSON 值整体替换为 "***"
+     */
+    private static final Pattern SENSITIVE_JSON_PATTERN = Pattern.compile(
+        "(\"[^\"]*(?:password|passwd|token|secret|credential|authorization)[^\"]*\"\\s*:\\s*)"
+            + "(?:\"(?:[^\"\\\\]|\\\\.)*\"|[^,}\\]\\s]+)",
+        Pattern.CASE_INSENSITIVE
+    );
+
+    private static final String MASKED_VALUE = "\"***\"";
+
+    /**
+     * 日志脱敏：把 JSON 文本中敏感字段（password/token/secret 等）的值替换为 ***，保持 JSON 结构不变。
+     * 仅用于日志输出，不参与任何业务数据。
+     */
+    static String maskSensitiveJson(String json) {
+        if (json == null || json.isEmpty()) {
+            return json;
+        }
+        return SENSITIVE_JSON_PATTERN.matcher(json).replaceAll("$1" + Matcher.quoteReplacement(MASKED_VALUE));
+    }
 
     private Object[] sanitizeArgs(Object[] args) {
         final Object[] sanitizedArgs = List.of(args)
@@ -76,7 +100,8 @@ public class WebLogAspect {
         HttpServletRequest request = attributes.getRequest();
         String args;
         try {
-            args = JSON.toJSONString(sanitizeArgs(joinPoint.getArgs()), defaultWriteFeatures);
+            // 入参可能含 password/token 等敏感信息，落地日志前统一脱敏
+            args = maskSensitiveJson(JSON.toJSONString(sanitizeArgs(joinPoint.getArgs()), defaultWriteFeatures));
         } catch (OutOfMemoryError e) {
             args = "[Too long arguments]";
         }

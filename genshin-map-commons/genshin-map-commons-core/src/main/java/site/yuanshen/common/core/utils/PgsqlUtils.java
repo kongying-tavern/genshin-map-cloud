@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 import lombok.With;
 
 import java.util.*;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -20,19 +21,70 @@ import java.util.stream.Collectors;
  * @author Sunosay
  */
 public class PgsqlUtils {
+
+    /**
+     * long 数组字面量：仅允许「非负整数 + 逗号」
+     */
+    private static final Pattern UNNEST_LONG_PATTERN = Pattern.compile("\\d+(,\\d+)*");
+
+    /**
+     * string 数组字面量单项：仅允许 [A-Za-z0-9._-]（group_id 等均为 UUID/ASCII 标识）
+     */
+    private static final Pattern UNNEST_STRING_ITEM_PATTERN = Pattern.compile("[A-Za-z0-9._-]+");
+
+    private static final String EMPTY_UNNEST = "'{}'";
+
+    /**
+     * 生成 PG 数组字面量（配合 {@code unnest(...::bigint[])} 使用）
+     * <p>
+     * 返回值会经 Mapper 的 ${...} 占位符直接拼进 SQL，因此必须严格校验：
+     * 仅接受非负整数，避免外部输入污染 SQL 文本。
+     *
+     * @throws IllegalArgumentException 列表中存在 null 或负数
+     */
     public static String unnestLongStr(List<Long> longList) {
-        String s = JSON.toJSONString(longList);
-        return "'{" + s.substring(1, s.length() - 1) + "}'";
+        if (CollUtil.isEmpty(longList)) {
+            return EMPTY_UNNEST;
+        }
+        final String joined = longList.stream()
+            .map(id -> {
+                if (id == null || id < 0) {
+                    throw new IllegalArgumentException("unnest 参数非法：ID 必须为非负整数");
+                }
+                return String.valueOf(id);
+            })
+            .collect(Collectors.joining(","));
+        if (!UNNEST_LONG_PATTERN.matcher(joined).matches()) {
+            throw new IllegalArgumentException("unnest 参数非法：ID 列表校验未通过");
+        }
+        return "'{" + joined + "}'";
     }
 
     public static String unnestLongStr(Set<Long> longSet) {
         return unnestLongStr(new ArrayList<>(longSet));
     }
 
+    /**
+     * 生成 PG 字符串数组字面量（配合 {@code unnest(...::varchar[])} 使用）
+     * <p>
+     * 同样会经 Mapper 的 ${...} 占位符直接拼进 SQL：仅允许 [A-Za-z0-9._-]，
+     * 拒绝引号、分号、反斜杠、注释符等一切可用于逃逸字面量的字符。
+     *
+     * @throws IllegalArgumentException 列表中存在 null 或非法字符
+     */
     public static String unnestStringStr(List<String> strList) {
-        String s = JSON.toJSONString(strList);
-        s = s.replace("\"", "");
-        return "'{" + s.substring(1, s.length() - 1) + "}'";
+        if (CollUtil.isEmpty(strList)) {
+            return EMPTY_UNNEST;
+        }
+        final String joined = strList.stream()
+            .map(item -> {
+                if (item == null || !UNNEST_STRING_ITEM_PATTERN.matcher(item).matches()) {
+                    throw new IllegalArgumentException("unnest 参数非法：仅允许 [A-Za-z0-9._-] 字符");
+                }
+                return item;
+            })
+            .collect(Collectors.joining(","));
+        return "'{" + joined + "}'";
     }
 
     public static String unnestStringStr(Set<String> strSet) {
