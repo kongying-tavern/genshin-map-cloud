@@ -68,3 +68,7 @@ docker/**/.data
 .env
 .env.*
 !.env.example
+
+### 密钥库（禁止入库，见 docs/oauth2-jwt-key-rotation.md） ###
+*.jks
+*.p12
